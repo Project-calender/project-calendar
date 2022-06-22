@@ -1,35 +1,64 @@
 const express = require('express');
-const { User } = require('../models');
-
 const bcrypt = require('bcrypt');
+const passport = require('passport');
+
+const { User } = require('../models');
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 
 const router = express.Router()
 
-router.post('/login', (req, res, next) => {
+router.post('/login', isNotLoggedIn, (req, res, next) => {
     passport.authenticate('local' ,(err, user, info) => {
-        if (err) {
-            console.error(err);
-            next(err);
-        }
-        if(info) {
-            return res.status(401).send(info.reason);
-        }
-        return req.login(user, async (loginErr) => {
-            if (loginErr) {
-                return next(loginErr);
+        try{
+            if (err) {
+                console.error(err);
+                next(err);
             }
-            const fullUserWithoutPassword = await User.findOne({
-                where: { id: user.id },
-                attributes: {
-                    exclude: ['paw']
+            if(info) {
+                return res.status(401).send(info.reason);
+            }
+            return req.login(user, async (loginErr) => {
+                if (loginErr) {
+                    return next(loginErr);
                 }
+                const refreshToken = jwt.sign(
+                    {
+                        sub: "refresh",
+                        id: user.id,
+                    },
+                    "jwt-secret-key",
+                    { expiresIn: "24h" }
+                );
+                const accessToken = jwt.sign(
+                    {
+                        sub: "access",
+                        id: user.id
+                    },
+                    "jwt-secret-key",
+                    {
+                        expiresIn: "5m",
+                    }
+                );
+                const fullUserWithoutPassword = await User.findOne({
+                    where: { id: user.id },
+                    attributes: {
+                        exclude: ['paw']
+                    }
+                })
+                return res.status(200).send({
+                    fullUserWithoutPassword,
+                    refreshToken,
+                    accessToken,
+                });
             })
-            return res.status(200).json(fullUserWithoutPassword);
-        })
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
     })(req, res, next);
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', isNotLoggedIn, async (req, res) => {
     try{
         const exUser = await User.findOne({
             where: {
@@ -53,7 +82,7 @@ router.post('/signup', async (req, res) => {
     }
 })
 
-router.post('/user/logout', (req, res) => {
+router.post('/user/logout', isNotLoggedIn, (req, res) => {
     req.logout();
     req.session.destroy();
     res.send('ok');
