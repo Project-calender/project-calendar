@@ -26,11 +26,11 @@ module.exports = () => {
 }
 
 
-// passport.use(
-//     "jwt",
-//     new JWTStrategy(
-//         {
-//             jwt
-//         }
-//     )
-// )
+passport.use(
+    "jwt",
+    new JWTStrategy(
+        {
+            jwt
+        }
+    )
+)
