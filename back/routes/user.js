@@ -49,6 +49,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                         exclude: ['paw']
                     }
                 })
+                console.log("로그인 성공 확인")
                 return res.status(200).send({
                     fullUserWithoutPassword,
                     refreshToken,
