@@ -1,4 +1,6 @@
 const passport = require('passport');
+const bcrypt = require('bcrypt');
+
 const { Strategy: LocalStrategy } = require('passport-local');
 const { ExtractJwt, Strategy: JWTStrategy } = require("passport-jwt");
 const { User } = require('../models');
@@ -7,11 +9,12 @@ module.exports = () => {
     passport.use(
         "signin",
         new LocalStrategy({
-            idField: 'id',
-            pawField: 'paw',
+            usernameField: 'id',
+            passwordField: 'paw',
     }, async (id, paw, done) => {
         try {
             console.log("실행은되나")
+            console.log(id , "이게 아이디라고?")
             const user = await User.findOne({
                 where: { id }
             });
@@ -24,7 +27,7 @@ module.exports = () => {
             }
             return done(null, false, { reason: '비밀번호가 틀렸습니다' });
         } catch(error) {
-            console.log("ASD")
+            console.log("error")
             return done(error);
         }
     }));
@@ -40,10 +43,11 @@ passport.use(
         },
         async (jwtPayload, done) => {
             try {
-                console.log(jwtPayload);
+                console.log("실행되긴 하나?")
+                console.log(jwtPayload, "함보자");
                 const user = await User.findOne({
                     where: {
-                        id: jwtPayload.id
+                        username: jwtPayload.username
                     }
                 })
                 if (user) {
