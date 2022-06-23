@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
+const jwt = require("jsonwebtoken");
 
 const { User } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
@@ -17,12 +18,12 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                 console.error(err);
                 next(err);
             }
-            
             if(info) {
-                console.log(info, "여기서 종료")
+                console.log(info, "여기서 종료", user)
                 return res.status(401).send(info);
             }
-            return req.login(user, async (loginErr) => {
+            console.log("여기까지 가서 에러인가?")
+            return req.login(user, { session: false },async (loginErr) => {
                 if (loginErr) {
                     return next(loginErr);
                 }
@@ -53,7 +54,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                     }
                 })
                 
-                console.log("??")
+                console.log("성공?")
                 return res.status(200).send({
                     fullUserWithoutPassword,
                     refreshToken,
@@ -77,14 +78,19 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
         if (exUser) {
             return res.status(403).send('이미 사용중인 아이디입니다.')
         }   
-        const hashedPassword = await bcrypt.password(req.body.password, 12)
+        console.log(req.body)
+        console.log(req.body.paw, "fasdfdsfsdff")
+        const hashedPassword = await bcrypt.hash(req.body.paw, 12)
         await User.create({
             id: req.body.email,
             paw: hashedPassword,
-            nickname: req.body.nickname,
+            name: req.body.name,
+            email: req.body.email,
+            
         })
         res.status(201).send('ok');
-        res.status(201).send('회원가입이 완료되었습니다.')
+        // res.status(201).send('회원가입이 완료되었습니다.')
+        console.log("dasd")
     } catch (error) {
         console.log(error);
         next(error)
