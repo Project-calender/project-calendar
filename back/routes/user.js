@@ -19,16 +19,12 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                 next(err);
             }
             if(info) {
-                console.log(info, "여기서 종료", user)
                 return res.status(401).send(info);
             }
-            console.log("여기까지 가서 에러인가?")
             return req.login(user, { session: false },async (loginErr) => {
                 if (loginErr) {
                     return next(loginErr);
                 }
-                
-                console.log("??")
                 const refreshToken = jwt.sign(
                     {
                         sub: "refresh",
@@ -53,8 +49,6 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                         exclude: ['paw']
                     }
                 })
-                
-                console.log("성공?")
                 return res.status(200).send({
                     fullUserWithoutPassword,
                     refreshToken,
