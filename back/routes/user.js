@@ -73,8 +73,6 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
         if (exUser) {
             return res.status(403).send('이미 사용중인 아이디입니다.')
         }   
-        console.log(req.body)
-        console.log(req.body.paw, "fasdfdsfsdff")
         const hashedPassword = await bcrypt.hash(req.body.paw, 12)
         await User.create({
             id: req.body.email,
@@ -85,7 +83,7 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
         })
         res.status(201).send('ok');
         // res.status(201).send('회원가입이 완료되었습니다.')
-        console.log("dasd")
+        console.log("회원가입 확인")
     } catch (error) {
         console.log(error);
         next(error)
