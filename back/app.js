@@ -30,13 +30,13 @@ app.use(cors({
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(session({
-    saveUninitialized: false,
-    resave: false,
-    secret: process.env.COOKIE_SECRET,
-}));
+// app.use(session({
+//     saveUninitialized: false,
+//     resave: false,
+//     secret: process.env.COOKIE_SECRET,
+// }));
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 //라우터
 app.use('/post', postRouter)

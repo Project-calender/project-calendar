@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "passport-jwt": "^4.0.0"
+  }
+}
