@@ -10,7 +10,7 @@ const router = express.Router()
 
 // const { verifyToken } = require('./middleware');
 
-router.post('/login', isNotLoggedIn, (req, res, next) => {
+router.post('/login', (req, res, next) => {
     passport.authenticate('signin' ,(err, user, info) => {
         try{
             console.log("??")
@@ -63,7 +63,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
     })(req, res, next);
 });
 
-router.post('/signup', isNotLoggedIn, async (req, res, next) => {
+router.post('/signup', async (req, res, next) => {
     try{
         const exUser = await User.findOne({
             where: {
@@ -139,7 +139,7 @@ router.post("/refreshToken", async (req, res, next) => {
     }))
 })
 
-router.post('/user/logout', isNotLoggedIn, (req, res) => {
+router.post('/user/logout', (req, res) => {
     req.logout();
     req.session.destroy();
     res.send('ok');
