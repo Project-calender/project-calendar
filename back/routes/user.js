@@ -10,7 +10,7 @@ const router = express.Router()
 
 // const { verifyToken } = require('./middleware');
 
-router.post('/login', isNotLoggedIn, (req, res, next) => {
+router.post('/login', (req, res, next) => {
     passport.authenticate('signin' ,(err, user, info) => {
         try{
             console.log("??")
@@ -63,7 +63,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
     })(req, res, next);
 });
 
-router.post('/signup', isNotLoggedIn, async (req, res, next) => {
+router.post('/signup', async (req, res, next) => {
     try{
         const exUser = await User.findOne({
             where: {
@@ -73,8 +73,6 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
         if (exUser) {
             return res.status(403).send('이미 사용중인 아이디입니다.')
         }   
-        console.log(req.body)
-        console.log(req.body.paw, "fasdfdsfsdff")
         const hashedPassword = await bcrypt.hash(req.body.paw, 12)
         await User.create({
             id: req.body.email,
@@ -85,7 +83,7 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
         })
         res.status(201).send('ok');
         // res.status(201).send('회원가입이 완료되었습니다.')
-        console.log("dasd")
+        console.log("회원가입 확인")
     } catch (error) {
         console.log(error);
         next(error)
@@ -141,7 +139,7 @@ router.post("/refreshToken", async (req, res, next) => {
     }))
 })
 
-router.post('/user/logout', isNotLoggedIn, (req, res) => {
+router.post('/user/logout', (req, res) => {
     req.logout();
     req.session.destroy();
     res.send('ok');
