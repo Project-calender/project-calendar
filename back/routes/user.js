@@ -75,14 +75,13 @@ router.post('/signup', async (req, res, next) => {
         }   
         const hashedPassword = await bcrypt.hash(req.body.paw, 12)
         await User.create({
-            id: req.body.email,
+            id: req.body.id,
             paw: hashedPassword,
             name: req.body.name,
             email: req.body.email,
             
         })
         res.status(201).send('ok');
-        // res.status(201).send('회원가입이 완료되었습니다.')
         console.log("회원가입 확인")
     } catch (error) {
         console.log(error);
