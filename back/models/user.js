@@ -1,40 +1,54 @@
-const db = require(".");
+const DataTypes = require("sequelize");
+const { Model } = DataTypes;
 
-module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define('User', {
-        id: {
-            type: DataTypes.STRING(40),
-            allowNull: false,
-            unique: true,
-            primaryKey: true
-          },
-        paw: {
-            type: DataTypes.STRING(100),
-            allowNull: false,
-            unique: true,
-            primaryKey: true
-        },
-        name: {
-            type: DataTypes.STRING(30),
-            allowNull: false, 
-        },
+module.exports = class User extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
         email: {
-            type: DataTypes.STRING(30),
-            allowNull: false, 
+          type: DataTypes.STRING(30),
+          allowNull: false,
+          unique: true,
         },
-        auto_logged: {
-            type: DataTypes.BOOLEAN(),
-            allowNull: true, 
-        }
-    }, {
-        charset: 'utf8',
-        collate: 'utf8_general_ci', 
+        nickname: {
+          type: DataTypes.STRING(30),
+          allowNull: false,
+          unique: true,
+        },
+        password: {
+          type: DataTypes.STRING(200),
+          allowNull: false,
+        },
+      },
+      {
+        modelName: "User",
+        tableName: "Users",
+        paranoid: true,
+        charset: "utf8",
+        collate: "utf8_general_ci",
+        sequelize,
+      }
+    );
+  }
+  static associate(db) {
+    db.User.belongsToMany(db.Calendar, { through: "CalendarMembers" });
+    db.User.hasMany(db.Calendar, { as: "Owner", foreignKey: "OwnerId" });
+
+    db.User.belongsToMany(db.Event, { through: "EventMembers" });
+    db.User.hasMany(db.Event, { as: "EventHost", foreignKey: "EventHostId" });
+
+    db.User.hasMany(db.PrivateCalendar, { as: "MyCalendar" });
+    db.User.hasMany(db.PrivateEvent, { as: "MyEvent" });
+
+    db.User.belongsToMany(db.User, {
+      through: "Invite",
+      as: "CalendarHost",
+      foreignKey: "CalendarGuestId",
     });
-    User.associate = (db) => {;
-    db.User.hasMany(db.Cal)
-    db.User.hasOne(db.Notice_cal)
-    db.User.hasMany(db.Group_cal)
-    db.User.hasMany(db.Event)
-    }
-    return User;
+    db.User.belongsToMany(db.User, {
+      through: "Invite",
+      as: "CalendarHostGuest",
+      foreignKey: "CalendarHostId",
+    });
+  }
 };

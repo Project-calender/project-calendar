@@ -1,27 +1,27 @@
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 
 dotenv.config();
 
 module.exports = {
   development: {
-    username: 'root',
+    username: "root",
     password: process.env.DB_PASSWORD,
-    database: 'Calender_app',
-    host: '127.0.0.1',
-    dialect: 'mysql',
+    database: "CalenderApp",
+    host: "127.0.0.1",
+    dialect: "mysql",
   },
   test: {
-    username: 'root',
+    username: "root",
     password: process.env.DB_PASSWORD,
-    database: 'react-nodebird',
-    host: '127.0.0.1',
-    dialect: 'mysql',
+    database: "CalenderApp",
+    host: "127.0.0.1",
+    dialect: "mysql",
   },
   production: {
-    username: 'root',
+    username: "root",
     password: process.env.DB_PASSWORD,
-    database: 'react-nodebird',
-    host: '127.0.0.1',
-    dialect: 'mysql',
+    database: "CalenderApp",
+    host: "127.0.0.1",
+    dialect: "mysql",
   },
 };
