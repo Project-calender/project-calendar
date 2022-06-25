@@ -4,11 +4,9 @@ const passport = require('passport');
 const jwt = require("jsonwebtoken");
 
 const { User } = require('../models');
-const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
-
 const router = express.Router()
 
-// const { verifyToken } = require('./middleware');
+// const { verifyToken } = require('./memaildleware');
 
 router.post('/login', (req, res, next) => {
     passport.authenticate('signin' ,(err, user, info) => {
@@ -28,7 +26,7 @@ router.post('/login', (req, res, next) => {
                 const refreshToken = jwt.sign(
                     {
                         sub: "refresh",
-                        id: user.id,
+                        email: user.email,
                     },
                     "jwt-secret-key",
                     { expiresIn: "24h" }
@@ -36,7 +34,7 @@ router.post('/login', (req, res, next) => {
                 const accessToken = jwt.sign(
                     {
                         sub: "access",
-                        id: user.id
+                        email: user.email
                     },
                     "jwt-secret-key",
                     {
@@ -44,9 +42,9 @@ router.post('/login', (req, res, next) => {
                     }
                 );
                 const fullUserWithoutPassword = await User.findOne({
-                    where: { id: user.id },
+                    where: { email: user.email },
                     attributes: {
-                        exclude: ['paw']
+                        exclude: ['password']
                     }
                 })
                 console.log("로그인 성공 확인")
@@ -67,18 +65,17 @@ router.post('/signup', async (req, res, next) => {
     try{
         const exUser = await User.findOne({
             where: {
-                id: req.body.id,
+                email: req.body.email,
             }
         });
         if (exUser) {
             return res.status(403).send('이미 사용중인 아이디입니다.')
         }   
-        const hashedPassword = await bcrypt.hash(req.body.paw, 12)
+        const hashedPassword = await bcrypt.hash(req.body.password, 12)
         await User.create({
-            id: req.body.email,
-            paw: hashedPassword,
-            name: req.body.name,
             email: req.body.email,
+            password: hashedPassword,
+            nickname: req.body.nickname,
             
         })
         res.status(201).send('ok');
@@ -111,7 +108,7 @@ router.post("/refreshToken", async (req, res, next) => {
             const refreshToken = jwt.sign(
                 {
                     sub: "refresh",
-                    id: user.id,
+                    email: user.email,
                 },
                 "jwt-secret-key",
                 { expiresIn: "24h" }
@@ -127,7 +124,7 @@ router.post("/refreshToken", async (req, res, next) => {
                 }
             );
             return res.status(200).send({
-                id: id,
+                email: email,
                 name: user.name,
                 refreshToken,
                 accessToken,

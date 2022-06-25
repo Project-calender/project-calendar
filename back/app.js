@@ -7,8 +7,8 @@ const passport = require("passport");
 const dotenv = require("dotenv");
 
 //내부모듈
-// const userRouter = require('./routes/user')
-// const postRouter = require('./routes/post')
+const userRouter = require('./routes/user')
+const postRouter = require('./routes/post')
 const db = require("./models");
 const passportConfig = require("./passport");
 
@@ -36,14 +36,13 @@ app.use(cookieParser());
 // app.use(session({
 //     saveUninitialized: false,
 //     resave: false,
-//     secret: process.env.COOKIE_SECRET,
+//     secret: process.env.COOKIE_SECRET || "cookie_secret",
 // }));
 app.use(passport.initialize());
-// app.use(passport.session());
 
 //라우터
-// app.use("/post", postRouter);
-// app.use("/user", userRouter);
+app.use("/post", postRouter);
+app.use("/user", userRouter);
 
 //포트 설정
 app.listen(8080, () => {
