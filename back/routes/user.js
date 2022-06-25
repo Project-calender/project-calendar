@@ -124,7 +124,7 @@ router.post("/refreshToken", async (req, res, next) => {
             );
             return res.status(200).send({
                 email: email,
-                name: user.name,
+                nickname: user.nickname,
                 refreshToken,
                 accessToken,
             })
