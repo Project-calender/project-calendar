@@ -76,7 +76,10 @@ router.post('/signup', async (req, res, next) => {
             email: req.body.email,
             password: hashedPassword,
             nickname: req.body.nickname,
+<<<<<<< HEAD
+=======
             
+>>>>>>> 6c761518f016101d12c22b170c06403037e41a14
         })
         res.status(201).send('ok');
         // res.status(201).send('회원가입이 완료되었습니다.')
