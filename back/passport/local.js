@@ -9,17 +9,17 @@ module.exports = () => {
     passport.use(
         "signin",
         new LocalStrategy({
-            usernameField: 'id',
-            passwordField: 'paw',
-    }, async (id, paw, done) => {
+            usernameField: 'email',
+            passwordField: 'password',
+    }, async (email, password, done) => {
         try {
             const user = await User.findOne({
-                where: { id }
+                where: { email }
             });
             if(!user) {
                 return done(null, false, { reason: '존재하지 않는 아이디입니다!' })
             }
-            const result = await bcrypt.compare(paw, user.paw);
+            const result = await bcrypt.compare(password, user.password);
             if(result) {
                 return done(null, user);
             }
