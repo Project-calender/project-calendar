@@ -4,13 +4,11 @@ const passport = require('passport');
 const jwt = require("jsonwebtoken");
 
 const { User } = require('../models');
-const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
-
 const router = express.Router()
 
-// const { verifyToken } = require('./middleware');
+// const { verifyToken } = require('./memaildleware');
 
-router.post('/login', isNotLoggedIn, (req, res, next) => {
+router.post('/login', (req, res, next) => {
     passport.authenticate('signin' ,(err, user, info) => {
         try{
             console.log("??")
@@ -19,20 +17,16 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                 next(err);
             }
             if(info) {
-                console.log(info, "여기서 종료", user)
                 return res.status(401).send(info);
             }
-            console.log("여기까지 가서 에러인가?")
             return req.login(user, { session: false },async (loginErr) => {
                 if (loginErr) {
                     return next(loginErr);
                 }
-                
-                console.log("??")
                 const refreshToken = jwt.sign(
                     {
                         sub: "refresh",
-                        id: user.id,
+                        email: user.email,
                     },
                     "jwt-secret-key",
                     { expiresIn: "24h" }
@@ -40,7 +34,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                 const accessToken = jwt.sign(
                     {
                         sub: "access",
-                        id: user.id
+                        email: user.email
                     },
                     "jwt-secret-key",
                     {
@@ -48,13 +42,12 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
                     }
                 );
                 const fullUserWithoutPassword = await User.findOne({
-                    where: { id: user.id },
+                    where: { email: user.email },
                     attributes: {
-                        exclude: ['paw']
+                        exclude: ['password']
                     }
                 })
-                
-                console.log("성공?")
+                console.log("로그인 성공 확인")
                 return res.status(200).send({
                     fullUserWithoutPassword,
                     refreshToken,
@@ -68,29 +61,26 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
     })(req, res, next);
 });
 
-router.post('/signup', isNotLoggedIn, async (req, res, next) => {
+router.post('/signup', async (req, res, next) => {
     try{
         const exUser = await User.findOne({
             where: {
-                id: req.body.id,
+                email: req.body.email,
             }
         });
         if (exUser) {
             return res.status(403).send('이미 사용중인 아이디입니다.')
         }   
-        console.log(req.body)
-        console.log(req.body.paw, "fasdfdsfsdff")
-        const hashedPassword = await bcrypt.hash(req.body.paw, 12)
+        const hashedPassword = await bcrypt.hash(req.body.password, 12)
         await User.create({
-            id: req.body.email,
-            paw: hashedPassword,
-            name: req.body.name,
             email: req.body.email,
+            password: hashedPassword,
+            nickname: req.body.nickname,
             
         })
         res.status(201).send('ok');
         // res.status(201).send('회원가입이 완료되었습니다.')
-        console.log("dasd")
+        console.log("회원가입 확인")
     } catch (error) {
         console.log(error);
         next(error)
@@ -118,7 +108,7 @@ router.post("/refreshToken", async (req, res, next) => {
             const refreshToken = jwt.sign(
                 {
                     sub: "refresh",
-                    id: user.id,
+                    email: user.email,
                 },
                 "jwt-secret-key",
                 { expiresIn: "24h" }
@@ -134,7 +124,7 @@ router.post("/refreshToken", async (req, res, next) => {
                 }
             );
             return res.status(200).send({
-                id: id,
+                email: email,
                 name: user.name,
                 refreshToken,
                 accessToken,
@@ -146,7 +136,7 @@ router.post("/refreshToken", async (req, res, next) => {
     }))
 })
 
-router.post('/user/logout', isNotLoggedIn, (req, res) => {
+router.post('/user/logout', (req, res) => {
     req.logout();
     req.session.destroy();
     res.send('ok');

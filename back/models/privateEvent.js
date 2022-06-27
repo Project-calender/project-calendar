@@ -1,7 +1,7 @@
 const DataTypes = require("sequelize");
 const { Model } = DataTypes;
 
-module.exports = class Event extends Model {
+module.exports = class PrivateEvent extends Model {
   static init(sequelize) {
     return super.init(
       {
@@ -30,8 +30,8 @@ module.exports = class Event extends Model {
         },
       },
       {
-        modelName: "Events",
-        tableName: "Events",
+        modelName: "PrivateEvent",
+        tableName: "PrivateEvents",
         paranoid: true,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -40,9 +40,7 @@ module.exports = class Event extends Model {
     );
   }
   static associate(db) {
-    db.Event.belongsToMany(db.User, { through: "EventMembers", as: "Members" });
-    db.Event.belongsTo(db.User, { as: "EventHost", foreignKey: "EventHostId" });
-
-    db.Event.belongsTo(db.Calendar);
+    db.PrivateEvent.belongsTo(db.User);
+    db.PrivateEvent.belongsTo(db.PrivateCalendar);
   }
 };
