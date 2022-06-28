@@ -1,5 +1,27 @@
-.container{
-    width: 250px;
+.sidebar {
+    width: 230px;
     height: 100%;
-    background: blanchedalmond;
+    padding: 10px 8px;
+}
+
+.sidebar_event_button {
+    background-color: white;
+    width: inherit;
+    height: 70px;
+    padding-top: 15px;
+    padding-left: 10px;
+
+    position: fixed;
+    top: 0px;
+    z-index: 1;
+}
+
+.sidebar_calender {
+    height: 80%;
+    padding: 10px 0px;
+    text-align: center;
+    
+    position: absolute;
+    top: 85px;
+    overflow-y: auto;
 }
