@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './style.module.css';
+import styles from '../style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 

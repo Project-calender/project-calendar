@@ -1,0 +1,17 @@
+.calendar{
+    position: relative;
+    width: 230px;
+}
+
+.calendar_icon_plus {
+    position: absolute;
+    top: -1px;
+    right: 45px;
+    border-radius: 100%;
+    padding: 10px;
+    z-index:2;
+}
+
+.calendar_icon_plus:hover{
+    background-color: #f8f8f8;
+}
