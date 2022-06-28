@@ -1,0 +1,12 @@
+.event_btn{
+    width: 150px;
+    height: 50px;
+    border-radius: 25px;
+    background-color: white;
+    margin: 10px;
+    box-shadow: 1px 2px 3px 1px rgb(136, 136, 136);
+}
+
+.event_btn_text{
+    margin: 0px 20px;
+}
