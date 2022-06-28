@@ -76,6 +76,13 @@ router.post('/signup', async (req, res, next) => {
             email: req.body.email,
             password: hashedPassword,
             nickname: req.body.nickname,
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 6c761518f016101d12c22b170c06403037e41a14
+>>>>>>> 0a5707b646ea6359b3867f118b7b799624834987
         })
         res.status(201).send('ok');
         // res.status(201).send('회원가입이 완료되었습니다.')
@@ -124,6 +131,11 @@ router.post("/refreshToken", async (req, res, next) => {
             );
             return res.status(200).send({
                 email: email,
+<<<<<<< HEAD
+                nickname: user.nickname,
+=======
+                name: user.name,
+>>>>>>> 0a5707b646ea6359b3867f118b7b799624834987
                 refreshToken,
                 accessToken,
             })
