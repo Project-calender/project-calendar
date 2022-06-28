@@ -1,14 +1,12 @@
 //외부모듈
 const express = require("express");
 const cors = require("cors");
-const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
 
 //내부모듈
-const userRouter = require('./routes/user')
-const postRouter = require('./routes/post')
+const userRouter = require("./routes/user");
 const db = require("./models");
 const passportConfig = require("./passport");
 
@@ -33,15 +31,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// app.use(session({
-//     saveUninitialized: false,
-//     resave: false,
-//     secret: process.env.COOKIE_SECRET || "cookie_secret",
-// }));
 app.use(passport.initialize());
 
 //라우터
-app.use("/post", postRouter);
 app.use("/user", userRouter);
 
 //포트 설정
