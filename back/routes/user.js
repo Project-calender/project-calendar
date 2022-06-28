@@ -2,63 +2,16 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const jwt = require("jsonwebtoken");
-const { Op } = require("sequelize");
 
 const { User } = require('../models');
-const { PrivateCalendar } = require('../models')
-const { PrivateEvent } = require('../models')
-const { reset } = require('nodemon');
 const router = express.Router()
 
 // const { verifyToken } = require('./memaildleware');
 
-
-// 개인 일정 가져오기(년)
-router.get('/year/:year/:month/:day', async (req, res, next) => {
-    const exUser = await User.findOne({
-        where: {
-            id: 1
-        }
-    })
-    const startdate = req.params.year
-    const enddate = String(Number(req.params.year)+1)
-    const exEvent = await exUser.getMyEvent({
-        attributes: ['StartTime'],
-        where: {
-            startTime: {
-                [Op.between]: [startdate, enddate]
-        }
-    }
-})  
-
-
-    return res.json({exEvent : exEvent})
-})
-
-
-// 개인 일정 가져오기(월)
-router.get('/month/:year/:month/:day', async (req, res, next) => {
-    const exUser = await User.findOne({
-        where: {
-            id: 1
-        }
-    })
-    const startdate = req.params.year+'-'+req.params.month
-    const enddate = req.params.year+'-'+String(Number(req.params.month)+1)
-    const exEvent = await exUser.getMyEvent({
-        attributes: ['StartTime'],
-        where: {
-            startTime: {
-                [Op.between]: [startdate, enddate]
-            }
-        }
-    })  
-    return res.json({exEvent : exEvent})
-})
-
 router.post('/login', (req, res, next) => {
     passport.authenticate('signin' ,(err, user, info) => {
         try{
+            console.log("??")
             if (err) {
                 console.error(err);
                 next(err);
@@ -119,23 +72,11 @@ router.post('/signup', async (req, res, next) => {
             return res.status(403).send('이미 사용중인 아이디입니다.')
         }   
         const hashedPassword = await bcrypt.hash(req.body.password, 12)
-        const newUser = await User.create({
+        await User.create({
             email: req.body.email,
             password: hashedPassword,
-            nickname: req.body.nickname
+            nickname: req.body.nickname,
         })
-        
-        const myCalendar = await PrivateCalendar.create({
-            name: 'MyCalendar'
-        })
-        
-        await newUser.addMyCalendar(myCalendar)
-
-        // await newUser.addMyCalendar({
-        //     name: 'MyCalendar'
-        // })
-    
-        // console.log(User.getOwnPropertyNames(),"dasd")
         res.status(201).send('ok');
         // res.status(201).send('회원가입이 완료되었습니다.')
         console.log("회원가입 확인")
@@ -195,6 +136,7 @@ router.post("/refreshToken", async (req, res, next) => {
 
 router.post('/user/logout', (req, res) => {
     req.logout();
+    req.session.destroy();
     res.send('ok');
 });
 
