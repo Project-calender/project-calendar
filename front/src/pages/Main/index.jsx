@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import styles from './style.module.css';
 import NavBar from '../../components/Navbar';
-import Calendar from '../../components/calendar';
+import SideBar from '../../components/SideBar';
 
 const Index = () => {
   /* NavBar */
@@ -31,10 +31,10 @@ const Index = () => {
           userActive={userActive}
           setUserActive={setUserActive}
         ></NavBar>
-        <div>
-          <Calendar></Calendar>
+        <article className={styles.article}>
+          <SideBar />
           <Outlet></Outlet>
-        </div>
+        </article>
       </section>
     </div>
   );

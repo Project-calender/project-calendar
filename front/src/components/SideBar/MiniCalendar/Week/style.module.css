@@ -1,0 +1,12 @@
+.calendar_tr td,th{height: 22px; text-align: center; vertical-align: middle; border-radius: 100%; }
+.calendar_tr th{font-size: 10px; font-weight: 600; }
+.calendar_tr td{color: #000; cursor: pointer; padding: 3px 0px;}
+.calendar_tr td:hover{background: #ececec; transition-duration: .5s;}
+.calendar_tr td:active{background: #abcaff; transition-duration: .5s;}
+
+.calendar_tr td.date_button_select{color: #000; background: #cde0ff; }
+.calendar_tr td.date_button_select:hover{background: #7099dc; transition-duration: .5s;}
+.calendar_tr td.date_today{color: #fff; background: #2b63ff; }
+.calendar_tr td.date_blur{color: #a3a3a3;}
+
+.calendar_tr td em{font-weight: 600; font-size: 10px;}
