@@ -7,7 +7,7 @@
 .calendar_details > summary {
     height: 30px;
     list-style: none;
-    
+
     justify-content: space-between;
     font-size: 14px;
     margin: 10px 0px;
@@ -16,3 +16,4 @@
 .calendar_details > summary:hover{
     background-color: #f8f8f8;
 }
+

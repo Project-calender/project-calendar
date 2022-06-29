@@ -1,21 +1,21 @@
 import React from 'react';
-import styles_calendar from './style.module.css';
+import styles from './style.module.css';
 import PropTypes from 'prop-types';
+import Tooltip from '../../../common/Tooltip';
 
-const Index = ({ calendars }) => {
+const Index = ({ calendar }) => {
   return (
-    <>
-      {calendars.map(({ id, calendarName }) => (
-        <label key={id} className={styles_calendar.calendarInfo_label}>
-          <input type="checkbox" /> {calendarName}
-        </label>
-      ))}
-    </>
+    <label className={styles.calendarInfo_label}>
+      <input type="checkbox" />
+      <Tooltip key={calendar.id} title={calendar.calendarName}>
+        <p>{calendar.calendarName}</p>
+      </Tooltip>
+    </label>
   );
 };
 
 Index.propTypes = {
-  calendars: PropTypes.array,
+  calendar: PropTypes.object,
 };
 
 export default Index;

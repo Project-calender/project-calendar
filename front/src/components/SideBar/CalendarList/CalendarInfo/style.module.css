@@ -9,6 +9,11 @@
     height: 18px;
 }
 
+.calendarInfo_label p{
+    width: 150px;
+    text-align: left;
+}
+
 .calendarInfo_label:hover{
     background-color: #f8f8f8;
 }

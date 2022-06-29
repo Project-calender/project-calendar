@@ -15,7 +15,9 @@ const Index = ({ calendarType, calendars }) => {
         {calendarType}
         <FontAwesomeIcon icon={toggle ? faAngleDown : faAngleUp} />
       </summary>
-      <CalendarInfo calendars={calendars} />
+      {calendars.map(calendar => (
+        <CalendarInfo key={calendar.id} calendar={calendar} />
+      ))}
     </details>
   );
 
