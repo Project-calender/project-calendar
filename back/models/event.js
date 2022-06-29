@@ -11,7 +11,7 @@ module.exports = class Event extends Model {
           unique: true,
         },
         color: {
-          type: DataTypes.STRING(10),
+          type: DataTypes.STRING(20),
           allowNull: false,
         },
         priority: {
@@ -21,11 +21,11 @@ module.exports = class Event extends Model {
           type: DataTypes.TEXT,
         },
         startTime: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.DATE,
           allowNull: false,
         },
         endTime: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.DATE,
           allowNull: false,
         },
       },
