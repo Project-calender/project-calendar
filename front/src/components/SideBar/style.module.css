@@ -1,6 +1,6 @@
 .sidebar {
     width: 250px;
-    height: 95vh;
+    height: 82.5vh;
     padding: 10px 8px;
     background: white;
 }
@@ -18,5 +18,5 @@
     height: 100%;
     padding-bottom: 10px;
     text-align: center;
-    overflow-y: scroll;
+    overflow-y: auto;
 }

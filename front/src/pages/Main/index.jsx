@@ -8,8 +8,8 @@ const Index = () => {
   /* NavBar */
   let [activeClass, setActiveClass] = useState(); //일정 리스트에 클레스 추가
   let [dateActive, setDateActive] = useState(false); //일정 리스트 true ,false 확인
-  let [userClassAdd, setUserClassAdd] = useState(); //일정 리스트에 클레스 추가
-  let [userActive, setUserActive] = useState(false); //일정 리스트 true ,false 확인
+  let [userClassAdd, setUserClassAdd] = useState(); //사용자 팝업창에 클레스 추가
+  let [userActive, setUserActive] = useState(false); //사용자 팝업창 true ,false 확인
   //body클릭시 일정 리스트 모달창 닫기
   document.body.addEventListener('click', () => {
     setDateActive(false);
