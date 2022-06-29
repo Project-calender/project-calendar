@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { useState } from 'react';
 import styles from './style.module.css';
 
 import CalendarHeader from './CalendarHeader';
 import WeekDaysHeader from './WeekDaysHeader';
 import Week from './Week';
+
 import { getMonth } from '../../../utils/moment';
+import { useState } from 'react';
 
 const Index = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());

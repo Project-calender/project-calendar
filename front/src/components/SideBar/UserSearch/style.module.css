@@ -5,30 +5,13 @@
     height: 35px;
     width: 190px;
     margin-left: 0px;
+    margin-bottom: 10px;
     padding-left: 5px;
     border: 2px solid #f3f3f3;
     outline: none;
-
 }
 
 .search_input:focus {
     border-bottom: 2px solid #1E88E5;
     transition-duration: 0.5s;
 }
-
-/* 
-.focus_border{
-    position: absolute;
-    left: 50%;
-    margin-top: 35px;
-    height: 3px;
-	background-color: #1E88E5;
-    width: 0;
-    transition: 0.4s;
-    margin-left: 16px;
-  }
-
-.search_input:focus~ .focus_border {
-    width: 200px;
-    left: 0;
-} */

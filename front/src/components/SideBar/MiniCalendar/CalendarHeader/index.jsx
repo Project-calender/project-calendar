@@ -5,7 +5,7 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'; /
 import PropTypes from 'prop-types';
 
 const Index = ({ selectedDate, setSelectedDate }) => {
-  function moveMonth(number) {
+  function addMonth(number) {
     setSelectedDate(preDate => {
       const date = new Date(preDate.getTime());
       date.setMonth(date.getMonth() + number);
@@ -20,10 +20,10 @@ const Index = ({ selectedDate, setSelectedDate }) => {
         <em>{selectedDate.getMonth() + 1}월</em>
       </div>
       <div className={styles.year_btt}>
-        <button onClick={() => moveMonth(-1)}>
+        <button onClick={() => addMonth(-1)}>
           <FontAwesomeIcon icon={faAngleLeft} />
         </button>
-        <button onClick={() => moveMonth(1)}>
+        <button onClick={() => addMonth(1)}>
           <FontAwesomeIcon icon={faAngleRight} />
         </button>
       </div>

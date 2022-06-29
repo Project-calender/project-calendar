@@ -1,9 +1,11 @@
 import React from 'react';
 import styles from './style.module.css';
+
 import AddEventButton from './AddEventButton';
 import UserSearch from './UserSearch';
 import MyCalendarList from './calendars/MyCalendarList';
 import SubscriptionCalendarList from './calendars/SubscriptionCalendarList';
+import MiniCalendar from './MiniCalendar';
 
 const Index = () => {
   return (
@@ -12,6 +14,7 @@ const Index = () => {
         <AddEventButton />
       </div>
       <div className={styles.sidebar_calender}>
+        <MiniCalendar />
         <UserSearch />
         <MyCalendarList />
         <SubscriptionCalendarList />
