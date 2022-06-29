@@ -3,18 +3,22 @@ import './reset.css';
 import './App.css';
 //import { useCallback, useEffect, useRef, useState } from 'react';
 //import { useSelector } from 'react-redux';
-//import { Link, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
-//import axios from 'axios';
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
-import {} from '@fortawesome/free-solid-svg-icons'; //폰트어썸
-import Calendar from './components/Calendar';
-
-/* 설치됨 redux,axios,fortawesome,router */
+import { Route, Routes } from 'react-router-dom';
+import Main from './pages/Main';
 
 function App() {
   return (
     <div className="App">
-      <Calendar></Calendar>
+      <Routes>
+        <Route path="/" element={<Main></Main>}>
+          <Route path="today" element={<div>일</div>}></Route>
+          <Route path="week" element={<div>주</div>}></Route>
+          <Route path="month" element={<div>월</div>}></Route>
+          <Route path="year" element={<div>년</div>}></Route>
+          <Route path="plan" element={<div>일정</div>}></Route>
+          <Route path="customday" element={<div>4일</div>}></Route>
+        </Route>
+      </Routes>
     </div>
   );
 }
