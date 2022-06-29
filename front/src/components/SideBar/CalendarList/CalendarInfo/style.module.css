@@ -1,0 +1,14 @@
+.calendarInfo_label {
+    height: 30px;
+    font-size: 14px;
+}
+
+.calendarInfo_label > input{
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+}
+
+.calendarInfo_label:hover{
+    background-color: #f8f8f8;
+}
