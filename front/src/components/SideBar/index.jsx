@@ -3,8 +3,8 @@ import styles from './style.module.css';
 
 import AddEventButton from './AddEventButton';
 import UserSearch from './UserSearch';
-import MyCalendarList from './calendars/MyCalendarList';
-import SubscriptionCalendarList from './calendars/SubscriptionCalendarList';
+import MyCalendarList from './MyCalendarList';
+import SubscriptionCalendarList from './SubscriptionCalendarList';
 import MiniCalendar from './MiniCalendar';
 
 const Index = () => {

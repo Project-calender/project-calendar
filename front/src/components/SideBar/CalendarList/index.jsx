@@ -1,23 +1,18 @@
 import React from 'react';
-import styles from '../style.module.css';
+import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 
+import CalendarInfo from './CalendarInfo';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
-import CalendarInfo from '../CalendarInfo';
 
-const calendars = [
-  { id: 0, calendarName: '사용자' },
-  { id: 1, calendarName: '스터디' },
-  { id: 2, calendarName: '프로젝트' },
-];
-
-const Index = () => {
+const Index = ({ calendarType, calendars }) => {
   const [toggle, setToggle] = useState(true);
   return (
     <details className={styles.calendar_details} open>
       <summary onClick={handleSummaryToggle}>
-        내 캘린더
+        {calendarType}
         <FontAwesomeIcon icon={toggle ? faAngleDown : faAngleUp} />
       </summary>
       <CalendarInfo calendars={calendars} />
@@ -27,6 +22,11 @@ const Index = () => {
   function handleSummaryToggle() {
     setToggle(toggle => !toggle);
   }
+};
+
+Index.propTypes = {
+  calendarType: PropTypes.string,
+  calendars: PropTypes.array,
 };
 
 export default Index;
