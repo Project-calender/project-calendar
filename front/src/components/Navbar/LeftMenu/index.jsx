@@ -37,7 +37,7 @@ const Index = () => {
     }
   }
 
-  //현재 날짜 월,일로 변경
+  //오늘 기준 월,일로 변경
   function toDate() {
     setSelectedMonth(today.month);
     setSelectedDate(today.date);
