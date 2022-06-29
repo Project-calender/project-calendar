@@ -26,7 +26,8 @@ const Index = () => {
     if (date.isToday()) className += styles.today;
     else if (date.month !== selectedDate.getMonth() + 1)
       className += styles.blur;
-    else if (date.time === selectedDate.getTime()) className += styles.active;
+    else if (date.time === selectedDate.getTime())
+      className += styles.button_select;
 
     return className;
   }

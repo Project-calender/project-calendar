@@ -7,17 +7,21 @@
 .year .text{margin-left: 10px; }
 .year .text em{font-size: 14px;font-weight: 500;color: #3c4043;}
 .year .text em:nth-child(2){margin-left: 5px;}
-.year .year_btt{margin-right: 12px;}
-.year .year_btt button{ background: transparent; margin-left: 20px;font-size: 14px; cursor: pointer;}
+.year .year_btt{margin-right: 8px;}
+.year .year_btt button{ width: 20px; height: 20px; border-radius: 100%; background: transparent; margin-left: 10px;font-size: 14px; cursor: pointer;}
+.year .year_btt button:hover{background: #ececec; transition-duration: .5s;}
 
 .calendar_talbe {width: 100%;}
 .calendar_talbe td,th{height: 22px; text-align: center; vertical-align: middle; border-radius: 100%; }
 .calendar_talbe th{font-size: 10px; font-weight: 600; }
 .calendar_talbe td{color: #000; cursor: pointer; padding: 3px 0px;}
-.calendar_talbe td:hover{background: #ececec;}
-.calendar_talbe td.active{color: #000; background: #cde0ff; }
-.calendar_talbe td.today{color: #fff; background: #2b63ff; }
+.calendar_talbe td:hover{background: #ececec; transition-duration: .5s;}
+.calendar_talbe td:active{background: #abcaff; transition-duration: .5s;}
 .calendar_talbe td.blur{color: #a3a3a3;}
+
+.calendar_talbe td.button_select{color: #000; background: #cde0ff; }
+.calendar_talbe td.button_select:hover{background: #7099dc; transition-duration: .5s;}
+.calendar_talbe td.today{color: #fff; background: #2b63ff; }
 
 .calendar_talbe td em{font-weight: 600; font-size: 10px;}
 
