@@ -19,7 +19,7 @@ const Index = ({ title, calendars }) => {
         <CalendarInfo
           key={calendar.id}
           calendar={calendar}
-          remove={calendar.id >= 0}
+          remove={calendar?.id >= 0}
         />
       ))}
     </details>
