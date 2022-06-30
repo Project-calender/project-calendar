@@ -1,15 +1,9 @@
 import React from 'react';
 import styles from './style.module.css';
-<<<<<<< HEAD
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import Tooltip from '../../../common/Tooltip';
-=======
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
-import PropTypes from 'prop-types';
->>>>>>> origin/develop
 
 const Index = ({ selectedDate, setSelectedDate }) => {
   function addMonth(number) {
