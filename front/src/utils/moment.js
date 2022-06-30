@@ -1,6 +1,6 @@
 export const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
-function convertDateToObject(date) {
+export function convertDateToObject(date) {
   return {
     year: date.getFullYear(),
     month: date.getMonth() + 1,
@@ -20,13 +20,52 @@ class Moment {
     this.time = time;
   }
 
-  get weekDay() {
+  isToday() {
+    const today = new Moment(new Date());
+    return (
+      this.getMonth() === today.getMonth() && this.getDate() === today.getDate()
+    );
+  }
+
+  addMonth(number) {
+    const date = new Date(this.getTime());
+    date.setMonth(date.getMonth() + number);
+    this.initMoment(date);
+  }
+
+  getYear() {
+    return this.year;
+  }
+
+  getMonth() {
+    return this.month;
+  }
+
+  getDate() {
+    return this.date;
+  }
+
+  getTime() {
+    return this.time;
+  }
+
+  getDay() {
+    return this.day;
+  }
+
+  getWeekDay() {
     return WEEK_DAYS[this.day];
   }
 
-  isToday() {
-    const today = new Moment(new Date());
-    return this.month === today.month && this.date === today.date;
+  toString() {
+    return {
+      year: this.year,
+      month: this.month,
+      date: this.date,
+      day: this.day,
+      weekDay: this.getWeekDay(),
+      time: this.time,
+    };
   }
 }
 
@@ -36,8 +75,8 @@ export default Moment;
  * @param {Date} date
  * @return {Moment[]}
  */
-export function getMonth(date) {
-  date = new Date(date.getTime());
+export function calculateByMonth(date) {
+  date = new Date(date.time);
   date.setDate(1);
   date.setDate(1 - date.getDay());
 

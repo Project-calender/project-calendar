@@ -1,14 +1,18 @@
 import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeSelectDate } from '../../../../store/date';
 
-const Index = ({ week, selectedDate, setSelectedDate }) => {
+const Index = ({ week }) => {
+  const selectedDate = useSelector(state => state.date.selectedDate);
+  const dispatch = useDispatch();
+
   function initDateClassName(date) {
     let className = '';
     if (date.isToday()) className += styles.date_today;
-    else if (date.month !== selectedDate.getMonth() + 1)
-      className += styles.date_blur;
-    else if (date.time === selectedDate.getTime())
+    else if (date.month !== selectedDate.month) className += styles.date_blur;
+    else if (date.time === selectedDate.time)
       className += styles.date_button_select;
 
     return className;
@@ -20,9 +24,7 @@ const Index = ({ week, selectedDate, setSelectedDate }) => {
         <td
           key={date.time}
           className={`${initDateClassName(date)}`}
-          onClick={() => {
-            setSelectedDate(new Date(date.time));
-          }}
+          onClick={() => dispatch(changeSelectDate(new Date(date.time)))}
         >
           <em>{date.date}</em>
         </td>
