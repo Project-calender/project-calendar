@@ -20,11 +20,11 @@ const Index = ({ week }) => {
 
   return (
     <tr className={styles.calendar_tr}>
-      {week.map(date => (
+      {week.map((date, index) => (
         <td
-          key={date.time}
+          key={index}
           className={`${initDateClassName(date)}`}
-          onClick={() => dispatch(changeSelectDate(new Date(date.time)))}
+          onClick={() => dispatch(changeSelectDate(date.time))}
         >
           <em>{date.date}</em>
         </td>

@@ -5,21 +5,21 @@ import CalendarHeader from './CalendarHeader';
 import WeekDaysHeader from './WeekDaysHeader';
 import Week from './Week';
 
-import { calculateByMonth } from '../../../utils/moment';
+import { calculateMonth } from '../../../utils/moment';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 const Index = () => {
   const selectedDate = useSelector(state => state.date.selectedDate);
-  const [month, setMonth] = useState(calculateByMonth(new Date()));
+  const [month, setMonth] = useState(calculateMonth(selectedDate));
 
   useEffect(() => {
-    setMonth(calculateByMonth(selectedDate));
+    setMonth(calculateMonth(selectedDate));
   }, [selectedDate]);
 
   return (
     <div className={styles.calendar_wrap}>
-      <CalendarHeader></CalendarHeader>
+      <CalendarHeader />
       <table className={styles.calendar_talbe}>
         <thead>
           <WeekDaysHeader />

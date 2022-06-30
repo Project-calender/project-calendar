@@ -11,7 +11,7 @@ const dateSlice = createSlice({
       state.selectedDate = convertDateToObject(date);
     },
     changeSelectDate(state, { payload }) {
-      state.selectedDate = convertDateToObject(payload);
+      state.selectedDate = convertDateToObject(new Date(payload));
     },
   },
 });

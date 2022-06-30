@@ -20,41 +20,17 @@ class Moment {
     this.time = time;
   }
 
+  get weekDay() {
+    return WEEK_DAYS[this.day];
+  }
+
   isToday() {
     const today = new Moment(new Date());
     return (
-      this.getMonth() === today.getMonth() && this.getDate() === today.getDate()
+      this.year === today.year &&
+      this.month === today.month &&
+      this.date === today.date
     );
-  }
-
-  addMonth(number) {
-    const date = new Date(this.getTime());
-    date.setMonth(date.getMonth() + number);
-    this.initMoment(date);
-  }
-
-  getYear() {
-    return this.year;
-  }
-
-  getMonth() {
-    return this.month;
-  }
-
-  getDate() {
-    return this.date;
-  }
-
-  getTime() {
-    return this.time;
-  }
-
-  getDay() {
-    return this.day;
-  }
-
-  getWeekDay() {
-    return WEEK_DAYS[this.day];
   }
 
   toString() {
@@ -63,7 +39,7 @@ class Moment {
       month: this.month,
       date: this.date,
       day: this.day,
-      weekDay: this.getWeekDay(),
+      weekDay: this.weekDay,
       time: this.time,
     };
   }
@@ -75,7 +51,7 @@ export default Moment;
  * @param {Date} date
  * @return {Moment[]}
  */
-export function calculateByMonth(date) {
+export function calculateMonth(date) {
   date = new Date(date.time);
   date.setDate(1);
   date.setDate(1 - date.getDay());
@@ -89,6 +65,5 @@ export function calculateByMonth(date) {
     }
     dates.push(week);
   }
-
   return dates;
 }
