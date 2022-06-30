@@ -5,7 +5,7 @@
 .menu_icon ul li{width: 40px;height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; cursor: pointer; position: relative;}
 .menu_icon ul li:hover{background: #eee;}
 .menu_icon ul li .icon{font-size: 20px; color: #666;}
-.menu_icon ul li em{width: 100%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; position: absolute;top: 110%;left: 50%; transform: translateX(-50%); text-align: center; padding: 5px 0;}
+.menu_icon ul li em{ position: absolute; width:max-content; border-radius: 10%; top:110%; left:50%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; transform: translateX(-50%); text-align: center; padding: 5px 8px;}
 .menu_icon ul li:hover em{visibility: visible; opacity: 1;}
 .menu_icon ul li:nth-child(3) em{width: 150%;}
 
@@ -33,9 +33,8 @@
 
 .more{width: 40px;height: 40px; margin-left: 30px; display: flex; justify-content: center; align-items: center; border-radius: 50%; cursor: pointer; position: relative;}
 .more:hover{background: #eee;}
-.more .icon{font-size: 20px;}
-.more em{width: 170%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; position: absolute;top: 110%;left: 50%; transform: translateX(-50%); text-align: center; padding: 5px 0;}
-.more:hover em{visibility: visible; opacity: 1;}
+.more .icon{font-size: 20px; padding: 5px; box-sizing: border-box;}
+
 
 .user{width: 32px;height: 32px; margin-left: 10px; border-radius: 50%; background: #ccc;  position: relative;}
 .user img{width: 100%; height: 100%; object-fit: cover;  border-radius: 50%; cursor: pointer;}

@@ -1,8 +1,9 @@
 import React from 'react';
 import styles from './style.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
+import Tooltip from '../../../common/Tooltip';
 
 const Index = ({ selectedDate, setSelectedDate }) => {
   function addMonth(number) {
@@ -20,12 +21,16 @@ const Index = ({ selectedDate, setSelectedDate }) => {
         <em>{selectedDate.getMonth() + 1}월</em>
       </div>
       <div className={styles.year_btt}>
-        <button onClick={() => addMonth(-1)}>
-          <FontAwesomeIcon icon={faAngleLeft} />
-        </button>
-        <button onClick={() => addMonth(1)}>
-          <FontAwesomeIcon icon={faAngleRight} />
-        </button>
+        <Tooltip title="이전 달">
+          <button onClick={() => addMonth(-1)}>
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </button>
+        </Tooltip>
+        <Tooltip title="다음 달">
+          <button onClick={() => addMonth(1)}>
+            <FontAwesomeIcon icon={faAngleRight} />
+          </button>
+        </Tooltip>
       </div>
     </div>
   );

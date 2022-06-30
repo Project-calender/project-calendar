@@ -7,7 +7,7 @@
 .hamburger_icon span{display: block; width: 17px;height: 1px;background: #000; position: absolute; top: 50%;left: 50%; transform: translate(-50%,-50%);}
 .hamburger_icon span:nth-child(1){top: 0%;}
 .hamburger_icon span:nth-child(3){top: 100%;}
-.hamburger em{width: 120%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; position: absolute;top: 110%;left: 50%; transform: translateX(-50%); text-align: center; padding: 5px 0;}
+.hamburger em{width: 120%; position: absolute; width:max-content; border-radius: 10%; top:100%; left:50%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; transform: translateX(-50%); text-align: center; padding: 5px 8px;}
 .hamburger:hover em{visibility: visible; opacity: 1;}
 
 .title{display: flex; align-items: center;}
@@ -17,7 +17,7 @@
 .today_btt{width: 55px;height: 35px; display: flex; justify-content: center; align-items: center; position: relative; margin-left: 80px;  border: 1px solid #ccc; box-sizing: border-box; border-radius: 5px; cursor: pointer;}
 .today_btt:hover{background: #eee;}
 .today_btt em{font-size: 14px;font-weight: 400;color: #3c4043;}
-.today_btt p{width: 120%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; position: absolute;top: 110%;left: 50%; transform: translateX(-50%); text-align: center; padding: 5px 0;}
+.today_btt p{width: 120%; position: absolute; width:max-content; border-radius: 10%; top:120%; left:50%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; transform: translateX(-50%); text-align: center; padding: 5px 8px;}
 .today_btt:hover p{visibility: visible; opacity: 1;}
 
 .todate{margin-left: 30px; display: flex; align-items: center;}
@@ -26,7 +26,7 @@
 .todate .todate_icon_wrap ul li{width: 30px;height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;}
 .todate .todate_icon_wrap ul li:hover{ background: #eee;}
 .todate .todate_icon_wrap ul li .todate_icon{font-size: 16px;}
-.todate .todate_icon_wrap ul li em{width: 100%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; position: absolute;top: 110%;left: 50%; transform: translateX(-50%); text-align: center; padding: 5px 0;}
+.todate .todate_icon_wrap ul li em{width: 100%;  position: absolute; width:max-content; border-radius: 10%; top:130%; left:50%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; transform: translateX(-50%); text-align: center; padding: 5px 8px;}
 .todate .todate_icon_wrap ul li:hover em{visibility: visible; opacity: 1;}
 .todate .todate_icon_wrap ul li:nth-child(2) em{width: 140%;}
 

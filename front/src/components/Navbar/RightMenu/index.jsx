@@ -13,6 +13,7 @@ import {
   faCheck,
   faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
+import Tooltip from './../../common/Tooltip';
 
 const Index = ({
   activeClass,
@@ -168,8 +169,9 @@ const Index = ({
           </div>
         </div>
         <div className={styles.more}>
-          <FontAwesomeIcon icon={faList} className={styles.icon} />
-          <em>Google 앱</em>
+          <Tooltip title="Google 앱">
+            <FontAwesomeIcon icon={faList} className={styles.icon} />
+          </Tooltip>
         </div>
         <div
           className={`${styles.user} ${userClassAdd}`}
@@ -180,8 +182,9 @@ const Index = ({
             setActiveClass(``);
           }}
         >
-          <em>Google 계정</em>
-          <img src={`${process.env.PUBLIC_URL}/img/user_img.png`} alt="" />
+          <Tooltip title="Google 계정">
+            <img src={`${process.env.PUBLIC_URL}/img/user_img.png`} alt="" />
+          </Tooltip>
           <div className={styles.user_inpo}>
             <div className={styles.user_profile}>
               <div className={styles.user_img}>
