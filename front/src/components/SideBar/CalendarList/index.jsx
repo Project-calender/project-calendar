@@ -31,11 +31,7 @@ const Index = ({ title, calendars }) => {
 };
 
 Index.propTypes = {
-<<<<<<< HEAD
   title: PropTypes.string,
-=======
-  calendarType: PropTypes.string,
->>>>>>> origin/develop
   calendars: PropTypes.array,
 };
 

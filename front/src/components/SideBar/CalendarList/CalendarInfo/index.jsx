@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
 import styles from './style.module.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,30 +30,12 @@ const Index = ({ calendar, remove = true }) => {
         </Tooltip>
       </div>
     </div>
-=======
-import styles_calendar from './style.module.css';
-import PropTypes from 'prop-types';
-
-const Index = ({ calendars }) => {
-  return (
-    <>
-      {calendars.map(({ id, calendarName }) => (
-        <label key={id} className={styles_calendar.calendarInfo_label}>
-          <input type="checkbox" /> {calendarName}
-        </label>
-      ))}
-    </>
->>>>>>> origin/develop
   );
 };
 
 Index.propTypes = {
-<<<<<<< HEAD
   calendar: PropTypes.object,
   remove: PropTypes.bool,
-=======
-  calendars: PropTypes.array,
->>>>>>> origin/develop
 };
 
 export default Index;
