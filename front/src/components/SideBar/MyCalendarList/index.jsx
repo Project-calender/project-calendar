@@ -2,14 +2,13 @@ import React from 'react';
 
 import CalendarList from '../CalendarList';
 
-const calendars = [
-  { id: 0, calendarName: '사용자' },
-  { id: 1, calendarName: '스터디' },
-  { id: 2, calendarName: '프로젝트' },
-];
+const calendars = [...Array(15)].map((_, num) => ({
+  id: num - 1,
+  calendarName: num === 0 ? '사용자' : `스터디 ${num}`,
+}));
 
 const Index = () => {
-  return <CalendarList calendarType={'내 캘린더'} calendars={calendars} />;
+  return <CalendarList title={'내 캘린더'} calendars={calendars} />;
 };
 
 export default Index;
