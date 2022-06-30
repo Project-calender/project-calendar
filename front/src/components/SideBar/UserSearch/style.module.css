@@ -1,9 +1,9 @@
 .search_input {
+    height: 35px;
+    width: 80%;
     border: none;
     background:#f3f3f3;
     border-radius: 4px;
-    height: 35px;
-    width: 190px;
     margin-left: 0px;
     margin-bottom: 10px;
     padding-left: 5px;

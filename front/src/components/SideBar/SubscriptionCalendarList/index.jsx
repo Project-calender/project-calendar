@@ -10,8 +10,12 @@ const calendars = [{ id: 0, calendarName: '대한민국의 휴일' }];
 const Index = () => {
   return (
     <div className={styles.calendar}>
-      <CalenarList calendarType={'다른 캘린더'} calendars={calendars} />
-      <FontAwesomeIcon icon={faPlus} className={styles.calendar_icon_plus} />
+      <CalenarList title={'다른 캘린더'} calendars={calendars} />
+      <FontAwesomeIcon
+        icon={faPlus}
+        className={styles.calendar_icon_plus}
+        remove={false}
+      />
     </div>
   );
 };

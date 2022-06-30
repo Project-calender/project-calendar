@@ -7,16 +7,20 @@ import CalendarInfo from './CalendarInfo';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-const Index = ({ calendarType, calendars }) => {
+const Index = ({ title, calendars }) => {
   const [toggle, setToggle] = useState(true);
   return (
     <details className={styles.calendar_details} open>
       <summary onClick={handleSummaryToggle}>
-        {calendarType}
+        {title}
         <FontAwesomeIcon icon={toggle ? faAngleDown : faAngleUp} />
       </summary>
       {calendars.map(calendar => (
-        <CalendarInfo key={calendar.id} calendar={calendar} />
+        <CalendarInfo
+          key={calendar.id}
+          calendar={calendar}
+          remove={calendar.id >= 0}
+        />
       ))}
     </details>
   );
@@ -27,7 +31,7 @@ const Index = ({ calendarType, calendars }) => {
 };
 
 Index.propTypes = {
-  calendarType: PropTypes.string,
+  title: PropTypes.string,
   calendars: PropTypes.array,
 };
 

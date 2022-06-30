@@ -1,6 +1,5 @@
 .calendar{
     position: relative;
-    width: 230px;
 }
 
 .calendar_icon_plus {
@@ -9,7 +8,7 @@
     right: 45px;
     border-radius: 100%;
     padding: 10px;
-    z-index:2;
+    z-index: 1;
 }
 
 .calendar_icon_plus:hover{
