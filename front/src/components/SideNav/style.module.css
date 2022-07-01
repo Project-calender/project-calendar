@@ -6,7 +6,7 @@
 .side_bar_menu ul li{ margin: 10px 0; padding:7px;border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;}
 .side_bar_menu ul li:nth-child(1){margin-top: 20px;}
 .side_bar_menu ul li:hover{background: #eee;}
-.side_bar_menu ul li img{width: 25px;height: 25px; object-fit: cover; }
+.side_bar_menu ul li img{width: 25px;height: 25px; object-fit: cover;}
 .side_bar_menu ul li em{  bottom: -30px; left:50%;  transform: translateX(-50%);}
 .side_bar_menu ul li:hover em{visibility: visible; opacity: 1;}
 
