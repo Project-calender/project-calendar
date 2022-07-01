@@ -3,9 +3,16 @@ import PropTypes from 'prop-types';
 import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addDate, initDate } from '../../../store/date';
 
 const Index = ({ setSideBar, sideBar }) => {
+  //redux 오늘 날짜 가지고 오기
+  let state = useSelector(state => {
+    return state.date.selectedDate;
+  });
+  let dispatch = useDispatch();
+
   const data = new Date();
   const today = {
     year: data.getFullYear(), //오늘 연도
@@ -13,35 +20,10 @@ const Index = ({ setSideBar, sideBar }) => {
     date: data.getDate(), //오늘 날짜
     day: data.getDay(), //오늘 요일
   };
-  const [selectedYear] = useState(today.year); //현재 선택된 연도
-  const [selectedMonth, setSelectedMonth] = useState(today.month); //현재 선택된 달
-  const [selectedDate, setSelectedDate] = useState(today.date); //현재 선택된 달
-  const dateTotalCount = new Date(selectedYear, selectedMonth, 0).getDate(); //선택된 연도, 달의 마지막 날짜
-
-  //이전 일로 변경
-  function prevDate() {
-    if (selectedDate == 1) {
-      setSelectedDate(new Date(selectedYear, selectedMonth - 1, 0).getDate());
-      setSelectedMonth(selectedMonth - 1);
-    } else {
-      setSelectedDate(selectedDate - 1);
-    }
-  }
-
-  //다음 일로 변경
-  function nextDate() {
-    if (selectedDate == dateTotalCount) {
-      setSelectedDate(1);
-      setSelectedMonth(selectedMonth + 1);
-    } else {
-      setSelectedDate(selectedDate + 1);
-    }
-  }
 
   //오늘 기준 월,일로 변경
   function toDate() {
-    setSelectedMonth(today.month);
-    setSelectedDate(today.date);
+    dispatch(initDate());
   }
 
   function sideBarClose() {
@@ -88,7 +70,7 @@ const Index = ({ setSideBar, sideBar }) => {
             <ul>
               <li
                 onClick={() => {
-                  prevDate();
+                  dispatch(addDate(-1));
                 }}
               >
                 <FontAwesomeIcon
@@ -99,7 +81,7 @@ const Index = ({ setSideBar, sideBar }) => {
               </li>
               <li
                 onClick={() => {
-                  nextDate();
+                  dispatch(addDate(1));
                 }}
               >
                 <FontAwesomeIcon
@@ -112,7 +94,7 @@ const Index = ({ setSideBar, sideBar }) => {
           </div>
           <div className={styles.todate_text}>
             <h2>
-              {selectedYear}년 {selectedMonth}월 {selectedDate}일
+              {state.year}년 {state.month}월 {state.date}일
             </h2>
           </div>
         </div>

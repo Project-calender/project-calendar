@@ -12,7 +12,11 @@ const Index = ({ week }) => {
     let className = '';
     if (date.isToday()) className += styles.date_today;
     else if (date.month !== selectedDate.month) className += styles.date_blur;
-    else if (date.time === selectedDate.time)
+    else if (
+      date.year === selectedDate.year &&
+      date.month === selectedDate.month &&
+      date.date === selectedDate.date
+    )
       className += styles.date_button_select;
 
     return className;
