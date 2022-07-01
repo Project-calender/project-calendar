@@ -9,6 +9,10 @@ module.exports = class CalendarMember extends Model {
           type: DataTypes.INTEGER,
           defaultValue: 1,
         },
+        state: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
+        },
       },
       {
         modelName: "CalendarMember",

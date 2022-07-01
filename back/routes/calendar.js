@@ -40,7 +40,7 @@ router.post("/createGroupCalendar", async (req, res, next) => {
     const authority = await CalendarMember.findOne({
       where: { UserId: exUser.id, CalendarId: newGroupCalendar.id },
     });
-    await authority.update({ authority: 3 }, { transaction: t });
+    await authority.update({ authority: 3, state: 1 }, { transaction: t });
 
     await t.commit();
     return res.status(200).send({ success: true });
