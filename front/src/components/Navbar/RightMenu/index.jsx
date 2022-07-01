@@ -14,6 +14,8 @@ import {
   faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import Tooltip from './../../common/Tooltip';
+import { useEffect } from 'react';
+import { useRef } from 'react';
 
 const Index = ({
   activeClass,
@@ -27,6 +29,8 @@ const Index = ({
 }) => {
   let navigate = useNavigate();
   let [changeDate, setChangeDate] = useState(`일`);
+  const userProfile = useRef();
+  const dateList = useRef();
 
   //일,주,연 버튼 팝업창 컨트롤
   function dateChange() {
@@ -47,6 +51,25 @@ const Index = ({
     } else {
       setUserActive(false);
       setUserClassAdd(``);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', clickModalOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', clickModalOutside);
+    };
+  });
+
+  function clickModalOutside(event) {
+    if (!userProfile.current.contains(event.target)) {
+      setUserActive(false);
+      setUserClassAdd(``);
+    }
+    if (!dateList.current.contains(event.target)) {
+      setDateActive(false);
+      setActiveClass(``);
     }
   }
   return (
@@ -71,14 +94,12 @@ const Index = ({
             </li>
           </ul>
         </div>
-        <div className={`${styles.date_list} ${activeClass}`}>
+        <div className={`${styles.date_list} ${activeClass}`} ref={dateList}>
           <div
             className={styles.date_btt}
             onClick={e => {
               e.stopPropagation();
               dateChange();
-              setUserActive(false);
-              setUserClassAdd(``);
             }}
           >
             <strong>{changeDate}</strong>
@@ -173,18 +194,18 @@ const Index = ({
             <FontAwesomeIcon icon={faList} className={styles.icon} />
           </Tooltip>
         </div>
-        <div
-          className={`${styles.user} ${userClassAdd}`}
-          onClick={e => {
-            e.stopPropagation();
-            userPopUp();
-            setDateActive(false);
-            setActiveClass(``);
-          }}
-        >
-          <Tooltip title="Google 계정">
-            <img src={`${process.env.PUBLIC_URL}/img/user_img.png`} alt="" />
-          </Tooltip>
+        <div className={`${styles.user} ${userClassAdd}`} ref={userProfile}>
+          <div
+            onClick={e => {
+              e.stopPropagation();
+              userPopUp();
+            }}
+          >
+            <Tooltip title="Google 계정">
+              <img src={`${process.env.PUBLIC_URL}/img/user_img.png`} alt="" />
+            </Tooltip>
+          </div>
+
           <div className={styles.user_inpo}>
             <div className={styles.user_profile}>
               <div className={styles.user_img}>
