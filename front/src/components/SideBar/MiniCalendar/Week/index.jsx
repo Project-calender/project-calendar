@@ -2,10 +2,10 @@ import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeSelectDate } from '../../../../store/date';
+import { selectDate } from '../../../../store/date';
 
 const Index = ({ week }) => {
-  const selectedDate = useSelector(state => state.date.selectedDate);
+  const selectedDate = useSelector(({ date }) => date.selectedDate);
   const dispatch = useDispatch();
 
   function initDateClassName(date) {
@@ -24,7 +24,7 @@ const Index = ({ week }) => {
         <td
           key={index}
           className={`${initDateClassName(date)}`}
-          onClick={() => dispatch(changeSelectDate(date.time))}
+          onClick={() => dispatch(selectDate(date.time))}
         >
           <em>{date.date}</em>
         </td>

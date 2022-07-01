@@ -1,15 +1,5 @@
 export const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
-export function convertDateToObject(date) {
-  return {
-    year: date.getFullYear(),
-    month: date.getMonth() + 1,
-    date: date.getDate(),
-    day: date.getDay(),
-    time: date.getTime(),
-  };
-}
-
 class Moment {
   constructor(current = new Date()) {
     const { year, month, date, day, time } = convertDateToObject(current);
@@ -33,7 +23,7 @@ class Moment {
     );
   }
 
-  toString() {
+  toObject() {
     return {
       year: this.year,
       month: this.month,
@@ -47,13 +37,8 @@ class Moment {
 
 export default Moment;
 
-/**
- * @param {Date} date
- * @return {Moment[]}
- */
-export function calculateMonth(date) {
-  date = new Date(date.time);
-  date.setDate(1);
+export function calculateMonth(year, month) {
+  const date = new Date(year, month - 1, 1);
   date.setDate(1 - date.getDay());
 
   const dates = [];
@@ -66,4 +51,14 @@ export function calculateMonth(date) {
     dates.push(week);
   }
   return dates;
+}
+
+function convertDateToObject(date) {
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+    date: date.getDate(),
+    day: date.getDay(),
+    time: date.getTime(),
+  };
 }
