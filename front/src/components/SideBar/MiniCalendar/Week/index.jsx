@@ -1,14 +1,18 @@
 import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectDate } from '../../../../store/date';
 
-const Index = ({ week, selectedDate, setSelectedDate }) => {
+const Index = ({ week }) => {
+  const selectedDate = useSelector(({ date }) => date.selectedDate);
+  const dispatch = useDispatch();
+
   function initDateClassName(date) {
     let className = '';
     if (date.isToday()) className += styles.date_today;
-    else if (date.month !== selectedDate.getMonth() + 1)
-      className += styles.date_blur;
-    else if (date.time === selectedDate.getTime())
+    else if (date.month !== selectedDate.month) className += styles.date_blur;
+    else if (date.time === selectedDate.time)
       className += styles.date_button_select;
 
     return className;
@@ -16,13 +20,11 @@ const Index = ({ week, selectedDate, setSelectedDate }) => {
 
   return (
     <tr className={styles.calendar_tr}>
-      {week.map(date => (
+      {week.map((date, index) => (
         <td
-          key={date.time}
+          key={index}
           className={`${initDateClassName(date)}`}
-          onClick={() => {
-            setSelectedDate(new Date(date.time));
-          }}
+          onClick={() => dispatch(selectDate(date.time))}
         >
           <em>{date.date}</em>
         </td>
