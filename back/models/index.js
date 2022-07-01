@@ -4,6 +4,9 @@ const calendar = require("./calendar");
 const event = require("./event");
 const privateCalendar = require("./privateCalendar");
 const privateEvent = require("./privateEvent");
+const calendarMember = require("./calendarMember");
+const eventMember = require("./eventMember");
+const invite = require("./invite");
 
 const db = {};
 db.User = user;
@@ -11,6 +14,9 @@ db.Calendar = calendar;
 db.Event = event;
 db.PrivateCalendar = privateCalendar;
 db.PrivateEvent = privateEvent;
+db.CalendarMember = calendarMember;
+db.EventMember = eventMember;
+db.Invite = invite;
 
 const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
