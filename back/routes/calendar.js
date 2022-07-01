@@ -21,7 +21,7 @@ router.post("/createGroupCalendar", async (req, res, next) => {
 
     if (notUnique) {
       return res
-        .status(401)
+        .status(400)
         .send({ message: "이미 같은 이름의 캘린더가 존재합니다!" });
     }
 
@@ -62,7 +62,7 @@ router.post("/inviteGroupCalendar", async (req, res, next) => {
     });
 
     if (!guest) {
-      return res.status(402).send({ message: "존재하지 않는 유저입니다!" });
+      return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
     }
 
     const alreadyGroupMember = await CalendarMember.findOne({
@@ -70,7 +70,7 @@ router.post("/inviteGroupCalendar", async (req, res, next) => {
     });
 
     if (alreadyGroupMember) {
-      return res.status(402).send({ message: "이미 그룹내의 멤버입니다!" });
+      return res.status(400).send({ message: "이미 그룹내의 멤버입니다!" });
     }
 
     await groupCalendar.addCalendarMembers(guest, { transaction: t });
@@ -90,21 +90,16 @@ router.post("/makeGroupEvent", async (req, res, next) => {
   try {
     // const host = req.user
     const host = await User.findOne({ where: { id: 1 } });
-
-    const groupCalendar = await Calendar.findOne({
-      where: { id: req.body.groupCalendarId },
-    });
-
     const newGroupEvent = await Event.create(
       {
-        name: "newEvent1",
+        name: "newEvent3",
         color: "#9d0ded",
         priority: 1,
         memo: "testing...",
-        startTime: new Date(),
-        endTime: new Date(),
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
         EventHostId: host.id,
-        CalendarId: groupCalendar.id,
+        CalendarId: req.body.groupCalendarId,
       },
       { transaction: t }
     );
@@ -127,7 +122,7 @@ router.post("/inviteGroupEvent", async (req, res, next) => {
       where: { id: req.body.guestId },
     });
     if (!guest) {
-      return res.status(403).send({ message: "존재하지 않는 유저입니다!" });
+      return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
     }
 
     const isGroupMember = await CalendarMember.findOne({
@@ -164,7 +159,7 @@ router.post("/editGroupEvent", async (req, res, next) => {
     });
 
     if (hasAuthority.authority < 2) {
-      return res.status(403).send({ message: "수정 권한이 없습니다!" });
+      return res.status(400).send({ message: "수정 권한이 없습니다!" });
     }
 
     const groupEvent = await Event.findOne({
@@ -176,8 +171,8 @@ router.post("/editGroupEvent", async (req, res, next) => {
         color: req.body.color,
         priority: req.body.priority,
         memo: req.body.memo,
-        startTime: new Date(),
-        endTime: new Date(),
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
       },
       { transaction: t }
     );
@@ -202,9 +197,9 @@ router.post("/deleteGroupEvent", async (req, res, next) => {
     });
 
     if (hasAuthority.authority < 2) {
-      return res.status(403).send({ message: "삭제 권한이 없습니다!" });
+      return res.status(400).send({ message: "삭제 권한이 없습니다!" });
     }
-    // const groupEvent = await Event.findOne({ where: { id: req.body.groupEventId } });
+
     await Event.destroy({
       where: { id: req.body.groupEventId },
       truncate: true,
@@ -232,22 +227,30 @@ router.post("/giveAuthority", async (req, res, next) => {
 
     if (editor.id != isOwner.OwnerId) {
       return res
-        .status(403)
+        .status(400)
         .send({ message: "권한 부여는 달력의 오너만 가능합니다!" });
     }
+
+    const member = await User.findOne({
+      where: { id: req.body.memberId },
+    });
+    if (!member) {
+      return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
+    }
+
     const isGroupMember = await CalendarMember.findOne({
       where: { UserId: member.id, CalendarId: req.body.groupCalendarId },
     });
 
     if (!isGroupMember) {
       return res
-        .status(403)
+        .status(400)
         .send({ message: "그룹 캘린더에 존재하지 초대되지 않은 유저입니다!" });
     }
 
     if (req.body.newAuthority > 2) {
       return res
-        .status(403)
+        .status(400)
         .send({ message: "달력 오너보다 낮은 권한만 부여할 수 있습니다!" });
     }
     await isGroupMember.update(
