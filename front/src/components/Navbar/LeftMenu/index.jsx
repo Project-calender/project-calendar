@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import { useState } from 'react';
 
-const Index = () => {
+const Index = ({ setSideBar, sideBar }) => {
   const data = new Date();
   const today = {
     year: data.getFullYear(), //오늘 연도
@@ -43,10 +44,23 @@ const Index = () => {
     setSelectedDate(today.date);
   }
 
+  function sideBarClose() {
+    if (sideBar == false) {
+      setSideBar(true);
+    } else {
+      setSideBar(false);
+    }
+  }
+
   return (
     <div>
       <div className={styles.left_menu}>
-        <div className={styles.hamburger}>
+        <div
+          className={styles.hamburger}
+          onClick={() => {
+            sideBarClose();
+          }}
+        >
           <div className={styles.hamburger_icon}>
             <span></span>
             <span></span>
@@ -105,6 +119,11 @@ const Index = () => {
       </div>
     </div>
   );
+};
+
+Index.propTypes = {
+  sideBar: PropTypes.bool,
+  setSideBar: PropTypes.func,
 };
 
 export default Index;
