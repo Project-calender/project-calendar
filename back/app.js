@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 //내부모듈
 const userRouter = require("./routes/user");
 const calendarRouter = require("./routes/calendar");
+const eventRouter = require("./routes/event");
 const db = require("./models");
 const passportConfig = require("./passport/local");
 
@@ -39,6 +40,7 @@ app.use(cookieParser());
 //라우터
 app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
+app.use("/api/event", eventRouter);
 
 //포트 설정
 app.listen(8080, () => {

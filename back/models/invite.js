@@ -20,5 +20,7 @@ module.exports = class Invite extends Model {
       }
     );
   }
-  static associate(db) {}
+  static associate(db) {
+    db.Invite.belongsTo(db.Calendar, { as: "HostCalendar" });
+  }
 };

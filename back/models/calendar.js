@@ -26,6 +26,10 @@ module.exports = class Calendar extends Model {
       as: "CalendarMembers",
     });
     db.Calendar.belongsTo(db.User, { as: "Owner" });
+    db.Calendar.hasMany(db.Invite, {
+      as: "HostCalendar",
+      foreignKey: "HostCalendarId",
+    });
     db.Calendar.hasMany(db.Event);
   }
 };
