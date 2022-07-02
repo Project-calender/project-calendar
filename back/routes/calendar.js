@@ -43,7 +43,10 @@ router.post("/createGroupCalendar", async (req, res, next) => {
 
     //만든 사람은 최대 권한으로
     const authority = await CalendarMember.findOne({
-      where: { UserId: exUser.id, CalendarId: newGroupCalendar.id },
+      [Op.and]: {
+        UserId: exUser.id,
+        CalendarId: newGroupCalendar.id,
+      },
     });
 
     await authority.update({ authority: 3 }, { transaction: f });
@@ -72,8 +75,7 @@ router.post("/inviteGroupCalendar", async (req, res, next) => {
     }
 
     const alreadyCalendarMember = await CalendarMember.findOne({
-      UserId: guest.id,
-      CalendarId: req.body.groupCalendarId,
+      [Op.and]: { UserId: guest.id, CalendarId: req.body.groupCalendarId },
     });
     if (alreadyCalendarMember) {
       return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
@@ -109,15 +111,17 @@ router.post("/acceptCalendarInvite", async (req, res, next) => {
     }
 
     const alreadyCalendarMember = await CalendarMember.findOne({
-      UserId: me.id,
-      CalendarId: req.body.hostCalendarId,
+      [Op.and]: {
+        UserId: me.id,
+        CalendarId: req.body.hostCalendarId,
+      },
     });
     if (alreadyCalendarMember) {
       return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
     }
 
     const inviteCalendar = await Invite.findOne({
-      where: {
+      [Op.and]: {
         CalendarGuestId: me.id,
         CalendarHostId: req.body.hostId,
         HostCalendarId: req.body.hostCalendarId,
@@ -157,15 +161,17 @@ router.post("/rejectCalendarInvite", async (req, res, next) => {
     }
 
     const alreadyCalendarMember = await CalendarMember.findOne({
-      UserId: me.id,
-      CalendarId: req.body.hostCalendarId,
+      [Op.and]: {
+        UserId: me.id,
+        CalendarId: req.body.hostCalendarId,
+      },
     });
     if (alreadyCalendarMember) {
       return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
     }
 
     const inviteCalendar = await Invite.findOne({
-      where: {
+      [Op.and]: {
         CalendarGuestId: me.id,
         CalendarHostId: req.body.hostId,
         HostCalendarId: req.body.hostCalendarId,
@@ -212,7 +218,7 @@ router.post("/giveAuthority", async (req, res, next) => {
     }
 
     const isGroupMember = await CalendarMember.findOne({
-      where: { UserId: member.id, CalendarId: req.body.groupCalendarId },
+      [Op.and]: { UserId: member.id, CalendarId: req.body.groupCalendarId },
     });
 
     if (!isGroupMember) {

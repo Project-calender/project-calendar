@@ -61,7 +61,7 @@ router.post("/inviteGroupEvent", async (req, res, next) => {
     }
 
     const isGroupMember = await CalendarMember.findOne({
-      where: { UserId: guest.id, CalendarId: req.body.groupCalendarId },
+      [Op.and]: { UserId: guest.id, CalendarId: req.body.groupCalendarId },
     });
     if (!isGroupMember) {
       return res
@@ -74,7 +74,7 @@ router.post("/inviteGroupEvent", async (req, res, next) => {
     });
 
     const alreadyEventMember = await EventMember.findOne({
-      where: { UserId: guest.id, EventId: groupEvent.id, state: 1 },
+      [Op.and]: { UserId: guest.id, EventId: groupEvent.id, state: 1 },
     });
     if (alreadyEventMember) {
       return res
@@ -83,7 +83,7 @@ router.post("/inviteGroupEvent", async (req, res, next) => {
     }
 
     const alreadyInvite = await EventMember.findOne({
-      where: { UserId: guest.id, EventId: groupEvent.id, state: 0 },
+      [Op.and]: { UserId: guest.id, EventId: groupEvent.id, state: 0 },
     });
     if (alreadyInvite) {
       return res.status(403).send({ message: "이미 초대를 보낸 사람입니다!" });
@@ -114,7 +114,7 @@ router.post("/changeEventInviteState", async (req, res, next) => {
     }
 
     const changeState = await EventMember.findOne({
-      where: {
+      [Op.and]: {
         UserId: me.id,
         EventId: invitedEvent.id,
       },
@@ -145,7 +145,7 @@ router.post("/editGroupEvent", async (req, res, next) => {
     const editor = await User.findOne({ where: { id: 1 } });
 
     const hasAuthority = await CalendarMember.findOne({
-      where: { UserId: editor.id, CalendarId: req.body.groupCalendarId },
+      [Op.and]: { UserId: editor.id, CalendarId: req.body.groupCalendarId },
     });
 
     if (hasAuthority.authority < 2) {
@@ -183,7 +183,7 @@ router.post("/deleteGroupEvent", async (req, res, next) => {
     const editor = await User.findOne({ where: { id: 1 } });
 
     const hasAuthority = await CalendarMember.findOne({
-      where: { UserId: editor.id, CalendarId: req.body.groupCalendarId },
+      [Op.and]: { UserId: editor.id, CalendarId: req.body.groupCalendarId },
     });
 
     if (hasAuthority.authority < 2) {
