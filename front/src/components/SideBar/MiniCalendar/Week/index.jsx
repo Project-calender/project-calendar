@@ -3,31 +3,18 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectDate } from '../../../../store/date';
+import Moment from '../../../../utils/moment';
 
 const Index = ({ week }) => {
   const selectedDate = useSelector(({ date }) => date.selectedDate);
   const dispatch = useDispatch();
-
-  function initDateClassName(date) {
-    let className = '';
-    if (date.isToday()) className += styles.date_today;
-    else if (date.month !== selectedDate.month) className += styles.date_blur;
-    else if (
-      date.year === selectedDate.year &&
-      date.month === selectedDate.month &&
-      date.date === selectedDate.date
-    )
-      className += styles.date_button_select;
-
-    return className;
-  }
 
   return (
     <tr className={styles.calendar_tr}>
       {week.map((date, index) => (
         <td
           key={index}
-          className={`${initDateClassName(date)}`}
+          className={`${initDateClassName(date, selectedDate)}`}
           onClick={() => dispatch(selectDate(date.time))}
         >
           <em>{date.date}</em>
@@ -36,6 +23,28 @@ const Index = ({ week }) => {
     </tr>
   );
 };
+
+function initDateClassName(date, selectedDate) {
+  let className = '';
+  const today = new Moment(new Date());
+  if (isSameDate(date, today)) className = styles.date_today;
+  else if (isSameDate(date, selectedDate)) className = styles.date_select;
+  else if (isOtherMonth(date, selectedDate)) className = styles.date_blur;
+
+  return className;
+}
+
+function isSameDate(date, otherDate) {
+  return (
+    date.year === otherDate.year &&
+    date.month === otherDate.month &&
+    date.date === otherDate.date
+  );
+}
+
+function isOtherMonth(date, otherDate) {
+  return date.month !== otherDate.month;
+}
 
 Index.propTypes = {
   week: PropTypes.array,

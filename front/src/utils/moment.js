@@ -14,15 +14,6 @@ class Moment {
     return WEEK_DAYS[this.day];
   }
 
-  isToday() {
-    const today = new Moment(new Date());
-    return (
-      this.year === today.year &&
-      this.month === today.month &&
-      this.date === today.date
-    );
-  }
-
   toObject() {
     return {
       year: this.year,
