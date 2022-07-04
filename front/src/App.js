@@ -5,6 +5,8 @@ import './App.css';
 //import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import Main from './pages/Main';
+import Login from './pages/Login';
+import Join from './pages/Join';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="plan" element={<div>일정</div>}></Route>
           <Route path="customday" element={<div>4일</div>}></Route>
         </Route>
+        <Route path="/login" element={<Login></Login>}></Route>
+        <Route path="/join" element={<Join></Join>}></Route>
       </Routes>
     </div>
   );

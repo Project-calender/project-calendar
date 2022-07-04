@@ -20,8 +20,8 @@
 .date_list .option_list > ul{}
 .date_list .option_list > ul > li{height: 40px;display: flex; justify-content: space-between; align-items: center; padding: 0 15px; cursor: pointer; }
 .date_list .option_list > ul > li:hover{background: #eee;}
-.date_list .option_list > ul > li > strong{font-size: 14px;font-weight: 400;}
-.date_list .option_list > ul > li > em{font-size: 14px;font-weight: 400; color: #555;}
+.date_list .option_list > ul > li > strong{font-size: 14px;font-weight: 400;  pointer-events: none;}
+.date_list .option_list > ul > li > em{font-size: 14px;font-weight: 400; color: #555; pointer-events: none;}
 
 .line{width: 100%; height: 1px; display: block; background: #ccc;}
 
@@ -75,3 +75,13 @@
 .service ul li:nth-child(2){cursor: default;}
 .service ul li:nth-child(2):hover{background: transparent;}
 .service ul li em{}
+
+@media (max-width:870px){
+    .more{ margin-left: 10px;}
+}
+
+@media (max-width:560px){
+    .menu_icon{margin-right: 5px;}
+    .more{ margin-left: 5px;}
+    .user{margin-left: 5px;}
+}

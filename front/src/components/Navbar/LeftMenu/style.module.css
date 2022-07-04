@@ -32,3 +32,23 @@
 
 .todate .todate_text{margin-left: 20px;}
 .todate .todate_text h2{font-size: 20px;font-weight: 400;color: #3c4043; cursor: default;}
+
+@media (max-width : 870px){
+    .title h1{display: none;}
+    .today_btt{margin-left: 40px;}
+    .todate{margin-left: 10px;}
+}
+
+@media (max-width : 650px){
+    .today_btt{margin-left: 5px;}
+    .todate{margin-left: 5px;}
+    .todate .todate_text{margin-left: 5px;}
+    .todate .todate_text h2{font-size: 14px;}
+}
+
+@media (max-width:560px){
+    .hamburger{width: 40px;height: 40px; }
+    .hamburger_icon{width: 14px;height: 12px; }
+    .hamburger_icon span{display: block; width: 14px;}
+    .title img{display: none;}
+}
