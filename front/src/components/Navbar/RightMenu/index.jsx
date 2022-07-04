@@ -54,6 +54,14 @@ const Index = ({
     }
   }
 
+  function onDateChange(e) {
+    setDateActive(false);
+    setActiveClass(``);
+    e.target.children[0]
+      ? setChangeDate(e.target.children[0].textContent)
+      : null;
+  }
+
   useEffect(() => {
     document.addEventListener('mousedown', clickModalOutside);
 
@@ -62,6 +70,7 @@ const Index = ({
     };
   });
 
+  //팝업창 외부 클릭시 창 닫기
   function clickModalOutside(event) {
     if (!userProfile.current.contains(event.target)) {
       setUserActive(false);
@@ -97,8 +106,7 @@ const Index = ({
         <div className={`${styles.date_list} ${activeClass}`} ref={dateList}>
           <div
             className={styles.date_btt}
-            onClick={e => {
-              e.stopPropagation();
+            onClick={() => {
               dateChange();
             }}
           >
@@ -110,9 +118,7 @@ const Index = ({
               <li
                 onClick={e => {
                   navigate('/today');
-                  setChangeDate(e.target.children[0].textContent);
-                  setDateActive(false);
-                  setActiveClass(``);
+                  onDateChange(e);
                 }}
               >
                 <strong>일</strong>
@@ -121,9 +127,7 @@ const Index = ({
               <li
                 onClick={e => {
                   navigate('/week');
-                  setChangeDate(e.target.children[0].textContent);
-                  setDateActive(false);
-                  setActiveClass(``);
+                  onDateChange(e);
                 }}
               >
                 <strong>주</strong>
@@ -132,9 +136,7 @@ const Index = ({
               <li
                 onClick={e => {
                   navigate('/month');
-                  setChangeDate(e.target.children[0].textContent);
-                  setDateActive(false);
-                  setActiveClass(``);
+                  onDateChange(e);
                 }}
               >
                 <strong>월</strong>
@@ -143,9 +145,7 @@ const Index = ({
               <li
                 onClick={e => {
                   navigate('/year');
-                  setChangeDate(e.target.children[0].textContent);
-                  setDateActive(false);
-                  setActiveClass(``);
+                  onDateChange(e);
                 }}
               >
                 <strong>연도</strong>
@@ -154,9 +154,7 @@ const Index = ({
               <li
                 onClick={e => {
                   navigate('/plan');
-                  setChangeDate(e.target.children[0].textContent);
-                  setDateActive(false);
-                  setActiveClass(``);
+                  onDateChange(e);
                 }}
               >
                 <strong>일정</strong>
@@ -165,9 +163,7 @@ const Index = ({
               <li
                 onClick={e => {
                   navigate('/customday');
-                  setChangeDate(e.target.children[0].textContent);
-                  setDateActive(false);
-                  setActiveClass(``);
+                  onDateChange(e);
                 }}
               >
                 <strong>4일</strong>
