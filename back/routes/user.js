@@ -5,53 +5,181 @@ const jwt = require("jsonwebtoken");
 const Sequelize = require("Sequelize");
 const Op = Sequelize.Op;
 
-const { User } = require("../models");
+const { sequelize, Calendar } = require("../models");
+const { User, PrivateEvent, PrivateCalendar } = require("../models");
 const router = express.Router();
 
 const { verifyToken } = require("./middlewares");
 
-// 개인 일정 가져오기(년)
-router.get("/year/:year/:month/:day", verifyToken, async (req, res, next) => {
-  let date_ob = new Date();
-  console.log(date_ob.getFullYear());
-  const startdate = req.params.year;
-  const enddate = String(Number(req.params.year) + 1);
-  const exEvent = await req.user.getMyEvent({
-    attributes: ["StartTime"],
-    where: {
-      startTime: {
-        [Op.between]: [startdate, enddate],
-      },
-    },
-  });
+// // 페이지 접속시 때와 같은 라우터- 완
+// // 처음 접속했을 때 단위는 달이며 오늘날짜를 기준으로 조회
+// router.get('/inquireTodayCalendar', async (req, res, next) => {
+//   const exUser = await User.findOne({
+//       where: {
+//           id: 1
+//       }
+//   })
+//   date = new Date(); // new Date(2022, 0, 1)은 1월 1일 
+//   let month = date.getMonth()+1;
+//   let year = date.getFullYear();
+//   standard = String(year)+ '-' + String(month)
+//   let lastMonthDate = new Date(year, month-1, 0 ).getDate()
+//   let currentMonthDate = new Date(year, month+1, 0 ).getDate()
+//   if(35 - currentMonthDate % 2 == 1)
+//       lastmonthDate -= 1
+          
+//   let dividedate = parseInt((35 - currentMonthDate) / 2)
+//   console.log(dividedate)
+//   let startYear = year
+//   let startMonth = month
+//   if(month == 1){
+//       startYear = year -1
+//       startMonth = 13
+//       lastMonthDate = 31
+//   }
+//   lastMonthDate -= dividedate
+//   const startdate = String(startYear)+'-'+ String(startMonth-1)+'-'+String(lastMonthDate) // 첫날짜도 수정
+//   const endDate = String(year)+ '-' + String(month+1)+'-'+String(dividedate+1) // 끝날짜도 수정
+//   console.log(startdate, endDate, '기간을 조회')
+//   const exEvent = await exUser.getMyEvent({
+//       attributes: ['StartTime','name'],
+//       where: {
+//           startTime: {
+//               [Op.between]: [startdate, endDate]
+//           }
+//       }
+//   })  
+//   return res.json({exEvent : exEvent})
+// })
 
-  return res.json({ exEvent: exEvent });
-});
-
-// 개인 일정 가져오기(월)
-router.get("/month/:year/:month/:day", async (req, res, next) => {
+// 개인 일정 가져오기 - 완
+router.post('/year/getCalendar', async (req, res, next) => {
   const exUser = await User.findOne({
-    where: {
-      id: 1,
-    },
-  });
-  const startdate = req.params.year + "-" + req.params.month;
-  const enddate = req.params.year + "-" + String(Number(req.params.month) + 1);
+      where: {
+          id: 1
+      }
+  })
+  let startDate = String(req.body.startDate).split("-");
+  startDate[2] = String(Number(startDate[2])+1)
+  startDate = startDate.join("-")  
+  let endDate = String(req.body.endDate).split("-");
+  endDate[2] = String(Number(endDate[2])+1)
+  endDate = endDate.join("-")
+  // console.log(endDate)
+  console.log(startDate)
+  console.log(endDate)
   const exEvent = await exUser.getMyEvent({
-    attributes: ["StartTime"],
-    where: {
-      startTime: {
-        [Op.between]: [startdate, enddate],
-      },
-    },
-  });
-  return res.json({ exEvent: exEvent });
-});
+      attributes: ['StartTime'],
+      where: {
+          startTime: {
+              [Op.between]: [startDate, endDate]
+          }
+      }
+  })  
+  return res.json({exEvent : exEvent})
+})
+
+
+// 개인이벤트 만들기
+router.post('/createPrivateEvent', async (req, res, next) => {
+  const t = await sequelize.transaction()
+  const f = await sequelize.transaction()
+  try {
+    const exUser = await User.findOne({
+      where: {
+          id: 1
+      }
+    })
+    const event = await PrivateEvent.create({
+      name: req.body.name,
+      color: req.body.color,
+      priority: req.body.priority,
+      memo: req.body.memo,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
+    }, { transaction: t })
+    await t.commit()
+    const privateEvent = await exUser.addMyEvent(event, { transaction: f })
+    await f.commit()
+    res.status(201).json(privateEvent)
+  } catch(error) {
+      console.error(error)
+      await t.rollback()
+      await f.rollback()
+      next(error)
+  }
+})
+
+// 개인이벤트 업데이트
+router.post('/editPrivateEvent', async (req, res, next) => {
+  /*
+    {
+      "eventId" : , 
+      "name" : ,
+      "color" : ,
+      "priority" : ,
+      "memo" : ,
+      "startTime" : ,
+      "endTime" : 
+    }
+  */
+  try {
+      const exUser = await User.findOne({
+          where: {
+              id: 1
+          }
+      })
+      // console.log(exUser)
+      const event = await privateEvent.findOne({
+        id: req.body.PrivateEventId
+      })
+      console.log(event)
+      const privateEvent = await event.update({
+          name: req.body.name,
+          color: req.body.color,
+          priority: req.body.priority,
+          memo: req.body.memo,
+          startTime: req.body.startTime,
+          endTime: req.body.endTime,
+      }) 
+      res.status(201).json(privateEvent)
+  } catch (err) {
+      console.error(err);
+      next(err)
+  }
+})
+
+//개인 이벤트 삭제
+router.delete('/deletePrivateEvent', async (req, res, next) => {
+  try{
+
+      exUser = await User.findOne({
+          where: {
+              id: 1
+          }
+      })
+      const event = await exUser.getMyEvent({
+          where: {
+              id: 5
+          }
+      })
+      await exUser.removeMyEvent(event)
+      await PrivateEvent.destroy({
+          where:{
+              id: 5
+          }
+      })
+      res.status(204).send({ success: true })
+  } catch(err) {
+      console.error(err)
+      next(err)
+  }
+  
+})
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("signin", (err, user, info) => {
     try {
-      console.log("??");
       if (err) {
         console.error(err);
         next(err);
@@ -112,13 +240,18 @@ router.post("/signup", async (req, res, next) => {
       return res.status(403).send("이미 사용중인 아이디입니다.");
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
-    await User.create({
+    const createdUser = await User.create({
       email: req.body.email,
       password: hashedPassword,
       nickname: req.body.nickname,
     });
-    res.status(201).send("ok");
-    // res.status(201).send('회원가입이 완료되었습니다.')
+
+    await PrivateCalendar.create({
+      name: createdUser.nickname,
+      UserId: createdUser.id
+    })
+
+    res.status(201).send({ success: true });
     console.log("회원가입 확인");
   } catch (error) {
     console.log(error);

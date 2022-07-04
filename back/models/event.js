@@ -26,7 +26,7 @@ module.exports = class Event extends Model {
         endTime: {
           type: DataTypes.DATE,
           allowNull: false,
-        },
+        }
       },
       {
         modelName: "Events",
