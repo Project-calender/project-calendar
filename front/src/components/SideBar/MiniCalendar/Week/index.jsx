@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectDate } from '../../../../store/date';
 import Moment from '../../../../utils/moment';
+import { stateSelectedDate } from '../../../../store/selectors/date';
 
 const Index = ({ week }) => {
-  const selectedDate = useSelector(({ date }) => date.selectedDate);
+  const selectedDate = useSelector(stateSelectedDate);
   const dispatch = useDispatch();
 
   return (
