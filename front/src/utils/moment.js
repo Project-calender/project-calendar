@@ -16,6 +16,12 @@ class Moment {
     return WEEK_DAYS[this.day];
   }
 
+  setYear(number) {
+    const date = new Date(this.time);
+    date.setFullYear(number);
+    return new Moment(date);
+  }
+
   addMonth(number) {
     const date = new Date(this.time);
     date.setMonth(date.getMonth() + number);

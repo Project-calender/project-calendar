@@ -7,6 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import Main from './pages/Main';
 import Login from './pages/Login';
 import Join from './pages/Join';
+import YearPage from './pages/YearPage';
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           <Route path="today" element={<div>일</div>}></Route>
           <Route path="week" element={<div>주</div>}></Route>
           <Route path="month" element={<div>월</div>}></Route>
-          <Route path="year" element={<div>년</div>}></Route>
+          <Route path="year" element={<YearPage />}></Route>
           <Route path="plan" element={<div>일정</div>}></Route>
           <Route path="customday" element={<div>4일</div>}></Route>
         </Route>
