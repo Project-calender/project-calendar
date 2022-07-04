@@ -17,16 +17,12 @@ const dateSlice = createSlice({
       state.selectedDate = new Moment(date).toObject();
     },
 
-    initDate(state) {
-      const date = new Date();
-      state.selectedDate = new Moment(date).toObject();
-    },
-
     selectDate(state, { payload }) {
-      state.selectedDate = new Moment(new Date(payload)).toObject();
+      const date = payload ? new Date(payload) : new Date();
+      state.selectedDate = new Moment(date).toObject();
     },
   },
 });
 
-export const { addMonth, addDate, selectDate, initDate } = dateSlice.actions;
+export const { addMonth, addDate, selectDate } = dateSlice.actions;
 export default dateSlice.reducer;
