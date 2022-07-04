@@ -1,249 +1,271 @@
 const express = require("express");
+const router = express.Router();
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 const { sequelize } = require("../models");
 const { User } = require("../models");
 const { Calendar } = require("../models");
 const { CalendarMember } = require("../models");
 const { Invite } = require("../models");
-const router = express.Router();
-
 const { verifyToken } = require("./middlewares");
 
+
+
 router.post("/createGroupCalendar", async (req, res, next) => {
-  const t = await sequelize.transaction();
-  const f = await sequelize.transaction();
-  try {
-    const exUser = await User.findOne({ where: { id: 1 } });
-
-    //내가 속한 캘린더 중에 같은 이름이 있다면
-    const notUnique = await Calendar.findOne({
-      where: { name: req.body.calendarName },
-    });
-
-    if (notUnique) {
-      return res
-        .status(400)
-        .send({ message: "이미 같은 이름의 캘린더가 존재합니다!" });
+  /*
+    {
+      "calendarName" : ,
     }
+  */
+  const t = await sequelize.transaction()
+  const f = await sequelize.transaction()
+  try {
+    const exUser = await User.findOne({
+      id: 1
+    })
 
-    const newGroupCalendar = await Calendar.create(
-      {
-        name: req.body.calendarName,
-        OwnerId: exUser.id,
-      },
-      {
-        transaction: t,
+    const createdCalendar = await Calendar.create({
+      name: req.body.calendarName
+      
+    }, {transaction: t })
+    await createdCalendar.addCalendarMembers(exUser, {transaction: t })
+    await t.commit()
+
+    const setAuthority = await CalendarMember.findOne({ 
+      where: {
+        [Op.and]: {
+          UserId: exUser.id,
+          CalendarId: createdCalendar.id
+        }
       }
-    );
-    await newGroupCalendar.addCalendarMembers(exUser, {
-      transaction: t,
-    });
+    }, {transaction: f })
+    console.log(setAuthority)
+    await setAuthority.update({
+      authority: 3
+    })
 
-    await t.commit();
-
-    //만든 사람은 최대 권한으로
-    const authority = await CalendarMember.findOne({
-      [Op.and]: {
-        UserId: exUser.id,
-        CalendarId: newGroupCalendar.id,
-      },
-    });
-
-    await authority.update({ authority: 3 }, { transaction: f });
-
-    f.commit();
-    return res.status(200).send({ success: true });
-  } catch (error) {
-    console.error(error);
-    await t.rollback();
-    next(error);
+    await f.commit()
+    res.status(200).send({ success: true })
+  } catch(error) {
+    console.error(error)
+    await t.rollback()
+    await f.rollback()
+    next(error)
   }
 });
 
 router.post("/inviteGroupCalendar", async (req, res, next) => {
-  const t = await sequelize.transaction();
-  try {
-    // const host = req.user
-    const host = await User.findOne({ where: { id: 1 } });
+  /*
+    {
+      "invitedUserEmail": "Lempi_Johns31@hotmail.com",
+      "calendarId": 2
+    } 
+  */
+    const t = await sequelize.transaction();
+  try{
+    const exUser = await User.findOne({
+      where: {
+        id: 1
+      }
+    })
+  
+    const invitedUser = await User.findOne({
+      email: req.body.invitedUserEmail
+    })
 
-    const guest = await User.findOne({
-      where: { email: req.body.guestEmail },
-    });
+    // 초대를 받는 유저가 존재하지 않을경우
+    if (!invitedUser) {
+      return res
+        .status(400)
+        .send({ message: "해당 이메일을 가진 유저가 존재하지 않습니다" })
+    }
+    const exCalendar = await Calendar.findOne({
+      where: {
+        id: req.body.calendarId
+      }
+    })
 
-    if (!guest) {
-      return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
+    // 캘린더가 존재하지 않을경우
+    if (!exCalendar) {
+      return res
+        .status(400)
+        .send({ message: "캘린더가 존재하지 않습니다" })
     }
 
-    const alreadyCalendarMember = await CalendarMember.findOne({
-      [Op.and]: { UserId: guest.id, CalendarId: req.body.groupCalendarId },
-    });
-    if (alreadyCalendarMember) {
-      return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
+    const checkAuthority = await CalendarMember.findOne({
+      CalendarId: req.body.calendarId,
+      UserId: exUser.id
+    })
+    // 해당 캘린더에서 초대한 유저가 갖는 권한 확인
+    if(!checkAuthority == 3 || !checkAuthority == 2) {
+      return res
+        .status(400)
+        .send({ message: "초대할 권한이 없는 유저입니다" })
     }
+    
+    const overlapCheck = await Invite.findOne({
+      where: {
+        CalendarGuestId: invitedUser.id,
+      }
+    })
 
+    // 이미 초대한 유저인지 확인
+    if (overlapCheck) {
+      return res
+        .status(400)
+        .send({ message: "이미 초대한 유저입니다" })
+    }
     await Invite.create({
-      CalendarHostId: host.id,
-      CalendarGuestId: guest.id,
-      HostCalendarId: req.body.groupCalendarId,
-    });
-
-    await t.commit();
-    res.status(200).send({ success: true });
-  } catch (error) {
-    console.error(error);
-    await t.rollback();
-    next(error);
+      HostCalendarId: exCalendar.id,
+      CalendarGuestId: invitedUser.id,
+      CalendarHostId: exCalendar.OwnerId
+    })
+    res.status(200).send({ success: true })
+  } catch(error) {
+    console.error(error)
+    next(error)
   }
 });
 
 router.post("/acceptCalendarInvite", async (req, res, next) => {
-  const t = await sequelize.transaction();
+  /*
+    {
+      "HostCalendarId": ,
+      "CalendarGuestId": 
+    }
+  */
+  t = await sequelize.transaction()
   try {
-    const me = await User.findOne({ where: { id: 2 } });
+    const exUser = await User.findOne({
+      id: 1
+    })
+    // 초대받는 사람이 유저가 정말 맞는지
+    if (exUser.id != req.body.CalendarGuestId) {
+      return res
+        .status(400)
+        .send({ message: "초대받은 유저가 승낙 버튼을 누른게 아닙니다" })
+    }
+    
+    const exCalendar = await Calendar.findOne({
+      id: req.body.HostCalendarId
+    })
 
-    const groupCalendar = await Calendar.findOne({
+    // 초대받으려는 캘린더가 존재하는지
+    if (!exCalendar) {
+      return res
+        .status(400)
+        .send({ message: "초대를 받은 캘린더가 존재하지 않습니다" })
+    }
+
+    // 캘린더맴버에 추가
+    await CalendarMember.create({
+      UserId: req.body.CalendarGuestId,
+      CalendarId: req.body.HostCalendarId
+    },  { transaction: t })
+
+    // 초대 요청 삭제
+    await Invite.destroy({
       where: {
-        id: req.body.hostCalendarId,
-      },
-    });
-    if (!groupCalendar) {
-      return res.status(400).send({ message: "존재하지 않는 캘린더입니다!" });
-    }
-
-    const alreadyCalendarMember = await CalendarMember.findOne({
-      [Op.and]: {
-        UserId: me.id,
-        CalendarId: req.body.hostCalendarId,
-      },
-    });
-    if (alreadyCalendarMember) {
-      return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
-    }
-
-    const inviteCalendar = await Invite.findOne({
-      [Op.and]: {
-        CalendarGuestId: me.id,
-        CalendarHostId: req.body.hostId,
-        HostCalendarId: req.body.hostCalendarId,
-      },
-    });
-
-    await inviteCalendar.update(
-      {
-        state: 1,
-      },
-      { transaction: t }
-    );
-
-    await groupCalendar.addCalendarMembers(me, { transaction: t });
-
-    await t.commit();
-    res.status(200).send({ success: true });
-  } catch (error) {
-    console.error(error);
-    await t.rollback();
-    next(error);
+        [Op.and]: {
+          HostCalendarId: req.body.HostCalendarId,
+          CalendarGuestId: req.body.CalendarGuestId
+        }
+      }
+    }, { transaction: t })
+    
+    t.commit()
+    res.status(200).send({ success: true })
+  } catch(error) {
+    console.error(error)
+    await t.rollback()
+    next(error)
   }
 });
 
 router.post("/rejectCalendarInvite", async (req, res, next) => {
-  const t = await sequelize.transaction();
+   /*
+    {
+      "HostCalendarId": ,
+      "CalendarGuestId": 
+    }
+  */
   try {
-    const me = await User.findOne({ where: { id: 2 } });
+    const exUser = await User.findOne({
+      id: 1
+    })
+    // 초대를 거절한 사람이 유저가 정말 맞는지
+    if (exUser.id != req.body.CalendarGuestId) {
+      return res
+        .status(400)
+        .send({ message: "초대받은 유저가 거절 버튼을 누른게 아닙니다" })
+    }
 
-    const groupCalendar = await Calendar.findOne({
+    // 초대 요청 삭제
+    await Invite.destroy({
       where: {
-        id: req.body.hostCalendarId,
-      },
-    });
-    if (!groupCalendar) {
-      return res.status(400).send({ message: "존재하지 않는 캘린더입니다!" });
-    }
-
-    const alreadyCalendarMember = await CalendarMember.findOne({
-      [Op.and]: {
-        UserId: me.id,
-        CalendarId: req.body.hostCalendarId,
-      },
-    });
-    if (alreadyCalendarMember) {
-      return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
-    }
-
-    const inviteCalendar = await Invite.findOne({
-      [Op.and]: {
-        CalendarGuestId: me.id,
-        CalendarHostId: req.body.hostId,
-        HostCalendarId: req.body.hostCalendarId,
-      },
-    });
-
-    await inviteCalendar.update(
-      {
-        state: 2,
-      },
-      { transaction: t }
-    );
-
-    await t.commit();
-    res.status(200).send({ success: true });
-  } catch (error) {
-    console.error(error);
-    await t.rollback();
-    next(error);
+        [Op.and]: {
+          HostCalendarId: req.body.HostCalendarId,
+          CalendarGuestId: req.body.CalendarGuestId
+        }
+      }
+    })
+    
+    res.status(200).send({ success: true })
+  } catch(error) {
+    console.error(error)
+    next(error)
   }
 });
 
 router.post("/giveAuthority", async (req, res, next) => {
-  const t = await sequelize.transaction();
+  /*
+    {
+      "calendarId":
+      "acceptedAuthorityUser"
+      "AuthrotyLevel"
+    }
+  */
   try {
-    //const editor = req.user
-    const editor = await User.findOne({ where: { id: 1 } });
+    const exUser = await User.findOne({
+      id: 1
+    })
 
-    const isOwner = await Calendar.findOne({
-      where: { id: req.body.groupCalendarId },
-    });
+    const exCalendar = await Calendar.findOne({
+      id: req.body.calendarId
+    })
 
-    if (editor.id != isOwner.OwnerId) {
+    // 권한을 주려는 유저가 캘린더의 주인이 맞는지
+    if (exUser.id != exCalendar.OwnerId) {
       return res
         .status(400)
-        .send({ message: "권한 부여는 달력의 오너만 가능합니다!" });
+        .send({ message: "권한을 주려는 유저가 그룹 캘린더의 주인이 아닙니다" })
     }
 
-    const member = await User.findOne({
-      where: { id: req.body.memberId },
-    });
-    if (!member) {
-      return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
-    }
-
-    const isGroupMember = await CalendarMember.findOne({
-      [Op.and]: { UserId: member.id, CalendarId: req.body.groupCalendarId },
-    });
-
-    if (!isGroupMember) {
+    const calendarMemberCheck = await CalendarMember.findOne({
+      where: {
+        [Op.and]: {
+            UserId : req.body.acceptedAuthorityUser,
+            CalendarId: req.body.calendarId
+          }
+        }
+      })
+    console.log(calendarMemberCheck)
+    // 권한을 받는 유저가 캘린더에 속해 있는지
+    if (!calendarMemberCheck) {
       return res
         .status(400)
-        .send({ message: "그룹 캘린더에 존재하지 초대되지 않은 유저입니다!" });
+        .send({ message: "권한을 받는 유저가 캘린더에 속해있지 않습니다" })
     }
 
-    if (req.body.newAuthority > 2) {
-      return res
-        .status(400)
-        .send({ message: "달력 오너보다 낮은 권한만 부여할 수 있습니다!" });
-    }
-    await isGroupMember.update(
-      {
-        authority: req.body.newAuthority,
-      },
-      { transaction: t }
-    );
-    await t.commit();
-    res.status(200).send({ success: true });
-  } catch (error) {
-    console.error(error);
-    await t.rollback();
-    next(error);
+    // 권한 업데이트
+    await calendarMemberCheck.update({
+      authority: req.body.AuthrotyLevel
+    })
+    return res.status(200).send({ success: true })
+  } catch(error) {
+    console.error(error)
+    next(error)
   }
 });
 
