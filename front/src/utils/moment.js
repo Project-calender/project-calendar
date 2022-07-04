@@ -53,3 +53,7 @@ function convertDateToObject(date) {
     time: date.getTime(),
   };
 }
+
+export function convertObjectToDate(date) {
+  return new Date(date.time);
+}
