@@ -4,13 +4,12 @@ import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import { useDispatch, useSelector } from 'react-redux';
-import { addDate, initDate } from '../../../store/date';
+import { addDate, selectDate } from '../../../store/date';
+import { stateSelectedDate } from '../../../store/selectors/date';
 
 const Index = ({ setSideBar, sideBar }) => {
   //redux 오늘 날짜 가지고 오기
-  let state = useSelector(state => {
-    return state.date.selectedDate;
-  });
+  let state = useSelector(stateSelectedDate);
   let dispatch = useDispatch();
 
   const data = new Date();
@@ -23,7 +22,7 @@ const Index = ({ setSideBar, sideBar }) => {
 
   //오늘 기준 월,일로 변경
   function toDate() {
-    dispatch(initDate());
+    dispatch(selectDate());
   }
 
   function sideBarClose() {

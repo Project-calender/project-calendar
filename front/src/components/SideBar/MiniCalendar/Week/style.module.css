@@ -4,8 +4,8 @@
 .calendar_tr td:hover{background: #ececec; transition-duration: .5s;}
 .calendar_tr td:active{background: #abcaff; transition-duration: .5s;}
 
-.calendar_tr td.date_button_select{color: #000; background: #cde0ff; }
-.calendar_tr td.date_button_select:hover{background: #7099dc; transition-duration: .5s;}
+.calendar_tr td.date_select{color: #000; background: #cde0ff; }
+.calendar_tr td.date_select:hover{background: #7099dc; transition-duration: .5s;}
 .calendar_tr td.date_today{color: #fff; background: #2b63ff; }
 .calendar_tr td.date_blur{color: #a3a3a3;}
 
