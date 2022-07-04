@@ -1,8 +1,10 @@
 export const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 class Moment {
-  constructor(current = new Date()) {
-    const { year, month, date, day, time } = convertDateToObject(current);
+  constructor(moment = new Date()) {
+    if (!moment.time) moment = convertDateToObject(moment);
+    const { year, month, date, day, time } = moment;
+
     this.year = year;
     this.month = month;
     this.date = date;
@@ -14,13 +16,16 @@ class Moment {
     return WEEK_DAYS[this.day];
   }
 
-  isToday() {
-    const today = new Moment(new Date());
-    return (
-      this.year === today.year &&
-      this.month === today.month &&
-      this.date === today.date
-    );
+  addMonth(number) {
+    const date = new Date(this.time);
+    date.setMonth(date.getMonth() + number);
+    return new Moment(date);
+  }
+
+  addDate(number) {
+    const date = new Date(this.time);
+    date.setDate(date.getDate() + number);
+    return new Moment(date);
   }
 
   toObject() {
@@ -38,15 +43,14 @@ class Moment {
 export default Moment;
 
 export function calculateMonth(year, month) {
-  const date = new Date(year, month - 1, 1);
-  date.setDate(1 - date.getDay());
+  const startDate = new Date(year, month - 1, 1);
+  startDate.setDate(1 - startDate.getDay());
 
   const dates = [];
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0, count = 0; i < 6; i++) {
     const week = [];
-    for (let j = 0; j < 7; j++) {
-      week.push(new Moment(date));
-      date.setDate(date.getDate() + 1);
+    for (let j = 1; j <= 7; j++, count++) {
+      week.push(new Moment(startDate).addDate(count));
     }
     dates.push(week);
   }
