@@ -9,7 +9,7 @@ const Index = () => {
 
   //로그인 input 값 저장
   const [inputValue, setInputValue] = useState({
-    userId: '',
+    userEmail: '',
     userPassword: '',
   });
 
@@ -27,7 +27,7 @@ const Index = () => {
 
   function sendLoginForm() {
     axios
-      .post('', loginData)
+      .post('localhost:8080/api/user/login', loginData)
       .then(res => {
         console.log('성공', res);
         navigate('/today');
@@ -49,8 +49,8 @@ const Index = () => {
               <div className={`${styles.id} ${styles.login_input_box}`}>
                 <input
                   type="text"
-                  placeholder="User ID"
-                  name="userId"
+                  placeholder="User Email"
+                  name="userEmail"
                   onChange={e => {
                     handleInput(e);
                   }}
