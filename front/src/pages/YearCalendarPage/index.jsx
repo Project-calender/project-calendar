@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { stateSelectedDate } from '../../store/selectors/date';
 import styles from './style.module.css';
-import CalendarBody from '../../components/SideBar/MiniCalendar/CalendarBody';
+import MonthCalendar from '../../components/calendar/year/MonthCalendar';
 
 const Index = () => {
   const { year } = useSelector(stateSelectedDate);
@@ -11,10 +11,7 @@ const Index = () => {
   return (
     <div className={styles.year_calendar}>
       {months.map(month => (
-        <div key={month}>
-          <p>{month}월</p>
-          <CalendarBody year={year} month={month} />
-        </div>
+        <MonthCalendar key={month} year={year} month={month} />
       ))}
     </div>
   );
