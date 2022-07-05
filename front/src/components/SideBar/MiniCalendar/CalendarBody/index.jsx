@@ -8,6 +8,7 @@ import { calculateMonth } from '../../../../utils/moment';
 
 const Index = ({ year, month }) => {
   const weeks = calculateMonth(year, month);
+
   return (
     <table className={styles.calendar_talbe}>
       <thead>
