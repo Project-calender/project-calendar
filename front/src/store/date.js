@@ -15,14 +15,8 @@ const dateSlice = createSlice({
       state.selectedDate = date.addDate(payload).toObject();
     },
 
-    initDate(state) {
-      const date = new Date();
-      state.selectedDate = new Moment(date).toObject();
-    },
-
     selectDate(state, { payload }) {
-      const date = payload ? new Date(payload) : new Date();
-      state.selectedDate = new Moment(date).toObject();
+      state.selectedDate = new Moment(payload).toObject();
     },
   },
 });

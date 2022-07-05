@@ -17,7 +17,7 @@ const Index = ({ toggleSideBar }) => {
 
   //오늘 기준 월,일로 변경
   function toDate() {
-    dispatch(selectDate());
+    dispatch(selectDate(today));
   }
 
   return (
