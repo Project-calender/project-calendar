@@ -55,14 +55,16 @@ router.post("/inviteGroupEvent", async (req, res, next) => {
 
   try {
     const guest = await User.findOne({
-      where: { id: req.body.guestId },
+      where: { email: req.body.guestEmail },
     });
     if (!guest) {
       return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
     }
 
     const isGroupMember = await CalendarMember.findOne({
-      [Op.and]: { UserId: guest.id, CalendarId: req.body.groupCalendarId },
+      where: {
+        [Op.and]: { UserId: guest.id, CalendarId: req.body.groupCalendarId },
+      },
     });
     if (!isGroupMember) {
       return res
@@ -75,7 +77,9 @@ router.post("/inviteGroupEvent", async (req, res, next) => {
     });
 
     const alreadyEventMember = await EventMember.findOne({
-      [Op.and]: { UserId: guest.id, EventId: groupEvent.id, state: 1 },
+      where: {
+        [Op.and]: { UserId: guest.id, EventId: groupEvent.id, state: 1 },
+      },
     });
     if (alreadyEventMember) {
       return res
@@ -84,7 +88,9 @@ router.post("/inviteGroupEvent", async (req, res, next) => {
     }
 
     const alreadyInvite = await EventMember.findOne({
-      [Op.and]: { UserId: guest.id, EventId: groupEvent.id, state: 0 },
+      where: {
+        [Op.and]: { UserId: guest.id, EventId: groupEvent.id, state: 0 },
+      },
     });
     if (alreadyInvite) {
       return res.status(403).send({ message: "이미 초대를 보낸 사람입니다!" });
@@ -116,9 +122,11 @@ router.post("/changeEventInviteState", async (req, res, next) => {
     }
 
     const changeState = await EventMember.findOne({
-      [Op.and]: {
-        UserId: me.id,
-        EventId: invitedEvent.id,
+      where: {
+        [Op.and]: {
+          UserId: me.id,
+          EventId: invitedEvent.id,
+        },
       },
     });
 
@@ -147,7 +155,9 @@ router.post("/editGroupEvent", async (req, res, next) => {
     const editor = await User.findOne({ where: { id: 1 } });
 
     const hasAuthority = await CalendarMember.findOne({
-      [Op.and]: { UserId: editor.id, CalendarId: req.body.groupCalendarId },
+      where: {
+        [Op.and]: { UserId: editor.id, CalendarId: req.body.groupCalendarId },
+      },
     });
 
     if (hasAuthority.authority < 2) {
@@ -185,7 +195,9 @@ router.post("/deleteGroupEvent", async (req, res, next) => {
     const editor = await User.findOne({ where: { id: 1 } });
 
     const hasAuthority = await CalendarMember.findOne({
-      [Op.and]: { UserId: editor.id, CalendarId: req.body.groupCalendarId },
+      where: {
+        [Op.and]: { UserId: editor.id, CalendarId: req.body.groupCalendarId },
+      },
     });
 
     if (hasAuthority.authority < 2) {

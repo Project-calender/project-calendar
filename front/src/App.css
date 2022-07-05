@@ -1,2 +1,4 @@
-body{font-family: 'Noto Sans KR', sans-serif;}
+body{font-family: 'Noto Sans KR', sans-serif; word-break: keep-all;}
+input:focus {outline:none;}
 /* font-family: 'Roboto', sans-serif; */
+/* font-family: 'Raleway', sans-serif; */

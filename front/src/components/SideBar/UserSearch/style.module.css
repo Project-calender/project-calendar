@@ -1,0 +1,7 @@
+.search { position: relative; height: 35px; margin-left: 0px; margin-bottom: 20px; } 
+
+.search input { height: 35px; width: 75%; border: none; background:#f3f3f3; border-radius: 4px; padding:0px 10px; border: 2px solid #f3f3f3; outline: none; } 
+.search input:focus { border-bottom: 2px solid #1E88E5; transition-duration: 0.5s; } 
+.search input::placeholder { padding-left: 20%; font-weight: 600; } 
+
+.search .search_icon_group { position: absolute; top: 37%; left: 15%; color: gray;} 

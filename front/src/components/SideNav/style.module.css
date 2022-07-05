@@ -1,0 +1,29 @@
+.side_bar{width: 50px;height: 93.6vh; border-left: 1px solid #ccc; display: flex; flex-direction: column; justify-content: space-between; align-items: center;  transition: all 0.4s;  transform:rotate(.001deg);}
+.side_bar.close{margin-right: -50px;transform:none;}
+.side_bar em{position: absolute; width:max-content; border-radius: 10%;background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; text-align: center; padding: 5px 8px; z-index: 1000;}
+.side_bar_menu{display: flex; flex-direction: column; align-items: center; }
+.side_bar_menu ul{display: flex; flex-direction: column; align-items: center;}
+.side_bar_menu ul li{ margin: 10px 0; padding:7px;border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;}
+.side_bar_menu ul li:nth-child(1){margin-top: 20px;}
+.side_bar_menu ul li:hover{background: #eee;}
+.side_bar_menu ul li img{width: 25px;height: 25px; object-fit: cover;}
+.side_bar_menu ul li em{  bottom: -30px; left:50%;  transform: translateX(-50%);}
+.side_bar_menu ul li:hover em{visibility: visible; opacity: 1;}
+
+.line{display: block; width: 20px;height: 1px;background: #ccc; margin: 20px 0;}
+
+.install{margin: 10px 0; padding:7px;border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;}
+.install:hover{background: #eee;}
+.install img{width: 25px;height: 25px; object-fit: cover;}
+.install em{bottom: -30px; right: -5px;}
+.install:hover em{visibility: visible; opacity: 1;}
+
+.side_close{margin: 10px 0; width: 40px;height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;  transition: all 0.4s;  cursor: pointer; position: relative;}
+.side_close:hover {background: #eee;}
+.side_close .icon{font-size: 16px;}
+.side_close em{top: -30px; right: -5px;}
+.side_close:hover em{visibility: visible; opacity: 1;}
+.side_bar.close .side_close{position: fixed;bottom: 0;right: -12px; z-index: 9999; background: #fff;box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;}
+.side_bar.close .side_close:hover{width: 50px; border-radius: 30px; justify-content: left; }
+.side_bar.close .side_close:hover .icon{margin-left: 15px;}
+.side_bar.close .side_close em{top: -30px; right: 13px;}

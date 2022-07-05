@@ -1,0 +1,35 @@
+.section{width: 100%;height: 100vh; background: #e4ebf6; display: flex; justify-content: center; align-items: center;}
+
+/* 네비 */
+.join_nav{width: 100%;height: 50px; border-bottom: 1px solid #ccc; position: fixed; top: 0;left: 0; z-index: 9999; display: flex; justify-content: center; align-items: center;}
+.join_nav em{font-size: 20px;font-weight: bold; color: #1E9EFF; text-transform: uppercase; cursor: pointer; letter-spacing: -0.04em;}
+
+.join_form{}
+.join_form .join_input_box{margin-bottom: 10px;}
+.join_form .join_input_box input{width: 340px; height: 50px; border: 1px solid #65759a; border-radius: 5px; padding: 0 10px; box-sizing: border-box;}
+
+.join_form .password{display: flex; flex-direction: column;}
+.join_form .password input:nth-child(2){margin-top: -1px;}
+
+/* 경고 text */
+.warning{display: flex; align-items: center; color: red;}
+.warning p{margin-left: 5px;}
+
+/* 이용약관 */
+.terms_service{ width: 340px; background: #fff; border-radius: 5px; padding: 0 0 5px; box-sizing: border-box;}
+.terms_service .line{display: block; width: 100%;height: 1px; background: #ccc;}
+.terms_service input{margin-right: 5px; width: 20px;height: 20px; cursor: pointer;}
+.terms_service label{width: 100%; height: 100%; color: #617584; cursor: pointer;}
+.terms_service .check_box:hover label{color: #465370; }
+.terms_service .all_check_box {display: flex; height: 45px; align-items: center; padding: 0 0 0 10px; box-sizing: border-box;}
+.terms_service .all_check_box label{line-height: 45px; font-size: 14px;font-weight: 600; color: #404d7b;}
+.terms_service .all_check_box:hover label{color: #65759a;}
+.terms_service .check_box{display: flex; height: 35px; align-items: center; padding: 0 0 0 20px ; box-sizing: border-box; position: relative;}
+.terms_service .check_box label{line-height: 35px; font-size: 12px;font-weight: 400;}
+.terms_service .check_box p{font-size: 12px; color: #888; position: absolute; top: 50%;right: 10px; transform: translateY(-50%); cursor: pointer;}
+.terms_service .check_box p:hover{color: #555;}
+
+/* 가입 완료 버튼 */
+.join_form button{width: 100%;height: 50px; color: #fff; font-size: 16px;font-weight: 700; border-radius: 5px; margin-top: 20px; cursor: pointer;}
+.join_form button.join_btt1{background: #1F8CE6;}
+.join_form button.join_btt2{background: #abd5f7; cursor: default;}

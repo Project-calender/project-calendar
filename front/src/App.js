@@ -1,21 +1,27 @@
+import React from 'react';
 import './reset.css';
 import './App.css';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Link, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; //폰트어썸
-import { } from "@fortawesome/free-solid-svg-icons"; //폰트어썸
-
-/* 설치됨 redux,axios,fortawesome,router */
+//import { useCallback, useEffect, useRef, useState } from 'react';
+//import { useSelector } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
+import Main from './pages/Main';
+import Login from './pages/Login';
+import Join from './pages/Join';
 
 function App() {
-  let navigate = useNavigate();
-  let reduxState = useSelector((state) => {return state}); //redux state 가지고 오는 변수
-
   return (
     <div className="App">
       <Routes>
+        <Route path="/" element={<Main></Main>}>
+          <Route path="today" element={<div>일</div>}></Route>
+          <Route path="week" element={<div>주</div>}></Route>
+          <Route path="month" element={<div>월</div>}></Route>
+          <Route path="year" element={<div>년</div>}></Route>
+          <Route path="plan" element={<div>일정</div>}></Route>
+          <Route path="customday" element={<div>4일</div>}></Route>
+        </Route>
+        <Route path="/login" element={<Login></Login>}></Route>
+        <Route path="/join" element={<Join></Join>}></Route>
       </Routes>
     </div>
   );
