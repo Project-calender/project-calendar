@@ -16,7 +16,7 @@ const dateSlice = createSlice({
     },
 
     selectDate(state, { payload }) {
-      state.selectedDate = new Moment(payload).toObject();
+      state.selectedDate = payload;
     },
   },
 });

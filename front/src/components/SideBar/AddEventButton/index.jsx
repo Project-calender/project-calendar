@@ -5,7 +5,6 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 const Index = ({ closeSideBar }) => {
-  console.log(closeSideBar());
   return (
     <button className={styles.event_btn}>
       <img
