@@ -1,0 +1,35 @@
+.calendar {
+    width: 100%;
+}
+
+.calendar_table {
+    width: 100%;
+    height: 100%; 
+    text-align: center;   
+    border-collapse: collapse;
+}
+
+.calendar_table thead{
+    width: 100%;
+    height: 5px;
+    vertical-align: middle;
+}
+
+.calendar_table tbody{
+    width: 100%;
+    height: 95%;
+    vertical-align: top;
+}
+
+.calendar_table th{
+   border-left: 1px solid #d9d9d9;
+   font-weight: 500;
+   font-size: 11px;
+   padding-top: 10px;
+   color: gray;
+}
+
+.calendar_table td{
+    border-left: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+}
