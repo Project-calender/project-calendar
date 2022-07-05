@@ -1,0 +1,8 @@
+.year {display: flex; justify-content: space-between; padding: 5px 0;}
+.year .text {margin-left: 10px; }
+.year .text em {font-size: 14px;font-weight: 500;color: #3c4043;}
+.year .text em:nth-child(2) {margin-left: 5px;}
+
+.year .year_btt {margin-right: 6px; display: flex; justify-content: space-between; width: 50px;}
+.year .year_btt button{ width: 20px; height: 20px; border-radius: 100%; background: transparent; font-size: 14px; cursor: pointer;}
+.year .year_btt button:hover{background: #ececec; transition-duration: .5s;}

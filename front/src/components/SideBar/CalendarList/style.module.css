@@ -1,0 +1,3 @@
+.calendar_details > summary { height: 30px; display: flex; align-items: center; justify-content: space-between; padding: 0px 20px; list-style: none; font-size: 14px; margin: 10px 0px 5px 0px; font-weight: 300; } 
+.calendar_details > summary:hover { background-color: #f8f8f8; } 
+
