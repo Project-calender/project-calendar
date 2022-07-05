@@ -7,7 +7,7 @@ import SideNav from '../../components/SideNav';
 
 const Index = () => {
   /* SideBar */
-  let [isSideBarOn, toggleSideBar] = useState(false); //sideBar 숨김 컨트롤
+  let [isSideBarOn, toggleSideBar] = useState(true); //sideBar 숨김 컨트롤
 
   return (
     <div>

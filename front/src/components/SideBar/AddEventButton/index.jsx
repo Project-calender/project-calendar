@@ -1,16 +1,28 @@
 import React from 'react';
 import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from 'prop-types';
 
-const index = () => {
+const Index = ({ closeSideBar }) => {
+  console.log(closeSideBar());
   return (
     <button className={styles.event_btn}>
-      <FontAwesomeIcon icon={faPlus} className={styles.event_icon_plus} />
-      <span>만들기</span>
-      <FontAwesomeIcon icon={faCaretDown} className={styles.event_icon_caret} />
+      <img
+        src={`${process.env.PUBLIC_URL}/img/side_bar_plus.png`}
+        className={styles.event_img_plus}
+        alt="addEventIcon"
+      />
+      <em className={closeSideBar()}>만들기</em>
+      <FontAwesomeIcon
+        icon={faCaretDown}
+        className={`${styles.event_icon_caret} ${closeSideBar()}`}
+      />
     </button>
   );
 };
 
-export default index;
+Index.propTypes = {
+  closeSideBar: PropTypes.func,
+};
+export default Index;
