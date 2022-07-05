@@ -1,15 +1,14 @@
 import React from 'react';
 import './reset.css';
 import './App.css';
-//import { useCallback, useEffect, useRef, useState } from 'react';
-//import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
+
 import Main from './pages/Main';
 import Login from './pages/Login';
 import Join from './pages/Join';
 import YearCalendarPage from './pages/YearCalendarPage';
 import MonthCalendarPage from './pages/MonthCalendarPage';
-import { CALENDAR_URL, USER_URL } from './constants/url';
+import { CALENDAR_URL, USER_URL } from './constants/path';
 
 function App() {
   return (

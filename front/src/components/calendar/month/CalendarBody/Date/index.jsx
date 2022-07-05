@@ -5,7 +5,7 @@ import Moment from '../../../../../utils/moment';
 import { useDispatch } from 'react-redux';
 import { selectDate } from '../../../../../store/date';
 import { useNavigate } from 'react-router-dom';
-import { CALENDAR_URL } from '../../../../../constants/url';
+import { CALENDAR_URL } from '../../../../../constants/path';
 
 const Index = ({ date }) => {
   const dispatch = useDispatch();

@@ -6,7 +6,7 @@ import { stateSelectedDate } from '../../../../../../store/selectors/date';
 import { selectDate } from '../../../../../../store/date';
 import Moment from '../../../../../../utils/moment';
 import { useNavigate } from 'react-router-dom';
-import { CALENDAR_URL } from '../../../../../../constants/url';
+import { CALENDAR_URL } from '../../../../../../constants/path';
 
 const Index = ({ week, month }) => {
   const selectedDate = useSelector(stateSelectedDate);

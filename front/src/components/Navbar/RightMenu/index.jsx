@@ -16,7 +16,7 @@ import {
 import Tooltip from './../../common/Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
-import { CALENDAR_URL } from '../../../constants/url';
+import { CALENDAR_URL } from '../../../constants/path';
 
 const Index = ({
   activeClass,
