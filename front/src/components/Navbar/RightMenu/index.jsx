@@ -16,6 +16,7 @@ import {
 import Tooltip from './../../common/Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
+import { CALENDAR_URL } from '../../../constants/url';
 
 const Index = ({
   activeClass,
@@ -117,7 +118,7 @@ const Index = ({
             <ul>
               <li
                 onClick={e => {
-                  navigate('/day');
+                  navigate(CALENDAR_URL.DAY);
                   onDateChange(e);
                 }}
               >
@@ -126,7 +127,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate('/week');
+                  navigate(CALENDAR_URL.WEEK);
                   onDateChange(e);
                 }}
               >
@@ -135,7 +136,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate('/month');
+                  navigate(CALENDAR_URL.MONTH);
                   onDateChange(e);
                 }}
               >
@@ -144,7 +145,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate('/year');
+                  navigate(CALENDAR_URL.YEAR);
                   onDateChange(e);
                 }}
               >
@@ -153,7 +154,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate('/plan');
+                  navigate(CALENDAR_URL.AGENDA);
                   onDateChange(e);
                 }}
               >
@@ -162,7 +163,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate('/customday');
+                  navigate(CALENDAR_URL.CUSTOMDAY);
                   onDateChange(e);
                 }}
               >

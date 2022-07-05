@@ -5,10 +5,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { stateSelectedDate } from '../../../../../../store/selectors/date';
 import { selectDate } from '../../../../../../store/date';
 import Moment from '../../../../../../utils/moment';
+import { useNavigate } from 'react-router-dom';
+import { CALENDAR_URL } from '../../../../../../constants/url';
 
 const Index = ({ week, month }) => {
   const selectedDate = useSelector(stateSelectedDate);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  function moveDayCalendarPage(date) {
+    dispatch(selectDate(date));
+    navigate(CALENDAR_URL.DAY);
+  }
 
   return (
     <tr className={styles.calendar_tr}>
@@ -17,6 +25,7 @@ const Index = ({ week, month }) => {
           key={index}
           className={`${initDateClassName(date, month, selectedDate)}`}
           onClick={() => dispatch(selectDate(date))}
+          onDoubleClick={() => moveDayCalendarPage(date)}
         >
           <em>{date.date}</em>
         </td>

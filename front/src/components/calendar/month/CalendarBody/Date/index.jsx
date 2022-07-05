@@ -5,21 +5,22 @@ import Moment from '../../../../../utils/moment';
 import { useDispatch } from 'react-redux';
 import { selectDate } from '../../../../../store/date';
 import { useNavigate } from 'react-router-dom';
+import { CALENDAR_URL } from '../../../../../constants/url';
 
 const Index = ({ date }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   function moveDayCalendarPage(date) {
     dispatch(selectDate(date));
-    navigate('/day');
+    navigate(CALENDAR_URL.DAY);
   }
 
   return (
-    <td
-      className={initClassName(date)}
-      onClick={() => moveDayCalendarPage(date)}
-    >
-      <em>{date.date === 1 ? `${date.month}월 1일` : date.date}</em>
+    <td className={initClassName(date)}>
+      <em onClick={() => moveDayCalendarPage(date)}>
+        {date.date === 1 ? `${date.month}월 1일` : date.date}
+      </em>
     </td>
   );
 };
