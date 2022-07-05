@@ -9,7 +9,7 @@ import { calculateMonth } from '../../../../../utils/moment';
 const Index = ({ year, month }) => {
   const weeks = calculateMonth(year, month);
   return (
-    <table className={styles.calendar_talbe}>
+    <table className={styles.calendar_table}>
       <thead>
         <WeekDaysHeader />
       </thead>
