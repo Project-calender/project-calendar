@@ -22,11 +22,14 @@ module.exports = class Calendar extends Model {
   }
   static associate(db) {
     db.Calendar.belongsToMany(db.User, {
-      through: "CalendarMembers",
-      as: "Members",
+      through: db.CalendarMember,
+      as: "CalendarMembers",
     });
-    db.Calendar.belongsTo(db.User, { as: "Owner", foreignKey: "OwnerId" });
-
+    db.Calendar.belongsTo(db.User, { as: "Owner" });
+    db.Calendar.hasMany(db.Invite, {
+      as: "HostCalendar",
+      foreignKey: "HostCalendarId",
+    });
     db.Calendar.hasMany(db.Event);
   }
 };

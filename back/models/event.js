@@ -8,7 +8,6 @@ module.exports = class Event extends Model {
         name: {
           type: DataTypes.STRING(30),
           allowNull: false,
-          unique: true,
         },
         color: {
           type: DataTypes.STRING(20),
@@ -40,8 +39,11 @@ module.exports = class Event extends Model {
     );
   }
   static associate(db) {
-    db.Event.belongsToMany(db.User, { through: "EventMembers", as: "Members" });
-    db.Event.belongsTo(db.User, { as: "EventHost", foreignKey: "EventHostId" });
+    db.Event.belongsToMany(db.User, {
+      through: db.EventMember,
+      as: "EventMembers",
+    });
+    db.Event.belongsTo(db.User, { as: "EventHost" });
 
     db.Event.belongsTo(db.Calendar);
   }
