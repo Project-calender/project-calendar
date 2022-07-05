@@ -37,7 +37,6 @@ router.post("/createGroupEvent", async (req, res, next) => {
         state: 1,
         UserId: host.id,
         EventId: newGroupEvent.id,
-        eventAuthority: 4
       },
       { transaction: f }
     );
@@ -97,7 +96,6 @@ router.post("/inviteGroupEvent", async (req, res, next) => {
     }
 
     await groupEvent.addEventMembers(guest, { transaction: t });
-
     await t.commit();
     return res.status(200).send({ success: true });
   } catch (error) {
