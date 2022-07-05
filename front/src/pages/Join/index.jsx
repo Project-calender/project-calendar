@@ -35,7 +35,7 @@ const Index = () => {
 
   function sendJoinForm() {
     axios
-      .post('', joinData)
+      .post('localhost:8080/api/user/signup', joinData)
       .then(res => {
         console.log('성공', res);
         navigate('/login');
