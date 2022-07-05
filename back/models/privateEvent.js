@@ -8,7 +8,6 @@ module.exports = class PrivateEvent extends Model {
         name: {
           type: DataTypes.STRING(30),
           allowNull: false,
-          unique: true,
         },
         color: {
           type: DataTypes.STRING(20),
@@ -41,6 +40,5 @@ module.exports = class PrivateEvent extends Model {
   }
   static associate(db) {
     db.PrivateEvent.belongsTo(db.User);
-    db.PrivateEvent.belongsTo(db.PrivateCalendar);
   }
 };

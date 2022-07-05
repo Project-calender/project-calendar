@@ -31,22 +31,32 @@ module.exports = class User extends Model {
     );
   }
   static associate(db) {
-    db.User.belongsToMany(db.Calendar, { through: "CalendarMembers" });
+    //Calendar
+    db.User.belongsToMany(db.Calendar, {
+      through: db.CalendarMember,
+      as: "GroupCalendars",
+    });
     db.User.hasMany(db.Calendar, { as: "Owner", foreignKey: "OwnerId" });
 
-    db.User.belongsToMany(db.Event, { through: "EventMembers" });
+    //Event
+    db.User.belongsToMany(db.Event, {
+      through: db.EventMember,
+      as: "GroupEvents",
+    });
     db.User.hasMany(db.Event, { as: "EventHost", foreignKey: "EventHostId" });
 
+    //private
     db.User.hasMany(db.PrivateCalendar, { as: "MyCalendar" });
     db.User.hasMany(db.PrivateEvent, { as: "MyEvent" });
 
+    //User
     db.User.belongsToMany(db.User, {
-      through: "Invite",
+      through: db.Invite,
       as: "CalendarHost",
       foreignKey: "CalendarGuestId",
     });
     db.User.belongsToMany(db.User, {
-      through: "Invite",
+      through: db.Invite,
       as: "CalendarHostGuest",
       foreignKey: "CalendarHostId",
     });
