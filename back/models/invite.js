@@ -1,18 +1,18 @@
 const DataTypes = require("sequelize");
 const { Model } = DataTypes;
 
-module.exports = class PrivateCalendar extends Model {
+module.exports = class Invite extends Model {
   static init(sequelize) {
     return super.init(
       {
-        name: {
-          type: DataTypes.STRING(30),
-          allowNull: false,
+        state: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
         },
       },
       {
-        modelName: "PrivateCalendar",
-        tableName: "PrivateCalendars",
+        modelName: "Invite",
+        tableName: "Invites",
         paranoid: true,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -21,6 +21,6 @@ module.exports = class PrivateCalendar extends Model {
     );
   }
   static associate(db) {
-    db.PrivateCalendar.belongsTo(db.User);
+    db.Invite.belongsTo(db.Calendar, { as: "HostCalendar" });
   }
 };
