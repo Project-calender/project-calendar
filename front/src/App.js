@@ -15,7 +15,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Main></Main>}>
-          <Route path="today" element={<div>일</div>}></Route>
+          <Route path="day" element={<div>일</div>}></Route>
           <Route path="week" element={<div>주</div>}></Route>
           <Route path="month" element={<MonthCalendarPage />}></Route>
           <Route path="year" element={<YearCalendarPage />}></Route>

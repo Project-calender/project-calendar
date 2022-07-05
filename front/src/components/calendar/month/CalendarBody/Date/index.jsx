@@ -2,10 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './style.module.css';
 import Moment from '../../../../../utils/moment';
+import { useDispatch } from 'react-redux';
+import { selectDate } from '../../../../../store/date';
+import { useNavigate } from 'react-router-dom';
 
 const Index = ({ date }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  function moveDayCalendarPage(date) {
+    dispatch(selectDate(date));
+    navigate('/day');
+  }
+
   return (
-    <td className={initClassName(date)}>
+    <td
+      className={initClassName(date)}
+      onClick={() => moveDayCalendarPage(date)}
+    >
       <em>{date.date === 1 ? `${date.month}월 1일` : date.date}</em>
     </td>
   );

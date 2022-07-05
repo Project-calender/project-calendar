@@ -117,7 +117,7 @@ const Index = ({
             <ul>
               <li
                 onClick={e => {
-                  navigate('/today');
+                  navigate('/day');
                   onDateChange(e);
                 }}
               >
