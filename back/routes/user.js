@@ -11,7 +11,6 @@ const router = express.Router();
 const { verifyToken } = require("./middlewares");
 
 // 개인 일정 가져오기(년)
-
 router.get("/year/:year/:month/:day", verifyToken, async (req, res, next) => {
   let date_ob = new Date();
   console.log(date_ob.getFullYear());

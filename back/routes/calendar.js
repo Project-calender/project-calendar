@@ -6,6 +6,7 @@ const { Calendar } = require("../models");
 const { CalendarMember } = require("../models");
 const { Invite } = require("../models");
 const router = express.Router();
+const { Op } = require("sequelize");
 
 const { verifyToken } = require("./middlewares");
 
@@ -35,27 +36,24 @@ router.post("/createGroupCalendar", async (req, res, next) => {
         transaction: t,
       }
     );
-    await newGroupCalendar.addCalendarMembers(exUser, {
-      transaction: t,
-    });
-
     await t.commit();
 
-    //만든 사람은 최대 권한으로
-    const authority = await CalendarMember.findOne({
-      [Op.and]: {
+    await CalendarMember.create(
+      {
+        authority: 3,
         UserId: exUser.id,
         CalendarId: newGroupCalendar.id,
       },
-    });
-
-    await authority.update({ authority: 3 }, { transaction: f });
-
-    f.commit();
+      {
+        transaction: f,
+      }
+    );
+    await f.commit();
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
     await t.rollback();
+    await f.rollback();
     next(error);
   }
 });
@@ -69,23 +67,27 @@ router.post("/inviteGroupCalendar", async (req, res, next) => {
     const guest = await User.findOne({
       where: { email: req.body.guestEmail },
     });
-
     if (!guest) {
       return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
     }
 
     const alreadyCalendarMember = await CalendarMember.findOne({
-      [Op.and]: { UserId: guest.id, CalendarId: req.body.groupCalendarId },
+      where: {
+        [Op.and]: { UserId: guest.id, CalendarId: req.body.groupCalendarId },
+      },
     });
     if (alreadyCalendarMember) {
       return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
     }
 
-    await Invite.create({
-      CalendarHostId: host.id,
-      CalendarGuestId: guest.id,
-      HostCalendarId: req.body.groupCalendarId,
-    });
+    await Invite.create(
+      {
+        CalendarHostId: host.id,
+        CalendarGuestId: guest.id,
+        HostCalendarId: req.body.groupCalendarId,
+      },
+      { transaction: t }
+    );
 
     await t.commit();
     res.status(200).send({ success: true });
@@ -111,29 +113,27 @@ router.post("/acceptCalendarInvite", async (req, res, next) => {
     }
 
     const alreadyCalendarMember = await CalendarMember.findOne({
-      [Op.and]: {
-        UserId: me.id,
-        CalendarId: req.body.hostCalendarId,
+      where: {
+        [Op.and]: {
+          UserId: me.id,
+          CalendarId: req.body.hostCalendarId,
+        },
       },
     });
     if (alreadyCalendarMember) {
       return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
     }
 
-    const inviteCalendar = await Invite.findOne({
-      [Op.and]: {
-        CalendarGuestId: me.id,
-        CalendarHostId: req.body.hostId,
-        HostCalendarId: req.body.hostCalendarId,
+    await Invite.destroy({
+      where: {
+        [Op.and]: {
+          CalendarGuestId: me.id,
+          CalendarHostId: req.body.hostId,
+          HostCalendarId: req.body.hostCalendarId,
+        },
       },
+      transaction: t,
     });
-
-    await inviteCalendar.update(
-      {
-        state: 1,
-      },
-      { transaction: t }
-    );
 
     await groupCalendar.addCalendarMembers(me, { transaction: t });
 
@@ -161,29 +161,27 @@ router.post("/rejectCalendarInvite", async (req, res, next) => {
     }
 
     const alreadyCalendarMember = await CalendarMember.findOne({
-      [Op.and]: {
-        UserId: me.id,
-        CalendarId: req.body.hostCalendarId,
+      where: {
+        [Op.and]: {
+          UserId: me.id,
+          CalendarId: req.body.hostCalendarId,
+        },
       },
     });
     if (alreadyCalendarMember) {
       return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
     }
 
-    const inviteCalendar = await Invite.findOne({
-      [Op.and]: {
-        CalendarGuestId: me.id,
-        CalendarHostId: req.body.hostId,
-        HostCalendarId: req.body.hostCalendarId,
+    await Invite.destroy({
+      where: {
+        [Op.and]: {
+          CalendarGuestId: me.id,
+          CalendarHostId: req.body.hostId,
+          HostCalendarId: req.body.hostCalendarId,
+        },
       },
+      transaction: t,
     });
-
-    await inviteCalendar.update(
-      {
-        state: 2,
-      },
-      { transaction: t }
-    );
 
     await t.commit();
     res.status(200).send({ success: true });
@@ -211,14 +209,16 @@ router.post("/giveAuthority", async (req, res, next) => {
     }
 
     const member = await User.findOne({
-      where: { id: req.body.memberId },
+      where: { email: req.body.memberEmail },
     });
     if (!member) {
       return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
     }
 
     const isGroupMember = await CalendarMember.findOne({
-      [Op.and]: { UserId: member.id, CalendarId: req.body.groupCalendarId },
+      where: {
+        [Op.and]: { UserId: member.id, CalendarId: req.body.groupCalendarId },
+      },
     });
 
     if (!isGroupMember) {
