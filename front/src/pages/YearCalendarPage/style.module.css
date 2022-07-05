@@ -1,4 +1,4 @@
-.year_calendar { width: 100%; height: 87vh; display: flex; flex-wrap: wrap; justify-content: space-around; overflow-y: auto; padding:30px; } 
+.year_calendar { margin:5px; padding:20px; width: 100%; height: 87vh; display: flex; flex-wrap: wrap; justify-content: space-around; overflow-y: auto; } 
  
 .year_calendar > div { flex-basis: 25%; align-items: center; } 
 .year_calendar table { max-width: 230px; min-width: 220px; min-height: 220px; padding-right: 10px; margin-bottom: 30px; } 
