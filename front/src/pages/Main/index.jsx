@@ -7,14 +7,14 @@ import SideNav from '../../components/SideNav';
 
 const Index = () => {
   /* SideBar */
-  let [sideBar, setSideBar] = useState(false); //sideBar 숨김 컨트롤
+  let [isSideBarOn, toggleSideBar] = useState(false); //sideBar 숨김 컨트롤
 
   return (
     <div>
       <section className={styles.section}>
-        <NavBar sideBar={sideBar} setSideBar={setSideBar}></NavBar>
+        <NavBar toggleSideBar={toggleSideBar}></NavBar>
         <article className={styles.article}>
-          <SideBar sideBar={sideBar} />
+          <SideBar isSideBarOn={isSideBarOn} />
           <Outlet></Outlet>
           <SideNav></SideNav>
         </article>

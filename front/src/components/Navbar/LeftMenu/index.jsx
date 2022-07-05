@@ -6,31 +6,18 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'; /
 import { useDispatch, useSelector } from 'react-redux';
 import { addDate, selectDate } from '../../../store/date';
 import { stateSelectedDate } from '../../../store/selectors/date';
+import Moment from '../../../utils/moment';
 
-const Index = ({ setSideBar, sideBar }) => {
+const Index = ({ toggleSideBar }) => {
   //redux 오늘 날짜 가지고 오기
   let state = useSelector(stateSelectedDate);
   let dispatch = useDispatch();
 
-  const data = new Date();
-  const today = {
-    year: data.getFullYear(), //오늘 연도
-    month: data.getMonth() + 1, //오늘 월
-    date: data.getDate(), //오늘 날짜
-    day: data.getDay(), //오늘 요일
-  };
+  const today = new Moment().toObject();
 
   //오늘 기준 월,일로 변경
   function toDate() {
     dispatch(selectDate());
-  }
-
-  function sideBarClose() {
-    if (sideBar == false) {
-      setSideBar(true);
-    } else {
-      setSideBar(false);
-    }
   }
 
   return (
@@ -38,9 +25,7 @@ const Index = ({ setSideBar, sideBar }) => {
       <div className={styles.left_menu}>
         <div
           className={styles.hamburger}
-          onClick={() => {
-            sideBarClose();
-          }}
+          onClick={() => toggleSideBar(toggle => !toggle)}
         >
           <div className={styles.hamburger_icon}>
             <span></span>
@@ -103,8 +88,7 @@ const Index = ({ setSideBar, sideBar }) => {
 };
 
 Index.propTypes = {
-  sideBar: PropTypes.bool,
-  setSideBar: PropTypes.func,
+  toggleSideBar: PropTypes.func,
 };
 
 export default Index;

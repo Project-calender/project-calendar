@@ -6,26 +6,10 @@ import UserSearch from './UserSearch';
 import MyCalendarList from './MyCalendarList';
 import SubscriptionCalendarList from './SubscriptionCalendarList';
 import MiniCalendar from './MiniCalendar';
-import { useState } from 'react';
-import { useEffect } from 'react';
 
-const Index = ({ sideBar }) => {
-  let [closeClass, setCloseClass] = useState(``);
-
-  function sideBarClose() {
-    if (sideBar == true) {
-      setCloseClass(`${styles.close}`);
-    } else {
-      setCloseClass(``);
-    }
-  }
-
-  useEffect(() => {
-    sideBarClose();
-  }, [sideBar]);
-
+const Index = ({ isSideBarOn }) => {
   return (
-    <aside className={`${styles.sidebar} ${closeClass}`}>
+    <aside className={`${styles.sidebar} ${isSideBarOn ? styles.close : ''}`}>
       <div className={styles.sidebar_event_button}>
         <AddEventButton />
       </div>
@@ -38,8 +22,9 @@ const Index = ({ sideBar }) => {
     </aside>
   );
 };
+
 Index.propTypes = {
-  sideBar: PropTypes.bool,
+  isSideBarOn: PropTypes.bool,
 };
 
 export default Index;
