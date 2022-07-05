@@ -7,6 +7,7 @@
     height: 100%; 
     text-align: center;   
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .calendar_table thead{
@@ -27,9 +28,4 @@
    font-size: 11px;
    padding-top: 10px;
    color: gray;
-}
-
-.calendar_table td{
-    border-left: 1px solid #d9d9d9;
-    border-bottom: 1px solid #d9d9d9;
 }
