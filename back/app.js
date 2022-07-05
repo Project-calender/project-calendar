@@ -7,9 +7,9 @@ const passport = require("passport");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 //내부모듈
+const calendarRouter = require('./routes/calendar')
+const eventRouter = require('./routes/event')
 const userRouter = require("./routes/user");
-const calendarRouter = require("./routes/calendar");
-const eventRouter = require("./routes/event");
 const db = require("./models");
 const passportConfig = require("./passport/local");
 
@@ -36,11 +36,16 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(passport.initialize());
+
+//라우터
+app.use("/user", userRouter);
 
 //라우터
 app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);
+
 
 //포트 설정
 app.listen(8080, () => {

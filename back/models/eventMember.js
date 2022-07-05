@@ -8,11 +8,7 @@ module.exports = class EventMember extends Model {
         state: {
           type: DataTypes.INTEGER,
           defaultValue: 0,
-        }, 
-        eventAuthority: {
-          type: DataTypes.INTEGER,
-          defaultValue: 3
-        }
+        },
       },
       {
         modelName: "EventMember",
