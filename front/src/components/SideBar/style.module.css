@@ -1,5 +1,5 @@
 .sidebar { width: 250px; height: 83vh; padding: 10px 8px; background: white; transition: all 0.4s; } 
-.close { margin-left: -268px; } 
+.close { margin-left: -258px; } 
 
 .sidebar_event_button { width: inherit; height: 70px; padding-top: 10px; padding-left: 10px; transition: all 0.4s; } 
 .sidebar_event_button button { background: rgb(255, 255, 255, 0.5); position: absolute; z-index: 2; } 
