@@ -56,7 +56,7 @@ export function calculateMonth(year, month) {
   for (let i = 0, count = 0; i < 6; i++) {
     const week = [];
     for (let j = 1; j <= 7; j++, count++) {
-      week.push(new Moment(startDate).addDate(count));
+      week.push(new Moment(startDate).addDate(count).toObject());
     }
     dates.push(week);
   }

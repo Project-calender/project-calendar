@@ -1,21 +1,22 @@
 import React from 'react';
-import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import Date from './Date';
+import Week from './Week';
 
 const Index = ({ month }) => {
+  if (countWeek(month) === 5) month.pop();
+
   return (
     <>
       {month.map((week, index) => (
-        <tr key={index} className={styles}>
-          {week.map((date, index) => (
-            <Date key={index} date={date} />
-          ))}
-        </tr>
+        <Week key={index} week={week} />
       ))}
     </>
   );
 };
+
+function countWeek(month) {
+  return month[2][0].month !== month[month.length - 1][0].month ? 5 : 6;
+}
 
 Index.propTypes = {
   month: PropTypes.array,
