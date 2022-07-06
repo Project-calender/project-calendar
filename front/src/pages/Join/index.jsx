@@ -9,6 +9,7 @@ import {
   faAngleRight,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import { useNavigate } from 'react-router-dom';
+import { USER_URL } from './../../constants/path';
 
 const Index = () => {
   let navigate = useNavigate();
@@ -42,7 +43,7 @@ const Index = () => {
       .post('http://15.164.226.74/api/user/signup', joinData)
       .then(res => {
         console.log('성공', res);
-        navigate('/login');
+        navigate(`${USER_URL.LOGIN}`);
       })
       .catch(error => {
         console.log('실패', error);

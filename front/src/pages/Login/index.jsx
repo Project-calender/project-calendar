@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
 import axios from 'axios';
+import { CALENDAR_URL } from './../../constants/path';
 
 const Index = () => {
   let navigate = useNavigate();
@@ -30,7 +31,7 @@ const Index = () => {
       .post('http://15.164.226.74/api/user/signin', loginData)
       .then(res => {
         console.log('성공', res);
-        navigate('/today');
+        navigate(`${CALENDAR_URL.DAY}`);
       })
       .catch(error => {
         console.log('실패', error);
