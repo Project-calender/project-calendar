@@ -28,7 +28,7 @@ const Index = ({ date }) => {
         className={styles.event_selection_container}
         data-date-id={date.time}
       >
-        {eventbarInfo && <EventBar scale={eventbarInfo.scale} />}
+        {eventbarInfo && <EventBar barInfo={eventbarInfo} />}
         <div className={styles.event_list}></div>
       </div>
     </td>

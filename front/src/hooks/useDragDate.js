@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { debounce } from '../utils/delay';
 
-export const initDateRange = { standardDate: 0, endDate: 0 };
+export const initDateRange = { standardDateTime: 0, endDateTime: 0 };
 export const eventTarget = e => +e.target.dataset.dateId;
 
 export default function useDragDate() {
@@ -12,7 +12,7 @@ export default function useDragDate() {
     const dateId = eventTarget(e);
     if (!dateId) return;
 
-    changeDateRange({ standardDate: dateId, endDate: dateId });
+    changeDateRange({ standardDateTime: dateId, endDateTime: dateId });
     toggleMouseDown(true);
   }
 
@@ -25,7 +25,7 @@ export default function useDragDate() {
     if (!dateId) return;
 
     debounce(() => {
-      changeDateRange(dates => ({ ...dates, endDate: dateId }));
+      changeDateRange(range => ({ ...range, endDateTime: dateId }));
     }, 200);
   }
 
