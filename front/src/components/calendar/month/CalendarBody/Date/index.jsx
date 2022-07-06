@@ -19,16 +19,16 @@ const Index = ({ date }) => {
   }
 
   const eventbars = useContext(EventBarContext);
-  const eventbar = eventbars.find(({ time }) => date.time === time);
+  const eventbarInfo = eventbars.find(({ time }) => date.time === time);
 
   return (
     <td className={initClassName(date)}>
       <em onClick={() => moveDayCalendarPage(date)}>{getTitleDate(date)}</em>
       <div
         className={styles.event_selection_container}
-        data-event-id={date.time}
+        data-date-id={date.time}
       >
-        {eventbar && <EventBar scale={eventbar.scale} />}
+        {eventbarInfo && <EventBar scale={eventbarInfo.scale} />}
         <div className={styles.event_list}></div>
       </div>
     </td>
