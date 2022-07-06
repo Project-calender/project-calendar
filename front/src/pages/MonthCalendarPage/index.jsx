@@ -7,16 +7,18 @@ import WeekDayHeader from '../../components/calendar/month/WeekDayHeader';
 import CalendarBody from '../../components/calendar/month/CalendarBody';
 import { addMonth } from '../../store/date';
 import { EventBarContext } from '../../context/EventBarContext';
-import useCalendarEventBar from '../../hooks/useCalendarEventBar';
+import useDragDate from '../../hooks/useDragDate';
+import useMonthEventBar from '../../hooks/useMonthEventBar';
 
 const Index = () => {
   const {
-    createEventBar,
-    removeEventBar,
-    handleDragEvent,
-    isMouseUp,
-    eventbars,
-  } = useCalendarEventBar();
+    handleMouseDown,
+    handleMouseUp,
+    handleDrag,
+    isMouseDown,
+    selectedDateRange,
+  } = useDragDate();
+  const { monthEventBars } = useMonthEventBar(selectedDateRange);
 
   const dispatch = useDispatch();
   function changeMonth(e) {
@@ -29,15 +31,15 @@ const Index = () => {
     <div className={`test ${styles.calendar}`} onWheel={changeMonth}>
       <table
         className={styles.calendar_table}
-        onMouseDown={createEventBar}
-        onMouseUp={removeEventBar}
-        onMouseMove={isMouseUp ? handleDragEvent : null}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={isMouseDown ? handleDrag : null}
       >
         <thead>
           <WeekDayHeader />
         </thead>
         <tbody>
-          <EventBarContext.Provider value={eventbars}>
+          <EventBarContext.Provider value={monthEventBars}>
             <CalendarBody month={month} />
           </EventBarContext.Provider>
         </tbody>
