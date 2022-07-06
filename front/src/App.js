@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Join from './pages/Join';
 import YearCalendarPage from './pages/YearCalendarPage';
 import MonthCalendarPage from './pages/MonthCalendarPage';
+import DayCalendarPage from './pages/DayCalendarPage';
 import { CALENDAR_URL, USER_URL } from './constants/path';
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path={CALENDAR_URL.MAIN} element={<Main />}>
-          <Route path={CALENDAR_URL.DAY} element={<div>일</div>}></Route>
+          <Route path={CALENDAR_URL.DAY} element={<DayCalendarPage />}></Route>
           <Route path={CALENDAR_URL.WEEK} element={<div>주</div>}></Route>
           <Route
             path={CALENDAR_URL.MONTH}

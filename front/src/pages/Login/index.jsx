@@ -3,14 +3,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
 import axios from 'axios';
+import { CALENDAR_URL } from './../../constants/path';
 
 const Index = () => {
   let navigate = useNavigate();
 
   //로그인 input 값 저장
   const [inputValue, setInputValue] = useState({
-    userEmail: '',
-    userPassword: '',
+    email: '',
+    password: '',
   });
 
   //ajax 데이터
@@ -27,10 +28,10 @@ const Index = () => {
 
   function sendLoginForm() {
     axios
-      .post('localhost:8080/api/user/login', loginData)
+      .post('http://15.164.226.74/api/user/signin', loginData)
       .then(res => {
         console.log('성공', res);
-        navigate('/today');
+        navigate(`${CALENDAR_URL.DAY}`);
       })
       .catch(error => {
         console.log('실패', error);
@@ -50,7 +51,7 @@ const Index = () => {
                 <input
                   type="text"
                   placeholder="User Email"
-                  name="userEmail"
+                  name="email"
                   onChange={e => {
                     handleInput(e);
                   }}
@@ -60,7 +61,7 @@ const Index = () => {
                 <input
                   type="password"
                   placeholder="User Password"
-                  name="userPassword"
+                  name="password"
                   onChange={e => {
                     handleInput(e);
                   }}

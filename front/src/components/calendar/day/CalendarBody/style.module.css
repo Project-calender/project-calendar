@@ -1,0 +1,8 @@
+.today_talbe{max-height: 84vh; margin-left: 30px;overflow-y: auto;}
+.today_talbe table{ border-collapse : collapse; width: 100%;}
+.today_talbe tr {width: 100%; display: flex; margin-top: -1px; position: relative;}
+.today_talbe th{width: 60px; height: 50px;display: block; border-radius: 0%; position: relative;}
+.today_talbe th em{width: 100%; color: #70757a; position: absolute; top: -15%; left: 40%; transform: translateX(-50%);  font-size: 10px;}
+.today_talbe th::before{content: "";width: 1px;height: 51px; background: #DADCE0; position: absolute; top: 0;right: 0px;}
+.today_talbe td{width: 100%; height: 50px; margin-left: -10px; padding-left: 10px; display: block; border-top: 1px solid #DADCE0; border-bottom: 1px solid #DADCE0; }
+.today_talbe td .td_text{width: 99%;height: 92%; background: #039BE5; position: relative; color: #fff; border-radius: 5px; padding-left: 10px; box-sizing: border-box; box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;}
