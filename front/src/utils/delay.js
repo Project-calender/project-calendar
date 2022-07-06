@@ -1,17 +1,15 @@
 let timer = null;
 
-export function throttle(event, time) {
+export function throttle(callback, time) {
   if (!timer) {
     timer = setTimeout(() => {
       timer = null;
-      event();
+      callback();
     }, time);
   }
 }
 
-export function debounce(event, time) {
+export function debounce(callback, time) {
   if (timer) clearTimeout(timer);
-  timer = setTimeout(() => {
-    event();
-  }, time);
+  timer = setTimeout(() => callback(), time);
 }
