@@ -31,11 +31,15 @@ const Index = () => {
   let [userNameCheck, setUserNameCheck] = useState(false); //이름 체크
 
   //ajax 데이터
-  const joinData = { ...inputValue, serviceCheck, eventCheck, inpoCheck };
+  const joinData = {
+    email: inputValue.userEmail,
+    password: inputValue.userPassword,
+    nickname: inputValue.userName,
+  };
 
   function sendJoinForm() {
     axios
-      .post('localhost:8080/api/user/signup', joinData)
+      .post('http://15.164.226.74/api/user/signup', joinData)
       .then(res => {
         console.log('성공', res);
         navigate('/login');

@@ -9,13 +9,14 @@ import Login from './pages/Login';
 import Join from './pages/Join';
 import YearCalendarPage from './pages/YearCalendarPage';
 import MonthCalendarPage from './pages/MonthCalendarPage';
+import DayCalendarPage from './pages/DayCalendarPage';
 
 function App() {
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<Main></Main>}>
-          <Route path="today" element={<div>일</div>}></Route>
+          <Route path="today" element={<DayCalendarPage />}></Route>
           <Route path="week" element={<div>주</div>}></Route>
           <Route path="month" element={<MonthCalendarPage />}></Route>
           <Route path="year" element={<YearCalendarPage />}></Route>
