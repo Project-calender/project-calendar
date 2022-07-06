@@ -16,7 +16,7 @@ const Index = ({ week, month }) => {
         <td
           key={index}
           className={`${initDateClassName(date, month, selectedDate)}`}
-          onClick={() => dispatch(selectDate(date.time))}
+          onClick={() => dispatch(selectDate(date))}
         >
           <em>{date.date}</em>
         </td>
