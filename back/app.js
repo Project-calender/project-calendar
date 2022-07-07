@@ -5,6 +5,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
+const { createServer } = require("http");
 const bodyParser = require("body-parser");
 //내부모듈
 const calendarRouter = require('./routes/calendar')
@@ -12,6 +13,7 @@ const eventRouter = require('./routes/event')
 const userRouter = require("./routes/user");
 const db = require("./models");
 const passportConfig = require("./passport/local");
+const httpServer = createServer(app);
 
 
 //서버 가동
@@ -49,6 +51,4 @@ app.use("/api/event", eventRouter);
 
 
 //포트 설정
-app.listen(8080, () => {
-  console.log(app.get("port"), "포트에서 연결중입니다");
-});
+httpServer.listen(80);

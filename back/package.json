@@ -26,7 +26,6 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "redis": "^3.1.2",
-    "redis-delete-pattern": "^0.1.0",
     "sequelize": "^6.21.0",
     "sequelize-cli": "^6.4.1"
   }
