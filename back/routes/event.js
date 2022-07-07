@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { sequelize } = require("../models");
+const { sequelize, Alert } = require("../models");
 const { User } = require("../models");
 const { Event } = require("../models");
 const { CalendarMember } = require("../models");
@@ -95,6 +95,17 @@ router.post("/inviteGroupEvent", async (req, res, next) => {
       return res.status(403).send({ message: "이미 초대를 보낸 사람입니다!" });
     }
 
+    await Alert.create(
+      {
+        UserId: guest.id,
+        type: "eventInvite",
+        eventCalendarId: req.body.groupCalendarId,
+        eventDate: groupEvent.startTime,
+        content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
+      },
+      { transaction: t }
+    );
+
     await groupEvent.addEventMembers(guest, { transaction: t });
     await t.commit();
     return res.status(200).send({ success: true });
@@ -137,6 +148,39 @@ router.post("/changeEventInviteState", async (req, res, next) => {
       }
     );
 
+    const members = await invitedEvent.getEventMembers();
+    if (req.body.state === 1) {
+      await Promise.all(
+        members.map((member) =>
+          Alert.create(
+            {
+              UserId: member.id,
+              type: "eventNewMember",
+              eventCalendarId: invitedEvent.CalendarId,
+              eventDate: invitedEvent.startTime,
+              content: `${me.nickname}님의 ${invitedEvent.name}이벤트에 참여했어요!`,
+            },
+            { transaction: t }
+          )
+        )
+      );
+    } else if (req.body.state === 3) {
+      await Promise.all(
+        members.map((member) =>
+          Alert.create(
+            {
+              UserId: member.id,
+              type: "eventNewMember",
+              eventCalendarId: invitedEvent.CalendarId,
+              eventDate: invitedEvent.startTime,
+              content: `${me.nickname}님의 ${invitedEvent.name}이벤트에서 탈퇴했어요!!`,
+            },
+            { transaction: t }
+          )
+        )
+      );
+    }
+
     await t.commit();
     res.status(200).send({ success: true });
   } catch (error) {
@@ -177,6 +221,22 @@ router.post("/editGroupEvent", async (req, res, next) => {
       { transaction: t }
     );
 
+    const members = await groupEvent.getEventMembers();
+    await Promise.all(
+      members.map((member) =>
+        Alert.create(
+          {
+            UserId: member.id,
+            type: "eventChanged",
+            eventCalendarId: groupEvent.CalendarId,
+            eventDate: groupEvent.startTime,
+            content: `${groupEvent.name} 이벤트가 수정되었어요!`,
+          },
+          { transaction: t }
+        )
+      )
+    );
+
     await t.commit();
     res.status(200).send({ success: true });
   } catch (error) {
@@ -188,6 +248,7 @@ router.post("/editGroupEvent", async (req, res, next) => {
 
 router.post("/deleteGroupEvent", async (req, res, next) => {
   const t = await sequelize.transaction();
+  const f = await sequelize.transaction();
   try {
     //const editor = req.user
     const editor = await User.findOne({ where: { id: 1 } });
@@ -202,13 +263,32 @@ router.post("/deleteGroupEvent", async (req, res, next) => {
       return res.status(400).send({ message: "삭제 권한이 없습니다!" });
     }
 
+    const groupEvent = await Event.findOne({
+      where: { id: req.body.groupEventId },
+    });
+
+    const members = await groupEvent.getEventMembers();
+    await Promise.all(
+      members.map((member) =>
+        Alert.create(
+          {
+            UserId: member.id,
+            type: "eventRemoved",
+            content: `${groupEvent.name} 이벤트가 삭제되었어요!`,
+          },
+          { transaction: t }
+        )
+      )
+    );
+
+    await t.commit();
+
     await Event.destroy({
       where: { id: req.body.groupEventId },
       truncate: true,
-      transaction: t,
+      transaction: f,
     });
-
-    await t.commit();
+    await f.commit();
     res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);

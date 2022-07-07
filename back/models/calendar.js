@@ -9,6 +9,10 @@ module.exports = class Calendar extends Model {
           type: DataTypes.STRING(30),
           allowNull: false,
         },
+        color: {
+          type: DataTypes.STRING(20),
+          allowNull: false,
+        },
       },
       {
         modelName: "Calendar",

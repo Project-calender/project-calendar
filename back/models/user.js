@@ -60,5 +60,7 @@ module.exports = class User extends Model {
       as: "CalendarHostGuest",
       foreignKey: "CalendarHostId",
     });
+
+    db.User.hasMany(db.Alert);
   }
 };
