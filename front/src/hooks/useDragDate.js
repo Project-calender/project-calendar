@@ -25,8 +25,13 @@ export default function useDragDate() {
     if (!dateId) return;
 
     debounce(
-      () => changeDateRange(range => ({ ...range, endDateTime: dateId })),
-      200,
+      () =>
+        changeDateRange(range =>
+          dateId === range.endDateTime
+            ? range
+            : { ...range, endDateTime: dateId },
+        ),
+      100,
     );
   }
 
