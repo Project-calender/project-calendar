@@ -1,0 +1,2 @@
+.month_calendar { flex-basis: 25%; align-items: center; } 
+.month_calendar > p { margin-left: 10px; margin-bottom: 10px; font-size: 14px; color: #636363;} 

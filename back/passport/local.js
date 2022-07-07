@@ -33,30 +33,30 @@ module.exports = () => {
     )
   );
 
-  passport.use(
-    "jwt",
-    new JWTStrategy(
-      {
-        jwtFromRequest: ExtractJwt.fromHeader("authorization"),
-        secretOrKey: "jwt-secret-key",
-      },
-      async (jwtPayload, done) => {
-        try {
-          console.log("here");
-          const user = await User.findOne({
-            where: {
-              email: jwtPayload.email,
-            },
-          });
+  // passport.use(
+  //   "jwt",
+  //   new JWTStrategy(
+  //     {
+  //       jwtFromRequest: ExtractJwt.fromHeader("authorization"),
+  //       secretOrKey: "jwt-secret-key",
+  //     },
+  //     async (jwtPayload, done) => {
+  //       try {
+  //         console.log("here");
+  //         const user = await User.findOne({
+  //           where: {
+  //             email: jwtPayload.email,
+  //           },
+  //         });
 
-          if (user) {
-            done(null, user);
-          }
-        } catch (error) {
-          console.error(error);
-          return done(error);
-        }
-      }
-    )
-  );
+  //         if (user) {
+  //           done(null, user);
+  //         }
+  //       } catch (error) {
+  //         console.error(error);
+  //         return done(error);
+  //       }
+  //     }
+  //   )
+  // );
 };

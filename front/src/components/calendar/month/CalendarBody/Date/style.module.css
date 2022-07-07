@@ -1,0 +1,12 @@
+.calendar_td { width: 100%; border-left: 1px solid #d9d9d9; border-bottom: 1px solid #d9d9d9; padding-bottom:10px; padding-top: 5px; } 
+
+.calendar_td em { display: inline-block; min-width: 20px; padding: 3px; border-radius: 100%; cursor: pointer; } 
+.calendar_td em:hover { background-color: #f2f2f2; } 
+
+.calendar_today em { color: #fff; background: #2b63ff; } 
+.calendar_today em:hover { background: #2351d1; } 
+
+
+.event_selection_container { height: calc(100% - 25px); position: relative; width: 100%; margin-top:5px; } 
+.event_list { width: 100%; } 
+

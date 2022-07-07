@@ -5,7 +5,7 @@ import RightMenu from './RightMenu';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-const Index = ({ sideBar, setSideBar }) => {
+const Index = ({ toggleSideBar }) => {
   let [activeClass, setActiveClass] = useState(); //일정 리스트에 클레스 추가
   let [dateActive, setDateActive] = useState(false); //일정 리스트 true ,false 확인
   let [userClassAdd, setUserClassAdd] = useState(); //사용자 팝업창에 class 추가
@@ -14,7 +14,7 @@ const Index = ({ sideBar, setSideBar }) => {
     <div>
       <nav className={styles.nav}>
         <div className={styles.menu_wrap}>
-          <LeftMenu setSideBar={setSideBar} sideBar={sideBar}></LeftMenu>
+          <LeftMenu toggleSideBar={toggleSideBar}></LeftMenu>
           <RightMenu
             activeClass={activeClass}
             setActiveClass={setActiveClass}
@@ -31,8 +31,7 @@ const Index = ({ sideBar, setSideBar }) => {
   );
 };
 Index.propTypes = {
-  sideBar: PropTypes.bool,
-  setSideBar: PropTypes.func,
+  toggleSideBar: PropTypes.func,
 };
 
 export default Index;
