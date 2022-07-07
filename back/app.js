@@ -6,6 +6,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
+const { createServer } = require("http");
 const bodyParser = require("body-parser");
 //내부모듈
 const calendarRouter = require("./routes/calendar");
@@ -13,6 +14,7 @@ const eventRouter = require("./routes/event");
 const userRouter = require("./routes/user");
 const db = require("./models");
 const passportConfig = require("./passport/local");
+const httpServer = createServer(app);
 
 //서버 가동
 dotenv.config();
