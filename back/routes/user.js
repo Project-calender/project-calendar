@@ -1,18 +1,21 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
-const jwt = require("jsonwebtoken");
-const Sequelize = require("Sequelize");
+const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
+const { createClient, RedisClient } = require('redis');
 
+const refresh = require('../utils/refresh');
 const { sequelize, Calendar } = require("../models");
 const { User, PrivateEvent, PrivateCalendar } = require("../models");
 const router = express.Router();
+const jwt = require('../utils/jwt-util');
+const redisClient = require('../utils/redis');
+const authJWT = require('../utils/authJWT');
+const { client } = require("../utils/redis");
 
-const { verifyToken } = require("./middlewares");
 
-// 개인 일정 가져오기 - 완
-router.post('/getPrivateEvent', async (req, res, next) => {
+router.post('/getPrivateEvent', authJWT, async (req, res, next) => {
   /*
     {
       "startDate":,
@@ -45,7 +48,7 @@ router.post('/getPrivateEvent', async (req, res, next) => {
 
 
 // 개인이벤트 만들기
-router.post('/createPrivateEvent', async (req, res, next) => {
+router.post('/createPrivateEvent', authJWT, async (req, res, next) => {
   /*
     "name": ,
     "color": ,
@@ -83,7 +86,7 @@ router.post('/createPrivateEvent', async (req, res, next) => {
 })
 
 // 개인이벤트 업데이트
-router.post('/editPrivateEvent', async (req, res, next) => {
+router.post('/editPrivateEvent', authJWT, async (req, res, next) => {
   /*
     {
       "eventId" : , 
@@ -121,7 +124,7 @@ router.post('/editPrivateEvent', async (req, res, next) => {
 })
 
 //개인 이벤트 삭제
-router.post('/deletePrivateEvent', async (req, res, next) => {
+router.post('/deletePrivateEvent', authJWT, async (req, res, next) => {
   /*
     {
       "privateEventId": 
@@ -164,62 +167,46 @@ router.post('/deletePrivateEvent', async (req, res, next) => {
   } 
 })
 
-router.post("/signin", (req, res, next) => {
+router.post("/signin", async (req, res, next) => {
   /*
     {
       "email": "sola2014@naver.com", 
       "password": "lee2030!"
     }
   */
-  passport.authenticate("signin", (err, user, info) => {
-    try {
-      if (err) {
-        console.error(err);
-        next(err);
-      }
-      if (info) {
-        return res.status(401).send(info);
-      }
-      return req.login(user, { session: false }, async (loginErr) => {
-        if (loginErr) {
-          return next(loginErr);
-        }
-        const refreshToken = jwt.sign(
-          {
-            sub: "refresh",
-            email: user.email,
-          },
-          "jwt-secret-key",
-          { expiresIn: "24h" }
-        );
-        const accessToken = jwt.sign(
-          {
-            sub: "access",
-            email: user.email,
-          },
-          "jwt-secret-key",
-          {
-            expiresIn: "5m",
-          }
-        );
-        const fullUserWithoutPassword = await User.findOne({
-          where: { email: user.email },
-          attributes: {
-            exclude: ["password"],
-          },
-        });
-        console.log("로그인 성공 확인");
-        return res.status(200).send({
-          fullUserWithoutPassword,
-          refreshToken,
-          accessToken,
-        });
-      });
-    } catch (error) {
-      console.log(error);
-      next(error);
-    }
-  })(req, res, next);
+  const { email, password } = req.body;
+  const user = await User.findOne({
+    where: {
+      email: email
+    },
+  });
+  if (!user) {
+    return res.status(401).send({
+      ok: false,
+      message: 'user not exist',
+    });
+  }
+  const chk = await bcrypt.compare(password, user.password);
+  if (!chk) {
+    return  res.status(401).send({
+      ok: false,
+      message: 'password is incorrect',
+    });
+  }
+  const accessToken = jwt.sign(user);
+  const refreshToken = jwt.refresh();
+  redisClient.set(user.id, refreshToken);
+  const fullUserWithoutPassword = await User.findOne({
+    where: { email: user.email },
+    attributes: {
+      exclude: ["password"],
+    },
+  });
+  return res.status(200).send({
+    fullUserWithoutPassword,
+    refreshToken,
+    accessToken,
+  });
 });
 
 router.post("/signup", async (req, res, next) => {
@@ -227,7 +214,7 @@ router.post("/signup", async (req, res, next) => {
     {
       "email": , 
       "password": ,
-      "nickname": 
+      "email": 
     }
   */
   try {
@@ -243,14 +230,14 @@ router.post("/signup", async (req, res, next) => {
     const createdUser = await User.create({
       email: req.body.email,
       password: hashedPassword,
-      nickname: req.body.nickname,
+      email: req.body.email,
     });
 
     await PrivateCalendar.create({
-      name: createdUser.nickname,
+      name: createdUser.email,
       UserId: createdUser.id
     })
-
+    
     res.status(201).send({ success: true });
     console.log("회원가입 확인");
   } catch (error) {
@@ -259,62 +246,18 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.post("/refreshToken", async (req, res, next) => {
-  passport.authenticate(
-    ("jwt",
-    { session: false },
-    (err, user, info) => {
-      try {
-        if (err) {
-          console.error(err);
-          return next(err);
-        }
-        if (info) {
-          if (info?.name === "TokenExpiredError") {
-            //refresh토큰 마저 만료
-            return res.status(419).send({ error: info.name });
-          }
-          if (info?.name === "JsonWebTokenError") {
-            //refresh토큰 잘못됨
-            return res.status(419).send({ error: info.name });
-          }
-        }
-        //토큰 재발급
-        const refreshToken = jwt.sign(
-          {
-            sub: "refresh",
-            email: user.email,
-          },
-          "jwt-secret-key",
-          { expiresIn: "24h" }
-        );
-        const accessToken = jwt.sign(
-          {
-            sub: "access",
-            email: user.email,
-          },
-          "jwt-secret-key",
-          {
-            expiresIn: "5m",
-          }
-        );
-        return res.status(200).send({
-          email: email,
+router.get('/refresh', authJWT, refresh);
 
-          refreshToken,
-          accessToken,
-        });
-      } catch (error) {
-        console.error(error);
-        next(error);
-      }
-    })
-  );
-});
-
-router.post("/logout", (req, res) => {
-  req.logout();
-  req.session.destroy();
+router.post("/logout", authJWT, async (req, res) => {
+  // req.logout();
+  const client = createClient({
+    url: `redis://${process.env.REDIS_HOST}`,
+    password: process.env.REDIS_PASSWORD,
+  })
+  
+  await client.connect()
+  await client.del(req.body.user.id)
+  await client.disconnect();
   res.status(200).send("ok");
 });
 
