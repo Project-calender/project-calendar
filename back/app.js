@@ -14,10 +14,12 @@ const userRouter = require("./routes/user");
 const db = require("./models");
 const passportConfig = require("./passport/local");
 
-const httpServer = createServer(app);
-
 //서버 가동
 dotenv.config();
+// const redisClient = redis.createClient({
+//   url: `redis://${process.env.REDIS_HOST}:$(process.env.REDIS_PORT)`,
+//   password: process.env.REDIS_PASSWORD,
+// })
 app.use(passport.initialize());
 passportConfig();
 db.sequelize
@@ -40,8 +42,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-//라우터
-app.use("/user", userRouter);
 //라우터
 app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
