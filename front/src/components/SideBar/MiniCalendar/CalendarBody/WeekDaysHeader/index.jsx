@@ -1,7 +1,8 @@
 import React from 'react';
 import styles from './style.module.css';
-import { WEEK_DAYS } from '../../../../utils/moment';
-import Tooltip from '../../../common/Tooltip';
+
+import { WEEK_DAYS } from '../../../../../utils/moment';
+import Tooltip from '../../../../common/Tooltip';
 
 const Index = () => {
   return (

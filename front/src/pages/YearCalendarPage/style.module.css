@@ -1,0 +1,5 @@
+.year_calendar { margin:5px; margin-left: 15px; padding:20px; width: 100%; height: 87vh; display: flex; flex-wrap: wrap; justify-content: space-around; overflow-y: auto; } 
+
+@media (min-width: 1500px){
+ .year_calendar { margin-left: 40px; } 
+ }

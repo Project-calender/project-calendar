@@ -15,7 +15,9 @@ const authJWT = require('../utils/authJWT');
 const { client } = require("../utils/redis");
 
 
+
 router.post('/getPrivateEvent', authJWT, async (req, res, next) => {
+
   /*
     {
       "startDate":,
@@ -23,32 +25,33 @@ router.post('/getPrivateEvent', authJWT, async (req, res, next) => {
     }
   */
   const exUser = await User.findOne({
-      where: {
-          id: 1
-      }
-  })
+    where: {
+      id: 1,
+    },
+  });
   let startDate = String(req.body.startDate).split("-");
-  startDate[2] = String(Number(startDate[2]))
-  startDate = startDate.join("-")  
+  startDate[2] = String(Number(startDate[2]));
+  startDate = startDate.join("-");
   let endDate = String(req.body.endDate).split("-");
-  endDate[2] = String(Number(endDate[2])+1)
-  endDate = endDate.join("-")
-  console.log(startDate)
-  console.log(endDate)
+  endDate[2] = String(Number(endDate[2]) + 1);
+  endDate = endDate.join("-");
+  console.log(startDate);
+  console.log(endDate);
   const exEvent = await exUser.getMyEvent({
-      attributes: ['StartTime'],
-      where: {
-          startTime: {
-              [Op.between]: [startDate, endDate]
-          }
-      }
-  })  
-  return res.status(200).json({exEvent : exEvent})
-})
-
+    attributes: ["StartTime"],
+    where: {
+      startTime: {
+        [Op.between]: [startDate, endDate],
+      },
+    },
+  });
+  return res.status(200).json({ exEvent: exEvent });
+});
 
 // 개인이벤트 만들기
+
 router.post('/createPrivateEvent', authJWT, async (req, res, next) => {
+
   /*
     "name": ,
     "color": ,
@@ -57,36 +60,41 @@ router.post('/createPrivateEvent', authJWT, async (req, res, next) => {
     "startTime": ,
     "endTime": 
   */
-  const t = await sequelize.transaction()
-  const f = await sequelize.transaction()
+  const t = await sequelize.transaction();
+  const f = await sequelize.transaction();
   try {
     const exUser = await User.findOne({
       where: {
-          id: 1
-      }
-    })
-    const event = await PrivateEvent.create({
-      name: req.body.name,
-      color: req.body.color,
-      priority: req.body.priority,
-      memo: req.body.memo,
-      startTime: req.body.startTime,
-      endTime: req.body.endTime,
-    }, { transaction: t })
-    await t.commit()
-    const privateEvent = await exUser.addMyEvent(event, { transaction: f })
-    await f.commit()
-    res.status(201).json(privateEvent)
-  } catch(error) {
-      console.error(error)
-      await t.rollback()
-      await f.rollback()
-      next(error)
+        id: 1,
+      },
+    });
+    const event = await PrivateEvent.create(
+      {
+        name: req.body.name,
+        color: req.body.color,
+        priority: req.body.priority,
+        memo: req.body.memo,
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
+      },
+      { transaction: t }
+    );
+    await t.commit();
+    const privateEvent = await exUser.addMyEvent(event, { transaction: f });
+    await f.commit();
+    res.status(201).json(privateEvent);
+  } catch (error) {
+    console.error(error);
+    await t.rollback();
+    await f.rollback();
+    next(error);
   }
-})
+});
 
 // 개인이벤트 업데이트
+
 router.post('/editPrivateEvent', authJWT, async (req, res, next) => {
+
   /*
     {
       "eventId" : , 
@@ -99,73 +107,76 @@ router.post('/editPrivateEvent', authJWT, async (req, res, next) => {
     }
   */
   try {
-      const exUser = await User.findOne({
-          where: {
-              id: 1
-          }
-      })
-      console.log(exUser)
-      const event = await PrivateEvent.findOne({
-        id: req.body.eventId
-      })
-      const privateEvent = await event.update({
-          name: req.body.name,
-          color: req.body.color,
-          priority: req.body.priority,
-          memo: req.body.memo,
-          startTime: req.body.startTime,
-          endTime: req.body.endTime,
-      }) 
-      res.status(201).json(privateEvent)
+    const exUser = await User.findOne({
+      where: {
+        id: 1,
+      },
+    });
+    console.log(exUser);
+    const event = await PrivateEvent.findOne({
+      id: req.body.eventId,
+    });
+    const privateEvent = await event.update({
+      name: req.body.name,
+      color: req.body.color,
+      priority: req.body.priority,
+      memo: req.body.memo,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
+    });
+    res.status(201).json(privateEvent);
   } catch (err) {
-      console.error(err);
-      next(err)
+    console.error(err);
+    next(err);
   }
-})
+});
 
 //개인 이벤트 삭제
+
 router.post('/deletePrivateEvent', authJWT, async (req, res, next) => {
+
   /*
     {
       "privateEventId": 
     }
   */
-  const t = await sequelize.transaction()
-  const f = await sequelize.transaction()
-  try{
+  const t = await sequelize.transaction();
+  const f = await sequelize.transaction();
+  try {
     const exUser = await User.findOne({
       where: {
-          id: 1
-      }
-    })
+        id: 1,
+      },
+    });
 
     const event = await exUser.getMyEvent({
       where: {
-        id: req.body.privateEventId
-      }
-    })
+        id: req.body.privateEventId,
+      },
+    });
     // 이미 삭제한 개인이벤트일 경우
-    if(event.length === 0) {
-      return res
-        .status(400)
-        .send({ message: "이미 삭제한 이벤트입니다" })
+    if (event.length === 0) {
+      return res.status(400).send({ message: "이미 삭제한 이벤트입니다" });
     }
-    await exUser.removeMyEvent(event, { transaction: t })
-    await t.commit()
-    await PrivateEvent.destroy({
-      where:{
-        id: req.body.privateEventId
-      }
-    }, { transaction: f })
-    await f.commit()
-    res.status(204).send({ success: true })
-  } catch(err) {
-    console.error(err)
-    await t.rollback()
-    await f.rollback()
-    next(err)
-  } 
-})
+    await exUser.removeMyEvent(event, { transaction: t });
+    await t.commit();
+    await PrivateEvent.destroy(
+      {
+        where: {
+          id: req.body.privateEventId,
+        },
+      },
+      { transaction: f }
+    );
+    await f.commit();
+    res.status(204).send({ success: true });
+  } catch (err) {
+    console.error(err);
+    await t.rollback();
+    await f.rollback();
+    next(err);
+  }
+});
 
 router.post("/signin", async (req, res, next) => {
   /*
@@ -238,6 +249,7 @@ router.post("/signup", async (req, res, next) => {
       UserId: createdUser.id
     })
     
+
     res.status(201).send({ success: true });
     console.log("회원가입 확인");
   } catch (error) {

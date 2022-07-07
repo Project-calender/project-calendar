@@ -12,8 +12,8 @@ const Index = ({ title, calendars }) => {
   return (
     <details className={styles.calendar_details} open>
       <summary onClick={handleSummaryToggle}>
-        {title}
-        <FontAwesomeIcon icon={toggle ? faAngleDown : faAngleUp} />
+        <em>{title}</em>
+        <FontAwesomeIcon icon={toggle ? faAngleUp : faAngleDown} />
       </summary>
       {calendars.map(calendar => (
         <CalendarInfo

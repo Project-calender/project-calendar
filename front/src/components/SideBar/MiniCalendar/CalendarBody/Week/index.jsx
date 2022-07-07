@@ -2,11 +2,11 @@ import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectDate } from '../../../../store/date';
-import Moment from '../../../../utils/moment';
-import { stateSelectedDate } from '../../../../store/selectors/date';
+import { stateSelectedDate } from '../../../../../store/selectors/date';
+import { selectDate } from '../../../../../store/date';
+import Moment from '../../../../../utils/moment';
 
-const Index = ({ week }) => {
+const Index = ({ week, month }) => {
   const selectedDate = useSelector(stateSelectedDate);
   const dispatch = useDispatch();
 
@@ -15,8 +15,8 @@ const Index = ({ week }) => {
       {week.map((date, index) => (
         <td
           key={index}
-          className={`${initDateClassName(date, selectedDate)}`}
-          onClick={() => dispatch(selectDate(date.time))}
+          className={`${initDateClassName(date, month, selectedDate)}`}
+          onClick={() => dispatch(selectDate(date))}
         >
           <em>{date.date}</em>
         </td>
@@ -25,12 +25,12 @@ const Index = ({ week }) => {
   );
 };
 
-function initDateClassName(date, selectedDate) {
+function initDateClassName(date, month, selectedDate) {
   let className = '';
   const today = new Moment(new Date());
-  if (isSameDate(date, today)) className = styles.date_today;
+  if (isOtherMonth(date, month)) className = styles.date_blur;
+  else if (isSameDate(date, today)) className = styles.date_today;
   else if (isSameDate(date, selectedDate)) className = styles.date_select;
-  else if (isOtherMonth(date, selectedDate)) className = styles.date_blur;
 
   return className;
 }
@@ -43,14 +43,13 @@ function isSameDate(date, otherDate) {
   );
 }
 
-function isOtherMonth(date, otherDate) {
-  return date.month !== otherDate.month;
+function isOtherMonth(date, month) {
+  return date.month !== month;
 }
 
 Index.propTypes = {
   week: PropTypes.array,
-  selectedDate: PropTypes.object,
-  setSelectedDate: PropTypes.func,
+  month: PropTypes.number,
 };
 
 export default Index;

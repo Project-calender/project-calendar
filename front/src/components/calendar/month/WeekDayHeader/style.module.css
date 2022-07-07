@@ -1,0 +1,10 @@
+.calendar_tr th{
+    position: relative;
+    top: 5px;
+    border-left: 1px solid #d9d9d9;
+    font-weight: 500;
+    font-size: 11px;
+    padding-top: 5px;
+    color: gray;
+ }
+ 
