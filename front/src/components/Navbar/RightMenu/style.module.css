@@ -36,7 +36,7 @@
 .more .icon{font-size: 20px; padding: 5px; box-sizing: border-box;}
 
 
-.user{width: 32px;height: 32px; margin-left: 10px; border-radius: 50%; background: #ccc;  position: relative;}
+.user{width: 32px;height: 32px; margin-left: 10px; border-radius: 50%; background: #eee;  position: relative;}
 .user img{width: 100%; height: 100%; object-fit: cover;  border-radius: 50%; cursor: pointer;}
 .user > em{width: 250%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; position: absolute;top: 125%;right: 3px; text-align: center; padding: 5px 0;}
 .user:hover > em{visibility: visible; opacity: 1;}
@@ -44,7 +44,7 @@
 .user_inpo{width: 360px; visibility: hidden; opacity: 0; background: #fff; position: absolute; top: 120%;right: 0; border-radius: 10px; box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;}
 .user.active .user_inpo{visibility: visible; opacity: 1;}
 .user_profile{height: 230px; background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 10px 10px 0 0;}
-.user_profile .user_img{width: 100px;height: 100px;background: #555; border-radius: 50%;}
+.user_profile .user_img{width: 100px;height: 100px;background: #eee; border-radius: 50%;}
 .user_profile h2{margin-top: 10px;font-size: 16px; font-weight: 400;}
 .user_profile em{font-size: 14px; color: #555;}
 .user_profile button{padding: 5px 20px; border-radius: 30px; border: 1px solid #ccc; margin-top: 10px; background: #fff; cursor: pointer;}
@@ -54,7 +54,7 @@
 .account ul{}
 .account ul li{width: 100%;height: 50px; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; cursor: pointer;}
 .account ul li:hover{background: #eee;}
-.account ul li .account_img{width: 30px;height: 30px; background: #ccc; border-radius: 50%;}
+.account ul li .account_img{width: 30px;height: 30px; background: #eee; border-radius: 50%;}
 .account ul li .account_text{margin-left: 10px;}
 .account ul li .account_text p{font-size: 14px; line-height: 14px;}
 .account ul li .account_text p:last-child{color: #555;}

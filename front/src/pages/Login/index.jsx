@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
 import axios from 'axios';
 import { CALENDAR_URL } from './../../constants/path';
+import { useEffect } from 'react';
+//import instance from '../../utils/token'; api요청시 accessToken토큰 포함 시키기
 
 const Index = () => {
   let navigate = useNavigate();
@@ -31,13 +33,32 @@ const Index = () => {
       .post('http://15.164.226.74/api/user/signin', loginData)
       .then(res => {
         console.log('성공', res);
+        saveWebStorage(res);
         navigate(`${CALENDAR_URL.DAY}`);
       })
       .catch(error => {
         console.log('실패', error);
-        alert(`에러코드 ${error}`);
+        if (error.response.status == 401) {
+          alert(`아이디와 비밀번호를 확인해주세요.`);
+        }
       });
   }
+
+  //웹 스토리지에 사용자 정보, 토큰 저장 함수
+  function saveWebStorage(res) {
+    localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken));
+    sessionStorage.setItem('accessToken', JSON.stringify(res.data.accessToken));
+    localStorage.setItem(
+      'userInpo',
+      JSON.stringify(res.data.fullUserWithoutPassword),
+    );
+  }
+
+  useEffect(() => {
+    sessionStorage.getItem('accessToken')
+      ? navigate(`${CALENDAR_URL.DAY}`)
+      : null;
+  }, []);
 
   return (
     <div>
