@@ -8,14 +8,12 @@ import SubscriptionCalendarList from './SubscriptionCalendarList';
 import MiniCalendar from './MiniCalendar';
 
 const Index = ({ isSideBarOn }) => {
-  function closeSideBar() {
-    return isSideBarOn ? '' : styles.close;
-  }
-
   return (
-    <aside className={`${styles.sidebar} ${closeSideBar()}`}>
+    <aside
+      className={`${styles.sidebar} ${!isSideBarOn ? styles.close : null}`}
+    >
       <div className={styles.sidebar_event_button}>
-        <AddEventButton closeSideBar={closeSideBar} />
+        <AddEventButton />
       </div>
       <div className={styles.sidebar_calender}>
         <MiniCalendar />
