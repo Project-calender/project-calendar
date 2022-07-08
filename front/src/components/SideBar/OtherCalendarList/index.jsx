@@ -4,10 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import CalenarList from '../CalendarList';
-
-const calendars = [{ id: 0, calendarName: '대한민국의 휴일' }];
+import { useSelector } from 'react-redux';
+import { otherCalendarsSelector } from '../../../store/selectors/calendars';
 
 const Index = () => {
+  const calendars = useSelector(otherCalendarsSelector);
+
   return (
     <div className={styles.calendar}>
       <CalenarList title={'다른 캘린더'} calendars={calendars} />

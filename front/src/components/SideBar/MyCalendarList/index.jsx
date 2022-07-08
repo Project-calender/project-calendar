@@ -1,13 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { myCalendarsSelector } from '../../../store/selectors/calendars';
 
 import CalendarList from '../CalendarList';
 
-const calendars = [...Array(15)].map((_, num) => ({
-  id: num - 1,
-  calendarName: num === 0 ? '사용자' : `스터디 ${num}`,
-}));
-
 const Index = () => {
+  const calendars = useSelector(myCalendarsSelector);
   return <CalendarList title={'내 캘린더'} calendars={calendars} />;
 };
 

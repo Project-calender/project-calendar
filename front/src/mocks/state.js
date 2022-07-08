@@ -1,63 +1,67 @@
-export const user = {
-  id: 101,
-  email: 'user@naver.com',
-  nickname: '사용자',
-  checked: [1, 2, 3],
-};
+export default {
+  USER: {
+    id: 5,
+    email: 'user@naver.com',
+    nickname: '사용자',
+    checked: [1, 2, 3],
+  },
 
-export const calendars = [
-  {
+  PRIVATE_CALENDER: {
     calendarId: 0,
-    calendarName: '캘린더0',
+    calendarName: '사용자',
     color: '#D81B60',
-    owner: 101,
-    checked: true,
+    calendarHostId: 5,
   },
 
-  {
-    calendarId: 0,
-    calendarName: '캘린더0',
-    color: '#D81B60',
-    owner: 101,
-    checked: true,
-  },
-  {
-    calendarId: 1,
-    calendarName: '캘린더1',
-    color: '#8E24AA',
-    owner: 101,
-    checked: true,
-  },
-  {
-    calendarId: 2,
-    calendarName: '캘린더2',
-    color: '#7CB342',
-    owner: 1,
-    checked: true,
-  },
-];
+  CALENDERS: [
+    {
+      calendarId: 1,
+      calendarName: '캘린더1',
+      color: '#D81B60',
+      calendarHostId: 5,
+    },
+    {
+      calendarId: 2,
+      calendarName: '대한민국의 휴일',
+      color: '#8E24AA',
+      calendarHostId: 6,
+    },
+    {
+      calendarId: 3,
+      calendarName: '캘린더2',
+      color: '#7CB342',
+      calendarHostId: 5,
+    },
+    {
+      calendarId: 3,
+      calendarName: '캘린더3',
+      color: '#7CB342',
+      calendarHostId: 6,
+    },
+  ],
 
-export const events = [
-  {
-    eventId: 0,
-    calendarId: 0,
+  EVENTS: [
+    {
+      eventId: 0,
+      calendarId: 0,
+      name: '이벤트명',
+      eventColor: '#AD1457',
+      calendarColor: '#AD1457',
+      startTime: new Date(),
+      endTime: new Date(),
+      allDay: true,
+    },
+  ],
+
+  EVENT: {
     name: '이벤트명',
-    eventColor: '#AD1457',
-    calendarColor: '#AD1457',
+    color: '#AD1457',
+    priority: 1,
+    memo: '메모입니다.',
     startTime: new Date(),
     endTime: new Date(),
+    eventcalendarHostId: 101,
+    calendarId: 0,
     allDay: true,
   },
-];
-
-export const event = {
-  name: '이벤트명',
-  color: '#AD1457',
-  priority: 1,
-  memo: '메모입니다.',
-  startTime: new Date(),
-  endTime: new Date(),
-  eventHostId: 101,
-  calendarId: 0,
-  allDay: true,
 };

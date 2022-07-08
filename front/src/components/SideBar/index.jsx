@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import AddEventButton from './AddEventButton';
 import UserSearch from './UserSearch';
 import MyCalendarList from './MyCalendarList';
-import SubscriptionCalendarList from './SubscriptionCalendarList';
+import OtherCalendarList from './OtherCalendarList';
 import MiniCalendar from './MiniCalendar';
 
 const Index = ({ isSideBarOn }) => {
@@ -19,7 +19,7 @@ const Index = ({ isSideBarOn }) => {
         <MiniCalendar />
         <UserSearch />
         <MyCalendarList />
-        <SubscriptionCalendarList />
+        <OtherCalendarList />
       </div>
     </aside>
   );
