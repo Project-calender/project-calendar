@@ -3,19 +3,17 @@ import { userIdSelector } from './user';
 
 export const calendarSelector = (_, props) => props.calendar;
 
-export const privateCalendarSelector = state => state.calendars.private;
-
-export const groupCalendarsSelector = state => state.calendars.group;
+export const calendarsSelector = state => state.calendars;
 
 export const myCalendarsSelector = createSelector(
-  groupCalendarsSelector,
+  calendarsSelector,
   userIdSelector,
   (calendars, userId) =>
     calendars.filter(calendar => calendar.calendarHostId === userId),
 );
 
 export const otherCalendarsSelector = createSelector(
-  groupCalendarsSelector,
+  calendarsSelector,
   userIdSelector,
   (calendars, userId) =>
     calendars.filter(calendar => calendar.calendarHostId !== userId),

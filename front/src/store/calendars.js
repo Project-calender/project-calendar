@@ -3,7 +3,7 @@ import mock from '../mocks/state';
 
 const calendars = createSlice({
   name: 'calendars',
-  initialState: { private: mock.PRIVATE_CALENDER, group: mock.CALENDERS },
+  initialState: mock.CALENDERS,
   reducers: {
     setCalendars(state, { payload }) {
       state = payload;

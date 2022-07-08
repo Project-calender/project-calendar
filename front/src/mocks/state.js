@@ -6,14 +6,14 @@ export default {
     checked: [1, 2, 3],
   },
 
-  PRIVATE_CALENDER: {
-    calendarId: 0,
-    calendarName: '사용자',
-    color: '#D81B60',
-    calendarHostId: 5,
-  },
-
   CALENDERS: [
+    {
+      calendarId: 0,
+      calendarName: '사용자',
+      color: '#D81B60',
+      calendarHostId: 5,
+      type: 'private',
+    },
     {
       calendarId: 1,
       calendarName: '캘린더1',
