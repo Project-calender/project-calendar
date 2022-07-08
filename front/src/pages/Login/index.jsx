@@ -5,6 +5,8 @@ import styles from './style.module.css';
 import axios from 'axios';
 import { CALENDAR_URL } from './../../constants/path';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateUser } from '../../store/user';
 //import instance from '../../utils/token'; api요청시 accessToken토큰 포함 시키기
 
 const Index = () => {
@@ -33,6 +35,7 @@ const Index = () => {
       .post('http://15.164.226.74/api/user/signin', loginData)
       .then(res => {
         console.log('성공', res);
+
         saveWebStorage(res);
         navigate(`${CALENDAR_URL.DAY}`);
       })
@@ -45,13 +48,14 @@ const Index = () => {
   }
 
   //웹 스토리지에 사용자 정보, 토큰 저장 함수
+  const dispatch = useDispatch();
   function saveWebStorage(res) {
     localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken));
     sessionStorage.setItem('accessToken', JSON.stringify(res.data.accessToken));
-    localStorage.setItem(
-      'userInpo',
-      JSON.stringify(res.data.fullUserWithoutPassword),
-    );
+
+    const { id, email, nickname } = res.data.fullUserWithoutPassword;
+    dispatch(updateUser(res.data.fullUserWithoutPassword));
+    localStorage.setItem('userInpo', JSON.stringify({ id, email, nickname }));
   }
 
   useEffect(() => {
