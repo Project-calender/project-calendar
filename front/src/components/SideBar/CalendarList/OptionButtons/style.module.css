@@ -1,0 +1,3 @@
+.calendar_item_icon { text-align: right; width: 25%; } 
+.calendar_item_icon .icon_mark, .icon_option { width: 10px; visibility: hidden; opacity: 0; transition: all 0.4s; } 
+.calendar_item_icon .icon_option { padding-left: 25px; } 

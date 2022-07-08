@@ -17,7 +17,7 @@ export default {
     {
       calendarId: 1,
       calendarName: '캘린더1',
-      color: '#D81B60',
+      color: '#616161',
       calendarHostId: 5,
     },
     {
@@ -33,10 +33,16 @@ export default {
       calendarHostId: 5,
     },
     {
-      calendarId: 3,
+      calendarId: 4,
       calendarName: '캘린더3',
-      color: '#7CB342',
+      color: '#E4C441',
       calendarHostId: 6,
+    },
+    {
+      calendarId: 6,
+      calendarName: '캘린더5',
+      color: '#039BE5',
+      calendarHostId: 5,
     },
   ],
 

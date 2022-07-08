@@ -1,42 +1,48 @@
 import React from 'react';
 import styles from './style.module.css';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons';
-
 import PropTypes from 'prop-types';
 import Tooltip from '../../../common/Tooltip';
+import { checkCalendarSelector } from '../../../../store/selectors/user';
+import { useSelector } from 'react-redux';
+import OptionButtons from '../OptionButtons';
 
 const Index = ({ calendar }) => {
+  const checked = useSelector(state => checkCalendarSelector(state, calendar));
+
   return (
-    <div className={styles.calendarInfo}>
+    <div className={styles.calendar_item}>
       <label>
-        <input type="checkbox" />
+        <input
+          type="checkbox"
+          style={checkBoxStyle(checked)}
+          onChange={e => handleCheckBox(e)}
+          defaultChecked={checked}
+        />
         <Tooltip key={calendar.id} title={calendar.calendarName}>
           <p>{calendar.calendarName}</p>
         </Tooltip>
       </label>
-
-      <div className={styles.calendarInfo_icon}>
-        {calendar.type !== 'private' && (
-          <Tooltip title={'구독 취소'}>
-            <FontAwesomeIcon icon={faXmark} className={styles.icon_mark} />
-          </Tooltip>
-        )}
-        <Tooltip title={'옵션'}>
-          <FontAwesomeIcon
-            icon={faEllipsisVertical}
-            className={styles.icon_option}
-          />
-        </Tooltip>
-      </div>
+      <OptionButtons calendar={calendar} />
     </div>
   );
+
+  function handleCheckBox(e) {
+    const { background, border } = checkBoxStyle(e.target.checked);
+    e.target.style.background = background;
+    e.target.style.border = border;
+  }
+
+  function checkBoxStyle(checked) {
+    return {
+      background: checked ? calendar.color : 'white',
+      border: checked ? 'none' : `2px solid ${calendar.color}`,
+    };
+  }
 };
 
 Index.propTypes = {
   calendar: PropTypes.object,
-  remove: PropTypes.bool,
 };
 
 export default Index;

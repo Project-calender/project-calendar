@@ -1,13 +1,11 @@
-.calendarInfo { display: flex; justify-content: space-between; align-items: center; height: 32px; font-size: 14px; padding: 0px 20px; } 
-.calendarInfo:hover { background-color: #f8f8f8; } 
+.calendar_item { display: flex; justify-content: space-between; align-items: center; height: 32px; font-size: 14px; padding: 0px 20px; } 
+.calendar_item:hover { background-color: #f8f8f8; } 
 
-.calendarInfo label { display: flex; align-items: center; width: 80%; } 
+.calendar_item label { display: flex; align-items: center; width: 80%; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } 
 
-.calendarInfo label input { margin-right: 10px; } 
-.calendarInfo label p { width: 120px; margin: 10px 0px; text-align: left; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; } 
+.calendar_item label input { -moz-appearance:none; -webkit-appearance:none; -o-appearance:none; outline: none; content: none; border-radius: 3px; width: 18px; height: 18px; margin-right: 10px; transition: all .4s; } 
+.calendar_item label p { width: 120px; margin: 10px 0px; text-align: left; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; } 
 
-.calendarInfo_icon { text-align: right; width: 25%; } 
-.calendarInfo_icon .icon_mark, .icon_option { width: 10px; visibility: hidden; opacity: 0; transition: all 0.4s; } 
-.calendarInfo_icon .icon_option { padding-left: 25px; } 
-.calendarInfo:hover .icon_mark { visibility: visible; opacity: 1; } 
-.calendarInfo:hover .icon_option { visibility: visible; opacity: 1; } 
+.calendar_item label input:checked { content: url('../../../../../public/img/check-solid.svg'); border: none; padding: 2px; padding-left: 3px; } 
+
+.calendar_item:hover svg { visibility: visible; opacity: 1; } 
