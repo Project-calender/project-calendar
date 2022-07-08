@@ -5,12 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import { useDispatch, useSelector } from 'react-redux';
 import { addDate, selectDate } from '../../../store/date';
-import { stateSelectedDate } from '../../../store/selectors/date';
+import { selectedDateSelector } from '../../../store/selectors/date';
 import Moment from '../../../utils/moment';
 
 const Index = ({ toggleSideBar }) => {
   //redux 오늘 날짜 가지고 오기
-  let state = useSelector(stateSelectedDate);
+  let state = useSelector(selectedDateSelector);
   let dispatch = useDispatch();
 
   const today = new Moment().toObject();

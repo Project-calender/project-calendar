@@ -55,7 +55,7 @@ const Index = () => {
 
     const { id, email, nickname } = res.data.fullUserWithoutPassword;
     dispatch(updateUser(res.data.fullUserWithoutPassword));
-    localStorage.setItem('userInpo', JSON.stringify({ id, email, nickname }));
+    localStorage.setItem('userInfo', JSON.stringify({ id, email, nickname }));
   }
 
   useEffect(() => {

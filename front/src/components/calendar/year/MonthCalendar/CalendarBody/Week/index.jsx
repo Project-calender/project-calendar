@@ -2,14 +2,14 @@ import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { stateSelectedDate } from '../../../../../../store/selectors/date';
+import { selectedDateSelector } from '../../../../../../store/selectors/date';
 import { selectDate } from '../../../../../../store/date';
 import Moment from '../../../../../../utils/moment';
 import useNavigateDayCalendar from '../../../../../../hooks/useNavigateDayCalendar';
 
 const Index = ({ week, month }) => {
   const dispatch = useDispatch();
-  const selectedDate = useSelector(stateSelectedDate);
+  const selectedDate = useSelector(selectedDateSelector);
 
   const { moveDayCalendar } = useNavigateDayCalendar();
 
