@@ -10,7 +10,7 @@ import Tooltip from '../../../common/Tooltip';
 const Index = ({ calendar }) => {
   return (
     <div className={styles.calendar_item_icon}>
-      {calendar.type !== 'private' && (
+      {calendar.id !== 'private' && (
         <Tooltip title={'구독 취소'}>
           <FontAwesomeIcon icon={faXmark} className={styles.icon_mark} />
         </Tooltip>

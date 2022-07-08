@@ -32,8 +32,8 @@ const Index = ({
   let [changeDate, setChangeDate] = useState(`일`);
   const userProfile = useRef();
   const dateList = useRef();
-  let userInpo = localStorage.getItem('userInpo');
-  userInpo = JSON.parse(userInpo);
+  let userInfo = localStorage.getItem('userInfo');
+  userInfo = JSON.parse(userInfo);
 
   //일,주,연 버튼 팝업창 컨트롤
   function dateChange() {
@@ -222,8 +222,8 @@ const Index = ({
                   alt=""
                 />
               </div>
-              <h2>{userInpo.nickname}</h2>
-              <em>{userInpo.email}</em>
+              <h2>{userInfo.nickname}</h2>
+              <em>{userInfo.email}</em>
               <button>
                 <strong>Google</strong> 계정 관리
               </button>

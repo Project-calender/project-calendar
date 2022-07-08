@@ -14,7 +14,7 @@ const calendars = createSlice({
     },
 
     removeCalendar(state, { payload }) {
-      state = state.filter(calendar => calendar.calendarId !== payload);
+      state = state.filter(calendar => calendar.id !== payload);
     },
   },
 });

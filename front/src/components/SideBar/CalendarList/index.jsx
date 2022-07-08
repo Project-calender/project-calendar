@@ -11,7 +11,7 @@ const Index = ({ title, calendars }) => {
       <CalendarSummary title={title} />
 
       {calendars.map(calendar => (
-        <CalendarItem key={calendar.calendarId} calendar={calendar} />
+        <CalendarItem key={calendar.id} calendar={calendar} />
       ))}
     </details>
   );
