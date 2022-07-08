@@ -32,6 +32,8 @@ const Index = ({
   let [changeDate, setChangeDate] = useState(`일`);
   const userProfile = useRef();
   const dateList = useRef();
+  let userInpo = localStorage.getItem('userInpo');
+  userInpo = JSON.parse(userInpo);
 
   //일,주,연 버튼 팝업창 컨트롤
   function dateChange() {
@@ -81,6 +83,12 @@ const Index = ({
       setDateActive(false);
       setActiveClass(``);
     }
+  }
+
+  //로그아웃
+  function logout() {
+    sessionStorage.removeItem('accessToken');
+    navigate('/login');
   }
   return (
     <div>
@@ -199,20 +207,22 @@ const Index = ({
             }}
           >
             <Tooltip title="Google 계정">
-              <img src={`${process.env.PUBLIC_URL}/img/user_img.png`} alt="" />
+              <img
+                src={`${process.env.PUBLIC_URL}/img/join/profile.png`}
+                alt=""
+              />
             </Tooltip>
           </div>
-
           <div className={styles.user_inpo}>
             <div className={styles.user_profile}>
               <div className={styles.user_img}>
                 <img
-                  src={`${process.env.PUBLIC_URL}/img/user_img.png`}
+                  src={`${process.env.PUBLIC_URL}/img/join/profile.png`}
                   alt=""
                 />
               </div>
-              <h2>userName</h2>
-              <em>user@gmail.com</em>
+              <h2>{userInpo.nickname}</h2>
+              <em>{userInpo.email}</em>
               <button>
                 <strong>Google</strong> 계정 관리
               </button>
@@ -222,7 +232,7 @@ const Index = ({
                 <li>
                   <div className={styles.account_img}>
                     <img
-                      src={`${process.env.PUBLIC_URL}/img/user_img.png`}
+                      src={`${process.env.PUBLIC_URL}/img/join/profile.png`}
                       alt=""
                     />
                   </div>
@@ -238,7 +248,13 @@ const Index = ({
               </div>
             </div>
             <div className={styles.all_logout}>
-              <button>모든 계정에서 로그아웃</button>
+              <button
+                onClick={() => {
+                  logout();
+                }}
+              >
+                모든 계정에서 로그아웃
+              </button>
             </div>
             <div className={styles.service}>
               <ul>
