@@ -88,6 +88,7 @@ const Index = ({
   //로그아웃
   function logout() {
     sessionStorage.removeItem('accessToken');
+    localStorage.clear();
     navigate('/login');
   }
   return (
