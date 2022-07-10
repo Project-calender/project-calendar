@@ -21,11 +21,9 @@ module.exports = class Event extends Model {
         },
         startTime: {
           type: DataTypes.DATE,
-          allowNull: false,
         },
         endTime: {
           type: DataTypes.DATE,
-          allowNull: false,
         },
       },
       {
