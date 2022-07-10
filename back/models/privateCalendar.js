@@ -9,6 +9,10 @@ module.exports = class PrivateCalendar extends Model {
           type: DataTypes.STRING(30),
           allowNull: false,
         },
+        color: {
+          type: DataTypes.STRING(30),
+          defaultValue: "#004a9e",
+        },
       },
       {
         modelName: "PrivateCalendar",
@@ -22,5 +26,6 @@ module.exports = class PrivateCalendar extends Model {
   }
   static associate(db) {
     db.PrivateCalendar.belongsTo(db.User);
+    db.PrivateCalendar.hasMany(db.PrivateEvent);
   }
 };

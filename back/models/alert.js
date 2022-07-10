@@ -22,7 +22,7 @@ module.exports = class Alert extends Model {
           type: DataTypes.INTEGER,
         },
         eventDate: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.DATE,
         },
       },
       {

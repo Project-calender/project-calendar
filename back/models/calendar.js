@@ -34,6 +34,6 @@ module.exports = class Calendar extends Model {
       as: "HostCalendar",
       foreignKey: "HostCalendarId",
     });
-    db.Calendar.hasMany(db.Event);
+    db.Calendar.hasMany(db.Event, { as: "GroupEvents" });
   }
 };

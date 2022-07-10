@@ -1,19 +1,14 @@
 const express = require("express");
 
 const { sequelize } = require("../models");
-const { User } = require("../models");
-const { Calendar } = require("../models");
-const { CalendarMember } = require("../models");
-const { Invite } = require("../models");
 const { Alert } = require("../models");
 const router = express.Router();
-const { Op } = require("sequelize");
+const authJWT = require("../utils/authJWT");
 
-router.get("/", async (req, res, next) => {
+router.get("/getAlerts", authJWT, async (req, res, next) => {
   try {
-    //req.user.id
     const alerts = await Alert.findAll({
-      where: { UserId: 2 },
+      where: { UserId: req.myId },
       attributes: [
         "type",
         "content",
@@ -30,7 +25,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/read", async (req, res, next) => {
+router.post("/read", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     const alert = await Alert.find({
