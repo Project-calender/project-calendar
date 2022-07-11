@@ -11,6 +11,9 @@ const redisClient = require("../utils/redis");
 const authJWT = require("../utils/authJWT");
 const { sequelize, User, ProfileImage } = require("../models");
 
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
 dotenv.config();
 AWS.config.update({
   accessKeyId: process.env.S3_ACCESS_KEY,
