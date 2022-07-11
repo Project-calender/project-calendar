@@ -11,7 +11,7 @@ const Index = ({ state }) => {
   useEffect(() => {
     let morningTime = [];
     let afternoonTime = [];
-    for (let i = 1; i <= 11; i++) {
+    for (let i = 0; i <= 11; i++) {
       morningTime.push(`오전 ${i}시`);
     }
     for (let i = 1; i <= 11; i++) {
@@ -21,50 +21,24 @@ const Index = ({ state }) => {
       year: state.year,
       month: state.month,
       date: state.date,
-      morningTime: morningTime,
-      afternoonTime: afternoonTime,
+      time: [...morningTime, '오후 12시', ...afternoonTime],
     });
   }, [state]);
+
   return (
     <div className={styles.today_talbe}>
       <table>
         <tbody>
-          <tr>
-            <th>
-              <em></em>
-            </th>
-            <td></td>
-          </tr>
-          {timeTable.morningTime &&
-            timeTable.morningTime.map((item, index) => {
+          {timeTable.time &&
+            timeTable.time.map((item, index) => {
               return (
                 <tr key={index}>
                   <th>
                     <em>{item}</em>
                   </th>
-                  <td></td>
-                </tr>
-              );
-            })}
-          <tr>
-            <th>
-              <em>오후 12시</em>
-            </th>
-            <td>
-              <div className={styles.td_text}>
-                <p>(제목 없음)</p>
-                <p>오전 1시~2시</p>
-              </div>
-            </td>
-          </tr>
-          {timeTable.afternoonTime &&
-            timeTable.afternoonTime.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <th>
-                    <em>{item}</em>
-                  </th>
-                  <td></td>
+                  <td data-item={index}>
+                    <div className={styles.td_text}></div>
+                  </td>
                 </tr>
               );
             })}
