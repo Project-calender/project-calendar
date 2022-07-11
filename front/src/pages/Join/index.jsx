@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import {
   faExclamationCircle,
   faAngleRight,
+  faCameraRetro,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import { useNavigate } from 'react-router-dom';
 import { USER_URL } from './../../constants/path';
@@ -30,13 +31,31 @@ const Index = () => {
   let [userPasswordCheck, setUserPasswordCheck] = useState(false); //비밀번호 체크
   let [PasswordCheck, setPasswordCheck] = useState(false); //비밀번호 확인 체크
   let [userNameCheck, setUserNameCheck] = useState(false); //이름 체크
+  let [fileImg, setFileImg] = useState(''); //사용자가 업로드한 이미지 파일 저장
+  let [fileData, setFileData] = useState(undefined); //서버로 전송할 프로필 이미지
+
+  // 사용자가 업로드한 이미지 미리보기
+  const saveFileImage = e => {
+    setFileImg(URL.createObjectURL(e.target.files[0]));
+  };
+
+  //input file로 선택한 이미지를 저장
+  const onChangeImg = e => {
+    const uploadFile = e.target.files[0];
+    const formData = new FormData();
+    formData.append('files', uploadFile);
+    setFileData(formData);
+  };
 
   //ajax 데이터
   const joinData = {
     email: inputValue.userEmail,
     password: inputValue.userPassword,
     nickname: inputValue.userName,
+    profile: fileData,
   };
+
+  console.log(joinData);
 
   function sendJoinForm() {
     axios
@@ -179,7 +198,35 @@ const Index = () => {
         </em>
       </nav>
       <section className={styles.section}>
-        <form className={styles.join_form}>
+        <form
+          className={styles.join_form}
+          encType="multipary/form-data"
+          method="post"
+        >
+          <div className={styles.profile}>
+            <div className={styles.profile_img}>
+              {fileImg ? (
+                <img src={fileImg} alt="" />
+              ) : (
+                <img
+                  src={`${process.env.PUBLIC_URL}/img/join/profile.png`}
+                  alt=""
+                />
+              )}
+            </div>
+            <div className={styles.profile_put}>
+              <FontAwesomeIcon icon={faCameraRetro} className={styles.icon} />
+              <input
+                type="file"
+                id="profile_upload"
+                accept="image/*"
+                onChange={e => {
+                  saveFileImage(e);
+                  onChangeImg(e);
+                }}
+              />
+            </div>
+          </div>
           <div className={`${styles.email} ${styles.join_input_box}`}>
             <input
               type="text"
