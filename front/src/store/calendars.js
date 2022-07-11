@@ -1,9 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import mock from '../mocks/state';
 
+const privateCalendar = mock.CALENDER.PRIVATE_CALENDER;
+const initialState = mock.CALENDER.GROUP_CALENDERS;
+initialState.unshift(privateCalendar);
+
 const calendars = createSlice({
   name: 'calendars',
-  initialState: mock.CALENDERS,
+  initialState: initialState,
   reducers: {
     setCalendars(state, { payload }) {
       state = payload;

@@ -7,10 +7,10 @@ import { faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import Tooltip from '../../../common/Tooltip';
 
-const Index = ({ calendar }) => {
+const Index = ({ calendarType }) => {
   return (
     <div className={styles.calendar_item_icon}>
-      {calendar.id !== 'private' && (
+      {calendarType !== 'private' && (
         <Tooltip title={'구독 취소'}>
           <FontAwesomeIcon icon={faXmark} className={styles.icon_mark} />
         </Tooltip>
@@ -26,7 +26,7 @@ const Index = ({ calendar }) => {
 };
 
 Index.propTypes = {
-  calendar: PropTypes.object,
+  calendarType: PropTypes.number,
 };
 
 export default Index;

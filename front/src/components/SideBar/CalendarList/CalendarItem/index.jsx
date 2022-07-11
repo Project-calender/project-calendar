@@ -34,7 +34,7 @@ const Index = ({ calendar }) => {
           <p>{calendar.name}</p>
         </Tooltip>
       </label>
-      <OptionButtons calendar={calendar} />
+      <OptionButtons calendarType={calendar.type} />
     </div>
   );
 

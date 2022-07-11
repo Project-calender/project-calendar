@@ -53,8 +53,8 @@ const Index = () => {
     localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken));
     sessionStorage.setItem('accessToken', JSON.stringify(res.data.accessToken));
 
-    const { id, email, nickname } = res.data.fullUserWithoutPassword;
-    dispatch(updateUser(res.data.fullUserWithoutPassword));
+    const { id, email, nickname } = res.data.UserData;
+    dispatch(updateUser(res.data.UserData));
     localStorage.setItem('userInfo', JSON.stringify({ id, email, nickname }));
   }
 
