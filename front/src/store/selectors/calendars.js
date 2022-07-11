@@ -7,7 +7,9 @@ export const myCalendarsSelector = createSelector(
   calendarsSelector,
   userIdSelector,
   (calendars, userId) =>
-    calendars.filter(calendar => calendar.ownerId === userId),
+    calendars.filter(
+      calendar => calendar.userId === userId || calendar.ownerId === userId,
+    ),
 );
 
 export const otherCalendarsSelector = createSelector(

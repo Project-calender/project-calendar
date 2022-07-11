@@ -1,6 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import mock from '../mocks/state';
 
+export const getCalendarCheckId = calendar =>
+  calendar.type === 'private' ? 'p' : `${calendar.id}`;
+
 const privateCalendar = mock.CALENDER.PRIVATE_CALENDER;
 const initialState = mock.CALENDER.GROUP_CALENDERS;
 initialState.unshift(privateCalendar);

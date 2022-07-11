@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import mock from '../mocks/state';
+import { getCalendarCheckId } from './calendars';
 
+const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
 const user = createSlice({
   name: 'user',
   initialState: {
-    ...JSON.parse(localStorage.getItem('userInfo')),
-    checkedCalendar: mock.USER.checkedCalendar.split(' '),
+    ...userInfo,
+    checkedCalendar: (userInfo.checkedCalender || '').split(','),
   },
   reducers: {
     updateUser(state, { payload }) {
@@ -13,7 +14,8 @@ const user = createSlice({
     },
 
     checkCalendar(state, { payload }) {
-      const target = `${payload}`;
+      console.log(payload);
+      const target = `${getCalendarCheckId(payload)}`;
       const checkedCalendar = new Set(state.checkedCalendar);
       if (checkedCalendar.has(target)) checkedCalendar.delete(target);
       else checkedCalendar.add(target);

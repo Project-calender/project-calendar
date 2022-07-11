@@ -113,7 +113,7 @@ export default {
       },
       {
         id: 6,
-        name: '캘린더1',
+        name: '캘린더3',
         color: '#D81B60',
         OwnerId: 3,
         CalendarMember: {
@@ -127,7 +127,7 @@ export default {
         GroupEvents: [
           {
             id: 7,
-            name: '이벤트1-1',
+            name: '이벤트3-1',
             color: '#3F51B5',
             priority: 1,
             memo: 'Asdfasdf',
@@ -138,7 +138,7 @@ export default {
           },
           {
             id: 8,
-            name: '이벤트1-2',
+            name: '이벤트3-2',
             color: '#4F56B5',
             priority: 1,
             memo: 'Asdfasdf',

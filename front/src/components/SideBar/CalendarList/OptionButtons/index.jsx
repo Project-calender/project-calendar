@@ -26,7 +26,7 @@ const Index = ({ calendarType }) => {
 };
 
 Index.propTypes = {
-  calendarType: PropTypes.number,
+  calendarType: PropTypes.string,
 };
 
 export default Index;

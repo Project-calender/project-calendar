@@ -15,7 +15,7 @@ const Index = ({ calendar }) => {
 
   const dispatch = useDispatch();
   function handleCheckBox(e) {
-    dispatch(checkCalendar(calendar.id));
+    dispatch(checkCalendar(calendar));
     const { background, border } = checkBoxStyle(e.target.checked);
     e.target.style.background = background;
     e.target.style.border = border;
