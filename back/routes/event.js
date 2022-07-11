@@ -474,4 +474,5 @@ router.get("/searchEvent", authJWT, async (req, res, next) => {
     next(error);
   }
 });
+
 module.exports = router;
