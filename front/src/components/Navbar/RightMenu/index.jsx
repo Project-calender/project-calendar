@@ -87,9 +87,22 @@ const Index = ({
 
   //로그아웃
   function logout() {
-    sessionStorage.removeItem('accessToken');
-    navigate('/login');
+    let accessToken = sessionStorage.getItem('accessToken');
+    axios
+      .post('http://15.164.226.74/api/user/logout', {
+        Authorization: accessToken,
+      })
+      .then(res => {
+        console.log('로그아웃 성공', res);
+        navigate(`${USER_URL.LOGIN}`);
+      })
+      .catch(error => {
+        console.log('로그아웃 실패', error);
+      });
+    localStorage.clear();
+    sessionStorage.clear();
   }
+  
   return (
     <div>
       <div className={styles.right_menu}>
