@@ -108,6 +108,7 @@ const Index = ({
   //로그아웃
   function logout() {
     let accessToken = sessionStorage.getItem('accessToken');
+
     // axios
     //   .post('http://15.164.226.74/api/user/logout', {
     //     Authorization: accessToken,
@@ -148,7 +149,9 @@ const Index = ({
       .catch(error => {
         console.log('실패', error);
       });
+
   }
+  
   return (
     <div>
       <div className={styles.right_menu}>

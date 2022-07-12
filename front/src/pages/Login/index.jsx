@@ -30,7 +30,7 @@ const Index = () => {
 
   function sendLoginForm() {
     axios
-      .post('http://15.164.226.74/api/user/signin', loginData)
+      .post('http://localhost:80/api/user/signin', loginData)
       .then(res => {
         console.log('성공', res);
         saveWebStorage(res);
