@@ -49,6 +49,10 @@ class Moment {
       time: this.time,
     };
   }
+
+  toDate() {
+    return new Date(this.time);
+  }
 }
 
 export default Moment;

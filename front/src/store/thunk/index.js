@@ -8,7 +8,6 @@ export const fetchEvents = createAsyncThunk('events/getAllEvent', async () => {
     id: response.privateEvents.id * -1,
   };
   const groupCalendars = response.groupEvents;
-
   const [privateEvents, groupEvents] = [
     privateCalendar.PrivateEvents.map(info => ({
       ...info,
