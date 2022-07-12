@@ -33,18 +33,13 @@ function getTitleDate(date) {
 
 function initClassName(date) {
   let className = styles.calendar_td + ' ';
-  const today = new Moment(new Date());
-  if (isSameDate(date, today)) className += styles.calendar_today;
+  if (isSameDate(date, new Moment())) className += styles.calendar_today;
 
   return className;
 }
 
 function isSameDate(date, otherDate) {
-  return (
-    date.year === otherDate.year &&
-    date.month === otherDate.month &&
-    date.date === otherDate.date
-  );
+  return date.time === otherDate.time;
 }
 
 Index.propTypes = {

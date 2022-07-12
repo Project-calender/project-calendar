@@ -1,7 +1,12 @@
 export const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
+export function Today() {
+  let today = new Date();
+  return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+}
+
 class Moment {
-  constructor(moment = new Date()) {
+  constructor(moment = Today()) {
     if (!moment.time) moment = convertDateToObject(moment);
     const { year, month, date, day, time } = moment;
 

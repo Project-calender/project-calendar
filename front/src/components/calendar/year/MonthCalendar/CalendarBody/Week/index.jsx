@@ -31,20 +31,15 @@ const Index = ({ week, month }) => {
 
 function initDateClassName(date, month, selectedDate) {
   let className = '';
-  const today = new Moment(new Date());
   if (isOtherMonth(date, month)) className = styles.date_blur;
-  else if (isSameDate(date, today)) className = styles.date_today;
+  else if (isSameDate(date, new Moment())) className = styles.date_today;
   else if (isSameDate(date, selectedDate)) className = styles.date_select;
 
   return className;
 }
 
 function isSameDate(date, otherDate) {
-  return (
-    date.year === otherDate.year &&
-    date.month === otherDate.month &&
-    date.date === otherDate.date
-  );
+  return date.time === otherDate.time;
 }
 
 function isOtherMonth(date, month) {
