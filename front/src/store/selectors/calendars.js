@@ -1,20 +1,19 @@
 import { createSelector } from '@reduxjs/toolkit';
+import { selectCalendars } from '../calendars';
 import { userIdSelector } from './user';
 
-export const calendarsSelector = state => state.calendars;
-
-export const myCalendarsSelector = createSelector(
-  calendarsSelector,
-  userIdSelector,
+export const myCalendarSelector = createSelector(
+  [selectCalendars, userIdSelector],
   (calendars, userId) =>
     calendars.filter(
-      calendar => calendar.userId === userId || calendar.ownerId === userId,
+      calendar => calendar.UserId === userId || calendar.OwnerId === userId,
     ),
 );
 
-export const otherCalendarsSelector = createSelector(
-  calendarsSelector,
-  userIdSelector,
+export const otherCalendarSelector = createSelector(
+  [selectCalendars, userIdSelector],
   (calendars, userId) =>
-    calendars.filter(calendar => calendar.ownerId !== userId),
+    calendars.filter(
+      calendar => calendar.UserId !== userId && calendar.OwnerId !== userId,
+    ),
 );

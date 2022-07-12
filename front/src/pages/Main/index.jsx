@@ -4,11 +4,14 @@ import styles from './style.module.css';
 import NavBar from '../../components/Navbar';
 import SideBar from '../../components/SideBar';
 import SideNav from '../../components/SideNav';
+import { useDispatch } from 'react-redux';
+import { fetchEvents } from '../../store/thunk';
 
 const Index = () => {
-  /* SideBar */
   let [isSideBarOn, toggleSideBar] = useState(true); //sideBar 숨김 컨트롤
 
+  const dispatch = useDispatch();
+  dispatch(fetchEvents());
   return (
     <div>
       <section className={styles.section}>

@@ -76,7 +76,7 @@ export default {
       {
         id: 5,
         name: '캘린더2',
-        color: '#D81B60',
+        color: '#C0CA33',
         OwnerId: USER_ID,
         CalendarMember: {
           authority: 3,
@@ -114,7 +114,7 @@ export default {
       {
         id: 6,
         name: '캘린더3',
-        color: '#D81B60',
+        color: '#A79B8E',
         OwnerId: 3,
         CalendarMember: {
           authority: 3,
@@ -146,6 +146,44 @@ export default {
             endTime: '2022-07-14T20:41:23.000Z',
             EventHostId: 3,
             CalendarId: 6,
+          },
+        ],
+      },
+      {
+        id: 7,
+        name: '캘린더4',
+        color: '#E67C73',
+        OwnerId: 3,
+        CalendarMember: {
+          authority: 3,
+          createdAt: '2022-07-10T01:44:01.000Z',
+          updatedAt: '2022-07-10T01:44:01.000Z',
+          deletedAt: null,
+          UserId: USER_ID,
+          CalendarId: 6,
+        },
+        GroupEvents: [
+          {
+            id: 9,
+            name: '이벤트4-1',
+            color: '#3F51B5',
+            priority: 1,
+            memo: 'Asdfasdf',
+            startTime: '2022-07-11T20:41:23.000Z',
+            endTime: '2022-07-12T20:41:23.000Z',
+            EventHostId: 3,
+            CalendarId: 7,
+          },
+          {
+            id: 10,
+            name: '이벤트4-2',
+            color: '#4F56B5',
+            priority: 1,
+            memo: 'Asdfasdf',
+            startTime: '2022-07-11T20:41:23.000Z',
+            endTime: '2022-07-14T20:41:23.000Z',
+            EventHostId: 3,
+            CalendarId: 7,
           },
         ],
       },

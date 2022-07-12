@@ -1,30 +1,27 @@
-import { createSlice } from '@reduxjs/toolkit';
-import mock from '../mocks/state';
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { fetchEvents } from './thunk';
 
 export const getCalendarCheckId = calendar =>
-  calendar.type === 'private' ? 'p' : `${calendar.id}`;
+  calendar.UserId ? 'p' : `${calendar.id}`;
 
-const privateCalendar = mock.CALENDER.PRIVATE_CALENDER;
-const initialState = mock.CALENDER.GROUP_CALENDERS;
-initialState.unshift(privateCalendar);
+export const calendarsAdapter = createEntityAdapter();
+const initialState = calendarsAdapter.getInitialState();
 
 const calendars = createSlice({
   name: 'calendars',
   initialState: initialState,
-  reducers: {
-    setCalendars(state, { payload }) {
-      state = payload;
-    },
-
-    insertCalendar(state, { payload }) {
-      state.push(payload);
-    },
-
-    removeCalendar(state, { payload }) {
-      state = state.filter(calendar => calendar.id !== payload);
-    },
+  reducers: {},
+  extraReducers: builder => {
+    builder.addCase(fetchEvents.fulfilled, (state, { payload }) =>
+      calendarsAdapter.setAll(state, payload.calendars),
+    );
   },
 });
 
 export const { action } = calendars.actions;
+
 export default calendars.reducer;
+
+export const { selectAll: selectCalendars } = calendarsAdapter.getSelectors(
+  state => state.calendars,
+);

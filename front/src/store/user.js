@@ -14,7 +14,6 @@ const user = createSlice({
     },
 
     checkCalendar(state, { payload }) {
-      console.log(payload);
       const target = `${getCalendarCheckId(payload)}`;
       const checkedCalendar = new Set(state.checkedCalendar);
       if (checkedCalendar.has(target)) checkedCalendar.delete(target);

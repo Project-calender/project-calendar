@@ -5,10 +5,10 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import CalenarList from '../CalendarList';
 import { useSelector } from 'react-redux';
-import { otherCalendarsSelector } from '../../../store/selectors/calendars';
+import { otherCalendarSelector } from '../../../store/selectors/calendars';
 
 const Index = () => {
-  const calendars = useSelector(otherCalendarsSelector);
+  const calendars = useSelector(otherCalendarSelector);
 
   return (
     <div className={styles.calendar}>
