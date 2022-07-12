@@ -19,6 +19,9 @@ module.exports = class User extends Model {
           type: DataTypes.STRING(200),
           allowNull: false,
         },
+        profileImage: {
+          type: DataTypes.STRING(200),
+        },
         checkedCalender: {
           type: DataTypes.STRING(200),
           defaultValue: "p",
@@ -64,6 +67,7 @@ module.exports = class User extends Model {
       foreignKey: "CalendarHostId",
     });
 
+    db.User.hasMany(db.ProfileImage);
     db.User.hasMany(db.Alert);
   }
 };
