@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import {
@@ -16,7 +16,9 @@ import {
 import Tooltip from './../../common/Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
-import { CALENDAR_URL } from '../../../constants/path';
+import { CALENDAR_URL, USER_URL } from '../../../constants/path';
+import instance from '../../../utils/token';
+//import axios from 'axios';
 
 const Index = ({
   activeClass,
@@ -32,8 +34,26 @@ const Index = ({
   let [changeDate, setChangeDate] = useState(`일`);
   const userProfile = useRef();
   const dateList = useRef();
-  let userInpo = localStorage.getItem('userInpo');
-  userInpo = JSON.parse(userInpo);
+  let userInfo = localStorage.getItem('userInfo');
+  userInfo = JSON.parse(userInfo);
+  let change = useLocation(); //url 주소 가지고 오기
+
+  //url 변경에 따른 changeDate 변경
+  useEffect(() => {
+    if (change.pathname == '/day') {
+      setChangeDate('일');
+    } else if (change.pathname == '/week') {
+      setChangeDate('주');
+    } else if (change.pathname == '/month') {
+      setChangeDate('월');
+    } else if (change.pathname == '/year') {
+      setChangeDate('연도');
+    } else if (change.pathname == '/agenda') {
+      setChangeDate('일정');
+    } else if (change.pathname == '/customday') {
+      setChangeDate('4일');
+    }
+  }, [change]);
 
   //일,주,연 버튼 팝업창 컨트롤
   function dateChange() {
@@ -88,8 +108,21 @@ const Index = ({
   //로그아웃
   function logout() {
     let accessToken = sessionStorage.getItem('accessToken');
-    axios
-      .post('http://15.164.226.74/api/user/logout', {
+
+    // axios
+    //   .post('http://15.164.226.74/api/user/logout', {
+    //     Authorization: accessToken,
+    //   })
+    //   .then(res => {
+    //     console.log('로그아웃 성공', res);
+    //     navigate(`${USER_URL.LOGIN}`);
+    //   })
+    //   .catch(error => {
+    //     console.log('로그아웃 실패', error);
+    //   });
+
+    instance
+      .post('/api/user/logout', {
         Authorization: accessToken,
       })
       .then(res => {
@@ -99,8 +132,24 @@ const Index = ({
       .catch(error => {
         console.log('로그아웃 실패', error);
       });
-    localStorage.clear();
-    sessionStorage.clear();
+
+    //localStorage.clear();
+    //sessionStorage.clear();
+  }
+
+  function test() {
+    instance
+      .post(`http://15.164.226.74/api/calendar/createGroupCalendar`, {
+        name: 'oh',
+        calendarColor: 'red',
+      })
+      .then(res => {
+        console.log('성공', res);
+      })
+      .catch(error => {
+        console.log('실패', error);
+      });
+
   }
   
   return (
@@ -148,7 +197,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate(CALENDAR_URL.WEEK);
+                  navigate(`${CALENDAR_URL.WEEK}`);
                   onDateChange(e);
                 }}
               >
@@ -234,10 +283,17 @@ const Index = ({
                   alt=""
                 />
               </div>
-              <h2>{userInpo.nickname}</h2>
-              <em>{userInpo.email}</em>
+              <h2>{userInfo.nickname}</h2>
+              <em>{userInfo.email}</em>
               <button>
-                <strong>Google</strong> 계정 관리
+                <strong
+                  onClick={() => {
+                    test();
+                  }}
+                >
+                  Google
+                </strong>{' '}
+                계정 관리
               </button>
             </div>
             <div className={styles.account}>
