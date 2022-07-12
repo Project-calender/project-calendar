@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-const { createClient, RedisClient } = require("redis");
+const redis = require("redis");
 
 const refresh = require("../utils/refresh");
 const { sequelize, Calendar } = require("../models");
@@ -111,17 +111,15 @@ router.post("/signup", async (req, res, next) => {
 
 router.get("/refresh", authJWT, refresh);
 
-router.post("/logout", authJWT, async (req, res) => {
-  // req.logout();
-  const client = createClient({
-    url: `redis://${process.env.REDIS_HOST}`,
-    password: process.env.REDIS_PASSWORD,
+router.post("/logout", authJWT, async (req, res, next) => {
+  const client = redisClient
+  client.get(req.myId, function(err, clientCheck) {
+    if (!clientCheck) {
+        return res.status(403).send({ message: "유효하지 않은 토큰입니다." });
+    }
+    client.del(req.myId)
+    return res.status(200).send("ok");
   });
-
-  await client.connect();
-  await client.del(req.body.user.id);
-  await client.disconnect();
-  res.status(200).send("ok");
 });
 
 module.exports = router;

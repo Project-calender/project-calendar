@@ -14,7 +14,7 @@ module.exports = {
     return jwt.sign(payload, "jwt-secretkey", {
       // secret으로 sign하여 발급하고 return
       algorithm: "HS256", // 암호화 알고리즘
-      expiresIn: "1h", // 유효기간
+      expiresIn: "1d", // 유효기간
     });
   },
   verify: (token) => {
