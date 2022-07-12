@@ -1,233 +1,154 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const passport = require("passport");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-const { createClient, RedisClient } = require('redis');
+const redis = require("redis");
 
-const refresh = require('../utils/refresh');
-const { sequelize, Calendar } = require("../models");
-const { User, PrivateEvent, PrivateCalendar } = require("../models");
+
 const router = express.Router();
-const jwt = require('../utils/jwt-util');
-const redisClient = require('../utils/redis');
-const authJWT = require('../utils/authJWT');
-const { client } = require("../utils/redis");
+const refresh = require("../utils/refresh");
+const jwt = require("../utils/jwt-util");
+const redisClient = require("../utils/redis");
+const authJWT = require("../utils/authJWT");
+const { sequelize, User, ProfileImage } = require("../models");
 
-
-
-router.post('/getPrivateEvent', authJWT, async (req, res, next) => {
-
-  /*
-    {
-      "startDate":,
-      "endDate":
-    }
-  */
-  const exUser = await User.findOne({
-    where: {
-      id: 1,
-    },
-  });
-  let startDate = String(req.body.startDate).split("-");
-  startDate[2] = String(Number(startDate[2]));
-  startDate = startDate.join("-");
-  let endDate = String(req.body.endDate).split("-");
-  endDate[2] = String(Number(endDate[2]) + 1);
-  endDate = endDate.join("-");
-  console.log(startDate);
-  console.log(endDate);
-  const exEvent = await exUser.getMyEvent({
-    attributes: ["StartTime"],
-    where: {
-      startTime: {
-        [Op.between]: [startDate, endDate],
-      },
-    },
-  });
-  return res.status(200).json({ exEvent: exEvent });
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
+dotenv.config();
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: "ap-northeast-2",
 });
 
-// 개인이벤트 만들기
+const uploadProfileImage = multer({
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: "baeminback",
+    key(req, file, cb) {
+      console.log(file);
+      cb(
+        null,
+        `ProfileImages/${Date.now()}_${path.basename(file.originalname)}`
+      );
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+});
 
-router.post('/createPrivateEvent', authJWT, async (req, res, next) => {
+router.post(
+  "/setUserProfileImage",
+  authJWT,
+  uploadProfileImage.single("image"),
+  async (req, res, next) => {
+    try {
+      const me = User.findOne({ where: { id: req.myId } });
 
-  /*
-    "name": ,
-    "color": ,
-    "priority": ,
-    "memo": ,
-    "startTime": ,
-    "endTime": 
-  */
+      await sequelize.transaction(async (t) => {
+        const profileImage = await ReviewImage.create(
+          {
+            src: req.file.location,
+          },
+          { transaction: t }
+        );
+        await me.addProfileImage(profileImage, { transaction: t });
+      });
+
+      return res.status(200).send({ success: true });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+);
+
+router.post(
+  "/changeUserProfileImage",
+  authJWT,
+  uploadProfileImage.single("image"),
+  async (req, res, next) => {
+    const t = await sequelize.transaction();
+    try {
+      const myProfileImage = await ProfileImage.findOne({
+        where: {
+          UserId: req.myId,
+        },
+      });
+
+      await myProfileImage.update(
+        {
+          src: req.file.location,
+        },
+        { transaction: t }
+      );
+      return res.status(200).send({ success: true });
+    } catch (error) {
+      console.error(error);
+      console.error(error);
+      await t.rollback();
+      next(error);
+    }
+  }
+);
+
+router.post("/checkedCalendar", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
-  const f = await sequelize.transaction();
   try {
-    const exUser = await User.findOne({
-      where: {
-        id: 1,
-      },
+    const me = User.findOne({
+      where: { id: req.myId },
     });
-    const event = await PrivateEvent.create(
+
+    await me.update(
       {
-        name: req.body.name,
-        color: req.body.color,
-        priority: req.body.priority,
-        memo: req.body.memo,
-        startTime: req.body.startTime,
-        endTime: req.body.endTime,
+        checkedCalender: req.body.checkedList,
       },
       { transaction: t }
     );
-    await t.commit();
-    const privateEvent = await exUser.addMyEvent(event, { transaction: f });
-    await f.commit();
-    res.status(201).json(privateEvent);
+
+    return res.status(200).status({ success: true });
   } catch (error) {
     console.error(error);
     await t.rollback();
-    await f.rollback();
     next(error);
   }
 });
 
-// 개인이벤트 업데이트
-
-router.post('/editPrivateEvent', authJWT, async (req, res, next) => {
-
-  /*
-    {
-      "eventId" : , 
-      "name" : ,
-      "color" : ,
-      "priority" : ,
-      "memo" : ,
-      "startTime" : ,
-      "endTime" : 
-    }
-  */
-  try {
-    const exUser = await User.findOne({
-      where: {
-        id: 1,
-      },
-    });
-    console.log(exUser);
-    const event = await PrivateEvent.findOne({
-      id: req.body.eventId,
-    });
-    const privateEvent = await event.update({
-      name: req.body.name,
-      color: req.body.color,
-      priority: req.body.priority,
-      memo: req.body.memo,
-      startTime: req.body.startTime,
-      endTime: req.body.endTime,
-    });
-    res.status(201).json(privateEvent);
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-});
-
-//개인 이벤트 삭제
-
-router.post('/deletePrivateEvent', authJWT, async (req, res, next) => {
-
-  /*
-    {
-      "privateEventId": 
-    }
-  */
-  const t = await sequelize.transaction();
-  const f = await sequelize.transaction();
-  try {
-    const exUser = await User.findOne({
-      where: {
-        id: 1,
-      },
-    });
-
-    const event = await exUser.getMyEvent({
-      where: {
-        id: req.body.privateEventId,
-      },
-    });
-    // 이미 삭제한 개인이벤트일 경우
-    if (event.length === 0) {
-      return res.status(400).send({ message: "이미 삭제한 이벤트입니다" });
-    }
-    await exUser.removeMyEvent(event, { transaction: t });
-    await t.commit();
-    await PrivateEvent.destroy(
-      {
-        where: {
-          id: req.body.privateEventId,
-        },
-      },
-      { transaction: f }
-    );
-    await f.commit();
-    res.status(204).send({ success: true });
-  } catch (err) {
-    console.error(err);
-    await t.rollback();
-    await f.rollback();
-    next(err);
-  }
-});
-
 router.post("/signin", async (req, res, next) => {
-  /*
-    {
-      "email": "sola2014@naver.com", 
-      "password": "lee2030!"
-    }
-  */
   const { email, password } = req.body;
   const user = await User.findOne({
     where: {
-      email: email
+      email: email,
     },
   });
   if (!user) {
-    return res.status(401).send({
-      ok: false,
-      message: 'user not exist',
+    return res.status(400).send({
+      message: "존재하지 않는 유저입니다!",
     });
   }
   const chk = await bcrypt.compare(password, user.password);
   if (!chk) {
-    return  res.status(401).send({
-      ok: false,
-      message: 'password is incorrect',
+    return res.status(400).send({
+      message: "비밀번호가 일치하지 않습니다!",
     });
   }
   const accessToken = jwt.sign(user);
   const refreshToken = jwt.refresh();
   redisClient.set(user.id, refreshToken);
-  const fullUserWithoutPassword = await User.findOne({
+  const UserData = await User.findOne({
     where: { email: user.email },
     attributes: {
-      exclude: ["password"],
+      exclude: ["password", "createdAt", "updatedAt", "deletedAt"],
     },
   });
   return res.status(200).send({
-    fullUserWithoutPassword,
+    UserData,
     refreshToken,
     accessToken,
   });
 });
 
 router.post("/signup", async (req, res, next) => {
-  /*
-    {
-      "email": , 
-      "password": ,
-      "email": 
-    }
-  */
   try {
     const exUser = await User.findOne({
       where: {
@@ -235,42 +156,46 @@ router.post("/signup", async (req, res, next) => {
       },
     });
     if (exUser) {
-      return res.status(403).send({ message: "이미 사용중인 아이디입니다." });
+      return res.status(403).send({ message: "이미 사용중인 아이디입니다!" });
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
-    const createdUser = await User.create({
-      email: req.body.email,
-      password: hashedPassword,
-      email: req.body.email,
+
+    await sequelize.transaction(async (t) => {
+      const newUser = await User.create(
+        {
+          email: req.body.email,
+          password: hashedPassword,
+          nickname: req.body.nickname,
+        },
+        { transaction: t }
+      );
+
+      await newUser.createPrivateCalendar(
+        {
+          name: "MyCalendar",
+        },
+        { transaction: t }
+      );
     });
 
-    await PrivateCalendar.create({
-      name: createdUser.email,
-      UserId: createdUser.id
-    })
-    
-
-    res.status(201).send({ success: true });
-    console.log("회원가입 확인");
+    return res.status(200).send({ success: true });
   } catch (error) {
     console.log(error);
     next(error);
   }
 });
 
-router.get('/refresh', authJWT, refresh);
+router.get("/refresh", authJWT, refresh);
 
-router.post("/logout", authJWT, async (req, res) => {
-  // req.logout();
-  const client = createClient({
-    url: `redis://${process.env.REDIS_HOST}`,
-    password: process.env.REDIS_PASSWORD,
-  })
-  
-  await client.connect()
-  await client.del(req.body.user.id)
-  await client.disconnect();
-  res.status(200).send("ok");
+router.post("/logout", authJWT, async (req, res, next) => {
+  const client = redisClient
+  client.get(req.myId, function(err, clientCheck) {
+    if (!clientCheck) {
+        return res.status(403).send({ message: "유효하지 않은 토큰입니다." });
+    }
+    client.del(req.myId)
+    return res.status(200).send("ok");
+  });
 });
 
 module.exports = router;

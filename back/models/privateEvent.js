@@ -27,6 +27,13 @@ module.exports = class PrivateEvent extends Model {
           type: DataTypes.DATE,
           allowNull: false,
         },
+        groupEventId: {
+          type: DataTypes.INTEGER,
+        },
+        state: {
+          type: DataTypes.STRING(20),
+          default: 0,
+        },
       },
       {
         modelName: "PrivateEvent",
@@ -39,6 +46,6 @@ module.exports = class PrivateEvent extends Model {
     );
   }
   static associate(db) {
-    db.PrivateEvent.belongsTo(db.User);
+    db.PrivateEvent.belongsTo(db.PrivateCalendar);
   }
 };

@@ -19,6 +19,13 @@ module.exports = class User extends Model {
           type: DataTypes.STRING(200),
           allowNull: false,
         },
+        profileImage: {
+          type: DataTypes.STRING(200),
+        },
+        checkedCalender: {
+          type: DataTypes.STRING(200),
+          defaultValue: "p",
+        },
       },
       {
         modelName: "User",
@@ -46,8 +53,7 @@ module.exports = class User extends Model {
     db.User.hasMany(db.Event, { as: "EventHost", foreignKey: "EventHostId" });
 
     //private
-    db.User.hasMany(db.PrivateCalendar, { as: "MyCalendar" });
-    db.User.hasMany(db.PrivateEvent, { as: "MyEvent" });
+    db.User.hasOne(db.PrivateCalendar);
 
     //User
     db.User.belongsToMany(db.User, {
@@ -60,5 +66,8 @@ module.exports = class User extends Model {
       as: "CalendarHostGuest",
       foreignKey: "CalendarHostId",
     });
+
+    db.User.hasMany(db.ProfileImage);
+    db.User.hasMany(db.Alert);
   }
 };
