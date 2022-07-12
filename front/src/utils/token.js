@@ -8,7 +8,7 @@ instance.interceptors.request.use(
   function (config) {
     const accessToken = sessionStorage.getItem('accessToken'); // access 토큰을 가져오는 변수
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.Authorization = accessToken;
     }
     return config;
   },
@@ -27,13 +27,16 @@ instance.interceptors.response.use(
 
     //조건문 상태코드 확인 필요함
     if (err.response && err.response.status === 401) {
-      const refreshToken = originalConfig.headers['refreshToken'];
+      let accessToken = sessionStorage.get('accessToken');
+      let refreshToken = localStorage.get('refreshToken');
+
       try {
         const data = await axios({
-          url: `http://15.164.226.74/`, //ajax 요청 url
+          url: `http://15.164.226.74/api/user/refresh`, //ajax 요청 url
           method: 'GET',
           headers: {
-            Authorization: refreshToken,
+            Authorization: accessToken,
+            refresh: refreshToken,
           },
         });
         if (data) {

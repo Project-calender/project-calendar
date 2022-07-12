@@ -3,9 +3,14 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import styles from './style.module.css';
+import useDragDate from '../../../../hooks/useDragDate';
 
 const Index = ({ state }) => {
+  const { handleMouseDown, handleMouseUp, handleDrag } = useDragDate();
   let [timeTable, setTimeTable] = useState({}); //현재 날짜 저장 및 시간 저장
+  let tiem = new Date().getTime();
+
+  console.log(tiem);
 
   //오전,오후 시간 생성
   useEffect(() => {
@@ -27,7 +32,11 @@ const Index = ({ state }) => {
 
   return (
     <div className={styles.today_talbe}>
-      <table>
+      <table
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleDrag}
+      >
         <tbody>
           {timeTable.time &&
             timeTable.time.map((item, index) => {
@@ -36,7 +45,12 @@ const Index = ({ state }) => {
                   <th>
                     <em>{item}</em>
                   </th>
-                  <td data-item={index}>
+                  <td
+                    data-item={tiem}
+                    onClick={e => {
+                      console.log(e.target.dataset);
+                    }}
+                  >
                     <div className={styles.td_text}></div>
                   </td>
                 </tr>
