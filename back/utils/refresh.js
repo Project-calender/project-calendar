@@ -3,10 +3,10 @@ const jwt = require("jsonwebtoken");
 
 const refresh = async (req, res) => {
   // access token과 refresh token의 존재 유무를 체크합니다.
-  req.headers.authorization = req.headers.authorization.substr(1);
-  req.headers.authorization = req.headers.authorization.slice(0, -1);
+  const authToken = req.headers.authorization.substr(1);
+  const refreshToken = req.headers.authorization.slice(0, -1);
 
-  if (!req.headers.authorization && !req.headers.refresh) {
+  if (!authToken && !refreshToken) {
     // access token 또는 refresh token이 헤더에 없는 경우
 
     res.status(400).send({
@@ -14,14 +14,14 @@ const refresh = async (req, res) => {
       message: "Access token and refresh token are need for refresh!",
     });
   }
-  const authToken = req.headers.authorization;
-  const refreshToken = req.headers.refresh;
 
+  console.log(authToken);
+  console.log(refreshToken);
   // access token 검증 -> expired여야 함.
   const authResult = verify(authToken);
 
   // access token 디코딩하여 user의 정보를 가져옵니다.
-  const decoded = jwt.decode(authToken);
+  const decoded = jwt.decode(refreshToken);
 
   // 디코딩 결과가 없으면 권한이 없음을 응답.
   if (decoded === null) {
