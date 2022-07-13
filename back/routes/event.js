@@ -467,7 +467,24 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
 //이거 잘 모르겠음..
 router.get("/searchEvent", authJWT, async (req, res, next) => {
   try {
-    res.status(200).send({ success: true });
+    const searchWord = req.body.searchWord;
+
+    const groupEvents = await me.getGroupCalendars({
+      attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+      include: [
+        {
+          model: Event,
+          as: "GroupEvents",
+          attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+          where: {
+            where: { name: { [Op.like]: "%" + searchWord + "%" } },
+          },
+          separate: true,
+        },
+      ],
+    });
+
+    res.status(200).send(groupEvents);
   } catch (error) {
     console.error(error);
     await t.rollback();

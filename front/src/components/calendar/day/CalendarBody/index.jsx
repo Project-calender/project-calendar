@@ -6,6 +6,7 @@ import styles from './style.module.css';
 import useDragDate from '../../../../hooks/useDragDate';
 
 const Index = ({ state }) => {
+
   const {
     handleMouseDown,
     handleMouseUp,

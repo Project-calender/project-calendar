@@ -1,9 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const Sequelize = require("sequelize");
-const Op = Sequelize.Op;
-const redis = require("redis");
-
+const dotenv = require("dotenv");
+const { createClient } = require("redis");
 
 const router = express.Router();
 const refresh = require("../utils/refresh");
@@ -122,27 +121,27 @@ router.post("/signin", async (req, res, next) => {
     },
   });
   if (!user) {
-    return res.status(400).send({
-      message: "존재하지 않는 유저입니다!",
+    return res.status(401).send({
+      message: "유저가 존재하지 않습니다!",
     });
   }
   const chk = await bcrypt.compare(password, user.password);
   if (!chk) {
-    return res.status(400).send({
-      message: "비밀번호가 일치하지 않습니다!",
+    return res.status(401).send({
+      message: "패스워드가 일치하지 않습니다!",
     });
   }
   const accessToken = jwt.sign(user);
   const refreshToken = jwt.refresh();
   redisClient.set(user.id, refreshToken);
-  const UserData = await User.findOne({
+  const userData = await User.findOne({
     where: { email: user.email },
     attributes: {
-      exclude: ["password", "createdAt", "updatedAt", "deletedAt"],
+      exclude: ["password"],
     },
   });
   return res.status(200).send({
-    UserData,
+    userData,
     refreshToken,
     accessToken,
   });
@@ -185,16 +184,16 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.get("/refresh", authJWT, refresh);
+router.get("/refresh", refresh);
 
 router.post("/logout", authJWT, async (req, res, next) => {
-  const client = redisClient
-  client.get(req.myId, function(err, clientCheck) {
+  const client = redisClient;
+  client.get(req.myId, function (err, clientCheck) {
     if (!clientCheck) {
-        return res.status(403).send({ message: "유효하지 않은 토큰입니다." });
+      return res.status(405).send({ message: "유효하지 않은 토큰입니다." });
     }
-    client.del(req.myId)
-    return res.status(200).send("ok");
+    client.del(req.myId);
+    return res.status(200).send({ message: "ok" });
   });
 });
 
