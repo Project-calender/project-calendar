@@ -121,9 +121,8 @@ const Index = ({
     //     console.log('로그아웃 실패', error);
     //   });
 
-    console.log(accessToken);
     instance
-      .post('http://15.164.226.74/api/user/logout', {
+      .post('/api/user/logout', {
         Authorization: accessToken,
       })
       .then(res => {
@@ -139,9 +138,10 @@ const Index = ({
 
   function test() {
     instance
-      .post(`http://15.164.226.74/api/calendar/createGroupCalendar`, {
-        name: 'oh',
-        calendarColor: 'red',
+
+      .post(`/api/calendar/createGroupCalendar`, {
+        calendarName: 'ohasd',
+        calendarColor: 'redasd',
       })
       .then(res => {
         console.log('성공', res);
