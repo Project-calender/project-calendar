@@ -121,20 +121,20 @@ const Index = ({
     //     console.log('로그아웃 실패', error);
     //   });
 
+    console.log(accessToken);
     instance
-      .post('/api/user/logout', {
+      .post('http://15.164.226.74/api/user/logout', {
         Authorization: accessToken,
       })
       .then(res => {
         console.log('로그아웃 성공', res);
         navigate(`${USER_URL.LOGIN}`);
+        localStorage.clear();
+        sessionStorage.clear();
       })
       .catch(error => {
         console.log('로그아웃 실패', error);
       });
-
-    //localStorage.clear();
-    //sessionStorage.clear();
   }
 
   function test() {
@@ -149,9 +149,8 @@ const Index = ({
       .catch(error => {
         console.log('실패', error);
       });
-
   }
-  
+
   return (
     <div>
       <div className={styles.right_menu}>
