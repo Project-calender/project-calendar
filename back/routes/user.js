@@ -184,7 +184,7 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.get("/refresh", authJWT, refresh);
+router.get("/refresh", refresh);
 
 router.post("/logout", authJWT, async (req, res, next) => {
   const client = redisClient;
