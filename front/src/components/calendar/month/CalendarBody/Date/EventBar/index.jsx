@@ -2,16 +2,18 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './style.module.css';
 
-const Index = ({ barInfo }) => {
+const Index = ({ eventBar }) => {
+  if (!eventBar) return;
+
   return (
-    <div className={styles.event_bar} data-scale={barInfo.scale}>
+    <div className={styles.event_bar} data-scale={eventBar.scale}>
       <p>(제목 없음)</p>
     </div>
   );
 };
 
 Index.propTypes = {
-  barInfo: PropTypes.object,
+  eventBar: PropTypes.object,
 };
 
 export default Index;
