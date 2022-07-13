@@ -1,18 +1,95 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const passport = require("passport");
 const Sequelize = require("sequelize");
-const Op = Sequelize.Op;
-const redis = require("redis");
+const dotenv = require("dotenv");
+const { createClient } = require("redis");
 
-const refresh = require("../utils/refresh");
-const { sequelize, Calendar } = require("../models");
-const { User, PrivateEvent, PrivateCalendar } = require("../models");
 const router = express.Router();
+const refresh = require("../utils/refresh");
 const jwt = require("../utils/jwt-util");
 const redisClient = require("../utils/redis");
 const authJWT = require("../utils/authJWT");
-const { client, mget } = require("../utils/redis");
+const { sequelize, User, ProfileImage } = require("../models");
+
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
+dotenv.config();
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: "ap-northeast-2",
+});
+
+const uploadProfileImage = multer({
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: "baeminback",
+    key(req, file, cb) {
+      console.log(file);
+      cb(
+        null,
+        `ProfileImages/${Date.now()}_${path.basename(file.originalname)}`
+      );
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+});
+
+router.post(
+  "/setUserProfileImage",
+  authJWT,
+  uploadProfileImage.single("image"),
+  async (req, res, next) => {
+    try {
+      const me = User.findOne({ where: { id: req.myId } });
+
+      await sequelize.transaction(async (t) => {
+        const profileImage = await ReviewImage.create(
+          {
+            src: req.file.location,
+          },
+          { transaction: t }
+        );
+        await me.addProfileImage(profileImage, { transaction: t });
+      });
+
+      return res.status(200).send({ success: true });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+);
+
+router.post(
+  "/changeUserProfileImage",
+  authJWT,
+  uploadProfileImage.single("image"),
+  async (req, res, next) => {
+    const t = await sequelize.transaction();
+    try {
+      const myProfileImage = await ProfileImage.findOne({
+        where: {
+          UserId: req.myId,
+        },
+      });
+
+      await myProfileImage.update(
+        {
+          src: req.file.location,
+        },
+        { transaction: t }
+      );
+      return res.status(200).send({ success: true });
+    } catch (error) {
+      console.error(error);
+      console.error(error);
+      await t.rollback();
+      next(error);
+    }
+  }
+);
 
 router.post("/checkedCalendar", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
@@ -37,7 +114,6 @@ router.post("/checkedCalendar", authJWT, async (req, res, next) => {
 });
 
 router.post("/signin", async (req, res, next) => {
-
   const { email, password } = req.body;
   const user = await User.findOne({
     where: {
@@ -112,14 +188,14 @@ router.post("/signup", async (req, res, next) => {
 
 router.get("/refresh", authJWT, refresh);
 
-router.post("/logout" , async (req, res, next) => {
-  console.log("fdasfsdffsd")
-  const client = redisClient
-  client.get(req.myId, function(err, clientCheck) {
+router.post("/logout", async (req, res, next) => {
+  console.log("fdasfsdffsd");
+  const client = redisClient;
+  client.get(req.myId, function (err, clientCheck) {
     if (!clientCheck) {
-        return res.status(405).send({ message: "유효하지 않은 토큰입니다." });
+      return res.status(405).send({ message: "유효하지 않은 토큰입니다." });
     }
-    client.del(req.myId)
+    client.del(req.myId);
     return res.status(200).send({ message: "ok" });
   });
 });

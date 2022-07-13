@@ -1,6 +1,9 @@
 const { verify } = require("./jwt-util");
 
 const authJWT = (req, res, next) => {
+  req.headers.authorization = req.headers.authorization.substr(1);
+  req.headers.authorization = req.headers.authorization.slice(0, -1);
+
   if (req.headers.authorization) {
     const token = req.headers.authorization; // header에서 access token을 가져옵니다.
     const result = verify(token); // token을 검증합니다.
