@@ -127,20 +127,19 @@ const Index = ({
       .then(res => {
         console.log('로그아웃 성공', res);
         navigate(`${USER_URL.LOGIN}`);
+        localStorage.clear();
+        sessionStorage.clear();
       })
       .catch(error => {
         console.log('로그아웃 실패', error);
       });
-
-    //localStorage.clear();
-    //sessionStorage.clear();
   }
 
   function test() {
     instance
-      .post(`http://15.164.226.74/api/calendar/createGroupCalendar`, {
-        name: 'oh',
-        calendarColor: 'red',
+      .post(`/api/calendar/createGroupCalendar`, {
+        calendarName: 'ohasd',
+        calendarColor: 'redasd',
       })
       .then(res => {
         console.log('성공', res);

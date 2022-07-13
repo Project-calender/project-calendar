@@ -61,7 +61,7 @@ const Index = () => {
   function saveWebStorage(res) {
     localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken));
     sessionStorage.setItem('accessToken', JSON.stringify(res.data.accessToken));
-    localStorage.setItem('userInfo', JSON.stringify(res.data.UserData));
+    localStorage.setItem('userInfo', JSON.stringify(res.data.userData));
   }
 
   useEffect(() => {
