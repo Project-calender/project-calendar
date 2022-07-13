@@ -122,28 +122,26 @@ router.post("/signin", async (req, res, next) => {
   });
   if (!user) {
     return res.status(401).send({
-      ok: false,
-      message: "user not exist",
+      message: "유저가 존재하지 않습니다!",
     });
   }
   const chk = await bcrypt.compare(password, user.password);
   if (!chk) {
     return res.status(401).send({
-      ok: false,
-      message: "password is incorrect",
+      message: "패스워드가 일치하지 않습니다!",
     });
   }
   const accessToken = jwt.sign(user);
   const refreshToken = jwt.refresh();
   redisClient.set(user.id, refreshToken);
-  const fullUserWithoutPassword = await User.findOne({
+  const userData = await User.findOne({
     where: { email: user.email },
     attributes: {
       exclude: ["password"],
     },
   });
   return res.status(200).send({
-    fullUserWithoutPassword,
+    userData,
     refreshToken,
     accessToken,
   });
@@ -188,8 +186,7 @@ router.post("/signup", async (req, res, next) => {
 
 router.get("/refresh", authJWT, refresh);
 
-router.post("/logout", async (req, res, next) => {
-  console.log("fdasfsdffsd");
+router.post("/logout", authJWT, async (req, res, next) => {
   const client = redisClient;
   client.get(req.myId, function (err, clientCheck) {
     if (!clientCheck) {
