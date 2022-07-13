@@ -1,6 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { selectCalendars } from '../calendars';
+import { calendarsAdapter } from '../calendars';
 import { userIdSelector } from './user';
+
+export const { selectAll: selectCalendars } = calendarsAdapter.getSelectors(
+  state => state.calendars,
+);
 
 export const myCalendarSelector = createSelector(
   [selectCalendars, userIdSelector],

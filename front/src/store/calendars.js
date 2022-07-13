@@ -21,7 +21,3 @@ const calendars = createSlice({
 export const { action } = calendars.actions;
 
 export default calendars.reducer;
-
-export const { selectAll: selectCalendars } = calendarsAdapter.getSelectors(
-  state => state.calendars,
-);

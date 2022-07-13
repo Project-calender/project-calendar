@@ -2,7 +2,7 @@ export const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 export function Today() {
   let today = new Date();
-  return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  return new Date(today.toDateString());
 }
 
 class Moment {
