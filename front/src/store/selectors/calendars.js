@@ -2,9 +2,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import { calendarsAdapter } from '../calendars';
 import { userIdSelector } from './user';
 
-export const { selectAll: selectCalendars } = calendarsAdapter.getSelectors(
-  state => state.calendars,
-);
+export const { selectAll: selectCalendars, selectById: selectoCalendarById } =
+  calendarsAdapter.getSelectors(state => state.calendars);
 
 export const myCalendarSelector = createSelector(
   [selectCalendars, userIdSelector],
@@ -20,4 +19,9 @@ export const otherCalendarSelector = createSelector(
     calendars.filter(
       calendar => calendar.UserId !== userId && calendar.OwnerId !== userId,
     ),
+);
+
+export const calendarSelector = createSelector(
+  [state => state, (_, id) => id],
+  (state, id) => selectoCalendarById(state, id),
 );

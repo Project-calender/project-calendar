@@ -23,7 +23,7 @@ export default {
         {
           id: 4,
           name: '이벤트2',
-          color: '#3F51B5',
+          color: '#009688',
           priority: 1,
           memo: '메모2',
           startTime: '2022-07-08T20:41:23.000Z',
@@ -63,7 +63,7 @@ export default {
           {
             id: 2,
             name: '이벤트1-2',
-            color: '#4F56B5',
+            color: '#D81B60',
             priority: 1,
             memo: 'Asdfasdf',
             startTime: '2022-07-11T20:41:23.000Z',
@@ -90,7 +90,7 @@ export default {
           {
             id: 5,
             name: '이벤트2-1',
-            color: '#3F51B5',
+            color: '#C0CA33',
             priority: 1,
             memo: 'Asdfasdf',
             startTime: '2022-07-11T20:41:23.000Z',
@@ -166,7 +166,7 @@ export default {
           {
             id: 9,
             name: '이벤트4-1',
-            color: '#3F51B5',
+            color: '#E67C73',
             priority: 1,
             memo: 'Asdfasdf',
             startTime: '2022-07-11T20:30:23.000Z',

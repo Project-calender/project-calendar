@@ -1,4 +1,4 @@
-.event_bar { height:1.3rem; width: 100%;  background: #4285f4; border-radius: 4px; margin-bottom: 2px; display: flex; align-items: center;} 
+.event_bar { height:1.3rem; width: 100%;  background: #4285f4; border-radius: 3px; margin-bottom: 2px; display: flex; align-items: center;} 
 .event_bar:hover { background: #2b6ed9; } 
 .event_bar > em { font-size: 0.72rem; vertical-align: middle; color: #fff; text-align: left; padding:0px 10px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
 
