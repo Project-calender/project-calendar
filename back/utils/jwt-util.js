@@ -33,9 +33,9 @@ module.exports = {
       };
     }
   },
-  refresh: () => {
+  refresh: (user) => {
     // refresh token 발급
-    return jwt.sign({}, "jwt-secretkey", {
+    return jwt.sign({ id: user.id }, "jwt-secretkey", {
       // refresh token은 payload 없이 발급
       algorithm: "HS256",
       expiresIn: "14d",

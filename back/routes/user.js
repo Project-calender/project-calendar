@@ -132,7 +132,7 @@ router.post("/signin", async (req, res, next) => {
     });
   }
   const accessToken = jwt.sign(user);
-  const refreshToken = jwt.refresh();
+  const refreshToken = jwt.refresh(user);
   redisClient.set(user.id, refreshToken);
   const userData = await User.findOne({
     where: { email: user.email },
