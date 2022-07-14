@@ -1,0 +1,8 @@
+.event_list {
+    width: 100%;
+    height: fit-content;
+    max-height: 80%;
+    background: red;
+    position: absolute;
+    overflow: hidden;
+}

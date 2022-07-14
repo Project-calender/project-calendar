@@ -7,6 +7,5 @@
 .calendar_today em:hover { background: #2351d1; } 
 
 
-.event_selection_container { height: calc(100% - 25px); position: relative; width: 100%; margin-top:5px; } 
-.event_list { width: 100%; } 
+.event_selection_container { position:relative; height: calc(100% - 25px); width: 100%; margin-top:5px; } 
 

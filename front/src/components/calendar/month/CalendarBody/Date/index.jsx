@@ -3,15 +3,12 @@ import PropTypes from 'prop-types';
 import styles from './style.module.css';
 import Moment from '../../../../../utils/moment';
 import useNavigateDayCalendar from '../../../../../hooks/useNavigateDayCalendar';
-// import { useSelector } from 'react-redux';
-// import { selectEventByTime } from '../../../../../store/selectors/events';
 
 import NewEvent from './NewEvent';
 import EventList from './EventList';
 
 const Index = ({ date }) => {
   const { moveDayCalendar } = useNavigateDayCalendar();
-  // const event = useSelector(state => selectEventByTime(state, date.time));
 
   return (
     <td className={initClassName(date)}>
@@ -21,7 +18,7 @@ const Index = ({ date }) => {
         data-date-id={date.time}
       >
         <NewEvent dateTime={date.time} />
-        <EventList />
+        <EventList date={date} />
         <div className={styles.event_list}></div>
       </div>
     </td>
