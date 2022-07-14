@@ -18,6 +18,12 @@ const authJWT = (req, res, next) => {
         message: result.message, // jwt가 만료되었다면 메세지는 'jwt expired'입니다.
       });
     }
+  } else {
+    //세션 스토리지에 access 토큰이 없는 경우
+    res.status(401).send({
+      ok:false,
+      message: "accessToken이 지급되지 않았습니다"
+    })
   }
 };
 
