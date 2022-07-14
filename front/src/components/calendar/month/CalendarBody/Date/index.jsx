@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from './style.module.css';
 import Moment from '../../../../../utils/moment';
@@ -9,6 +9,18 @@ import EventList from './EventList';
 
 const Index = ({ date }) => {
   const { moveDayCalendar } = useNavigateDayCalendar();
+  const containerDiv = useRef();
+  const [maxHeight, setMaxHight] = useState(0);
+
+  function handleResize() {
+    const height = containerDiv.current?.clientHeight;
+    if (height && maxHeight !== height) setMaxHight(height);
+  }
+
+  useEffect(() => {
+    setMaxHight(containerDiv.current.clientHeight);
+    window.addEventListener('resize', handleResize);
+  }, [containerDiv.current]);
 
   return (
     <td className={initClassName(date)}>
@@ -16,9 +28,10 @@ const Index = ({ date }) => {
       <div
         className={styles.event_selection_container}
         data-date-id={date.time}
+        ref={containerDiv}
       >
         <NewEvent dateTime={date.time} />
-        <EventList date={date} />
+        <EventList date={date} maxHeight={maxHeight} />
         <div className={styles.event_list}></div>
       </div>
     </td>

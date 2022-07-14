@@ -1,6 +1,6 @@
-.event_bar { height:23px; width: 100%;  background: #4285f4; border-radius: 4px; margin-bottom: 2px;} 
+.event_bar { height:1.3rem; width: 100%;  background: #4285f4; border-radius: 4px; margin-bottom: 2px; display: flex; align-items: center;} 
 .event_bar:hover { background: #2b6ed9; } 
-.event_bar p { vertical-align: middle; color: #fff; text-align: left; padding:0px 10px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
+.event_bar > em { font-size: 0.72rem; vertical-align: middle; color: #fff; text-align: left; padding:0px 10px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
 
 .event_bar { width: calc(100% + 1px - 5px); } 
 .event_bar[data-scale="1"] { width: calc(100% + 1px - 5px); } 
@@ -10,3 +10,9 @@
 .event_bar[data-scale="5"] { width: calc(100% * 5 + 5px - 5px); } 
 .event_bar[data-scale="6"] { width: calc(100% * 6 + 6px - 5px); } 
 .event_bar[data-scale="7"] { width: calc(100% * 7 + 7px - 5px); } 
+
+
+@media (max-height: 500px){
+   .event_bar { height:1rem; }
+   .event_bar > em { font-size: 0.65rem; } 
+}
