@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: `http://15.164.226.74`,
+  baseURL: `http://158.247.214.79`,
 });
 
 instance.interceptors.request.use(
@@ -29,7 +29,6 @@ instance.interceptors.response.use(
     if (err.response.status === 401) {
       let accessToken = sessionStorage.getItem('accessToken');
       let refreshToken = localStorage.getItem('refreshToken');
-
 
       try {
         const data = await axios({

@@ -2,9 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
-import axios from 'axios';
 import { CALENDAR_URL } from './../../constants/path';
 import { useEffect } from 'react';
+import instance from '../../utils/token';
 //import instance from '../../utils/token'; api요청시 accessToken토큰 포함 시키기
 
 const Index = () => {
@@ -29,8 +29,8 @@ const Index = () => {
   };
 
   function sendLoginForm() {
-    axios
-      .post('http://15.164.226.74/api/user/signin', loginData)
+    instance
+      .post('/api/user/signin', loginData)
       .then(res => {
         console.log('성공', res);
         saveWebStorage(res);
