@@ -4,10 +4,10 @@ import styles from './style.module.css';
 import CalendarHeader from './CalendarHeader';
 import CalendarBody from './CalendarBody';
 import { useSelector } from 'react-redux';
-import { stateSelectedDate } from '../../../store/selectors/date';
+import { selectedDateSelector } from '../../../store/selectors/date';
 
 const Index = () => {
-  const { year, month } = useSelector(stateSelectedDate);
+  const { year, month } = useSelector(selectedDateSelector);
 
   return (
     <div className={styles.calendar_wrap}>

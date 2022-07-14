@@ -2,9 +2,13 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
-import { CALENDAR_URL } from './../../constants/path';
+import { CALENDAR_PATH } from './../../constants/path';
 import { useEffect } from 'react';
-import axios from '../../utils/token';
+import { useDispatch } from 'react-redux';
+import { updateUser } from '../../store/user';
+
+import Axios from 'axios';
+import { BASE_URL, USER_URL } from '../../constants/api';
 
 const Index = () => {
   let navigate = useNavigate();
@@ -28,12 +32,12 @@ const Index = () => {
   };
 
   function sendLoginForm() {
-    axios
-      .post('/api/user/signin', loginData)
+    Axios.post(`${BASE_URL}${USER_URL.LOGIN}`, loginData)
       .then(res => {
         console.log('성공', res);
+
         saveWebStorage(res);
-        navigate(`${CALENDAR_URL.DAY}`);
+        navigate(`${CALENDAR_PATH.DAY}`);
       })
       .catch(error => {
         console.log('실패', error);
@@ -46,7 +50,7 @@ const Index = () => {
     //   .then(res => {
     //     console.log('성공', res);
     //     saveWebStorage(res);
-    //     navigate(`${CALENDAR_URL.DAY}`);
+    //     navigate(`${CALENDAR_PATH.DAY}`);
     //   })
     //   .catch(error => {
     //     console.log('실패', error);
@@ -57,15 +61,18 @@ const Index = () => {
   }
 
   //웹 스토리지에 사용자 정보, 토큰 저장 함수
+  const dispatch = useDispatch();
   function saveWebStorage(res) {
     localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken));
     sessionStorage.setItem('accessToken', JSON.stringify(res.data.accessToken));
+
+    dispatch(updateUser(res.data.userData));
     localStorage.setItem('userInfo', JSON.stringify(res.data.userData));
   }
 
   useEffect(() => {
     sessionStorage.getItem('accessToken')
-      ? navigate(`${CALENDAR_URL.DAY}`)
+      ? navigate(`${CALENDAR_PATH.DAY}`)
       : null;
   }, []);
 

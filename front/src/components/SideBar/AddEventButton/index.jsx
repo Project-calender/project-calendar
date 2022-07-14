@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
-const Index = ({ closeSideBar }) => {
+const Index = () => {
   return (
     <button className={styles.event_btn}>
       <img
@@ -12,11 +12,8 @@ const Index = ({ closeSideBar }) => {
         className={styles.event_img_plus}
         alt="addEventIcon"
       />
-      <em className={closeSideBar()}>만들기</em>
-      <FontAwesomeIcon
-        icon={faCaretDown}
-        className={`${styles.event_icon_caret} ${closeSideBar()}`}
-      />
+      <em>만들기</em>
+      <FontAwesomeIcon icon={faCaretDown} className={styles.event_icon_caret} />
     </button>
   );
 };

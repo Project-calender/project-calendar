@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectMonth } from '../../store/selectors/date';
+import { monthSelector } from '../../store/selectors/date';
 import styles from './style.module.css';
 
 import WeekDayHeader from '../../components/calendar/month/WeekDayHeader';
@@ -26,7 +26,7 @@ const Index = () => {
     else dispatch(addMonth(-1));
   }
 
-  const month = useSelector(selectMonth);
+  const month = useSelector(monthSelector);
   return (
     <div className={`test ${styles.calendar}`} onWheel={changeMonth}>
       <table

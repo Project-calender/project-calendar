@@ -4,24 +4,22 @@ import PropTypes from 'prop-types';
 import AddEventButton from './AddEventButton';
 import UserSearch from './UserSearch';
 import MyCalendarList from './MyCalendarList';
-import SubscriptionCalendarList from './SubscriptionCalendarList';
+import OtherCalendarList from './OtherCalendarList';
 import MiniCalendar from './MiniCalendar';
 
 const Index = ({ isSideBarOn }) => {
-  function closeSideBar() {
-    return isSideBarOn ? '' : styles.close;
-  }
-
   return (
-    <aside className={`${styles.sidebar} ${closeSideBar()}`}>
+    <aside
+      className={`${styles.sidebar} ${!isSideBarOn ? styles.close : null}`}
+    >
       <div className={styles.sidebar_event_button}>
-        <AddEventButton closeSideBar={closeSideBar} />
+        <AddEventButton />
       </div>
       <div className={styles.sidebar_calender}>
         <MiniCalendar />
         <UserSearch />
         <MyCalendarList />
-        <SubscriptionCalendarList />
+        <OtherCalendarList />
       </div>
     </aside>
   );
