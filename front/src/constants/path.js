@@ -1,4 +1,6 @@
-export const CALENDAR_URL = {
+export const BASE_PATH = '/calendar';
+
+export const CALENDAR_PATH = {
   MAIN: '/',
   DAY: '/day',
   WEEK: '/week',
@@ -8,7 +10,7 @@ export const CALENDAR_URL = {
   CUSTOMDAY: '/customday',
 };
 
-export const USER_URL = {
+export const USER_PATH = {
   LOGIN: '/login',
   JOIN: '/join',
 };
