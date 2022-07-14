@@ -10,7 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import { useNavigate } from 'react-router-dom';
 import { USER_URL } from './../../constants/path';
-import instance from '../../utils/token';
+import axios from '../../utils/token';
 
 const Index = () => {
   let navigate = useNavigate();
@@ -58,7 +58,7 @@ const Index = () => {
   console.log(joinData);
 
   function sendJoinForm() {
-    instance
+    axios
       .post('/api/user/signup', joinData)
       .then(res => {
         console.log('성공', res);
