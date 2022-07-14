@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 const Index = ({ date }) => {
   const events = useSelector(state => eventsSelector(state, date));
   if (!events) return;
-  console.log(events);
 
   return (
     <div className={styles.event_list}>

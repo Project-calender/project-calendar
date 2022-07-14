@@ -2,12 +2,11 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
-import axios from 'axios';
 import { CALENDAR_URL } from './../../constants/path';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../store/user';
-//import instance from '../../utils/token'; api요청시 accessToken토큰 포함 시키기
+import axios from '../../utils/token';
 
 const Index = () => {
   let navigate = useNavigate();
@@ -32,7 +31,7 @@ const Index = () => {
 
   function sendLoginForm() {
     axios
-      .post('http://15.164.226.74/api/user/signin', loginData)
+      .post('/api/user/signin', loginData)
       .then(res => {
         console.log('성공', res);
 
