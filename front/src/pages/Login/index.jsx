@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../store/user';
 
-import axios from 'axios';
+import Axios from 'axios';
 import { BASE_URL, USER_URL } from '../../constants/api';
 
 const Index = () => {
@@ -32,8 +32,7 @@ const Index = () => {
   };
 
   function sendLoginForm() {
-    axios
-      .post(`${BASE_URL}${USER_URL.LOGIN}`, loginData)
+    Axios.post(`${BASE_URL}${USER_URL.LOGIN}`, loginData)
       .then(res => {
         console.log('성공', res);
 
