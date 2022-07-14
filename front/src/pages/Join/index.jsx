@@ -2,7 +2,6 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import styles from './style.module.css';
-import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import {
   faExclamationCircle,
@@ -11,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import { useNavigate } from 'react-router-dom';
 import { USER_URL } from './../../constants/path';
+import axios from '../../utils/token';
 
 const Index = () => {
   let navigate = useNavigate();
@@ -59,7 +59,7 @@ const Index = () => {
 
   function sendJoinForm() {
     axios
-      .post('http://15.164.226.74/api/user/signup', joinData)
+      .post('/api/user/signup', joinData)
       .then(res => {
         console.log('성공', res);
         navigate(`${USER_URL.LOGIN}`);

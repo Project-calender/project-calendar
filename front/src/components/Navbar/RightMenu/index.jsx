@@ -17,8 +17,7 @@ import Tooltip from './../../common/Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { CALENDAR_URL, USER_URL } from '../../../constants/path';
-import instance from '../../../utils/token';
-//import axios from 'axios';
+import axios from '../../../utils/token';
 
 const Index = ({
   activeClass,
@@ -121,7 +120,7 @@ const Index = ({
     //     console.log('로그아웃 실패', error);
     //   });
 
-    instance
+    axios
       .post('/api/user/logout', {
         Authorization: accessToken,
       })
@@ -137,10 +136,10 @@ const Index = ({
   }
 
   function test() {
-    instance
-
+    console.log('?');
+    axios
       .post(`/api/calendar/createGroupCalendar`, {
-        calendarName: 'ohasd',
+        calendarName: 'ohasdasd',
         calendarColor: 'redasd',
       })
       .then(res => {
