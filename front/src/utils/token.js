@@ -8,7 +8,7 @@ instance.interceptors.request.use(
   function (config) {
     const accessToken = sessionStorage.getItem('accessToken'); // access 토큰을 가져오는 변수
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.Authorization = accessToken;
     }
     return config;
   },
@@ -26,29 +26,27 @@ instance.interceptors.response.use(
     const originalConfig = err.config;
 
     //조건문 상태코드 확인 필요함
-    if (err.response && err.response.status === 401) {
-      const refreshToken = originalConfig.headers['refreshToken'];
+    if (err.response.status === 401) {
+      let accessToken = sessionStorage.getItem('accessToken');
+      let refreshToken = localStorage.getItem('refreshToken');
+
+
       try {
         const data = await axios({
-          url: `http://15.164.226.74/`, //ajax 요청 url
+          url: `http://15.164.226.74/api/user/refresh`, //ajax 요청 url
           method: 'GET',
           headers: {
-            Authorization: refreshToken,
+            authorization: accessToken,
+            refresh: refreshToken,
           },
         });
+        console.log('토큰 갱신 값', data);
         if (data) {
-          localStorage.setItem(
-            'refreshToken',
-            JSON.stringify(data.data, ['refreshToken']),
-          );
-          sessionStorage.setItem(
-            'accessToken',
-            JSON.stringify(data.data, ['accessToken']),
-          );
+          sessionStorage.setItem('accessToken', JSON.stringify(data));
           return await instance.request(originalConfig);
         }
       } catch (err) {
-        console.log('토큰 갱신 에러');
+        console.log('토큰 갱신 에러', err);
       }
       return Promise.reject(err);
     }

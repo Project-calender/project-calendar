@@ -45,6 +45,19 @@ const Index = () => {
           alert(`아이디와 비밀번호를 확인해주세요.`);
         }
       });
+    // instance
+    //   .post(`/api/user/signin`, loginData)
+    //   .then(res => {
+    //     console.log('성공', res);
+    //     saveWebStorage(res);
+    //     navigate(`${CALENDAR_URL.DAY}`);
+    //   })
+    //   .catch(error => {
+    //     console.log('실패', error);
+    //     if (error.response.status == 401) {
+    //       alert(`아이디와 비밀번호를 확인해주세요.`);
+    //     }
+    //   });
   }
 
   //웹 스토리지에 사용자 정보, 토큰 저장 함수
@@ -53,8 +66,8 @@ const Index = () => {
     localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken));
     sessionStorage.setItem('accessToken', JSON.stringify(res.data.accessToken));
 
-    dispatch(updateUser(res.data.UserData));
-    localStorage.setItem('userInfo', JSON.stringify(res.data.UserData));
+    dispatch(updateUser(res.data.userData));
+    localStorage.setItem('userInfo', JSON.stringify(res.data.userData));
   }
 
   useEffect(() => {

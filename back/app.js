@@ -1,29 +1,29 @@
 //외부모듈
 const express = require("express");
 const app = express();
-const { createServer } = require("http");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
-const { createServer } = require("http");
 const bodyParser = require("body-parser");
+const hpp = require("hpp");
+const helmet = require("helmet");
+const { createServer } = require("http");
+const httpServer = createServer(app);
+
 //내부모듈
+const db = require("./models");
+const passportConfig = require("./passport/local");
 const calendarRouter = require("./routes/calendar");
 const eventRouter = require("./routes/event");
 const userRouter = require("./routes/user");
-const db = require("./models");
-const passportConfig = require("./passport/local");
-const httpServer = createServer(app);
+const privateEventRouter = require("./routes/privateEvent");
+const alertRouter = require("./routes/alert");
 
 //서버 가동
 dotenv.config();
-// const redisClient = redis.createClient({
-//   url: `redis://${process.env.REDIS_HOST}:$(process.env.REDIS_PORT)`,
-//   password: process.env.REDIS_PASSWORD,
-// })
-app.use(passport.initialize());
 passportConfig();
+app.use(passport.initialize());
 db.sequelize
   .sync()
   .then(() => {
@@ -32,25 +32,33 @@ db.sequelize
   .catch(console.error);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-//미들웨어
-app.use(
-  cors({
-    origin: "*",
-    credentials: true,
-  })
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+//미들웨어
+if (process.env.NODE_ENV === "production") {
+  app.enable("trust proxy");
+  app.use(helmet({ contentSecurityPolicy: false }));
+  app.use(hpp());
+} else {
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    })
+  );
+}
 
 //라우터
 app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);
+app.use("/api/privateEvent", privateEventRouter);
+app.use("/api/privateEvent", alertRouter);
 
 app.get("/", (req, res) => {
-  res.send("hello");
+  res.send("jenkins on");
 });
 
 //포트 설정
