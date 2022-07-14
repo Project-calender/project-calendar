@@ -2,11 +2,13 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
-import { CALENDAR_URL } from './../../constants/path';
+import { CALENDAR_PATH } from './../../constants/path';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../store/user';
-import axios from '../../utils/token';
+
+import axios from 'axios';
+import { BASE_URL, USER_URL } from '../../constants/api';
 
 const Index = () => {
   let navigate = useNavigate();
@@ -31,12 +33,12 @@ const Index = () => {
 
   function sendLoginForm() {
     axios
-      .post('/api/user/signin', loginData)
+      .post(`${BASE_URL}${USER_URL.LOGIN}`, loginData)
       .then(res => {
         console.log('성공', res);
 
         saveWebStorage(res);
-        navigate(`${CALENDAR_URL.DAY}`);
+        navigate(`${CALENDAR_PATH.DAY}`);
       })
       .catch(error => {
         console.log('실패', error);
@@ -49,7 +51,7 @@ const Index = () => {
     //   .then(res => {
     //     console.log('성공', res);
     //     saveWebStorage(res);
-    //     navigate(`${CALENDAR_URL.DAY}`);
+    //     navigate(`${CALENDAR_PATH.DAY}`);
     //   })
     //   .catch(error => {
     //     console.log('실패', error);
@@ -71,7 +73,7 @@ const Index = () => {
 
   useEffect(() => {
     sessionStorage.getItem('accessToken')
-      ? navigate(`${CALENDAR_URL.DAY}`)
+      ? navigate(`${CALENDAR_PATH.DAY}`)
       : null;
   }, []);
 

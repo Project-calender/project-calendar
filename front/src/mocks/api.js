@@ -1,4 +1,4 @@
-const USER_ID = 2;
+const USER_ID = localStorage.getItem('userInfo')?.id || 1;
 
 export default {
   getAllEvent: () => ({

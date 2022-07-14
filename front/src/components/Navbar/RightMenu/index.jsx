@@ -16,8 +16,9 @@ import {
 import Tooltip from './../../common/Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
-import { CALENDAR_URL, USER_URL } from '../../../constants/path';
+import { CALENDAR_PATH } from '../../../constants/path';
 import axios from '../../../utils/token';
+import { USER_URL } from '../../../constants/api';
 
 const Index = ({
   activeClass,
@@ -121,14 +122,14 @@ const Index = ({
     //   });
 
     axios
-      .post('/api/user/logout', {
+      .post(`${USER_URL.LOGOUT}`, {
         Authorization: accessToken,
       })
       .then(res => {
         console.log('로그아웃 성공', res);
-        navigate(`${USER_URL.LOGIN}`);
         localStorage.clear();
         sessionStorage.clear();
+        navigate(`${USER_URL.LOGIN}`);
       })
       .catch(error => {
         console.log('로그아웃 실패', error);
@@ -185,7 +186,7 @@ const Index = ({
             <ul>
               <li
                 onClick={e => {
-                  navigate(CALENDAR_URL.DAY);
+                  navigate(CALENDAR_PATH.DAY);
                   onDateChange(e);
                 }}
               >
@@ -194,7 +195,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate(`${CALENDAR_URL.WEEK}`);
+                  navigate(`${CALENDAR_PATH.WEEK}`);
                   onDateChange(e);
                 }}
               >
@@ -203,7 +204,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate(CALENDAR_URL.MONTH);
+                  navigate(CALENDAR_PATH.MONTH);
                   onDateChange(e);
                 }}
               >
@@ -212,7 +213,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate(CALENDAR_URL.YEAR);
+                  navigate(CALENDAR_PATH.YEAR);
                   onDateChange(e);
                 }}
               >
@@ -221,7 +222,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate(CALENDAR_URL.AGENDA);
+                  navigate(CALENDAR_PATH.AGENDA);
                   onDateChange(e);
                 }}
               >
@@ -230,7 +231,7 @@ const Index = ({
               </li>
               <li
                 onClick={e => {
-                  navigate(CALENDAR_URL.CUSTOMDAY);
+                  navigate(CALENDAR_PATH.CUSTOMDAY);
                   onDateChange(e);
                 }}
               >
@@ -280,8 +281,8 @@ const Index = ({
                   alt=""
                 />
               </div>
-              <h2>{userInfo.nickname}</h2>
-              <em>{userInfo.email}</em>
+              <h2>{userInfo?.nickname}</h2>
+              <em>{userInfo?.email}</em>
               <button>
                 <strong
                   onClick={() => {
