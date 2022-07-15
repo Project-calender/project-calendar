@@ -136,7 +136,7 @@ const Index = ({
       });
   }
 
-  //수정1
+  //수정2
   function test() {
     axios
       .post(`/calendar/createGroupCalendar`, {
