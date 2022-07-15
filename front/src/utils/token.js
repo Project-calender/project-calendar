@@ -31,8 +31,8 @@ axios.interceptors.response.use(
       let accessToken = sessionStorage.getItem('accessToken');
       let refreshToken = localStorage.getItem('refreshToken');
       try {
-        const data = await axios({
-          url: `/api/user/refresh`, //ajax 요청 url
+        const data = await Axios({
+          url: `http://158.247.214.79/api/user/refresh`, //ajax 요청 url
           method: 'GET',
           headers: {
             authorization: accessToken,
@@ -57,6 +57,6 @@ export default axios;
 
 /*
 사용 방법
-import instance from './파일 위치';
-const result = await instance.get(`/ajax경로`);
+import axios from './파일 위치';
+const result = await axios.get(`/ajax경로`);
 */

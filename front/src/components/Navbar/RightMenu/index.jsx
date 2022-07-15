@@ -138,15 +138,15 @@ const Index = ({
 
   function test() {
     axios
-      .post(`/api/calendar/createGroupCalendar`, {
+      .post(`/calendar/createGroupCalendar`, {
         calendarName: 'ohasdasd',
         calendarColor: 'redasd',
       })
       .then(res => {
-        console.log('성공', res);
+        console.log('테스트 성공', res);
       })
       .catch(error => {
-        console.log('실패', error);
+        console.log('테스트 실패', error);
       });
   }
 
