@@ -19,6 +19,7 @@ import { useRef } from 'react';
 import { CALENDAR_PATH } from '../../../constants/path';
 import axios from '../../../utils/token';
 import { USER_URL } from '../../../constants/api';
+//import Axios from 'axios';
 
 const Index = ({
   activeClass,
@@ -140,7 +141,7 @@ const Index = ({
   function test() {
     axios
       .post(`/calendar/createGroupCalendar`, {
-        calendarName: 'ohasdasd',
+        calendarName: 'ohasdasdasd',
         calendarColor: 'redasd',
       })
       .then(res => {
