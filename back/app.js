@@ -58,7 +58,7 @@ app.use("/api/privateEvent", privateEventRouter);
 app.use("/api/privateEvent", alertRouter);
 
 app.get("/", (req, res) => {
-  res.send("jenkins on");
+  res.send("jenkins why");
 });
 
 //포트 설정
