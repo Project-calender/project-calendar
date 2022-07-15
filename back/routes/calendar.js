@@ -14,16 +14,20 @@ router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
   const f = await sequelize.transaction();
   try {
+    console.log(req.body.calendarName ,"확인확인확인확인확인확인확인확인확인확인확인확인")
+    console.log(req.body.calendarColor)
     const notUnique = await Calendar.findOne({
       where: { name: req.body.calendarName },
     });
-
+    console.log(req.body.calendarName ,"확인확인확인확인확인확인확인확인확인확인확인확인")
+    console.log(req.body.calendarColor)
     if (notUnique) {
       return res
         .status(400)
         .send({ message: "이미 같은 이름의 캘린더가 존재합니다!" });
     }
-
+    console.log(req.body.calendarName ,"확인확인확인확인확인확인확인확인확인확인확인확인")
+    console.log(req.body.calendarColor)
     const newGroupCalendar = await Calendar.create(
       {
         name: req.body.calendarName,
