@@ -139,7 +139,7 @@ const Index = ({
   //수정1
   function test() {
     axios
-      .post(`/api/calendar/createGroupCalendar`, {
+      .post(`/calendar/createGroupCalendar`, {
         calendarName: 'ohasdasd',
         calendarColor: 'redasd',
       })
