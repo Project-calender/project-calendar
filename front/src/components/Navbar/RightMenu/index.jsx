@@ -140,7 +140,7 @@ const Index = ({
   function test() {
     axios
       .post(`/calendar/createGroupCalendar`, {
-        calendarName: 'ohasdasdasd',
+        calendarName: 'ohasdasdasdasdasdasd',
         calendarColor: 'redasd',
       })
       .then(res => {
