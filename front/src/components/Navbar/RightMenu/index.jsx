@@ -136,9 +136,10 @@ const Index = ({
       });
   }
 
+  //수정1
   function test() {
     axios
-      .post(`/calendar/createGroupCalendar`, {
+      .post(`/api/calendar/createGroupCalendar`, {
         calendarName: 'ohasdasd',
         calendarColor: 'redasd',
       })
