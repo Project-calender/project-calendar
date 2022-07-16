@@ -12,8 +12,8 @@ const authJWT = require("../utils/authJWT");
 
 router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
   console.log(req.myId, "afefqrqwe")
-  const t = await sequelize.transaction();
-  const f = await sequelize.transaction();
+  // const t = await sequelize.transaction();
+  // const f = await sequelize.transaction();
   try {
     console.log(req.body.calendarName ,"확인ㅂㅈㄷㄱㅈㄱㄱㅂ확인확인확인확인")
     console.log(req.body.calendarColor)
@@ -56,8 +56,8 @@ router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
     console.log("성공확인")
     return res.status(200).send({ success: true });
   } catch (error) {
-    t.rollback()
-    f.rollback()
+    await t.rollback()
+    await f.rollback()
     console.error(error);
     console.log("오류발생")
     next(error);
