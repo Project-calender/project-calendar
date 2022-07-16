@@ -22,7 +22,7 @@ module.exports = {
     let decoded = null;
     try {
       decoded = jwt.verify(token, "jwt-secretkey");
-      console.log(decoded)
+      console.log(decoded);
       return {
         ok: true,
         id: decoded.id,
