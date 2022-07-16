@@ -1,14 +1,16 @@
-import axios from 'axios';
+import Axios from 'axios';
+import { BASE_URL } from '../constants/api';
 
-const instance = axios.create({
-  baseURL: `http://15.164.226.74`,
+const axios = Axios.create({
+  baseURL: BASE_URL,
 });
 
-instance.interceptors.request.use(
+axios.interceptors.request.use(
   function (config) {
     const accessToken = sessionStorage.getItem('accessToken'); // access 토큰을 가져오는 변수
     if (accessToken) {
       config.headers.Authorization = accessToken;
+      console.log('토큰');
     }
     return config;
   },
@@ -18,7 +20,7 @@ instance.interceptors.request.use(
 );
 
 //AccessToken이 만료됐을때 처리
-instance.interceptors.response.use(
+axios.interceptors.response.use(
   function (response) {
     return response;
   },
@@ -26,32 +28,25 @@ instance.interceptors.response.use(
     const originalConfig = err.config;
 
     //조건문 상태코드 확인 필요함
-    if (err.response && err.response.status === 401) {
-      let accessToken = sessionStorage.get('accessToken');
-      let refreshToken = localStorage.get('refreshToken');
-
+    if (err.response.status === 401) {
+      let accessToken = sessionStorage.getItem('accessToken');
+      let refreshToken = localStorage.getItem('refreshToken');
       try {
-        const data = await axios({
-          url: `http://15.164.226.74/api/user/refresh`, //ajax 요청 url
+        const data = await Axios({
+          url: `http://158.247.214.79/api/user/refresh`, //ajax 요청 url
           method: 'GET',
           headers: {
-            Authorization: accessToken,
+            authorization: accessToken,
             refresh: refreshToken,
           },
         });
+        console.log('토큰 갱신 값', data);
         if (data) {
-          localStorage.setItem(
-            'refreshToken',
-            JSON.stringify(data.data, ['refreshToken']),
-          );
-          sessionStorage.setItem(
-            'accessToken',
-            JSON.stringify(data.data, ['accessToken']),
-          );
-          return await instance.request(originalConfig);
+          sessionStorage.setItem('accessToken', JSON.stringify(data));
+          return await axios.request(originalConfig);
         }
       } catch (err) {
-        console.log('토큰 갱신 에러');
+        console.log('토큰 갱신 에러', err);
       }
       return Promise.reject(err);
     }
@@ -59,10 +54,10 @@ instance.interceptors.response.use(
   },
 );
 
-export default instance;
+export default axios;
 
 /*
 사용 방법
-import instance from './파일 위치';
-const result = await instance.get(`/ajax경로`);
+import axios from './파일 위치';
+const result = await axios.get(`/ajax경로`);
 */

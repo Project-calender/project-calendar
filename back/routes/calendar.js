@@ -11,55 +11,51 @@ const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
 
 router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
+
   console.log(req.myId, "afefqrqwe")
   // const t = await sequelize.transaction();
   // const f = await sequelize.transaction();
+
   try {
-    console.log(req.body.calendarName ,"확인ㅂㅈㄷㄱㅈㄱㄱㅂ확인확인확인확인")
-    console.log(req.body.calendarColor)
-    const notUnique = await Calendar.findOne({
-      where: { name: req.body.calendarName },
+    await sequelize.transaction(async (t) => {
+      const notUnique = await Calendar.findOne({
+        where: { name: req.body.calendarName },
+      });
+
+      if (notUnique) {
+        return res
+          .status(400)
+          .send({ message: "이미 같은 이름의 캘린더가 존재합니다!" });
+      }
+
+      const newGroupCalendar = await Calendar.create(
+        {
+          name: req.body.calendarName,
+          color: req.body.calendarColor,
+          OwnerId: req.myId,
+        },
+        {
+          transaction: t,
+        }
+      );
+
+      await CalendarMember.create(
+        {
+          authority: 3,
+          UserId: req.myId,
+          CalendarId: newGroupCalendar.id,
+        },
+        {
+          transaction: t,
+        }
+      );
     });
-    console.log(req.body.calendarName ,"확인확인확인확12342423434인확인확인확인확인확인확인확인확인")
-    console.log(req.body.calendarColor)
-    console.log(notUnique, "adafe31234ㅁ언치머ㅣ라천이ㅏㅓ")
-    if (notUnique) {
-      return res
-        .status(400)
-        .send({ message: "이미 같은 이름의 캘린더가 존재합니다!" });
-    }
-    console.log(req.body.calendarName ,"확인ㄴㅁ확인ㅇㄴ인ㅇㄴ3123")
-    console.log(req.body.calendarColor)
-    const newGroupCalendar = await Calendar.create(
-      {
-        name: req.body.calendarName,
-        color: req.body.calendarColor,
-        OwnerId: req.myId,
-      },
-      // {
-      //   transaction: t,
-      // }
-    );
-    console.log("31231215646546165611554631231424141421414")
-    // await t.commit();
-    await CalendarMember.create(
-      {
-        authority: 3,
-        UserId: req.myId,
-        CalendarId: newGroupCalendar.id,
-      },
-      // {
-      //   transaction: f,
-      // }
-    );
-    await f.commit();
-    console.log("성공확인")
+
     return res.status(200).send({ success: true });
   } catch (error) {
     await t.rollback()
     await f.rollback()
     console.error(error);
-    console.log("오류발생")
     next(error);
   }
 });

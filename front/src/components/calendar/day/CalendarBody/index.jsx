@@ -6,11 +6,18 @@ import styles from './style.module.css';
 import useDragDate from '../../../../hooks/useDragDate';
 
 const Index = ({ state }) => {
-  const { handleMouseDown, handleMouseUp, handleDrag } = useDragDate();
-  let [timeTable, setTimeTable] = useState({}); //현재 날짜 저장 및 시간 저장
-  let tiem = new Date().getTime();
 
-  console.log(tiem);
+  const {
+    handleMouseDown,
+    handleMouseUp,
+    handleDrag,
+    isMouseDown,
+    selectedDateRange,
+  } = useDragDate();
+  let [timeTable, setTimeTable] = useState({}); //현재 날짜 저장 및 시간 저장
+  let time = new Date().getTime();
+
+  console.log(selectedDateRange);
 
   //오전,오후 시간 생성
   useEffect(() => {
@@ -35,7 +42,7 @@ const Index = ({ state }) => {
       <table
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
-        onMouseMove={handleDrag}
+        onMouseMove={isMouseDown ? handleDrag : null}
       >
         <tbody>
           {timeTable.time &&
@@ -45,12 +52,7 @@ const Index = ({ state }) => {
                   <th>
                     <em>{item}</em>
                   </th>
-                  <td
-                    data-item={tiem}
-                    onClick={e => {
-                      console.log(e.target.dataset);
-                    }}
-                  >
+                  <td data-date-id={time}>
                     <div className={styles.td_text}></div>
                   </td>
                 </tr>

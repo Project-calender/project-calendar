@@ -1,33 +1,21 @@
 import React from 'react';
 import styles from './style.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 
-import CalendarInfo from './CalendarInfo';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import CalendarSummary from './CalendarSummary';
+import CalendarItem from './CalendarItem';
+import { getCalendarCheckId } from '../../../store/calendars';
 
 const Index = ({ title, calendars }) => {
-  const [toggle, setToggle] = useState(true);
   return (
     <details className={styles.calendar_details} open>
-      <summary onClick={handleSummaryToggle}>
-        <em>{title}</em>
-        <FontAwesomeIcon icon={toggle ? faAngleUp : faAngleDown} />
-      </summary>
+      <CalendarSummary title={title} />
+
       {calendars.map(calendar => (
-        <CalendarInfo
-          key={calendar.id}
-          calendar={calendar}
-          remove={calendar?.id >= 0}
-        />
+        <CalendarItem key={getCalendarCheckId(calendar)} calendar={calendar} />
       ))}
     </details>
   );
-
-  function handleSummaryToggle() {
-    setToggle(toggle => !toggle);
-  }
 };
 
 Index.propTypes = {

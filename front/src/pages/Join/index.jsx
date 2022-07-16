@@ -2,7 +2,6 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import styles from './style.module.css';
-import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import {
   faExclamationCircle,
@@ -10,7 +9,9 @@ import {
   faCameraRetro,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import { useNavigate } from 'react-router-dom';
-import { USER_URL } from './../../constants/path';
+import { USER_PATH } from './../../constants/path';
+import Axios from 'axios';
+import { BASE_URL, USER_URL } from '../../constants/api';
 
 const Index = () => {
   let navigate = useNavigate();
@@ -55,14 +56,11 @@ const Index = () => {
     profile: fileData,
   };
 
-  console.log(joinData);
-
   function sendJoinForm() {
-    axios
-      .post('http://15.164.226.74/api/user/signup', joinData)
+    Axios.post(`${BASE_URL}${USER_URL.SINGUP}`, joinData)
       .then(res => {
         console.log('성공', res);
-        navigate(`${USER_URL.LOGIN}`);
+        navigate(`${USER_PATH.LOGIN}`);
       })
       .catch(error => {
         console.log('실패', error);

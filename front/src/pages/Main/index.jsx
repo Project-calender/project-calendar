@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import styles from './style.module.css';
 import NavBar from '../../components/Navbar';
 import SideBar from '../../components/SideBar';
 import SideNav from '../../components/SideNav';
+import { useDispatch } from 'react-redux';
+import { fetchEvents } from '../../store/thunk';
+import { USER_PATH } from '../../constants/path';
 
 const Index = () => {
-  /* SideBar */
-  let [isSideBarOn, toggleSideBar] = useState(true); //sideBar 숨김 컨트롤
+  let [isSideBarOn, toggleSideBar] = useState(true);
+
+  const dispatch = useDispatch();
+  dispatch(fetchEvents());
+
+  const user = localStorage.getItem('userInfo');
+  if (!user) {
+    sessionStorage.clear();
+    localStorage.clear();
+    return <Navigate to={USER_PATH.LOGIN} />;
+  }
 
   return (
     <div>
