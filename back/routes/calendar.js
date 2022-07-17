@@ -11,6 +11,11 @@ const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
 
 router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
+
+  console.log(req.myId, "afefqrqwe")
+  // const t = await sequelize.transaction();
+  // const f = await sequelize.transaction();
+
   try {
     await sequelize.transaction(async (t) => {
       const notUnique = await Calendar.findOne({
@@ -48,6 +53,8 @@ router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
 
     return res.status(200).send({ success: true });
   } catch (error) {
+    await t.rollback()
+    await f.rollback()
     console.error(error);
     next(error);
   }
