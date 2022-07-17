@@ -466,7 +466,7 @@ router.get("/searchEvent", authJWT, async (req, res, next) => {
 
     const me = await User.findOne({ where: { id: req.myId } });
 
-    const test = await me.getGroupEvents({
+    const searchEvents = await me.getGroupEvents({
       where: { name: { [Op.like]: "%" + searchWord + "%" } },
       attributes: {
         exclude: [
@@ -476,39 +476,14 @@ router.get("/searchEvent", authJWT, async (req, res, next) => {
           "createdAt",
           "updatedAt",
           "deletedAt",
-          "EventMember",
           "EventHostId",
         ],
       },
+      joinTableAttributes: [],
+      separate: true,
     });
 
-    const searchEvent = await EventMember.findAll({
-      where: { UserId: req.myId },
-      include: [
-        {
-          model: Event,
-          attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
-          where: { name: { [Op.like]: "%" + searchWord + "%" } },
-          separate: true,
-        },
-      ],
-    });
-
-    // const me = await User.findOne({ where: { id: req.myId } });
-    // const groupEvents = await me.getGroupCalendars({
-    //   attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
-    //   include: [
-    //     {
-    //       model: Event,
-    //       as: "GroupEvents",
-    //       attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
-    //       where: { name: { [Op.like]: "%" + searchWord + "%" } },
-    //       separate: true,
-    //     },
-    //   ],
-    // });
-
-    return res.status(200).send(test);
+    return res.status(200).send(searchEvents);
   } catch (error) {
     console.error(error);
     next(error);
