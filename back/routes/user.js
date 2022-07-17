@@ -14,6 +14,9 @@ const { sequelize, User, ProfileImage } = require("../models");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
+const BASIC_IMG_SRC =
+  "https://baeminback.s3.ap-northeast-2.amazonaws.com/basicProfile.png";
+
 dotenv.config();
 AWS.config.update({
   accessKeyId: process.env.S3_ACCESS_KEY,
@@ -38,54 +41,12 @@ const uploadProfileImage = multer({
 
 router.post(
   "/setUserProfileImage",
-  authJWT,
   uploadProfileImage.single("image"),
   async (req, res, next) => {
     try {
-      const me = User.findOne({ where: { id: req.myId } });
-
-      await sequelize.transaction(async (t) => {
-        const profileImage = await ReviewImage.create(
-          {
-            src: req.file.location,
-          },
-          { transaction: t }
-        );
-        await me.addProfileImage(profileImage, { transaction: t });
-      });
-
-      return res.status(200).send({ success: true });
+      return res.status(200).send({ src: req.file.location });
     } catch (error) {
       console.error(error);
-      next(error);
-    }
-  }
-);
-
-router.post(
-  "/changeUserProfileImage",
-  authJWT,
-  uploadProfileImage.single("image"),
-  async (req, res, next) => {
-    const t = await sequelize.transaction();
-    try {
-      const myProfileImage = await ProfileImage.findOne({
-        where: {
-          UserId: req.myId,
-        },
-      });
-
-      await myProfileImage.update(
-        {
-          src: req.file.location,
-        },
-        { transaction: t }
-      );
-      return res.status(200).send({ success: true });
-    } catch (error) {
-      console.error(error);
-      console.error(error);
-      await t.rollback();
       next(error);
     }
   }
@@ -168,6 +129,29 @@ router.post("/signup", async (req, res, next) => {
         },
         { transaction: t }
       );
+
+      if (req.body.profileImageSrc) {
+        const profileImage = await ReviewImage.create(
+          {
+            src: req.body.profileImageSrc,
+          },
+          {
+            transaction: t,
+          }
+        );
+
+        await newUser.addProfileImage(profileImage, { transaction: t });
+      }
+
+      const profileImage = await ReviewImage.create(
+        {
+          src: BASIC_IMG_SRC,
+        },
+        {
+          transaction: t,
+        }
+      );
+      await newUser.addProfileImage(profileImage, { transaction: t });
 
       await newUser.createPrivateCalendar(
         {

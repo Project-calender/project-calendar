@@ -94,8 +94,6 @@ router.get("/getGroupEvent", authJWT, async (req, res, next) => {
 });
 
 router.post("/createGroupEvent", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
-  const f = await sequelize.transaction();
   try {
     const isGroupMember = await CalendarMember.findOne({
       where: {
@@ -109,36 +107,34 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
         .send({ message: "그룹원의 멤버만 이벤트를 생성할 수 있습니다." });
     }
 
-    const newGroupEvent = await Event.create(
-      {
-        name: req.body.eventName,
-        color: req.body.color,
-        priority: req.body.priority,
-        memo: req.body.memo,
-        startTime: req.body.startTime,
-        endTime: req.body.endTime,
-        allDay: req.body.allDay,
-        EventHostId: req.myId,
-        CalendarId: req.body.groupCalendarId,
-      },
-      { transaction: t }
-    );
+    await sequelize.transaction(async (t) => {
+      const newGroupEvent = await Event.create(
+        {
+          name: req.body.eventName,
+          color: req.body.color,
+          priority: req.body.priority,
+          memo: req.body.memo,
+          startTime: req.body.startTime,
+          endTime: req.body.endTime,
+          allDay: req.body.allDay,
+          EventHostId: req.myId,
+          CalendarId: req.body.groupCalendarId,
+        },
+        { transaction: t }
+      );
 
-    await t.commit();
-
-    await EventMember.create(
-      {
-        state: 1,
-        UserId: req.myId,
-        EventId: newGroupEvent.id,
-      },
-      { transaction: f }
-    );
-    await f.commit();
-    res.status(200).send({ success: true });
+      await EventMember.create(
+        {
+          state: 1,
+          UserId: req.myId,
+          EventId: newGroupEvent.id,
+        },
+        { transaction: t }
+      );
+    });
+    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
-    await t.rollback();
     next(error);
   }
 });
@@ -318,7 +314,7 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
     }
 
     await t.commit();
-    res.status(200).send({ success: true });
+    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
     await t.rollback();
@@ -395,7 +391,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
     );
 
     await t.commit();
-    res.status(200).send({ success: true });
+    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
     await t.rollback();
@@ -457,37 +453,64 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
       );
     });
 
-    res.status(200).send({ success: true });
+    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
     next(error);
   }
 });
 
-//이거 잘 모르겠음..
 router.get("/searchEvent", authJWT, async (req, res, next) => {
   try {
     const searchWord = req.body.searchWord;
 
-    const groupEvents = await me.getGroupCalendars({
-      attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+    const me = await User.findOne({ where: { id: req.myId } });
+
+    const test = await me.getGroupEvents({
+      where: { name: { [Op.like]: "%" + searchWord + "%" } },
+      attributes: {
+        exclude: [
+          "color",
+          "priority",
+          "memo",
+          "createdAt",
+          "updatedAt",
+          "deletedAt",
+          "EventMember",
+          "EventHostId",
+        ],
+      },
+    });
+
+    const searchEvent = await EventMember.findAll({
+      where: { UserId: req.myId },
       include: [
         {
           model: Event,
-          as: "GroupEvents",
           attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
-          where: {
-            where: { name: { [Op.like]: "%" + searchWord + "%" } },
-          },
+          where: { name: { [Op.like]: "%" + searchWord + "%" } },
           separate: true,
         },
       ],
     });
 
-    res.status(200).send(groupEvents);
+    // const me = await User.findOne({ where: { id: req.myId } });
+    // const groupEvents = await me.getGroupCalendars({
+    //   attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+    //   include: [
+    //     {
+    //       model: Event,
+    //       as: "GroupEvents",
+    //       attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+    //       where: { name: { [Op.like]: "%" + searchWord + "%" } },
+    //       separate: true,
+    //     },
+    //   ],
+    // });
+
+    return res.status(200).send(test);
   } catch (error) {
     console.error(error);
-    await t.rollback();
     next(error);
   }
 });
