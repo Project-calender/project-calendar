@@ -19,11 +19,10 @@ const eventRouter = require("./routes/event");
 const userRouter = require("./routes/user");
 const privateEventRouter = require("./routes/privateEvent");
 const alertRouter = require("./routes/alert");
+const { swaggerUi, specs } = require("./swagger");
 
 //서버 가동
 dotenv.config();
-passportConfig();
-app.use(passport.initialize());
 db.sequelize
   .sync()
   .then(() => {
@@ -35,6 +34,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+//gngsn.tistory.com/69 [pageseo:티스토리]
 
 //미들웨어
 if (process.env.NODE_ENV === "production") {
@@ -51,6 +51,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 //라우터
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);
