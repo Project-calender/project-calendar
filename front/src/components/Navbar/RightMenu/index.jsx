@@ -109,19 +109,6 @@ const Index = ({
   //로그아웃
   function logout() {
     let accessToken = sessionStorage.getItem('accessToken');
-
-    // axios
-    //   .post('http://15.164.226.74/api/user/logout', {
-    //     Authorization: accessToken,
-    //   })
-    //   .then(res => {
-    //     console.log('로그아웃 성공', res);
-    //     navigate(`${USER_URL.LOGIN}`);
-    //   })
-    //   .catch(error => {
-    //     console.log('로그아웃 실패', error);
-    //   });
-
     axios
       .post(`${USER_URL.LOGOUT}`, {
         Authorization: accessToken,
@@ -140,7 +127,7 @@ const Index = ({
   function test() {
     axios
       .post(`/calendar/createGroupCalendar`, {
-        calendarName: 'ohasdasdasdasdasdasd',
+        calendarName: 'ohasdasd',
         calendarColor: 'redasd',
       })
       .then(res => {
@@ -286,7 +273,8 @@ const Index = ({
               <em>{userInfo?.email}</em>
               <button>
                 <strong
-                  onClick={() => {
+                  onClick={e => {
+                    e.stopPropagation();
                     test();
                   }}
                 >

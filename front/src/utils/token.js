@@ -10,7 +10,7 @@ axios.interceptors.request.use(
     const accessToken = sessionStorage.getItem('accessToken'); // access 토큰을 가져오는 변수
     if (accessToken) {
       config.headers.Authorization = accessToken;
-      console.log('토큰');
+      console.log('엑세스 토큰 성공');
     }
     return config;
   },
@@ -33,16 +33,19 @@ axios.interceptors.response.use(
       let refreshToken = localStorage.getItem('refreshToken');
       try {
         const data = await Axios({
-          url: `http://158.247.214.79/api/user/refresh`, //ajax 요청 url
+          url: `/user/refresh`, //aws url http://158.247.214.79 요청
           method: 'GET',
           headers: {
             authorization: accessToken,
             refresh: refreshToken,
           },
         });
-        console.log('토큰 갱신 값', data);
+        console.log('토큰 갱신 값', data.data.data.accessToken);
         if (data) {
-          sessionStorage.setItem('accessToken', JSON.stringify(data));
+          sessionStorage.setItem(
+            'accessToken',
+            JSON.stringify(data.data.data.accessToken),
+          );
           return await axios.request(originalConfig);
         }
       } catch (err) {
