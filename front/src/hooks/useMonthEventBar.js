@@ -13,7 +13,7 @@ export default function useMonthEventBar(selectedDateRange = initDateRange) {
   return { monthEventBars };
 }
 
-function createEventBar(dateRange) {
+export function createEventBar(dateRange) {
   let [minDateTime, maxDateTime] = Object.values(dateRange).sort(ASC_NUMBER);
 
   const eventBars = [];

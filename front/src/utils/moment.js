@@ -39,6 +39,10 @@ class Moment {
     return new Moment(date);
   }
 
+  resetTime() {
+    return new Moment(new Date(new Date(this.time).toDateString()));
+  }
+
   toObject() {
     return {
       year: this.year,
