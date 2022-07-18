@@ -1,4 +1,5 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createEventBar } from '../hooks/useMonthEventBar';
 import Moment from '../utils/moment';
 import { fetchEvents } from './thunk';
 
@@ -42,7 +43,7 @@ const events = createSlice({
         .sort(eventSort);
 
       const byDate = events.reduce((byDate, event) => {
-        let startDate = new Moment(new Date(event.startTime)).resetTime();
+        const startDate = new Moment(new Date(event.startTime)).resetTime();
         const endDate = new Moment(new Date(event.endTime)).resetTime();
         const key = startDate.time;
 
@@ -53,13 +54,23 @@ const events = createSlice({
         // 이벤트 위치 배정
         let index = byDate[key].eventBars.findIndex(event => !event);
         index = index === -1 ? byDate[key].eventBars.length : index;
+
+        let nextDate = new Moment(new Date(event.startTime)).resetTime();
         do {
-          const key = startDate.time;
+          const key = nextDate.time;
           byDate[key] = byDate[key] || { events: [], eventBars: [] };
-          byDate[key].eventBars[index] = event.id;
+          byDate[key].eventBars[index] = { id: event.id, scale: null };
         } while (
-          startDate.time !== endDate.time &&
-          (startDate = startDate.addDate(1))
+          nextDate.time !== endDate.time &&
+          (nextDate = nextDate.addDate(1))
+        );
+
+        const eventBars = createEventBar({
+          standardDateTime: startDate.time,
+          endDateTime: endDate.time,
+        });
+        eventBars.forEach(
+          event => (byDate[event.time].eventBars[index].scale = event.scale),
         );
 
         return byDate;
