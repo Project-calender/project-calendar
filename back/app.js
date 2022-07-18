@@ -33,13 +33,17 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-//gngsn.tistory.com/69 [pageseo:티스토리]
 
 //미들웨어
 if (process.env.NODE_ENV === "production") {
-  app.enable("trust proxy");
   app.use(helmet({ contentSecurityPolicy: false }));
   app.use(hpp());
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    })
+  );
 } else {
   app.use(
     cors({
