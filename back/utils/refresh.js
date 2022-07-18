@@ -1,12 +1,12 @@
 const { sign, verify, refreshVerify } = require("./jwt-util");
 const jwt = require("jsonwebtoken");
 
-const refresh = async (req, res) => {
+const refresh = async (req, res, next) => {
   // access token과 refresh token의 존재 유무를 체크합니다.
   try {
-    const authToken = req.headers.authorization.substr(1);
+    authToken = req.headers.authorization.substr(1);
     authToken = authToken.slice(0, -1);
-    const refreshToken = req.headers.refresh.substr(1);
+    refreshToken = req.headers.refresh.substr(1);
     refreshToken = refreshToken.slice(0, -1);
     
     if (!authToken && !refreshToken) {
@@ -34,32 +34,38 @@ const refresh = async (req, res) => {
 
     /* access token의 decoding 된 값에서
       유저의 id를 가져와 refresh token을 검증합니다. */
-    const refreshResult = refreshVerify(refreshToken, decoded.id);
-
+    const refreshResult = await refreshVerify(refreshToken, decoded.id);
+    
+    console.log(refreshResult)
+    console.log(authResult)
+    console.log("확인")
     // 재발급을 위해서는 access token이 만료되어있어야합니다. 
+    
     if (authResult.ok === false && authResult.message === "jwt expired") {
+      
+      if (refreshResult === false) {
+        res.status(401).send({
+          ok: false,
+          message: "No authorized!",
+        });
+      } else {
+        const newAccessToken = sign(decoded.id);
+        res.status(200).send({
+          // 새로 발급한 access token과 원래 있던 refresh token 모두 클라이언트에게 반환합니다.
+          ok: true,
+          data: {
+            accessToken: newAccessToken,
+            refreshToken,
+          },
+        });
+      }
+    } else {
       res.status(400).send({
         ok: false,
         message: "Acess token is not expired!",
       });
     }
-    if (refreshResult.ok === false) {
-      res.status(401).send({
-        ok: false,
-        message: "No authorized!",
-      });
-    } else {
-      const newAccessToken = sign(decoded.id);
-      res.status(200).send({
-        // 새로 발급한 access token과 원래 있던 refresh token 모두 클라이언트에게 반환합니다.
-        ok: true,
-        data: {
-          accessToken: newAccessToken,
-          refreshToken,
-        },
-      });
-    }
-  } catch (err) {
+  } catch (error) {
     console.error(error)
     next(error)
   }
