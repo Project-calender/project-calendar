@@ -88,7 +88,7 @@ router.post("/signin", async (req, res, next) => {
   }
   const chk = await bcrypt.compare(password, user.password);
   if (!chk) {
-    return res.status(401).send({
+    return res.status(402).send({
       message: "패스워드가 일치하지 않습니다!",
     });
   }
@@ -97,8 +97,16 @@ router.post("/signin", async (req, res, next) => {
   redisClient.set(user.id, refreshToken);
   const userData = await User.findOne({
     where: { email: user.email },
+    include: [
+      {
+        model: ProfileImage,
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "deletedAt", "id", "UserId"],
+        },
+      },
+    ],
     attributes: {
-      exclude: ["password"],
+      exclude: ["password", "createdAt", "updatedAt", "deletedAt"],
     },
   });
   return res.status(200).send({
@@ -118,6 +126,16 @@ router.post("/signup", async (req, res, next) => {
     if (exUser) {
       return res.status(403).send({ message: "이미 사용중인 아이디입니다!" });
     }
+
+    const exNickname = await User.findOne({
+      where: {
+        nickname: req.body.nickname,
+      },
+    });
+    if (exNickname) {
+      return res.status(403).send({ message: "이미 사용중인 닉네임입니다!" });
+    }
+
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
 
     await sequelize.transaction(async (t) => {
@@ -131,7 +149,7 @@ router.post("/signup", async (req, res, next) => {
       );
 
       if (req.body.profileImageSrc) {
-        const profileImage = await ReviewImage.create(
+        const profileImage = await ProfileImage.create(
           {
             src: req.body.profileImageSrc,
           },
@@ -143,7 +161,7 @@ router.post("/signup", async (req, res, next) => {
         await newUser.addProfileImage(profileImage, { transaction: t });
       }
 
-      const profileImage = await ReviewImage.create(
+      const profileImage = await ProfileImage.create(
         {
           src: BASIC_IMG_SRC,
         },
