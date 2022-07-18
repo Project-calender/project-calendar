@@ -19,10 +19,7 @@ module.exports = class User extends Model {
           type: DataTypes.STRING(200),
           allowNull: false,
         },
-        profileImage: {
-          type: DataTypes.STRING(200),
-        },
-        checkedCalender: {
+        checkedCalendar: {
           type: DataTypes.STRING(200),
           defaultValue: "p",
         },
