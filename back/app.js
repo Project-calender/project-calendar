@@ -19,7 +19,6 @@ const eventRouter = require("./routes/event");
 const userRouter = require("./routes/user");
 const privateEventRouter = require("./routes/privateEvent");
 const alertRouter = require("./routes/alert");
-const { swaggerUi, specs } = require("./swagger");
 
 //서버 가동
 dotenv.config();
@@ -51,7 +50,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 //라우터
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);
