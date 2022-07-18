@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon app",
+    "restart": "cross-env NODE_ENV=production pm2 restart app.js",
     "production": "cross-env NODE_ENV=production pm2 start app.js"
   },
   "author": "minseo",
