@@ -1,10 +1,9 @@
 .event_bar { height:1.3rem; width: 100%;  background: #4285f4; border-radius: 3px; margin-bottom: 2px; display: flex; align-items: center;} 
-.event_bar { width: calc(100% + 1px - 5px); z-index: 3;} 
-.event_bar:hover { filter: brightness(80%); } 
-.event_bar > em { width:100%; font-size: 0.72rem; vertical-align: middle; color: #fff; text-align: left; padding:0px 10px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
+.event_bar {  position: relative;  width: calc(100% + 1px - 5px); z-index: 3;  cursor: pointer;} 
+.event_bar:hover { filter: brightness(0.8);} 
+.event_bar > em { font-size: 0.72rem; vertical-align: middle; color: #fff; text-align: left; padding:0px 10px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
 
-.hidden{ background: transparent; z-index: -1 } 
-.hidden:hover { background: transparent; } 
+.hidden { background: transparent; z-index: -10; height:1.3rem; width: 100%; margin-bottom: 2px; pointer-events: none;} 
 
 @media (max-height: 500px){
    .event_bar { height:1rem; }

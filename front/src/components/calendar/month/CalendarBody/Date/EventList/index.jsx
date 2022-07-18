@@ -11,7 +11,7 @@ const Index = ({ date, maxHeight }) => {
   if (!events) return;
 
   const countEventBar = Math.floor(maxHeight / 32);
-  const previewEvent = events.slice(0, countEventBar);
+  const previewEvent = countEventBar ? events.slice(0, countEventBar) : [];
   const restEvent = events.slice(countEventBar);
   return (
     <div className={styles.event_list}>

@@ -19,8 +19,7 @@ const Index = ({ eventBar }) => {
     width: `calc(100% * ${scale} + ${scale}px - 5px)`,
   };
 
-  if (!eventBar.scale)
-    return <div className={`${styles.event_bar} ${styles.hidden}`}></div>;
+  if (!eventBar.scale) return <div className={`${styles.hidden}`}></div>;
 
   return (
     <div className={styles.event_bar} style={eventBarDivStyle}>
