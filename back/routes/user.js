@@ -124,7 +124,7 @@ router.post("/signup", async (req, res, next) => {
       },
     });
     if (exUser) {
-      return res.status(403).send({ message: "이미 사용중인 아이디입니다!" });
+      return res.status(401).send({ message: "이미 사용중인 아이디입니다!" });
     }
 
     const exNickname = await User.findOne({
@@ -133,7 +133,7 @@ router.post("/signup", async (req, res, next) => {
       },
     });
     if (exNickname) {
-      return res.status(403).send({ message: "이미 사용중인 닉네임입니다!" });
+      return res.status(402).send({ message: "이미 사용중인 닉네임입니다!" });
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
