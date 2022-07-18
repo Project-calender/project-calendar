@@ -1,5 +1,5 @@
-.title { width: fit-content; height: fit-content; } 
-.title > em { width: 70%; font-size: 0.72rem; margin-left: 6px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
+.title { width: 100%; height: fit-content;  overflow: hidden; } 
+.title > em { display: inline-block; width: 80%; font-size: 0.72rem; margin-left: 6px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
 
 
 @media (max-height: 510px){
