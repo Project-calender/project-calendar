@@ -144,6 +144,8 @@ paths:
               success:
                 type: boolean
                 example: true
+        '500':
+          $ref: '#/commonError'
   /api/calendar/signup:
     post:
       tags:

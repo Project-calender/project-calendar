@@ -40,5 +40,3 @@
               example: 이미 사용중인 닉네임 입니다!
       500:
         $ref: "./openapi.yaml#/commonError"
-
-$ref: "./eventAPI.yaml"

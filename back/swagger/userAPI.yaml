@@ -98,6 +98,7 @@
               example: 패스워드가 일치하지 않습니다!
       500:
         $ref: "./openapi.yaml#/commonError"
+
 /api/user/checkedCalendar:
   post:
     tags:
@@ -123,5 +124,6 @@
             success:
               type: boolean
               example: true
-
+      500:
+        $ref: "./openapi.yaml#/commonError"
 $ref: "./calendarAPI.yaml"
