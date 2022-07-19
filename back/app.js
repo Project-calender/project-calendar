@@ -28,30 +28,19 @@ db.sequelize
     console.log("db 연결 성공");
   })
   .catch(console.error);
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(hpp());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-//미들웨어
-if (process.env.NODE_ENV === "production") {
-  app.use(helmet({ contentSecurityPolicy: false }));
-  app.use(hpp());
-  app.use(
-    cors({
-      origin: true,
-      credentials: true,
-    })
-  );
-} else {
-  app.use(
-    cors({
-      origin: true,
-      credentials: true,
-    })
-  );
-}
 
 //라우터
 app.use("/api/user", userRouter);
