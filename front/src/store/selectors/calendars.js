@@ -22,6 +22,7 @@ export const otherCalendarSelector = createSelector(
 );
 
 export const calendarSelector = createSelector(
-  [state => state, (_, id) => id],
-  (state, id) => selectoCalendarById(state, id),
+  [state => state, (_, calendarId) => calendarId],
+  (state, calendarId) =>
+    calendarId ? selectoCalendarById(state, calendarId) : null,
 );
