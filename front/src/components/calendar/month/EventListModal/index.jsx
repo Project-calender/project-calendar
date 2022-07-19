@@ -7,10 +7,10 @@ import EventBar from '../CalendarBody/Date/EventBar';
 export const triggerDOM = 'month-event-list';
 
 const Index = ({ modalData, hideModal }) => {
-  const { date, events } = modalData;
+  const { date, events, position } = modalData;
 
   return (
-    <Modal hideModal={hideModal} triggerDOM={triggerDOM}>
+    <Modal hideModal={hideModal} triggerDOM={triggerDOM} position={position}>
       <div className={styles.modal_container}>
         <strong>{date.weekDay}</strong>
         <h1>{date.date}</h1>

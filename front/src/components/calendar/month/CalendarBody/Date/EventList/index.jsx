@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import EventBar from '../EventBar';
@@ -11,6 +11,7 @@ import { EventListModalContext } from '../../../../../../context/EventListModalC
 const Index = ({ date, maxHeight }) => {
   const events = useSelector(state => eventBarsByDateSelector(state, date));
   const showModal = useContext(EventListModalContext);
+  const $eventList = useRef();
 
   if (!events) return;
 
@@ -19,14 +20,20 @@ const Index = ({ date, maxHeight }) => {
   const restEvent = events.slice(countEventBar);
 
   function clickReadMore() {
+    const { top, left } = $eventList.current.getBoundingClientRect();
+    const minLeft = window.innerWidth - 250;
     showModal({
       date,
       events: events.map(event => ({ ...event, scale: 1 })),
+      position: {
+        top: top - 35,
+        left: minLeft < left ? minLeft : left,
+      },
     });
   }
 
   return (
-    <div className={styles.event_list}>
+    <div className={styles.event_list} ref={$eventList}>
       {previewEvent.slice(0, countEventBar).map((event, index) => (
         <EventBar key={index} eventBar={event} />
       ))}
