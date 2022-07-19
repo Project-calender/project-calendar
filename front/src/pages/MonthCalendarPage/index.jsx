@@ -31,6 +31,7 @@ const Index = () => {
   const month = useSelector(monthSelector);
   return (
     <div className={`test ${styles.calendar}`} onWheel={changeMonth}>
+      {isModalShown && <EventListModal modalData={modalData} />}
       <table
         className={styles.calendar_table}
         onMouseDown={handleMouseDown}
@@ -46,7 +47,6 @@ const Index = () => {
               <CalendarBody month={month} />
             </EventListModalContext.Provider>
           </EventBarContext.Provider>
-          {isModalShown && <EventListModal events={modalData} />}
         </tbody>
       </table>
     </div>
