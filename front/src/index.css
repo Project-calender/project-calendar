@@ -16,3 +16,8 @@ code {
 ::-webkit-scrollbar { width: 8px; background: transparent; padding-right: 10px; } 
 ::-webkit-scrollbar-thumb { background: #cacaca; border-radius: 10px; } 
 ::-webkit-scrollbar-thumb:active { background: #888; } 
+
+#modal-root {
+  position: relative;
+  z-index: 999;
+}

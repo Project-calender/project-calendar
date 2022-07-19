@@ -18,7 +18,7 @@ const Index = ({ date, maxHeight }) => {
       {previewEvent.slice(0, countEventBar).map((event, index) => (
         <EventBar key={index} eventBar={event} />
       ))}
-      <ReadMoreTitle events={restEvent} />
+      <ReadMoreTitle events={events} restEvents={restEvent} />
     </div>
   );
 };
