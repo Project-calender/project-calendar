@@ -21,7 +21,12 @@ tags:
     description: API about alert
 
 paths:
-  $ref:
-    - "./userAPI.yaml"
-    - "./calendarAPI.yaml"
-    - "./eventAPI.yaml"
+  $ref: "./userAPI.yaml"
+
+commonError:
+  description: 중복 에러
+  schema:
+    properties:
+      message:
+        type: string
+        example: 중복에러

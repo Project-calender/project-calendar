@@ -38,6 +38,9 @@
             message:
               type: string
               example: 이미 사용중인 닉네임 입니다!
+      500:
+        $ref: "./openapi.yaml#/commonError"
+
 /api/user/signin:
   post:
     tags:
@@ -93,6 +96,8 @@
             message:
               type: string
               example: 패스워드가 일치하지 않습니다!
+      500:
+        $ref: "./openapi.yaml#/commonError"
 /api/user/checkedCalendar:
   post:
     tags:
@@ -118,3 +123,5 @@
             success:
               type: boolean
               example: true
+
+$ref: "./calendarAPI.yaml"
