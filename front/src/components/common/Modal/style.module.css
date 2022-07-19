@@ -10,3 +10,24 @@
     top: 50px;
     left: 50px;
 }
+
+.modal_close_icon{
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    border-radius: 100%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal_close_icon svg{
+    width: 18px;
+    height: 18px;
+    color: #525252;
+}
+
+.modal_close_icon:hover{
+    background: #f1f1f1;
+}

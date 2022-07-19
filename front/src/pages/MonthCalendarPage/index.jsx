@@ -26,12 +26,14 @@ const Index = () => {
   const { monthEventBars } = useMonthEventBar(selectedDateRange);
 
   const { changeMonth } = useAddMonthByWheel();
-  const { isModalShown, modalData, showModal } = useEventModal();
+  const { isModalShown, modalData, showModal, hideModal } = useEventModal();
 
   const month = useSelector(monthSelector);
   return (
     <div className={`test ${styles.calendar}`} onWheel={changeMonth}>
-      {isModalShown && <EventListModal modalData={modalData} />}
+      {isModalShown && (
+        <EventListModal modalData={modalData} hideModal={hideModal} />
+      )}
       <table
         className={styles.calendar_table}
         onMouseDown={handleMouseDown}
