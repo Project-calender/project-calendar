@@ -95,6 +95,9 @@ router.get("/getGroupEvent", authJWT, async (req, res, next) => {
 
 router.post("/createGroupEvent", authJWT, async (req, res, next) => {
   try {
+    const me = await User.findOne({
+      where: { id: req.myId },
+    });
     const isGroupMember = await CalendarMember.findOne({
       where: {
         [Op.and]: { UserId: req.myId, CalendarId: req.body.groupCalendarId },
@@ -128,6 +131,21 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
           state: 1,
           UserId: req.myId,
           EventId: newGroupEvent.id,
+        },
+        { transaction: t }
+      );
+
+      const privateCalendar = await me.getPrivateCalendar();
+      await privateCalendar.createPrivateEvent(
+        {
+          name: newGroupEvent.name,
+          color: newGroupEvent.color,
+          priority: newGroupEvent.priority,
+          memo: newGroupEvent.memo,
+          startTime: newGroupEvent.startTime,
+          endTime: newGroupEvent.endTime,
+          groupEventId: newGroupEvent.id,
+          state: 1,
         },
         { transaction: t }
       );

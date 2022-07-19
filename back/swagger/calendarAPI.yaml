@@ -1,0 +1,42 @@
+/api/calendar/signup:
+  post:
+    tags:
+      - calendar
+    summary: 회원가입
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+            nickname:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            success:
+              type: boolean
+              example: true
+      401:
+        description: 이메일 중복
+        schema:
+          properties:
+            message:
+              type: string
+              example: 이미 사용중인 이메일 입니다!
+      402:
+        description: 닉네임 중복
+        schema:
+          properties:
+            message:
+              type: string
+              example: 이미 사용중인 닉네임 입니다!
+      500:
+        $ref: "./openapi.yaml#/commonError"
