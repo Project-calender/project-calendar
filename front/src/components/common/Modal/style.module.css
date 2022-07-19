@@ -1,34 +1,12 @@
-.modal_container{
-    position: absolute;
-    z-index: 999;
-    background: white;
-    width: fit-content;
-    height: fit-content;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px 1px rgb(0, 0, 0, 0.3);
-    top: 50px;
-    left: 50px;
-    transition: all 0.3s;
-}
+.modal_container { position: absolute; z-index: 999; background: white; width: fit-content; height: fit-content; padding: 10px 8px; border-radius: 10px; box-shadow: 2px 2px 10px 1px rgb(0, 0, 0, 0.3); transition: all 0.3s; animation: openEffect .3s; } 
 
-.modal_close_icon{
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    border-radius: 100%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.modal_close_icon svg{
-    width: 18px;
-    height: 18px;
-    color: #525252;
-}
+@keyframes openEffect { 
+ from { transform: scale(0); } 
+ to { transform: scale(1); } 
+ }
 
-.modal_close_icon:hover{
-    background: #f1f1f1;
-}
+.modal_close_icon { position: absolute; top: 8px; right: 10px; border-radius: 100%; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; } 
+
+.modal_close_icon svg { width: 18px; height: 18px; color: #525252; } 
+
+.modal_close_icon:hover { background: #f1f1f1; } 
