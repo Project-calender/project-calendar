@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon app",
+    "api-docs": "swagger-cli bundle swagger/openapi.yaml --outfile swagger.yaml --type yaml",
     "production": "cross-env NODE_ENV=production pm2 start app.js",
     "restartServer": "cross-env NODE_ENV=production pm2 restart app.js"
   },
@@ -36,6 +37,9 @@
     "passport-local": "^1.0.0",
     "redis": "^3.1.2",
     "sequelize": "^6.21.0",
-    "sequelize-cli": "^6.4.1"
+    "sequelize-cli": "^6.4.1",
+    "swagger-cli": "^4.0.4",
+    "swagger-ui-express": "^4.5.0",
+    "yamljs": "^0.3.0"
   }
 }

@@ -1,6 +1,5 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const Sequelize = require("sequelize");
 const dotenv = require("dotenv");
 const { createClient } = require("redis");
 
@@ -55,17 +54,18 @@ router.post(
 router.post("/checkedCalendar", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
-    const me = User.findOne({
+    const me = await User.findOne({
       where: { id: req.myId },
     });
 
     await me.update(
       {
-        checkedCalender: req.body.checkedList,
+        checkedCalendar: req.body.checkedList,
       },
       { transaction: t }
     );
 
+    await t.commit();
     return res.status(200).status({ success: true });
   } catch (error) {
     console.error(error);
@@ -118,6 +118,7 @@ router.post("/signin", async (req, res, next) => {
 
 router.post("/signup", async (req, res, next) => {
   try {
+    console.log(req.body);
     const exUser = await User.findOne({
       where: {
         email: req.body.email,
