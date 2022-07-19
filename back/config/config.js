@@ -21,7 +21,7 @@ module.exports = {
     username: "root",
     password: process.env.DB_PASSWORD,
     database: "calendarApp",
-    host: "158.247.214.79",
+    host: "127.0.0.1",
     dialect: "mysql",
   },
 };
