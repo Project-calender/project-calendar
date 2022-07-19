@@ -41,4 +41,4 @@
       500:
         $ref: "./openapi.yaml#/commonError"
 
-$ref: "./evemtAPI.yaml"
+$ref: "./eventAPI.yaml"
