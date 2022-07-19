@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { createEventBar } from '../hooks/useMonthEventBar';
 import Moment from '../utils/moment';
-import { fetchEvents } from './thunk';
+import { fetchCalendarsAndEvents } from './thunk';
 
 const eventSort = (event, other) => {
   const eventDate = new Moment(new Date(event.startTime)).resetTime();
@@ -33,7 +33,7 @@ const events = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchEvents.fulfilled, (state, { payload }) => {
+    builder.addCase(fetchCalendarsAndEvents.fulfilled, (state, { payload }) => {
       const events = payload.events
         .map(event => ({
           ...event,
@@ -47,19 +47,15 @@ const events = createSlice({
         const endDate = new Moment(new Date(event.endTime)).resetTime();
         const key = startDate.time;
 
-        // 이벤트 추가
-        byDate[key] = byDate[key] || { events: [], eventBars: [] };
-        byDate[key].events.push(event.id);
-
-        // 이벤트 위치 배정
-        let index = byDate[key].eventBars.findIndex(event => !event);
-        index = index === -1 ? byDate[key].eventBars.length : index;
+        byDate[key] = byDate[key] || [];
+        let index = byDate[key].findIndex(event => !event);
+        index = index === -1 ? byDate[key].length : index;
 
         let nextDate = new Moment(new Date(event.startTime)).resetTime();
         do {
           const key = nextDate.time;
-          byDate[key] = byDate[key] || { events: [], eventBars: [] };
-          byDate[key].eventBars[index] = { id: event.id, scale: null };
+          byDate[key] = byDate[key] || [];
+          byDate[key][index] = { id: event.id, scale: null };
         } while (
           nextDate.time !== endDate.time &&
           (nextDate = nextDate.addDate(1))
@@ -70,7 +66,7 @@ const events = createSlice({
           endDateTime: endDate.time,
         });
         eventBars.forEach(
-          event => (byDate[event.time].eventBars[index].scale = event.scale),
+          event => (byDate[event.time][index].scale = event.scale),
         );
 
         return byDate;

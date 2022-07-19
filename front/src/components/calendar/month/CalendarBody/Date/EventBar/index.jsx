@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { calendarSelector } from '../../../../../../store/selectors/calendars';
+import { eventSelector } from '../../../../../../store/selectors/events';
 import styles from './style.module.css';
 
 const Index = ({
@@ -10,12 +11,9 @@ const Index = ({
   right = false,
   outerRight = false,
 }) => {
+  const event = useSelector(state => eventSelector(state, eventBar.id));
   const calendar = useSelector(state =>
-    calendarSelector(
-      state,
-      eventBar.event &&
-        (eventBar.event.PrivateCalendarId || eventBar.event.CalendarId),
-    ),
+    calendarSelector(state, event?.PrivateCalendarId || event?.CalendarId),
   );
 
   const eventBarStyle = {
@@ -23,10 +21,10 @@ const Index = ({
       width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
     },
     main: {
-      background: `linear-gradient(to right, ${calendar?.color} 5px, ${eventBar.event?.color} 5px)`,
+      background: `linear-gradient(to right, ${calendar?.color} 5px, ${event?.color} 5px)`,
     },
     left: { borderRightColor: calendar?.color },
-    right: { borderLeftColor: eventBar.event?.color },
+    right: { borderLeftColor: event?.color },
   };
 
   return (
@@ -35,7 +33,7 @@ const Index = ({
 
       {eventBar.scale && (
         <div className={styles.event_bar} style={eventBarStyle.main}>
-          <em> {eventBar.event?.name || '(제목 없음)'} </em>
+          <em> {event?.name || '(제목 없음)'} </em>
         </div>
       )}
 

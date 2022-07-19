@@ -5,14 +5,13 @@ import EventBar from '../EventBar';
 import ReadMoreTitle from './ReadMoreTitle';
 
 import { useSelector } from 'react-redux';
-import { eventBarsByDateSelector } from '../../../../../../store/selectors/events';
+import { eventsByDateSelector } from '../../../../../../store/selectors/events';
 import { EventListModalContext } from '../../../../../../context/EventListModalContext';
 
 const Index = ({ date, maxHeight }) => {
-  const events = useSelector(state => eventBarsByDateSelector(state, date));
+  const events = useSelector(state => eventsByDateSelector(state, date));
   const showModal = useContext(EventListModalContext);
   const $eventList = useRef();
-
   if (!events) return;
 
   const countEventBar = Math.floor(maxHeight / 32);
