@@ -33,7 +33,7 @@ const Index = ({ month, date }) => {
     showModal({
       date,
       events: [],
-      position: {
+      style: {
         top: window.innerHeight < bottom + 150 ? null : top,
         left: minLeft < left ? left - 260 : left,
         bottom: window.innerHeight < bottom + 150 ? 30 : null,

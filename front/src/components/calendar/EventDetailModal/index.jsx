@@ -25,14 +25,18 @@ import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 export const triggerDOM = 'month-event-detail';
 
 const Index = ({ modalData, hideModal }) => {
-  const { position, event } = modalData;
+  const { style, event } = modalData;
 
   const calendar = useSelector(state =>
     calendarByEventIdSelector(state, event),
   );
 
   return (
-    <Modal hideModal={hideModal} triggerDOM={triggerDOM} position={position}>
+    <Modal
+      hideModal={hideModal}
+      triggerDOM={triggerDOM}
+      style={{ ...style, boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)' }}
+    >
       <div className={styles.modal_container}>
         <div className={styles.modal_header}>
           <Tooltip title="일정 수정">
@@ -58,7 +62,7 @@ const Index = ({ modalData, hideModal }) => {
             <div>
               <h1>{event.name || '(제목 없음)'}</h1>
               <h3>{intiDateTitle(event)}</h3>
-              <h3>매년</h3>
+              <p>매년</p>
             </div>
           </div>
 

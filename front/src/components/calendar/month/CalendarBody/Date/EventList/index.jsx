@@ -6,11 +6,16 @@ import ReadMoreTitle from './ReadMoreTitle';
 
 import { useSelector } from 'react-redux';
 import { eventsByDateSelector } from '../../../../../../store/selectors/events';
-import { EventListModalContext } from '../../../../../../context/EventModalContext';
+import {
+  EventDetailModalContext,
+  EventListModalContext,
+} from '../../../../../../context/EventModalContext';
 
 const Index = ({ date, maxHeight }) => {
   const events = useSelector(state => eventsByDateSelector(state, date));
-  const showModal = useContext(EventListModalContext);
+  const showEventListModal = useContext(EventListModalContext);
+  const showEventDetailModal = useContext(EventDetailModalContext);
+
   const $eventList = useRef();
   if (!events) return;
 
@@ -21,20 +26,37 @@ const Index = ({ date, maxHeight }) => {
   function clickReadMore() {
     const { top, left } = $eventList.current.getBoundingClientRect();
     const minLeft = window.innerWidth - 250;
-    showModal({
+    showEventListModal({
       date,
       events: events.map(event => ({ ...event, scale: 1 })),
-      position: {
+      style: {
         top: top - 35,
         left: minLeft < left ? minLeft : left,
       },
     });
   }
 
+  function handleEventDetailMadal(e, event) {
+    const { top, left } = e.target.getBoundingClientRect();
+    showEventDetailModal({
+      style: {
+        top: window.innerHeight < top + 400 ? null : top + 30,
+        bottom: window.innerHeight < top + 400 ? 25 : null,
+        left: window.innerWidth < left + 450 ? null : left,
+        right: window.innerWidth < left + 450 ? 55 : null,
+      },
+      event,
+    });
+  }
+
   return (
     <div className={styles.event_list} ref={$eventList}>
       {previewEvent.slice(0, countEventBar).map((event, index) => (
-        <EventBar key={index} eventBar={event} />
+        <EventBar
+          key={index}
+          eventBar={event}
+          handleEventDetailMadal={handleEventDetailMadal}
+        />
       ))}
       <ReadMoreTitle events={restEvent} clickReadMore={clickReadMore} />
     </div>

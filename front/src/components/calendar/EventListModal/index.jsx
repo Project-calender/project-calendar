@@ -7,10 +7,10 @@ import EventContainer from './EventContainer';
 export const triggerDOM = 'month-event-list';
 
 const Index = ({ modalData, hideModal }) => {
-  const { date, events, position } = modalData;
+  const { date, events, style } = modalData;
 
   return (
-    <Modal hideModal={hideModal} triggerDOM={triggerDOM} position={position}>
+    <Modal hideModal={hideModal} triggerDOM={triggerDOM} style={style}>
       <div className={styles.modal_container}>
         <strong>{date.weekDay}</strong>
         <h1>{date.date}</h1>

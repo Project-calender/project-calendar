@@ -60,10 +60,12 @@ const Index = () => {
   return (
     <div className={styles.calendar} onWheel={changeMonth}>
       {isEventListModalShown && (
-        <EventListModal
-          modalData={eventListModalData}
-          hideModal={hideEventListModal}
-        />
+        <EventDetailModalContext.Provider value={showEventDetailModal}>
+          <EventListModal
+            modalData={eventListModalData}
+            hideModal={hideEventListModal}
+          />
+        </EventDetailModalContext.Provider>
       )}
       {isEventDetailModalShown && (
         <EventDetailModal

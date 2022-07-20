@@ -7,7 +7,7 @@ import Tooltip from '../Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 
-const Index = ({ children, hideModal, triggerDOM = '', position = {} }) => {
+const Index = ({ children, hideModal, triggerDOM = '', style = {} }) => {
   const $modal = useRef();
   useEffect(() => {
     document.addEventListener('click', clickModalOutside);
@@ -24,7 +24,7 @@ const Index = ({ children, hideModal, triggerDOM = '', position = {} }) => {
   }
 
   return (
-    <div className={styles.modal_container} ref={$modal} style={position}>
+    <div className={styles.modal_container} ref={$modal} style={style}>
       <div className={styles.modal_close_icon}>
         <Tooltip title={'닫기'}>
           <FontAwesomeIcon icon={faXmark} onClick={hideModal} />
@@ -39,6 +39,6 @@ Index.propTypes = {
   children: PropTypes.node,
   hideModal: PropTypes.func,
   triggerDOM: PropTypes.string,
-  position: PropTypes.object,
+  style: PropTypes.object,
 };
 export default Index;

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { EventDetailModalContext } from '../../../context/EventModalContext';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { eventSelector } from '../../../store/selectors/events';
 import { triggerDOM } from '../EventDetailModal';
@@ -12,12 +11,12 @@ const Index = ({
   left = false,
   right = false,
   outerRight = false,
+  handleEventDetailMadal = () => {},
 }) => {
   const event = useSelector(state => eventSelector(state, eventBar.id));
   const calendar = useSelector(state =>
     calendarByEventIdSelector(state, event),
   );
-  const showModal = useContext(EventDetailModalContext);
 
   const eventBarStyle = {
     container: {
@@ -39,9 +38,7 @@ const Index = ({
           className={styles.event_bar}
           style={eventBarStyle.main}
           data-modal={triggerDOM}
-          onClick={() => {
-            showModal({ position: {}, event });
-          }}
+          onClick={e => handleEventDetailMadal(e, event)}
         >
           <em data-modal={triggerDOM}> {event?.name || '(제목 없음)'} </em>
         </div>
@@ -64,6 +61,7 @@ Index.propTypes = {
   left: PropTypes.bool,
   right: PropTypes.bool,
   outerRight: PropTypes.bool,
+  handleEventDetailMadal: PropTypes.func,
 };
 
 export default Index;
