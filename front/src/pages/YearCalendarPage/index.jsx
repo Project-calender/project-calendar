@@ -4,8 +4,8 @@ import styles from './style.module.css';
 import MonthCalendar from '../../components/calendar/year/MonthCalendar';
 import EventListModal from '../../components/calendar/EventListModal';
 import useEventModal from '../../hooks/useEventModal';
-import { EventListModalContext } from '../../context/EventListModalContext';
 import { selectedDateSelector } from '../../store/selectors/date';
+import { EventListModalContext } from '../../context/EventModalContext';
 
 const Index = () => {
   const year = useSelector(state => selectedDateSelector(state).year);

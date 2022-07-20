@@ -8,8 +8,8 @@ import Moment from '../../../../../../utils/moment';
 import styles from './style.module.css';
 import { fetchCalendarsAndEvents } from '../../../../../../store/thunk';
 import { eventsByDateSelector } from '../../../../../../store/selectors/events';
-import { EventListModalContext } from '../../../../../../context/EventListModalContext';
 import { triggerDOM } from '../../../../EventListModal';
+import { EventListModalContext } from '../../../../../../context/EventModalContext';
 
 const Index = ({ month, date }) => {
   const selectedDate = useSelector(selectedDateSelector);

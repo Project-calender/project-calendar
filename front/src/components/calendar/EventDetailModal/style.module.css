@@ -1,0 +1,42 @@
+.modal_container {
+    width: 420px;
+    text-align: center;
+}
+
+.modal_header{
+    display: flex;
+    justify-content: right;
+    margin-right: 35px;
+    height: 25px;
+    align-items: center;
+}
+
+.modal_header > svg{
+    margin-right: 5px;
+    width: 15px;
+    height: 15px;
+    color: #515151;
+    border-radius: 100%;
+    padding:10px;
+}
+.modal_header > svg:hover{
+    background: #f0f0f0;
+}
+
+
+.modal_header > svg:nth-child(2){
+    margin-right: 8px;
+}
+
+.modal_header > svg:nth-child(3){
+    width: 17px;
+    height: 18px;
+
+}
+
+.event_color{
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+}
+

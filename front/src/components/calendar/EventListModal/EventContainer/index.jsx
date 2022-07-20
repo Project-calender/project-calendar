@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { eventSelector } from '../../../../store/selectors/events';
 import Moment from '../../../../utils/moment';
-import EventBar from '../../month/CalendarBody/Date/EventBar';
+import EventBar from '../../EventBar';
 
 const Index = ({ event, date }) => {
   const { startTime, endTime } = useSelector(state =>

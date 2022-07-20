@@ -26,3 +26,8 @@ export const calendarSelector = createSelector(
   (state, calendarId) =>
     calendarId ? selectoCalendarById(state, calendarId) : null,
 );
+
+export const calendarByEventIdSelector = createSelector(
+  [state => state, (_, event) => event?.PrivateCalendarId || event?.CalendarId],
+  (state, calendarId) => selectoCalendarById(state, calendarId),
+);

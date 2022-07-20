@@ -1,8 +1,8 @@
 
-.event_container { display: flex; align-items: flex-start; height: 1.3rem; margin-bottom: 2px; position: relative; width: calc(100% + 1px - 5px); z-index: 3; } 
-.event_container:hover { filter: brightness(0.9); } 
+.event_container { display: flex; align-items: flex-start; height: 1.3rem; margin-bottom: 2px; position: relative; width: calc(100% + 1px - 5px);} 
+.event_container:hover > *{ filter: brightness(0.9); } 
 
-.event_bar { width: 100%; height: 100%; border-radius: 3px; display: flex; align-items: center; cursor: pointer; } 
+.event_bar { width: 100%; height: 100%; border-radius: 3px; display: flex; align-items: center; cursor: pointer;  z-index: 3; } 
 .event_bar > em { font-size: 0.72rem; vertical-align: middle; color: #fff; text-align: left; padding:0px 10px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
 
 .event_left { position: relative; border: 0.65rem solid transparent; border-left: 0px; border-right: 0.65rem solid rgb(192, 202, 51); left: 1.3px; z-index: 4; } 

@@ -1,12 +1,12 @@
 import React, { useContext, useRef } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import EventBar from '../EventBar';
+import EventBar from '../../../../EventBar';
 import ReadMoreTitle from './ReadMoreTitle';
 
 import { useSelector } from 'react-redux';
 import { eventsByDateSelector } from '../../../../../../store/selectors/events';
-import { EventListModalContext } from '../../../../../../context/EventListModalContext';
+import { EventListModalContext } from '../../../../../../context/EventModalContext';
 
 const Index = ({ date, maxHeight }) => {
   const events = useSelector(state => eventsByDateSelector(state, date));

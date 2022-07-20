@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { calendarSelector } from '../../../../../../store/selectors/calendars';
-import { eventSelector } from '../../../../../../store/selectors/events';
+import { EventDetailModalContext } from '../../../context/EventModalContext';
+import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
+import { eventSelector } from '../../../store/selectors/events';
+import { triggerDOM } from '../EventDetailModal';
 import styles from './style.module.css';
 
 const Index = ({
@@ -13,8 +15,9 @@ const Index = ({
 }) => {
   const event = useSelector(state => eventSelector(state, eventBar.id));
   const calendar = useSelector(state =>
-    calendarSelector(state, event?.PrivateCalendarId || event?.CalendarId),
+    calendarByEventIdSelector(state, event),
   );
+  const showModal = useContext(EventDetailModalContext);
 
   const eventBarStyle = {
     container: {
@@ -32,8 +35,15 @@ const Index = ({
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
       {eventBar.scale && (
-        <div className={styles.event_bar} style={eventBarStyle.main}>
-          <em> {event?.name || '(제목 없음)'} </em>
+        <div
+          className={styles.event_bar}
+          style={eventBarStyle.main}
+          data-modal={triggerDOM}
+          onClick={() => {
+            showModal({ position: {}, event });
+          }}
+        >
+          <em data-modal={triggerDOM}> {event?.name || '(제목 없음)'} </em>
         </div>
       )}
 
