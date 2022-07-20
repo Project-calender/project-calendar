@@ -1,0 +1,189 @@
+/api/user/signup:
+  post:
+    tags:
+      - user
+    summary: 회원가입
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+            nickname:
+              type: string
+            profileImageSrc:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      401:
+        description: 이메일 중복
+        schema:
+          properties:
+            message:
+              type: string
+              example: 이미 사용중인 이메일 입니다!
+      402:
+        description: 닉네임 중복
+        schema:
+          properties:
+            message:
+              type: string
+              example: 이미 사용중인 닉네임 입니다!
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/user/signin:
+  post:
+    tags:
+      - user
+    summary: 로그인
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            userData:
+              type: object
+              properties:
+                id:
+                  type: integer
+                email:
+                  type: string
+                nickname:
+                  type: string
+                checkedCalendar:
+                  type: string
+                ProfileImages:
+                  type: object
+                  properties:
+                    src:
+                      type: string
+                refreshToken:
+                  type: string
+                accessToken:
+                  type: string
+      401:
+        description: 존재하지 않는 유저 (이메일이 틀린 경우)
+        schema:
+          properties:
+            message:
+              type: string
+              example: 유저가 존재하지 않습니다!
+      402:
+        description: 비밀번호 일치하지 않음 (이메일은 맞지만 비밀번호가 틀린 경우)
+        schema:
+          properties:
+            message:
+              type: string
+              example: 패스워드가 일치하지 않습니다!
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/user/logout:
+  post:
+    tags:
+      - user
+    summary: 로그아웃
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+
+/api/user/refresh:
+  get:
+    tags:
+      - user
+    summary: 토큰 refresh
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: refresh
+        in: header
+        required: true
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            ok:
+              type: boolean
+              example: true
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  exmaple: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU4MjA4NDQzLCJleHAiOjE2NTgyOTQ4NDN9.xI5ylpNtkeC5wnf4mnqcP3nbFMpm1mKjrHySxLJyN_4"
+                refreshToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU4MjA4NDQzLCJleHAiOjE2NTgyOTQ4NDN9.xI5ylpNtkeC5wnf4mnqcP3nbFMpm1mKjrHySxLJyN_4"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/user/setUserProfileImage:
+  post:
+    tags:
+      - user
+    summary: 회원가입 시 프로필 사진 등록
+    consumes:
+      - multipart/form-data
+    parameters:
+      - in: formData
+        name: upfile
+        type: file
+        description: The file to upload.
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            src:
+              type: string
+              example: "./filepath"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+/api/user/checkedCalendar:
+  post:
+    tags:
+      - user
+    summary: 달력 체킹 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            checkedList:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+$ref: "./privateEventAPI.yaml"

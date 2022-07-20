@@ -1,6 +1,5 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const Sequelize = require("sequelize");
 const dotenv = require("dotenv");
 const { createClient } = require("redis");
 
@@ -10,10 +9,14 @@ const jwt = require("../utils/jwt-util");
 const redisClient = require("../utils/redis");
 const authJWT = require("../utils/authJWT");
 const { sequelize, User, ProfileImage } = require("../models");
+const path = require("path");
 
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
+const BASIC_IMG_SRC =
+  "https://baeminback.s3.ap-northeast-2.amazonaws.com/basicProfile.png";
+
 dotenv.config();
 AWS.config.update({
   accessKeyId: process.env.S3_ACCESS_KEY,
@@ -38,54 +41,12 @@ const uploadProfileImage = multer({
 
 router.post(
   "/setUserProfileImage",
-  authJWT,
   uploadProfileImage.single("image"),
   async (req, res, next) => {
     try {
-      const me = User.findOne({ where: { id: req.myId } });
-
-      await sequelize.transaction(async (t) => {
-        const profileImage = await ReviewImage.create(
-          {
-            src: req.file.location,
-          },
-          { transaction: t }
-        );
-        await me.addProfileImage(profileImage, { transaction: t });
-      });
-
-      return res.status(200).send({ success: true });
+      return res.status(200).send({ src: req.file.location });
     } catch (error) {
       console.error(error);
-      next(error);
-    }
-  }
-);
-
-router.post(
-  "/changeUserProfileImage",
-  authJWT,
-  uploadProfileImage.single("image"),
-  async (req, res, next) => {
-    const t = await sequelize.transaction();
-    try {
-      const myProfileImage = await ProfileImage.findOne({
-        where: {
-          UserId: req.myId,
-        },
-      });
-
-      await myProfileImage.update(
-        {
-          src: req.file.location,
-        },
-        { transaction: t }
-      );
-      return res.status(200).send({ success: true });
-    } catch (error) {
-      console.error(error);
-      console.error(error);
-      await t.rollback();
       next(error);
     }
   }
@@ -94,17 +55,18 @@ router.post(
 router.post("/checkedCalendar", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
-    const me = User.findOne({
+    const me = await User.findOne({
       where: { id: req.myId },
     });
 
     await me.update(
       {
-        checkedCalender: req.body.checkedList,
+        checkedCalendar: req.body.checkedList,
       },
       { transaction: t }
     );
 
+    await t.commit();
     return res.status(200).status({ success: true });
   } catch (error) {
     console.error(error);
@@ -127,7 +89,7 @@ router.post("/signin", async (req, res, next) => {
   }
   const chk = await bcrypt.compare(password, user.password);
   if (!chk) {
-    return res.status(401).send({
+    return res.status(402).send({
       message: "패스워드가 일치하지 않습니다!",
     });
   }
@@ -136,8 +98,16 @@ router.post("/signin", async (req, res, next) => {
   redisClient.set(user.id, refreshToken);
   const userData = await User.findOne({
     where: { email: user.email },
+    include: [
+      {
+        model: ProfileImage,
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "deletedAt", "id", "UserId"],
+        },
+      },
+    ],
     attributes: {
-      exclude: ["password"],
+      exclude: ["password", "createdAt", "updatedAt", "deletedAt"],
     },
   });
   return res.status(200).send({
@@ -146,17 +116,27 @@ router.post("/signin", async (req, res, next) => {
     accessToken,
   });
 });
-
 router.post("/signup", async (req, res, next) => {
   try {
+    console.log(req.body);
     const exUser = await User.findOne({
       where: {
         email: req.body.email,
       },
     });
     if (exUser) {
-      return res.status(403).send({ message: "이미 사용중인 아이디입니다!" });
+      return res.status(401).send({ message: "이미 사용중인 아이디입니다!" });
     }
+
+    const exNickname = await User.findOne({
+      where: {
+        nickname: req.body.nickname,
+      },
+    });
+    if (exNickname) {
+      return res.status(402).send({ message: "이미 사용중인 닉네임입니다!" });
+    }
+
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
 
     await sequelize.transaction(async (t) => {
@@ -168,6 +148,29 @@ router.post("/signup", async (req, res, next) => {
         },
         { transaction: t }
       );
+
+      if (req.body.profileImageSrc) {
+        const profileImage = await ProfileImage.create(
+          {
+            src: req.body.profileImageSrc,
+          },
+          {
+            transaction: t,
+          }
+        );
+
+        await newUser.addProfileImage(profileImage, { transaction: t });
+      } else {
+        const profileImage = await ProfileImage.create(
+          {
+            src: BASIC_IMG_SRC,
+          },
+          {
+            transaction: t,
+          }
+        );
+        await newUser.addProfileImage(profileImage, { transaction: t });
+      }
 
       await newUser.createPrivateCalendar(
         {

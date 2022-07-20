@@ -1,0 +1,40 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: GoogleCalendar-API-docs
+  description: GoogleCalendar API문서
+  servers:
+    - description: GoogleCalendar-Clone API
+      url: http://158.247.214.79/
+    - description: GoogleCalendar-Clone dev
+      url: http://localhost:80/
+tags:
+  - name: user
+    description: API about user
+  - name: privateEvent
+    description: API about privateEvent
+  - name: calendar
+    description: API about calendar
+  - name: event
+    description: API about event
+  - name: alert
+    description: API about alert
+
+paths:
+  $ref: "./userAPI.yaml"
+
+success:
+  description: 성공
+  schema:
+    properties:
+      success:
+        type: boolean
+        example: true
+
+serverError:
+  description: 서버 에러
+  schema:
+    properties:
+      message:
+        type: string
+        example: 서버 에러

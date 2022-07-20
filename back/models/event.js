@@ -25,6 +25,9 @@ module.exports = class Event extends Model {
         endTime: {
           type: DataTypes.DATE,
         },
+        allDay: {
+          type: DataTypes.BOOLEAN,
+        },
       },
       {
         modelName: "Events",

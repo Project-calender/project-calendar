@@ -11,58 +11,49 @@ const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
 
 router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
-  const f = await sequelize.transaction();
   try {
-    console.log(req.body.calendarName ,"확인확인확인확인확인확인확인확인확인확인확인확인")
-    console.log(req.body.calendarColor)
-    const notUnique = await Calendar.findOne({
-      where: { name: req.body.calendarName },
-    });
-    console.log(req.body.calendarName ,"확인확인확인확인확인확인확인확인확인확인확인확인")
-    console.log(req.body.calendarColor)
-    if (notUnique) {
-      return res
-        .status(400)
-        .send({ message: "이미 같은 이름의 캘린더가 존재합니다!" });
-    }
-    console.log(req.body.calendarName ,"확인확인확인확인확인확인확인확인확인확인확인확인")
-    console.log(req.body.calendarColor)
-    const newGroupCalendar = await Calendar.create(
-      {
-        name: req.body.calendarName,
-        color: req.body.calendarColor,
-        OwnerId: req.myId,
-      },
-      {
-        transaction: t,
-      }
-    );
-    await t.commit();
+    await sequelize.transaction(async (t) => {
+      const notUnique = await Calendar.findOne({
+        where: { name: req.body.calendarName },
+      });
 
-    await CalendarMember.create(
-      {
-        authority: 3,
-        UserId: req.myId,
-        CalendarId: newGroupCalendar.id,
-      },
-      {
-        transaction: f,
+      if (notUnique) {
+        return res
+          .status(400)
+          .send({ message: "이미 같은 이름의 캘린더가 존재합니다!" });
       }
-    );
-    await f.commit();
+
+      const newGroupCalendar = await Calendar.create(
+        {
+          name: req.body.calendarName,
+          color: req.body.calendarColor,
+          OwnerId: req.myId,
+        },
+        {
+          transaction: t,
+        }
+      );
+
+      await CalendarMember.create(
+        {
+          authority: 3,
+          UserId: req.myId,
+          CalendarId: newGroupCalendar.id,
+        },
+        {
+          transaction: t,
+        }
+      );
+    });
+
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
-    await t.rollback();
-    await f.rollback();
     next(error);
   }
 });
 
 router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
-  const f = await sequelize.transaction();
   try {
     const guest = await User.findOne({
       where: { email: req.body.guestEmail },
@@ -95,34 +86,33 @@ router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
       return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
     }
 
-    await Invite.create(
-      {
-        CalendarHostId: req.myId,
-        CalendarGuestId: guest.id,
-        HostCalendarId: req.body.groupCalendarId,
-      },
-      { transaction: t }
-    );
-    await t.commit();
+    await sequelize.transaction(async (t) => {
+      await Invite.create(
+        {
+          CalendarHostId: req.myId,
+          CalendarGuestId: guest.id,
+          HostCalendarId: req.body.groupCalendarId,
+        },
+        { transaction: t }
+      );
 
-    const InviteCalendar = await Calendar.findOne({
-      where: { id: req.body.groupCalendarId },
+      const InviteCalendar = await Calendar.findOne({
+        where: { id: req.body.groupCalendarId },
+      });
+
+      await Alert.create(
+        {
+          UserId: guest.id,
+          type: "calendarInvite",
+          content: `${InviteCalendar.name} 캘린더에서 초대장을 보냈어요!`,
+        },
+        { transaction: t }
+      );
     });
-    await Alert.create(
-      {
-        UserId: guest.id,
-        type: "calendarInvite",
-        content: `${InviteCalendar.name} 캘린더에서 초대장을 보냈어요!`,
-      },
-      { transaction: f }
-    );
 
-    await f.commit();
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
-    await t.rollback();
-    await f.rollback();
     next(error);
   }
 });
