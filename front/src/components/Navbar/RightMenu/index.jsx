@@ -38,6 +38,8 @@ const Index = ({
   let userInfo = localStorage.getItem('userInfo');
   userInfo = JSON.parse(userInfo);
   let change = useLocation(); //url 주소 가지고 오기
+  let userImg = localStorage.getItem('userImg'); //사용자 프로필 이미지 가지고 오기
+  userImg = userImg.replace(/"/g, ''); //프로필 이미지 "" 제거
 
   //url 변경에 따른 changeDate 변경
   useEffect(() => {
@@ -127,8 +129,8 @@ const Index = ({
   function test() {
     axios
       .post(`/calendar/createGroupCalendar`, {
-        calendarName: 'ohasdasd',
-        calendarColor: 'redasd',
+        calendarName: 'ohaas12213',
+        calendarColor: 'redasd123',
       })
       .then(res => {
         console.log('테스트 성공', res);
@@ -255,19 +257,13 @@ const Index = ({
             }}
           >
             <Tooltip title="Google 계정">
-              <img
-                src={`${process.env.PUBLIC_URL}/img/join/profile.png`}
-                alt=""
-              />
+              <img src={userImg} alt="" />
             </Tooltip>
           </div>
           <div className={styles.user_inpo}>
             <div className={styles.user_profile}>
               <div className={styles.user_img}>
-                <img
-                  src={`${process.env.PUBLIC_URL}/img/join/profile.png`}
-                  alt=""
-                />
+                <img src={userImg} alt="" />
               </div>
               <h2>{userInfo?.nickname}</h2>
               <em>{userInfo?.email}</em>

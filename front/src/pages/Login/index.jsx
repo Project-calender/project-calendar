@@ -54,6 +54,10 @@ const Index = () => {
 
     dispatch(updateUser(res.data.userData));
     localStorage.setItem('userInfo', JSON.stringify(res.data.userData));
+    localStorage.setItem(
+      'userImg',
+      JSON.stringify(res.data.userData.ProfileImages[0].src),
+    );
   }
 
   useEffect(() => {
