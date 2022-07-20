@@ -6,20 +6,38 @@ import { selectedDateSelector } from '../../../../../../store/selectors/date';
 import { selectDate } from '../../../../../../store/date';
 import Moment from '../../../../../../utils/moment';
 import useNavigateDayCalendar from '../../../../../../hooks/useNavigateDayCalendar';
+// import { fetchEvents } from '../../../../../../store/thunk';
+// import { useContext } from 'react';
+// import { EventListModalContext } from '../../../../../../context/EventListModalContext';
 
 const Index = ({ week, month }) => {
   const dispatch = useDispatch();
   const selectedDate = useSelector(selectedDateSelector);
 
   const { moveDayCalendar } = useNavigateDayCalendar();
+  // const showModal = useContext(EventListModalContext);
 
+  function handleDate(date) {
+    dispatch(selectDate(date));
+    // dispatch(fetchCalendarsAndEvents(selectedDate.time, selectedDate.time));
+
+    // fetchEvents().t;
+    // showModal({
+    //   date,
+    //   events: events.map(event => ({ ...event, scale: 1 })),
+    //   position: {
+    //     top: top - 35,
+    //     left: minLeft < left ? minLeft : left,
+    //   },
+    // });
+  }
   return (
     <tr className={styles.calendar_tr}>
       {week.map((date, index) => (
         <td
           key={index}
           className={`${initDateClassName(date, month, selectedDate)}`}
-          onClick={() => dispatch(selectDate(date))}
+          onClick={() => handleDate(date)}
           onDoubleClick={() => moveDayCalendar(date)}
         >
           <em>{date.date}</em>

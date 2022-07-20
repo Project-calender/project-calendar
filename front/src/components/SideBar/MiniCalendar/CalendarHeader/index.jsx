@@ -3,19 +3,18 @@ import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../../../common/Tooltip';
-
-import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { addMonth } from '../../../../store/date';
 
-const Index = () => {
+const Index = ({ year, month }) => {
   const dispatch = useDispatch();
-  const selectedDate = useSelector(({ date }) => date.selectedDate);
 
   return (
     <div className={styles.year}>
       <div className={styles.text}>
-        <em>{selectedDate.year}년</em>
-        <em>{selectedDate.month}월</em>
+        <em>{year}년</em>
+        <em>{month}월</em>
       </div>
       <div className={styles.year_btt}>
         <Tooltip title="이전 달">
@@ -31,6 +30,11 @@ const Index = () => {
       </div>
     </div>
   );
+};
+
+Index.propTypes = {
+  year: PropTypes.number,
+  month: PropTypes.number,
 };
 
 export default Index;
