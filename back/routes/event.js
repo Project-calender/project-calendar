@@ -89,7 +89,6 @@ router.get("/getGroupEvent", authJWT, async (req, res, next) => {
     return res.status(200).send(events);
   } catch (error) {
     console.error(error);
-
     next(error);
   }
 });

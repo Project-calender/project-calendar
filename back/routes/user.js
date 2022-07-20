@@ -161,17 +161,17 @@ router.post("/signup", async (req, res, next) => {
         );
 
         await newUser.addProfileImage(profileImage, { transaction: t });
+      } else {
+        const profileImage = await ProfileImage.create(
+          {
+            src: BASIC_IMG_SRC,
+          },
+          {
+            transaction: t,
+          }
+        );
+        await newUser.addProfileImage(profileImage, { transaction: t });
       }
-
-      const profileImage = await ProfileImage.create(
-        {
-          src: BASIC_IMG_SRC,
-        },
-        {
-          transaction: t,
-        }
-      );
-      await newUser.addProfileImage(profileImage, { transaction: t });
 
       await newUser.createPrivateCalendar(
         {

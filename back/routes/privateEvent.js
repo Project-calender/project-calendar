@@ -93,4 +93,6 @@ router.post("/deletePrivateEvent", authJWT, async (req, res, next) => {
   }
 });
 
+// 그룹이벤트를 개인이벤트에서만 수정하는 기능추가
+// 연도에서 날짜로 이벤트 가져오기
 module.exports = router;
