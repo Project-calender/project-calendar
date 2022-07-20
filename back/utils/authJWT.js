@@ -20,7 +20,7 @@ const authJWT = (req, res, next) => {
     }
   } else {
     //세션 스토리지에 access 토큰이 없는 경우
-    return res.status(401).send({
+    res.status(401).send({
       ok: false,
       message: "accessToken이 지급되지 않았습니다",
     });
