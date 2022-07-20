@@ -16,14 +16,11 @@
               type: string
             nickname:
               type: string
+            profileImageSrc:
+              type: string
     responses:
       200:
-        description: 성공
-        schema:
-          properties:
-            success:
-              type: boolean
-              example: true
+        $ref: "./openapi.yaml#/success"
       401:
         description: 이메일 중복
         schema:
@@ -39,7 +36,7 @@
               type: string
               example: 이미 사용중인 닉네임 입니다!
       500:
-        $ref: "./openapi.yaml#/commonError"
+        $ref: "./openapi.yaml#/serverError"
 
 /api/user/signin:
   post:
@@ -97,8 +94,74 @@
               type: string
               example: 패스워드가 일치하지 않습니다!
       500:
-        $ref: "./openapi.yaml#/commonError"
+        $ref: "./openapi.yaml#/serverError"
 
+/api/user/logout:
+  post:
+    tags:
+      - user
+    summary: 로그아웃
+  parameters:
+    - name: Authorization
+      in: header
+      required: true
+  responses:
+    200:
+      $ref: "./openapi.yaml#/success"
+/api/user/refresh:
+  get:
+    tags:
+      - user
+    summary: 토큰 refresh
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: refresh
+        in: header
+        required: true
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            ok:
+              type: boolean
+              example: true
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  exmaple: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU4MjA4NDQzLCJleHAiOjE2NTgyOTQ4NDN9.xI5ylpNtkeC5wnf4mnqcP3nbFMpm1mKjrHySxLJyN_4"
+                refreshToken:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU4MjA4NDQzLCJleHAiOjE2NTgyOTQ4NDN9.xI5ylpNtkeC5wnf4mnqcP3nbFMpm1mKjrHySxLJyN_4"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/user/setUserProfileImage:
+  post:
+    tags:
+      - user
+    summary: 회원가입 시 프로필 사진 등록
+    consumes:
+      - multipart/form-data
+    parameters:
+      - in: formData
+        name: upfile
+        type: file
+        description: The file to upload.
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            src:
+              type: string
+              example: "./filepath"
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/user/checkedCalendar:
   post:
     tags:
@@ -118,12 +181,8 @@
               type: string
     responses:
       200:
-        description: 성공
-        schema:
-          properties:
-            success:
-              type: boolean
-              example: true
+        $ref: "./openapi.yaml#/success"
       500:
-        $ref: "./openapi.yaml#/commonError"
-$ref: "./calendarAPI.yaml"
+        $ref: "./openapi.yaml#/serverError"
+
+$ref: "./privateEventAPI.yaml"

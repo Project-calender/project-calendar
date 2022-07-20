@@ -1,20 +1,21 @@
-/api/calendar/signup:
+/api/calendar/createGroupCalendar:
   post:
     tags:
       - calendar
-    summary: 회원가입
+    summary: 그룹캘린더 만들기
     parameters:
+      - name: Authorization
+        in: header
+        required: true
       - name: body
         in: body
         required: true
         schema:
           type: object
           properties:
-            email:
+            calendarName:
               type: string
-            password:
-              type: string
-            nickname:
+            calendarColor:
               type: string
     responses:
       200:
@@ -22,7 +23,7 @@
         schema:
           properties:
             success:
-              type: boolean
+              type: string
               example: true
       401:
         description: 이메일 중복
@@ -30,13 +31,229 @@
           properties:
             message:
               type: string
-              example: 이미 사용중인 이메일 입니다!
-      402:
-        description: 닉네임 중복
+              example: 이미 같은 이름의 캘린더가 존재합니다!
+/api/calendar/inviteGroupCalendar:
+  post:
+    tags:
+      - calendar
+    summary: 그룹 캘린더 초대
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
         schema:
+          type: object
+          properties:
+            guestEmail:
+              type: string
+            groupCalendarId:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            success:
+              type: string
+              example: true
+      400:
+        description: 게스트 조회 결과가 없을 경우
+        schema:
+          type: object
           properties:
             message:
               type: string
-              example: 이미 사용중인 닉네임 입니다!
-      500:
-        $ref: "./openapi.yaml#/commonError"
+              example: 존재하지 않는 유저입니다!
+      401:
+        description: 캘린더 조회 결과가 없을 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 캘린더 조회 결과가 없습니다!
+      402:
+        description: 이미 초대를 보낸 게스트일 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 이미 해당 달력에 초대장을 보낸 상대입니다!
+      403:
+        description: 초대를 보낸 게스트가 이미 그룹 캘린더 맴버일 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 이미 캘린더의 그룹원 입니다!
+/api/calendar/acceptCalendarInvite:
+  post:
+    tags:
+      - calendar
+    summary: 그룹 캘린더 초대 수락
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            hostCalendarId:
+              type: string
+            hostId:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          type: object
+          properties:
+            success:
+              type: string
+              example: true
+      400:
+        description: 캘린더 조회 결과가 없는 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 캘린더입니다!
+      401:
+        description: 초대받은 사람이 이미 맴버인 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 이미 캘린더의 그룹원 입니다!
+      402:
+        description: 존재하지 않은 초대장을 받을 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 초대장입니다
+/api/calendar/rejectCalendarInvite:
+  post:
+    tags:
+      - calendar
+    summary: 그룹 캘린더 초대 거부
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            calendarName:
+              type: string
+            calendarColor:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          type: object
+          properties:
+            success:
+              type: string
+              example: true
+      401:
+        description: 이메일 중복
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 캘린더입니다!
+      402:
+        description: 이메일 중복
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 이미 캘린더의 그룹원 입니다!
+      403:
+        description: 이메일 중복
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 초대장입니다!
+/api/calendar/giveAuthority:
+  post:
+    tags:
+      - calendar
+    summary: 그룹 캘린더 권한 부여
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            calendarName:
+              type: string
+            calendarColor:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          type: object
+          properties:
+            success:
+              type: string
+              example: true
+      401:
+        description: 로그인된 사람이 달력의 오너가 아닌 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 권한 부여는 달력의 오너만 가능합니다!
+      402:
+        description: 유저 조회 결과가 없는 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 유저입니다!
+      403:
+        description: 권한 조정을 받은 유저가 그룹 맴버가 아닌 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 그룹 캘린더에 존재하지 초대되지 않은 유저입니다!
+      405:
+        description: 달력의 오너보다 높은 권한을 부여하는 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 달력 오너보다 낮은 권한만 부여할 수 있습니다!
+
+$ref: "./eventAPI.yaml"

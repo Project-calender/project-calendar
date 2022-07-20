@@ -1,0 +1,37 @@
+/api/alert/getAlerts:
+  get:
+    tags:
+      - alert
+    summary: 알림 가져오기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/alert/read:
+  post:
+    tags:
+      - alert
+    summary: 알림 읽음 표시하기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            alertId:
+              type: integer
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      500:
+        $ref: "./openapi.yaml#/serverError"

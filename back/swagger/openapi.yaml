@@ -23,10 +23,18 @@ tags:
 paths:
   $ref: "./userAPI.yaml"
 
-commonError:
-  description: 중복 에러
+success:
+  description: 성공
+  schema:
+    properties:
+      success:
+        type: boolean
+        example: true
+
+serverError:
+  description: 서버 에러
   schema:
     properties:
       message:
         type: string
-        example: 중복에러
+        example: 서버 에러

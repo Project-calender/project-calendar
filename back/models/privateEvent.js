@@ -34,6 +34,9 @@ module.exports = class PrivateEvent extends Model {
           type: DataTypes.STRING(20),
           default: 0,
         },
+        allDay: {
+          type: DataTypes.BOOLEAN,
+        },
       },
       {
         modelName: "PrivateEvent",

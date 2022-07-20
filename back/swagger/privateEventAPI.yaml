@@ -1,0 +1,116 @@
+/api/privateEvent/createPrivateEvent:
+  post:
+    tags:
+      - privateEvent
+    summary: 개인 이벤트 만들기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            color:
+              type: string
+            priority:
+              type: string
+            memo:
+              type: string
+            startTime:
+              type: string
+            endTime:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            success:
+              type: string
+              example: true
+/api/privateEvent/editPrivateEvent:
+  post:
+    tags:
+      - privateEvent
+    summary: 개인 이벤트 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            eventId:
+              type: string
+            name:
+              type: string
+            color:
+              type: string
+            priority:
+              type: string
+            memo:
+              type: string
+            startTime:
+              type: string
+            endTime:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            success:
+              type: string
+              example: true
+      401:
+        description: 수정할 개인 이벤트 조회 결과가 없을 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 수정할 개인이벤트의 조회 결과가 없습니다
+/api/privateEvent/deletePrivateEvent:
+  post:
+    tags:
+      - privateEvent
+    summary: 개인 이벤트 삭제
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            eventId:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          type: object
+          properties:
+            success:
+              type: string
+              example: true
+      401:
+        description: 삭제하려는 이벤트의 조회 결과가 없는 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 삭제하려는 이벤트의 조회 결과가 없습니다
+
+$ref: "./calendarAPI.yaml"
