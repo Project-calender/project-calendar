@@ -33,16 +33,18 @@ axios.interceptors.response.use(
       let refreshToken = localStorage.getItem('refreshToken');
       try {
         const data = await Axios({
-          url: `http://158.247.214.79/api/user/refresh`, //ajax 요청 url
+          url: `http://158.247.214.79/api/user/refresh`, //aws url http://158.247.214.79 요청
           method: 'GET',
           headers: {
             authorization: accessToken,
             refresh: refreshToken,
           },
         });
-        console.log('토큰 갱신 값', data);
         if (data) {
-          sessionStorage.setItem('accessToken', JSON.stringify(data));
+          sessionStorage.setItem(
+            'accessToken',
+            JSON.stringify(data.data.data.accessToken),
+          );
           return await axios.request(originalConfig);
         }
       } catch (err) {
