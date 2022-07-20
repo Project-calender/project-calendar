@@ -196,7 +196,7 @@ router.post("/logout", authJWT, async (req, res, next) => {
       return res.status(405).send({ message: "유효하지 않은 토큰입니다." });
     }
     client.del(req.myId);
-    return res.status(200).send({ message: "ok" });
+    return res.status(200).status({ success: true });
   });
 });
 
