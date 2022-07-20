@@ -9,7 +9,6 @@ const jwt = require("../utils/jwt-util");
 const redisClient = require("../utils/redis");
 const authJWT = require("../utils/authJWT");
 const { sequelize, User, ProfileImage } = require("../models");
-const path = require("path");
 
 const multer = require("multer");
 const multerS3 = require("multer-s3");
@@ -94,7 +93,7 @@ router.post("/signin", async (req, res, next) => {
     });
   }
   const accessToken = jwt.sign(user);
-  const refreshToken = jwt.refresh();
+  const refreshToken = jwt.refresh(user);
   redisClient.set(user.id, refreshToken);
   const userData = await User.findOne({
     where: { email: user.email },
@@ -161,17 +160,17 @@ router.post("/signup", async (req, res, next) => {
         );
 
         await newUser.addProfileImage(profileImage, { transaction: t });
-      } else {
-        const profileImage = await ProfileImage.create(
-          {
-            src: BASIC_IMG_SRC,
-          },
-          {
-            transaction: t,
-          }
-        );
-        await newUser.addProfileImage(profileImage, { transaction: t });
       }
+
+      const profileImage = await ProfileImage.create(
+        {
+          src: BASIC_IMG_SRC,
+        },
+        {
+          transaction: t,
+        }
+      );
+      await newUser.addProfileImage(profileImage, { transaction: t });
 
       await newUser.createPrivateCalendar(
         {
