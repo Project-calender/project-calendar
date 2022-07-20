@@ -1,42 +1,18 @@
-.modal_container {
-    width: 420px;
-    text-align: center;
-}
+.modal_container { width: 420px; text-align: center; } 
+.modal_body > div { display: flex; align-items: center; } 
+.modal_body > div:nth-child(1) { align-items: baseline; } 
+.modal_body > div >:nth-child(1) { margin: 18px 20px; width: 20px; height: 20px; color: #848484; } 
+.modal_body > div >:nth-child(2) { text-align: left; width: 330px; } 
 
-.modal_header{
-    display: flex;
-    justify-content: right;
-    margin-right: 35px;
-    height: 25px;
-    align-items: center;
-}
+.modal_body h1 { font-size: 20px; font-weight: 500; color: #6b6b6b; } 
+.modal_body h3 { font-size: 15px; font-weight: 400; color: #6b6b6b; } 
+.modal_body p { font-size: 13px; font-weight: 300; } 
 
-.modal_header > svg{
-    margin-right: 5px;
-    width: 15px;
-    height: 15px;
-    color: #515151;
-    border-radius: 100%;
-    padding:10px;
-}
-.modal_header > svg:hover{
-    background: #f0f0f0;
-}
+.modal_header { display: flex; justify-content: right; margin-right: 35px; height: 25px; align-items: center; } 
+.modal_header svg { margin-right: 5px; width: 15px; height: 15px; color: #515151; border-radius: 100%; padding:10px; } 
+.modal_header svg:hover { background: #f0f0f0; } 
+.modal_header svg:nth-child(2) { margin-right: 8px; } 
+.modal_header svg:nth-child(3) { width: 17px; height: 18px;}
 
-
-.modal_header > svg:nth-child(2){
-    margin-right: 8px;
-}
-
-.modal_header > svg:nth-child(3){
-    width: 17px;
-    height: 18px;
-
-}
-
-.event_color{
-    width: 13px;
-    height: 13px;
-    border-radius: 3px;
-}
+.event_color { width: 14px !important; height: 14px !important; border-radius: 3px; margin-left: 24px !important; margin-right: 23px !important; } 
 
