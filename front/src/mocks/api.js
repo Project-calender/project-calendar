@@ -10,19 +10,19 @@ export default {
       PrivateEvents: [
         {
           id: 3,
-          name: '이벤트1',
+          name: '이벤트 1',
           color: '#3F51B5',
           priority: 1,
           memo: '메모1',
           startTime: '2022-07-08T20:41:23.000Z',
           endTime: '2022-07-08T20:41:23.000Z',
-          groupEventId: null, // 그룹 이벤트 아이디가 있다면, eventId가 아닌 groupEventId로 요청 (이벤트 참석 여부)
+          groupEventId: null, // 그룹 이벤트  아이디가 있다면, eventId가 아닌 groupEventId로 요청 (이벤트  참석 여부)
           state: null, // 초대 수락 상태 - null: 상태 없음, 1: 수락, 2: 거절, 3: 보류
           PrivateCalendarId: 1,
         },
         {
           id: 4,
-          name: '이벤트2',
+          name: '이벤트 2',
           color: '#009688',
           priority: 1,
           memo: '메모2',
@@ -51,23 +51,45 @@ export default {
         GroupEvents: [
           {
             id: 1,
-            name: '이벤트1-1',
+            name: '이벤트 1-1',
             color: '#3F51B5',
             priority: 1,
             memo: 'Asdfasdf',
-            startTime: '2022-07-11T20:41:23.000Z',
-            endTime: '2022-07-11T20:41:23.000Z',
+            startTime: '2022-07-05T20:41:23.000Z',
+            endTime: '2022-07-08T20:41:23.000Z',
             EventHostId: USER_ID,
             CalendarId: 4,
           },
           {
             id: 2,
-            name: '이벤트1-2',
+            name: '이벤트 1-2',
             color: '#D81B60',
             priority: 1,
             memo: 'Asdfasdf',
-            startTime: '2022-07-11T20:41:23.000Z',
+            startTime: '2022-07-06T20:41:23.000Z',
+            endTime: '2022-07-07T20:41:23.000Z',
+            EventHostId: USER_ID,
+            CalendarId: 4,
+          },
+          {
+            id: 11,
+            name: '이벤트 1-3',
+            color: '#B39DDB',
+            priority: 1,
+            memo: 'Asdfasdf',
+            startTime: '2022-07-06T20:41:23.000Z',
             endTime: '2022-07-11T20:41:23.000Z',
+            EventHostId: USER_ID,
+            CalendarId: 4,
+          },
+          {
+            id: 12,
+            name: '이벤트 1-4',
+            color: '#D81B60',
+            priority: 1,
+            memo: 'Asdfasdf',
+            startTime: '2022-07-09T20:41:23.000Z',
+            endTime: '2022-07-09T20:41:23.000Z',
             EventHostId: USER_ID,
             CalendarId: 4,
           },
@@ -89,7 +111,7 @@ export default {
         GroupEvents: [
           {
             id: 5,
-            name: '이벤트2-1',
+            name: '이벤트 2-1',
             color: '#C0CA33',
             priority: 1,
             memo: 'Asdfasdf',
@@ -100,8 +122,8 @@ export default {
           },
           {
             id: 6,
-            name: '이벤트2-2',
-            color: '#4F56B5',
+            name: '이벤트 2-2',
+            color: '#C0CA33',
             priority: 1,
             memo: 'Asdfasdf',
             startTime: '2022-07-11T20:41:23.000Z',
@@ -127,7 +149,7 @@ export default {
         GroupEvents: [
           {
             id: 7,
-            name: '이벤트3-1',
+            name: '이벤트 3-1',
             color: '#3F51B5',
             priority: 1,
             memo: 'Asdfasdf',
@@ -138,8 +160,8 @@ export default {
           },
           {
             id: 8,
-            name: '이벤트3-2',
-            color: '#4F56B5',
+            name: '이벤트 3-2',
+            color: '#A79B8E',
             priority: 1,
             memo: 'Asdfasdf',
             startTime: '2022-07-11T20:41:23.000Z',
@@ -165,7 +187,7 @@ export default {
         GroupEvents: [
           {
             id: 9,
-            name: '이벤트4-1',
+            name: '이벤트 4-1',
             color: '#E67C73',
             priority: 1,
             memo: 'Asdfasdf',
@@ -176,8 +198,8 @@ export default {
           },
           {
             id: 10,
-            name: '이벤트4-2',
-            color: '#4F56B5',
+            name: '이벤트 4-2',
+            color: '#E67C73',
             priority: 1,
             memo: 'Asdfasdf',
             startTime: '2022-07-12T20:41:23.000Z',
