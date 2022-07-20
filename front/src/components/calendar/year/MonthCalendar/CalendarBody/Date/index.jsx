@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedDateSelector } from '../../../../../../store/selectors/date';
@@ -14,30 +14,40 @@ import { triggerDOM } from '../../../../EventListModal';
 const Index = ({ month, date }) => {
   const selectedDate = useSelector(selectedDateSelector);
   const { moveDayCalendar } = useNavigateDayCalendar();
-  const showModal = useContext(EventListModalContext);
+  const { showModal, setModalData } = useContext(EventListModalContext);
   const events = useSelector(state => eventsByDateSelector(state, date));
-
   const dispatch = useDispatch();
   function handleDate(e, date) {
     dispatch(selectDate(date));
     dispatch(fetchCalendarsAndEvents(date.time, date.time));
 
-    const { top: targetTop, left: targetLeft } =
-      e.target.getBoundingClientRect();
+    const {
+      top: targetTop,
+      left: targetLeft,
+      bottom,
+    } = e.target.getBoundingClientRect();
     const left = targetLeft + (e.target.tagName === 'EM' ? 30 : 38);
     const top = targetTop + (e.target.tagName === 'EM' ? 0 : 5) - 4;
-
     const minLeft = window.innerWidth / 2 + 100;
 
     showModal({
       date,
-      events: events?.map(event => ({ ...event, scale: 1 })) || [],
+      events: [],
       position: {
-        top: top,
+        top: window.innerHeight < bottom + 150 ? null : top,
         left: minLeft < left ? left - 260 : left,
+        bottom: window.innerHeight < bottom + 150 ? 30 : null,
       },
     });
   }
+
+  useEffect(() => {
+    if (!events || selectedDate.time !== date.time) return;
+    setModalData(data => ({
+      ...data,
+      events: events?.map(event => ({ ...event, scale: 1 })),
+    }));
+  }, [events, selectedDate.time, date.time, setModalData]);
 
   return (
     <td

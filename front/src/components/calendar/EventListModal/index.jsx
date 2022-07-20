@@ -14,7 +14,7 @@ const Index = ({ modalData, hideModal }) => {
       <div className={styles.modal_container}>
         <strong>{date.weekDay}</strong>
         <h1>{date.date}</h1>
-        {events.length ? (
+        {events?.length ? (
           events.map(event => (
             <EventContainer key={event.id} event={event} date={date} />
           ))
