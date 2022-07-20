@@ -4,6 +4,9 @@ import { calculateMonth } from '../../utils/moment';
 export const selectedDateSelector = state => state.date.selectedDate;
 
 export const monthSelector = createSelector(
-  selectedDateSelector,
-  selectedDate => calculateMonth(selectedDate.year, selectedDate.month),
+  [
+    state => selectedDateSelector(state).year,
+    state => selectedDateSelector(state).month,
+  ],
+  (year, month) => calculateMonth(year, month),
 );

@@ -5,21 +5,12 @@ export const { selectById: selectEventById } = eventsAdapter.getSelectors(
   state => state.events,
 );
 
-export const eventBarsByDateSelector = createSelector(
-  [state => state, (_, date) => date.time],
-  (state, dateTime) => {
-    const byDate = state.events.byDate;
-    if (!byDate[dateTime]) return null;
+export const eventsByDateSelector = createSelector(
+  [state => state.events.byDate, (_, date) => date.time],
+  (byDate, dateTime) => byDate[dateTime],
+);
 
-    const eventBars = Array(byDate[dateTime].eventBars.length);
-    for (let i = 0; i < eventBars.length; i++) {
-      const eventBar = byDate[dateTime].eventBars[i];
-      if (!eventBar) continue;
-      eventBars[i] = {
-        event: selectEventById(state, eventBar.id),
-        scale: eventBar.scale,
-      };
-    }
-    return eventBars;
-  },
+export const eventSelector = createSelector(
+  [state => state, (_, eventId) => eventId],
+  (state, eventId) => (eventId ? selectEventById(state, eventId) : null),
 );
