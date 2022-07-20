@@ -27,6 +27,7 @@ router.get("/getAllEvent", authJWT, async (req, res, next) => {
           attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
           where: {
             //끝날짜에 1을 더해야 그 날짜 까지 가져옴
+            // endTime > startDate startTime < endDate
             startTime: {
               [Op.between]: [req.body.startDate, req.body.endDate],
             },
