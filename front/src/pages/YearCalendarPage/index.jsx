@@ -12,7 +12,6 @@ const Index = () => {
   const { isModalShown, modalData, showModal, hideModal } = useEventModal();
 
   const months = [...Array(12)].map((_, i) => i + 1);
-
   return (
     <div className={styles.year_calendar}>
       {isModalShown && (

@@ -8,6 +8,7 @@ export const triggerDOM = 'month-event-list';
 
 const Index = ({ modalData, hideModal }) => {
   const { date, events, position } = modalData;
+
   return (
     <Modal hideModal={hideModal} triggerDOM={triggerDOM} position={position}>
       <div className={styles.modal_container}>
