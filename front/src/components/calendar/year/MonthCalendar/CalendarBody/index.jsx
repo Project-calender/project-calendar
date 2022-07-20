@@ -5,9 +5,11 @@ import WeekDaysHeader from './WeekDaysHeader';
 import Week from './Week';
 import PropTypes from 'prop-types';
 import { calculateMonth } from '../../../../../utils/moment';
+import { useMemo } from 'react';
 
 const Index = ({ year, month }) => {
-  const weeks = calculateMonth(year, month);
+  const weeks = useMemo(() => calculateMonth(year, month), [year, month]);
+
   return (
     <table className={styles.calendar_table}>
       <thead>

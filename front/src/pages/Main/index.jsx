@@ -4,15 +4,10 @@ import styles from './style.module.css';
 import NavBar from '../../components/Navbar';
 import SideBar from '../../components/SideBar';
 import SideNav from '../../components/SideNav';
-import { useDispatch } from 'react-redux';
-import { fetchEvents } from '../../store/thunk';
 import { USER_PATH } from '../../constants/path';
 
 const Index = () => {
   let [isSideBarOn, toggleSideBar] = useState(true);
-
-  const dispatch = useDispatch();
-  dispatch(fetchEvents());
 
   const user = localStorage.getItem('userInfo');
   if (!user) {
