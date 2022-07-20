@@ -14,7 +14,9 @@ import { EventListModalContext } from '../../../../../../context/EventModalConte
 const Index = ({ month, date }) => {
   const selectedDate = useSelector(selectedDateSelector);
   const { moveDayCalendar } = useNavigateDayCalendar();
-  const { showModal, setModalData } = useContext(EventListModalContext);
+  const { showEventListModal, setEventListModalData } = useContext(
+    EventListModalContext,
+  );
   const events = useSelector(state => eventsByDateSelector(state, date));
   const dispatch = useDispatch();
   function handleDate(e, date) {
@@ -30,7 +32,7 @@ const Index = ({ month, date }) => {
     const top = targetTop + (e.target.tagName === 'EM' ? 0 : 5) - 4;
     const minLeft = window.innerWidth / 2 + 100;
 
-    showModal({
+    showEventListModal({
       date,
       events: [],
       style: {
@@ -43,11 +45,11 @@ const Index = ({ month, date }) => {
 
   useEffect(() => {
     if (!events || selectedDate.time !== date.time) return;
-    setModalData(data => ({
+    setEventListModalData(data => ({
       ...data,
       events: events?.map(event => ({ ...event, scale: 1 })),
     }));
-  }, [events, selectedDate.time, date.time, setModalData]);
+  }, [events, selectedDate.time, date.time, setEventListModalData]);
 
   return (
     <td
