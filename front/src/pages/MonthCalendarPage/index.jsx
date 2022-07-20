@@ -42,7 +42,7 @@ const Index = () => {
   }, [dispatch, month]);
 
   return (
-    <div className={`test ${styles.calendar}`} onWheel={changeMonth}>
+    <div className={styles.calendar} onWheel={changeMonth}>
       {isModalShown && (
         <EventListModal modalData={modalData} hideModal={hideModal} />
       )}
