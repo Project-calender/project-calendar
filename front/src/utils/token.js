@@ -29,20 +29,30 @@ axios.interceptors.response.use(
 
     //조건문 상태코드 확인 필요함
     if (err.response.status === 401) {
+      // AccessToken이 없는 경우
+      if (err.response.data.message === 'accessToken이 지급되지 않았습니다') {
+        localStorage.clear();
+        sessionStorage.clear();
+        console.log('AccessToken이 없는 경우 - 새로고침 필요', err);
+        throw new Error(err);
+      }
+
       let accessToken = sessionStorage.getItem('accessToken');
       let refreshToken = localStorage.getItem('refreshToken');
       try {
         const data = await Axios({
-          url: `http://158.247.214.79/api/user/refresh`, //ajax 요청 url
+          url: `http://158.247.214.79/api/user/refresh`, //aws url http://158.247.214.79 요청
           method: 'GET',
           headers: {
             authorization: accessToken,
             refresh: refreshToken,
           },
         });
-        console.log('토큰 갱신 값', data);
         if (data) {
-          sessionStorage.setItem('accessToken', JSON.stringify(data));
+          sessionStorage.setItem(
+            'accessToken',
+            JSON.stringify(data.data.data.accessToken),
+          );
           return await axios.request(originalConfig);
         }
       } catch (err) {
@@ -50,6 +60,7 @@ axios.interceptors.response.use(
       }
       return Promise.reject(err);
     }
+
     return Promise.reject(err);
   },
 );

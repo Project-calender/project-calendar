@@ -32,30 +32,38 @@ const Index = () => {
   let [userPasswordCheck, setUserPasswordCheck] = useState(false); //비밀번호 체크
   let [PasswordCheck, setPasswordCheck] = useState(false); //비밀번호 확인 체크
   let [userNameCheck, setUserNameCheck] = useState(false); //이름 체크
-  let [fileImg, setFileImg] = useState(''); //사용자가 업로드한 이미지 파일 저장
-  let [fileData, setFileData] = useState(undefined); //서버로 전송할 프로필 이미지
+  let [fileImg, setFileImg] = useState(''); //사용자가 업로드한 이미지 파일 미리보기 저장
+  let [fileData, setFileData] = useState(); //서버로 전송 할 DB에서 받은 프로필 이미지 주소
 
   // 사용자가 업로드한 이미지 미리보기
   const saveFileImage = e => {
     setFileImg(URL.createObjectURL(e.target.files[0]));
   };
 
-  //input file로 선택한 이미지를 저장
+  //input file로 선택한 이미지를 DB로 보내기
   const onChangeImg = e => {
     const uploadFile = e.target.files[0];
     const formData = new FormData();
-    formData.append('files', uploadFile);
-    setFileData(formData);
+    formData.append('image', uploadFile);
+
+    Axios.post(`${BASE_URL}/user/setUserProfileImage`, formData)
+      .then(res => {
+        setFileData(res.data.src);
+      })
+      .catch(error => {
+        console.log('이미지 업로드실패', error);
+      });
   };
 
-  //ajax 데이터
+  //회원가입 API 데이터
   const joinData = {
     email: inputValue.userEmail,
     password: inputValue.userPassword,
     nickname: inputValue.userName,
-    profile: fileData,
+    profileImageSrc: fileData,
   };
 
+  //회원가입 버튼 클릭시 전송
   function sendJoinForm() {
     Axios.post(`${BASE_URL}${USER_URL.SINGUP}`, joinData)
       .then(res => {

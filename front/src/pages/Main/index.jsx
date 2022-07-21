@@ -9,8 +9,8 @@ import { USER_PATH } from '../../constants/path';
 const Index = () => {
   let [isSideBarOn, toggleSideBar] = useState(true);
 
-  const user = localStorage.getItem('userInfo');
-  if (!user) {
+  const accessToken = sessionStorage.getItem('accessToken');
+  if (!accessToken) {
     sessionStorage.clear();
     localStorage.clear();
     return <Navigate to={USER_PATH.LOGIN} />;

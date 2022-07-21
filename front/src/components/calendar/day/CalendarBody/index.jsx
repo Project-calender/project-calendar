@@ -6,18 +6,15 @@ import styles from './style.module.css';
 import useDragDate from '../../../../hooks/useDragDate';
 
 const Index = ({ state }) => {
-
   const {
     handleMouseDown,
     handleMouseUp,
     handleDrag,
     isMouseDown,
-    selectedDateRange,
+    // selectedDateRange,
   } = useDragDate();
   let [timeTable, setTimeTable] = useState({}); //현재 날짜 저장 및 시간 저장
   let time = new Date().getTime();
-
-  console.log(selectedDateRange);
 
   //오전,오후 시간 생성
   useEffect(() => {
