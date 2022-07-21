@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { eventSelector } from '../../../../store/selectors/events';
 import Moment from '../../../../utils/moment';
-import EventBar from '../../EventBar';
+import EventBar from '../../../calendar/EventBar';
 import { EventDetailModalContext } from '../../../../context/EventModalContext';
 
 const Index = ({ event, date }) => {

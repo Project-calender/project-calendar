@@ -13,7 +13,7 @@ import {
 
 const Index = ({ date, maxHeight }) => {
   const events = useSelector(state => eventsByDateSelector(state, date));
-  const showEventListModal = useContext(EventListModalContext);
+  const { showModal: showEventListModal } = useContext(EventListModalContext);
   const showEventDetailModal = useContext(EventDetailModalContext);
 
   const $eventList = useRef();

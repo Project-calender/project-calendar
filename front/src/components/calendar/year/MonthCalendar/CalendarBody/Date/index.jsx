@@ -8,15 +8,14 @@ import Moment from '../../../../../../utils/moment';
 import styles from './style.module.css';
 import { fetchCalendarsAndEvents } from '../../../../../../store/thunk';
 import { eventsByDateSelector } from '../../../../../../store/selectors/events';
-import { triggerDOM } from '../../../../EventListModal';
+import { triggerDOM } from '../../../../../modal/EventListModal';
 import { EventListModalContext } from '../../../../../../context/EventModalContext';
 
 const Index = ({ month, date }) => {
   const selectedDate = useSelector(selectedDateSelector);
   const { moveDayCalendar } = useNavigateDayCalendar();
-  const { showEventListModal, setEventListModalData } = useContext(
-    EventListModalContext,
-  );
+  const { showModal: showEventListModal, setModalData: setEventListModalData } =
+    useContext(EventListModalContext);
   const events = useSelector(state => eventsByDateSelector(state, date));
   const dispatch = useDispatch();
   function handleDate(e, date) {

@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { eventSelector } from '../../../store/selectors/events';
-import { triggerDOM } from '../EventDetailModal';
+import { triggerDOM } from '../../modal/EventDetailModal';
 import styles from './style.module.css';
 
 const Index = ({
