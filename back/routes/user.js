@@ -115,7 +115,6 @@ router.post("/signin", async (req, res, next) => {
     accessToken,
   });
 });
-
 router.post("/signup", async (req, res, next) => {
   try {
     console.log(req.body);

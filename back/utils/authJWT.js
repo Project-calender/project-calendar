@@ -24,6 +24,7 @@ const authJWT = (req, res, next) => {
       ok:false,
       message: "accessToken이 지급되지 않았습니다"
     })
+    
   }
 };
 //dasdas
