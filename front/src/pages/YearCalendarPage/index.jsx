@@ -15,7 +15,6 @@ const Index = () => {
     <EventDetailMaodalLayout>
       <EventListModalLayout>
         <div className={styles.year_calendar}>
-          Event
           {months.map(month => (
             <MonthCalendar key={month} year={year} month={month} />
           ))}

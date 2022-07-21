@@ -36,6 +36,7 @@ const Index = ({ modalData, hideModal }) => {
       hideModal={hideModal}
       triggerDOM={triggerDOM}
       style={{ ...style, boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)' }}
+      isCloseButtom={true}
     >
       <div className={styles.modal_container}>
         <div className={styles.modal_header}>

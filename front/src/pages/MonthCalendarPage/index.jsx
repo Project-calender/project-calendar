@@ -41,9 +41,9 @@ const Index = () => {
   }, [dispatch, month]);
 
   return (
-    <EventDetailMaodalLayout>
-      <EventListModalLayout>
-        <div className={styles.calendar} onWheel={changeMonth}>
+    <div className={styles.calendar} onWheel={changeMonth}>
+      <EventDetailMaodalLayout>
+        <EventListModalLayout>
           <table
             className={styles.calendar_table}
             onMouseDown={handleMouseDown}
@@ -59,9 +59,9 @@ const Index = () => {
               </EventBarContext.Provider>
             </tbody>
           </table>
-        </div>
-      </EventListModalLayout>
-    </EventDetailMaodalLayout>
+        </EventListModalLayout>
+      </EventDetailMaodalLayout>
+    </div>
   );
 };
 

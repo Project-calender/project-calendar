@@ -11,7 +11,9 @@ const Index = ({ event, date }) => {
   const { startTime, endTime } = useSelector(state =>
     eventSelector(state, event.id),
   );
-  const showEventDetailModal = useContext(EventDetailModalContext);
+  const { showModal: showEventDetailModal } = useContext(
+    EventDetailModalContext,
+  );
 
   function handleEventDetailMadal(e, event) {
     const { top, left } = e.target.getBoundingClientRect();

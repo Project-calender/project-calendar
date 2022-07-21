@@ -10,7 +10,12 @@ const Index = ({ modalData, hideModal }) => {
   const { date, events, style } = modalData;
 
   return (
-    <Modal hideModal={hideModal} triggerDOM={triggerDOM} style={style}>
+    <Modal
+      hideModal={hideModal}
+      triggerDOM={triggerDOM}
+      style={style}
+      isCloseButtom={true}
+    >
       <div className={styles.modal_container}>
         <strong>{date.weekDay}</strong>
         <h1>{date.date}</h1>
