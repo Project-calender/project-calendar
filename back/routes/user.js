@@ -9,7 +9,6 @@ const jwt = require("../utils/jwt-util");
 const redisClient = require("../utils/redis");
 const authJWT = require("../utils/authJWT");
 const { sequelize, User, ProfileImage } = require("../models");
-const path = require("path");
 
 const multer = require("multer");
 const multerS3 = require("multer-s3");

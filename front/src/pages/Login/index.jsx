@@ -32,10 +32,9 @@ const Index = () => {
   };
 
   function sendLoginForm() {
-    Axios.post(`${BASE_URL}${USER_URL.LOGIN}`, loginData)
+    Axios.post(`${BASE_URL}${USER_URL.LOGIN}`, loginData) //aws 사용시 http://localhost:80/api 삭제
       .then(res => {
         console.log('성공', res);
-
         saveWebStorage(res);
         navigate(`${CALENDAR_PATH.DAY}`);
       })
@@ -45,19 +44,6 @@ const Index = () => {
           alert(`아이디와 비밀번호를 확인해주세요.`);
         }
       });
-    // instance
-    //   .post(`/api/user/signin`, loginData)
-    //   .then(res => {
-    //     console.log('성공', res);
-    //     saveWebStorage(res);
-    //     navigate(`${CALENDAR_PATH.DAY}`);
-    //   })
-    //   .catch(error => {
-    //     console.log('실패', error);
-    //     if (error.response.status == 401) {
-    //       alert(`아이디와 비밀번호를 확인해주세요.`);
-    //     }
-    //   });
   }
 
   //웹 스토리지에 사용자 정보, 토큰 저장 함수
@@ -68,6 +54,10 @@ const Index = () => {
 
     dispatch(updateUser(res.data.userData));
     localStorage.setItem('userInfo', JSON.stringify(res.data.userData));
+    localStorage.setItem(
+      'userImg',
+      JSON.stringify(res.data.userData.ProfileImages[0].src),
+    );
   }
 
   useEffect(() => {
