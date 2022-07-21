@@ -12,7 +12,7 @@ const refresh = async (req, res, next) => {
     if (!authToken && !refreshToken) {
       // access token, refresh token이 모두 헤더에 없는 경우
 
-      res.status(400).send({
+      res.status(403).send({
         ok: false,
         message: "Access token and refresh token are need for refresh!",
       });
@@ -23,9 +23,10 @@ const refresh = async (req, res, next) => {
     // console.log(authResult, "이거 왜?")
     // access token 디코딩하여 user의 정보를 가져옵니다.
     const decoded = jwt.decode(refreshToken);
+    console.log(decoded.id, "확인")
     // 디코딩 결과가 없으면 권한이 없음을 응답.
     if (decoded === null) {
-      res.status(401).send({
+      res.status(405).send({
         ok: false,
         message: "No authorized!",
       });
@@ -39,11 +40,11 @@ const refresh = async (req, res, next) => {
     console.log(authResult)
     console.log("확인")
     // 재발급을 위해서는 access token이 만료되어있어야합니다. 
-    
+
     if (authResult.ok === false && authResult.message === "jwt expired") {
       
       if (refreshResult === false) {
-        res.status(401).send({
+        res.status(405).send({
           ok: false,
           message: "No authorized!",
         });
@@ -59,7 +60,7 @@ const refresh = async (req, res, next) => {
         });
       }
     } else {
-      res.status(400).send({
+      res.status(406).send({
         ok: false,
         message: "Access token is not expired!",
       });
