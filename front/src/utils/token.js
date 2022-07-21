@@ -29,17 +29,13 @@ axios.interceptors.response.use(
 
     //조건문 상태코드 확인 필요함
     if (err.response.status === 401) {
-      // AccessToken이 없는 경우
-      if (err.response.data.message === 'accessToken이 지급되지 않았습니다') {
-        localStorage.clear();
-        sessionStorage.clear();
-        console.log('AccessToken이 없는 경우 - 새로고침 필요', err);
-        throw new Error(err);
-      }
-
-      let accessToken = sessionStorage.getItem('accessToken');
-      let refreshToken = localStorage.getItem('refreshToken');
       try {
+        if (err.response.data.message === 'accessToken이 지급되지 않았습니다') {
+          throw Error('새로고침 필요');
+        }
+
+        let accessToken = sessionStorage.getItem('accessToken');
+        let refreshToken = localStorage.getItem('refreshToken');
         const data = await Axios({
           url: `http://158.247.214.79/api/user/refresh`, //aws url http://158.247.214.79 요청
           method: 'GET',
@@ -57,6 +53,9 @@ axios.interceptors.response.use(
         }
       } catch (err) {
         console.log('토큰 갱신 에러', err);
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.reload();
       }
       return Promise.reject(err);
     }
