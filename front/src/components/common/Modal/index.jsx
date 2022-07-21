@@ -7,7 +7,13 @@ import Tooltip from '../Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 
-const Index = ({ children, hideModal, triggerDOM = '', position = {} }) => {
+const Index = ({
+  children,
+  hideModal,
+  triggerDOM = '',
+  style = {},
+  isCloseButtom = false,
+}) => {
   const $modal = useRef();
   useEffect(() => {
     document.addEventListener('click', clickModalOutside);
@@ -17,19 +23,21 @@ const Index = ({ children, hideModal, triggerDOM = '', position = {} }) => {
   function clickModalOutside(event) {
     if (
       !$modal.current.contains(event.target) &&
-      event.target.dataset.modal !== triggerDOM
+      event.target.dataset?.modal !== triggerDOM
     ) {
       hideModal();
     }
   }
 
   return (
-    <div className={styles.modal_container} ref={$modal} style={position}>
-      <div className={styles.modal_close_icon}>
-        <Tooltip title={'닫기'}>
-          <FontAwesomeIcon icon={faXmark} onClick={hideModal} />
-        </Tooltip>
-      </div>
+    <div className={styles.modal_container} ref={$modal} style={style}>
+      {isCloseButtom && (
+        <div className={styles.modal_close_icon}>
+          <Tooltip title={'닫기'}>
+            <FontAwesomeIcon icon={faXmark} onClick={hideModal} />
+          </Tooltip>
+        </div>
+      )}
       <div className={styles.modal_contexts}>{children}</div>
     </div>
   );
@@ -39,6 +47,7 @@ Index.propTypes = {
   children: PropTypes.node,
   hideModal: PropTypes.func,
   triggerDOM: PropTypes.string,
-  position: PropTypes.object,
+  style: PropTypes.object,
+  isCloseButtom: PropTypes.bool,
 };
 export default Index;

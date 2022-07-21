@@ -8,13 +8,14 @@ import Moment from '../../../../../../utils/moment';
 import styles from './style.module.css';
 import { fetchCalendarsAndEvents } from '../../../../../../store/thunk';
 import { eventsByDateSelector } from '../../../../../../store/selectors/events';
-import { EventListModalContext } from '../../../../../../context/EventListModalContext';
-import { triggerDOM } from '../../../../EventListModal';
+import { triggerDOM } from '../../../../../modal/EventListModal';
+import { EventListModalContext } from '../../../../../../context/EventModalContext';
 
 const Index = ({ month, date }) => {
   const selectedDate = useSelector(selectedDateSelector);
   const { moveDayCalendar } = useNavigateDayCalendar();
-  const { showModal, setModalData } = useContext(EventListModalContext);
+  const { showModal: showEventListModal, setModalData: setEventListModalData } =
+    useContext(EventListModalContext);
   const events = useSelector(state => eventsByDateSelector(state, date));
   const dispatch = useDispatch();
   function handleDate(e, date) {
@@ -30,10 +31,10 @@ const Index = ({ month, date }) => {
     const top = targetTop + (e.target.tagName === 'EM' ? 0 : 5) - 4;
     const minLeft = window.innerWidth / 2 + 100;
 
-    showModal({
+    showEventListModal({
       date,
       events: [],
-      position: {
+      style: {
         top: window.innerHeight < bottom + 150 ? null : top,
         left: minLeft < left ? left - 260 : left,
         bottom: window.innerHeight < bottom + 150 ? 30 : null,
@@ -43,11 +44,11 @@ const Index = ({ month, date }) => {
 
   useEffect(() => {
     if (!events || selectedDate.time !== date.time) return;
-    setModalData(data => ({
+    setEventListModalData(data => ({
       ...data,
       events: events?.map(event => ({ ...event, scale: 1 })),
     }));
-  }, [events, selectedDate.time, date.time, setModalData]);
+  }, [events, selectedDate.time, date.time, setEventListModalData]);
 
   return (
     <td

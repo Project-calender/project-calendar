@@ -1,4 +1,4 @@
-const USER_ID = localStorage.getItem('userInfo')?.id || 1;
+const USER_ID = JSON.parse(localStorage.getItem('userInfo'))?.id || 1;
 
 export default {
   getAllEvent: () => ({
@@ -17,7 +17,7 @@ export default {
           startTime: '2022-07-08T20:41:23.000Z',
           endTime: '2022-07-08T20:41:23.000Z',
           groupEventId: null, // 그룹 이벤트  아이디가 있다면, eventId가 아닌 groupEventId로 요청 (이벤트  참석 여부)
-          state: null, // 초대 수락 상태 - null: 상태 없음, 1: 수락, 2: 거절, 3: 보류
+          state: null, // 초대 수락 상태 - 0: 상태 없음(default), 1: 수락, 2: 보류, 3: 거절
           PrivateCalendarId: 1,
         },
         {
@@ -128,6 +128,17 @@ export default {
             memo: 'Asdfasdf',
             startTime: '2022-07-11T20:41:23.000Z',
             endTime: '2022-07-14T20:41:23.000Z',
+            EventHostId: USER_ID,
+            CalendarId: 5,
+          },
+          {
+            id: 13,
+            name: '이벤트 13-2',
+            color: '#C0CA33',
+            priority: 1,
+            memo: 'Asdfasdf',
+            startTime: '2022-06-29T20:41:23.000Z',
+            endTime: '2022-07-03T20:41:23.000Z',
             EventHostId: USER_ID,
             CalendarId: 5,
           },

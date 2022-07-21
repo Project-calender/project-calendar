@@ -5,20 +5,19 @@ import styles from './style.module.css';
 
 import WeekDayHeader from '../../components/calendar/month/WeekDayHeader';
 import CalendarBody from '../../components/calendar/month/CalendarBody';
-import EventListModal from '../../components/calendar/EventListModal';
+import EventListModalLayout from '../../components/modal/layout/EventListModalLayout';
+import EventDetailMaodalLayout from '../../components/modal/layout/EventDetailMaodalLayout';
 
 import { EventBarContext } from '../../context/EventBarContext';
-import { EventListModalContext } from '../../context/EventListModalContext';
 
 import useDragDate from '../../hooks/useDragDate';
 import useMonthEventBar from '../../hooks/useMonthEventBar';
 import useAddMonthByWheel from '../../hooks/useAddMonthByWheel';
-import useEventModal from '../../hooks/useEventModal';
+
 import { fetchCalendarsAndEvents } from '../../store/thunk';
 import { useEffect } from 'react';
 
 const Index = () => {
-  const dispatch = useDispatch();
   const {
     handleMouseDown,
     handleMouseUp,
@@ -29,8 +28,8 @@ const Index = () => {
   const { monthEventBars } = useMonthEventBar(selectedDateRange);
 
   const { changeMonth } = useAddMonthByWheel();
-  const { isModalShown, modalData, showModal, hideModal } = useEventModal();
 
+  const dispatch = useDispatch();
   const month = useSelector(monthSelector);
   useEffect(() => {
     dispatch(
@@ -43,26 +42,25 @@ const Index = () => {
 
   return (
     <div className={styles.calendar} onWheel={changeMonth}>
-      {isModalShown && (
-        <EventListModal modalData={modalData} hideModal={hideModal} />
-      )}
-      <table
-        className={styles.calendar_table}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseMove={isMouseDown ? handleDrag : null}
-      >
-        <thead>
-          <WeekDayHeader />
-        </thead>
-        <tbody>
-          <EventBarContext.Provider value={monthEventBars}>
-            <EventListModalContext.Provider value={showModal}>
-              <CalendarBody month={month} />
-            </EventListModalContext.Provider>
-          </EventBarContext.Provider>
-        </tbody>
-      </table>
+      <EventDetailMaodalLayout>
+        <EventListModalLayout>
+          <table
+            className={styles.calendar_table}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseMove={isMouseDown ? handleDrag : null}
+          >
+            <thead>
+              <WeekDayHeader />
+            </thead>
+            <tbody>
+              <EventBarContext.Provider value={monthEventBars}>
+                <CalendarBody month={month} />
+              </EventBarContext.Provider>
+            </tbody>
+          </table>
+        </EventListModalLayout>
+      </EventDetailMaodalLayout>
     </div>
   );
 };
