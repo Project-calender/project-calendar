@@ -18,7 +18,12 @@ const authJWT = require("../utils/authJWT");
 router.get("/getAllEvent", authJWT, async (req, res, next) => {
   try {
     const me = await User.findOne({ where: { id: req.myId } });
+    req.body.endDate = req.body.endDate.split("-")
+    req.body.endDate[2] = String(Number(req.body.endDate[2])+1)
 
+    console.log(req.body.endDate)
+    req.body.endDate = req.body.endDate.join("-")
+    console.log(req.body.endDate)
     const privateEvents = await me.getPrivateCalendar({
       attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
       include: [
@@ -28,9 +33,20 @@ router.get("/getAllEvent", authJWT, async (req, res, next) => {
           where: {
             //끝날짜에 1을 더해야 그 날짜 까지 가져옴
             // endTime > startDate startTime < endDate
-            startTime: {
-              [Op.between]: [req.body.startDate, req.body.endDate],
-            },
+              [Op.or]: {
+                startTime: {
+                [Op.and]: {
+                  [Op.gte]: req.body.startDate,
+                  [Op.lte]: req.body.endDate
+                }
+              },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: req.body.startDate,
+                  [Op.lte]: req.body.endDate
+                }
+              },
+            }            
           },
           separate: true,
         },
