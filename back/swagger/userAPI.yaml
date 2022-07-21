@@ -85,7 +85,7 @@
           properties:
             message:
               type: string
-              example: 유저가 존재하지 않습니다!
+              example: 
       402:
         description: 비밀번호 일치하지 않음 (이메일은 맞지만 비밀번호가 틀린 경우)
         schema:
@@ -185,5 +185,53 @@
         $ref: "./openapi.yaml#/success"
       500:
         $ref: "./openapi.yaml#/serverError"
+/tokenError:
+  post:
+    tags:
+      - user
+    summary: 토큰 에러
+    responses:
+      401:
+        description: 토큰이 지급되지 않을 경우
+        schema:
+          properties:
+            success:
+              type: string
+              example: accessToken이 지급되지 않았습니다
+      402:
+        description: 토큰이 검증에 실패했거나 만료됐을 경우
+        schema:
+          properties:
+            success:
+              type: string
+              example: jwt expired
+      403:
+        description: refresh 토큰 발급 도중 access token, refresh token이 모두 헤더에 없는 경우
+        schema:
+          properties:
+            success:
+              type: string
+              example: Access token and refresh token are need for refresh!
+      405:
+        description: refresh 토큰 발급 도중 토큰에 유저 정보가 없을 경우
+        schema:
+          properties:
+            success:
+              type: string
+              example: No authorized!
+      406:
+        description: refresh 토큰 발급 도중 토큰이 지급되지 않을 경우
+        schema:
+          properties:
+            success:
+              type: string
+              example: accessToken이 지급되지 않았습니다
+      407:
+        description: refresh 토큰 발급 도중 access 토큰이 만료되지 않았을경우
+        schema:
+          properties:
+            success:
+              type: string
+              example: Access token is not expired!
 
 $ref: "./privateEventAPI.yaml"
