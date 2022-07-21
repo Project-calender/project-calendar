@@ -1,15 +1,9 @@
 const { verify } = require("./jwt-util");
 
 const authJWT = (req, res, next) => {
-  req.headers.authorization = req.headers.authorization.substr(1);
-  req.headers.authorization = req.headers.authorization.slice(0, -1);
-  if (req.headers.authorization == undefined || req.headers.authorizatio == null) {
-    return res.status(401).send({
-      ok:false,
-      message: "accessToken이 지급되지 않았습니다"
-    })
-  }
   if (req.headers.authorization) {
+    req.headers.authorization = req.headers.authorization.substr(1);
+    req.headers.authorization = req.headers.authorization.slice(0, -1);
     const token = req.headers.authorization; // header에서 access token을 가져옵니다.
     const result = verify(token); // token을 검증합니다.
     if (result.ok) {
