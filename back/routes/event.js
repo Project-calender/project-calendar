@@ -15,7 +15,7 @@ const router = express.Router();
 const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
 
-router.get("/getAllEvent", authJWT, async (req, res, next) => {
+router.post("/getAllEvent", authJWT, async (req, res, next) => {
   try {
     const me = await User.findOne({ where: { id: req.myId } });
     req.body.endDate = req.body.endDate.split("-")

@@ -40,11 +40,16 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
 
 // 개인이벤트 업데이트
 router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
+  // const t = await sequelize.transaction();
   try {
     const myEvent = await PrivateEvent.findOne({
-      id: req.body.eventId,
+      id: 2,
     });
+    console.log("?")
+    if (!myEvent) {
+      res.status(401).json({ message: "수정할 개인이벤트의 조회 결과가 없습니다" })
+    }
+    console.log(myEvent)
     await myEvent.update(
       {
         name: req.body.name,
@@ -54,14 +59,14 @@ router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
         startTime: req.body.startTime,
         endTime: req.body.endTime,
       },
-      { transaction: t }
+      // { transaction: t }
     );
 
-    await t.commit();
+    // await t.commit();
     return res.status(200).json({ success: true });
   } catch (err) {
     console.error(err);
-    await t.rollback();
+    // await t.rollback();
     next(err);
   }
 });
