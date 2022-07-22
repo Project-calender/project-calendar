@@ -26,9 +26,8 @@
 .todate .todate_icon_wrap ul li{width: 30px;height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;}
 .todate .todate_icon_wrap ul li:hover{ background: #eee;}
 .todate .todate_icon_wrap ul li .todate_icon{font-size: 16px;}
-.todate .todate_icon_wrap ul li em{width: 100%;  position: absolute; width:max-content; border-radius: 10%; top:130%; left:50%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; transform: translateX(-50%); text-align: center; padding: 5px 8px;}
+.todate .todate_icon_wrap ul li em{width: 160%;  position: absolute; width:max-content; border-radius: 10%; top:130%; left:50%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.4s; transform: translateX(-50%); text-align: center; padding: 5px 8px;}
 .todate .todate_icon_wrap ul li:hover em{visibility: visible; opacity: 1;}
-.todate .todate_icon_wrap ul li:nth-child(2) em{width: 140%;}
 
 .todate .todate_text{margin-left: 20px;}
 .todate .todate_text h2{font-size: 20px;font-weight: 400;color: #3c4043; cursor: default;}
