@@ -4,20 +4,37 @@ import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import { useDispatch, useSelector } from 'react-redux';
-import { addDate, selectDate } from '../../../store/date';
+import { addDate, selectDate, addMonth } from '../../../store/date';
 import { selectedDateSelector } from '../../../store/selectors/date';
 import Moment from '../../../utils/moment';
+import { useLocation } from 'react-router-dom';
 
 const Index = ({ toggleSideBar }) => {
   //redux 오늘 날짜 가지고 오기
   let state = useSelector(selectedDateSelector);
   let dispatch = useDispatch();
+  let change = useLocation(); //url 주소 가지고 오기
+  console.log();
 
   const today = new Moment().toObject();
 
   //오늘 기준 월,일로 변경
   function toDate() {
     dispatch(selectDate(today));
+  }
+
+  function nextBtn() {
+    change.pathname == '/day' ? dispatch(addDate(1)) : null;
+    change.pathname == '/week' ? dispatch(addDate(7)) : null;
+    change.pathname == '/month' ? dispatch(addMonth(1)) : null;
+    change.pathname == '/year' ? dispatch(addMonth(12)) : null;
+  }
+
+  function previousBtn() {
+    change.pathname == '/day' ? dispatch(addDate(-1)) : null;
+    change.pathname == '/week' ? dispatch(addDate(-7)) : null;
+    change.pathname == '/month' ? dispatch(addMonth(-1)) : null;
+    change.pathname == '/year' ? dispatch(addMonth(-12)) : null;
   }
 
   return (
@@ -54,7 +71,7 @@ const Index = ({ toggleSideBar }) => {
             <ul>
               <li
                 onClick={() => {
-                  dispatch(addDate(-1));
+                  previousBtn();
                 }}
               >
                 <FontAwesomeIcon
@@ -65,7 +82,7 @@ const Index = ({ toggleSideBar }) => {
               </li>
               <li
                 onClick={() => {
-                  dispatch(addDate(1));
+                  nextBtn();
                 }}
               >
                 <FontAwesomeIcon
