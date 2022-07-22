@@ -18,7 +18,6 @@ const Index = ({ toggleSideBar }) => {
   let url = useLocation(); //url 주소 가지고 오기
   let [nextText, setNextText] = useState(); //이전 버튼 툴팁
   let [previText, setPreviText] = useState(); //다음 버튼 툴팁
-
   const today = new Moment().toObject();
 
   //오늘 기준 월,일로 변경
