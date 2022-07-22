@@ -105,6 +105,19 @@ router.post("/getGroupEvent", authJWT, async (req, res, next) => {
       include: [
         {
           model: User,
+          as: "EventHost",
+          attributes: {
+            exclude: [
+              "password",
+              "checkedCalendar",
+              "createdAt",
+              "updatedAt",
+              "deletedAt",
+            ],
+          },
+        },
+        {
+          model: User,
           as: "EventMembers",
           attributes: ["id", "email", "nickname"],
         },
@@ -117,7 +130,95 @@ router.post("/getGroupEvent", authJWT, async (req, res, next) => {
   }
 });
 
-router.post("/getGroupEventbyDate", authJWT, async (req, res, next) => {});
+router.post("/getEventByDate", authJWT, async (req, res, next) => {
+  try {
+    const me = await User.findOne({ where: { id: req.myId } });
+    var start = req.body.date;
+    var end = req.body.date.split("-");
+    end[2] = String(Number(end[2]) + 1);
+    end = end.join("-");
+
+    const privateEvents = await me.getPrivateCalendar({
+      attributes: {
+        exclude: [
+          "name",
+          "color",
+          "UserId",
+          "createdAt",
+          "updatedAt",
+          "deletedAt",
+        ],
+      },
+      include: [
+        {
+          model: PrivateEvent,
+          attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+          where: {
+            [Op.or]: {
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: start,
+                  [Op.lte]: end,
+                },
+              },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: start,
+                  [Op.lte]: end,
+                },
+              },
+            },
+          },
+          separate: true,
+        },
+      ],
+    });
+
+    const groupEvents = await me.getGroupCalendars({
+      attributes: {
+        exclude: [
+          "name",
+          "color",
+          "OwnerId",
+          "createdAt",
+          "updatedAt",
+          "deletedAt",
+        ],
+      },
+      include: [
+        {
+          model: Event,
+          as: "GroupEvents",
+          attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+          where: {
+            [Op.or]: {
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: start,
+                  [Op.lte]: end,
+                },
+              },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: start,
+                  [Op.lte]: end,
+                },
+              },
+            },
+          },
+          separate: true,
+        },
+      ],
+    });
+
+    return res
+      .status(200)
+      .send({ privateEvents: privateEvents, groupEvents: groupEvents });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 
 router.post("/createGroupEvent", authJWT, async (req, res, next) => {
   try {
@@ -515,21 +616,6 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
     console.error(error);
     next(error);
   }
-});
-
-router.post("/customizingGroupEvent", authJWT, async (req, res, next) => {
-  try {
-    const me = await User.findOne({ where: { id: req.myId } });
-    const privateEvent = await PrivateEvent.findOne({
-      where: { id: req.body.privateEventId },
-    });
-
-    privateEvent.update({});
-
-    if (!groupEvent) {
-      return res.status(401).send({ message: "존재하지 않는 이벤트 입니다!" });
-    }
-  } catch {}
 });
 
 router.post("/searchEvent", authJWT, async (req, res, next) => {

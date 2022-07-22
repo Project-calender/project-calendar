@@ -45,11 +45,13 @@ router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
     const myEvent = await PrivateEvent.findOne({
       id: 2,
     });
-    console.log("?")
+    console.log("?");
     if (!myEvent) {
-      res.status(401).json({ message: "수정할 개인이벤트의 조회 결과가 없습니다" })
+      res
+        .status(401)
+        .json({ message: "수정할 개인이벤트의 조회 결과가 없습니다" });
     }
-    console.log(myEvent)
+    console.log(myEvent);
     await myEvent.update(
       {
         name: req.body.name,
@@ -58,7 +60,7 @@ router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
         memo: req.body.memo,
         startTime: req.body.startTime,
         endTime: req.body.endTime,
-      },
+      }
       // { transaction: t }
     );
 
