@@ -43,9 +43,10 @@ router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
   // const t = await sequelize.transaction();
   try {
     const myEvent = await PrivateEvent.findOne({
-      id: 2,
+      where: {
+        id: req.body.eventId
+      }
     });
-    console.log("?")
     if (!myEvent) {
       res.status(401).json({ message: "수정할 개인이벤트의 조회 결과가 없습니다" })
     }
