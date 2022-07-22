@@ -8,13 +8,16 @@ import { addDate, selectDate, addMonth } from '../../../store/date';
 import { selectedDateSelector } from '../../../store/selectors/date';
 import Moment from '../../../utils/moment';
 import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const Index = ({ toggleSideBar }) => {
   //redux 오늘 날짜 가지고 오기
   let state = useSelector(selectedDateSelector);
   let dispatch = useDispatch();
-  let change = useLocation(); //url 주소 가지고 오기
-  console.log();
+  let url = useLocation(); //url 주소 가지고 오기
+  let [nextText, setNextText] = useState(); //이전 버튼 툴팁
+  let [previText, setPreviText] = useState(); //다음 버튼 툴팁
 
   const today = new Moment().toObject();
 
@@ -23,19 +26,38 @@ const Index = ({ toggleSideBar }) => {
     dispatch(selectDate(today));
   }
 
+  // 다음 버튼 클릭시 일 변경
   function nextBtn() {
-    change.pathname == '/day' ? dispatch(addDate(1)) : null;
-    change.pathname == '/week' ? dispatch(addDate(7)) : null;
-    change.pathname == '/month' ? dispatch(addMonth(1)) : null;
-    change.pathname == '/year' ? dispatch(addMonth(12)) : null;
+    url.pathname == '/day' ? dispatch(addDate(1)) : null;
+    url.pathname == '/week' ? dispatch(addDate(7)) : null;
+    url.pathname == '/month' ? dispatch(addMonth(1)) : null;
+    url.pathname == '/year' ? dispatch(addMonth(12)) : null;
   }
 
+  //이전 버튼 클릭시 일 변경
   function previousBtn() {
-    change.pathname == '/day' ? dispatch(addDate(-1)) : null;
-    change.pathname == '/week' ? dispatch(addDate(-7)) : null;
-    change.pathname == '/month' ? dispatch(addMonth(-1)) : null;
-    change.pathname == '/year' ? dispatch(addMonth(-12)) : null;
+    url.pathname == '/day' ? dispatch(addDate(-1)) : null;
+    url.pathname == '/week' ? dispatch(addDate(-7)) : null;
+    url.pathname == '/month' ? dispatch(addMonth(-1)) : null;
+    url.pathname == '/year' ? dispatch(addMonth(-12)) : null;
   }
+
+  //이전,다음 버튼 툴팁 변경
+  useEffect(() => {
+    if (url.pathname == '/day') {
+      setNextText('다음날');
+      setPreviText('전날');
+    } else if (url.pathname == '/week') {
+      setNextText('다음 주');
+      setPreviText('전 주');
+    } else if (url.pathname == '/month') {
+      setNextText('다음 달');
+      setPreviText('전 달');
+    } else if (url.pathname == '/year') {
+      setNextText('다음 연도');
+      setPreviText('이전 연도');
+    }
+  }, [url.pathname]);
 
   return (
     <div>
@@ -78,7 +100,7 @@ const Index = ({ toggleSideBar }) => {
                   icon={faAngleLeft}
                   className={styles.todate_icon}
                 />
-                <em>전날</em>
+                <em>{previText}</em>
               </li>
               <li
                 onClick={() => {
@@ -89,13 +111,15 @@ const Index = ({ toggleSideBar }) => {
                   icon={faAngleRight}
                   className={styles.todate_icon}
                 />
-                <em>다음날</em>
+                <em>{nextText}</em>
               </li>
             </ul>
           </div>
           <div className={styles.todate_text}>
             <h2>
-              {state.year}년 {state.month}월 {state.date}일
+              {state.year}년{' '}
+              {url.pathname == '/year' ? null : `${state.month}월`}{' '}
+              {url.pathname == '/day' ? `${state.date}일` : null}
             </h2>
           </div>
         </div>
