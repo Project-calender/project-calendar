@@ -34,19 +34,7 @@ const refresh = async (req, res, next) => {
     /* access token의 decoding 된 값에서
       유저의 id를 가져와 refresh token을 검증합니다. */
     const refreshResult = await refreshVerify(refreshToken, decoded.id);
-<<<<<<< HEAD
-
-    console.log(refreshResult);
-    console.log(authResult);
-    console.log("확인");
-    // 재발급을 위해서는 access token이 만료되어있어야합니다.
-=======
-    
-    console.log(refreshResult)
-    console.log(authResult)
-    console.log("확인")
-    // 재발급을 위해서는 access token이 만료되어있어야합니다. 
->>>>>>> 6926a80959eaa4185c27eae23b20c5f5d8bfacde
+다.
 
     if (authResult.ok === false && authResult.message === "jwt expired") {
       if (refreshResult === false) {
