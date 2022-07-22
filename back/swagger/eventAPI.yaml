@@ -1,5 +1,5 @@
 /api/event/getAllEvent:
-  get:
+  post:
     tags:
       - event
     summary: 날짜 내에 모든 이벤트 가져오기
@@ -62,7 +62,7 @@
         $ref: "./openapi.yaml#/serverError"
 
 /api/event/getGroupEvent:
-  get:
+  post:
     tags:
       - event
     summary: 특정 이벤트의 모든 정보 가져오기
@@ -379,7 +379,7 @@
         $ref: "./openapi.yaml#/serverError"
 
 /api/event/searchEvent:
-  get:
+  post:
     tags:
       - event
     summary: 이벤트 이름으로 검색하기

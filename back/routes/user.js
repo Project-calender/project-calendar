@@ -115,6 +115,7 @@ router.post("/signin", async (req, res, next) => {
     accessToken,
   });
 });
+
 router.post("/signup", async (req, res, next) => {
   try {
     console.log(req.body);
@@ -178,7 +179,6 @@ router.post("/signup", async (req, res, next) => {
         { transaction: t }
       );
     });
-
     return res.status(200).send({ success: true });
   } catch (error) {
     console.log(error);

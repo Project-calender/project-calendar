@@ -1,10 +1,9 @@
 const { verify } = require("./jwt-util");
 
 const authJWT = (req, res, next) => {
-  req.headers.authorization = req.headers.authorization.substr(1);
-  req.headers.authorization = req.headers.authorization.slice(0, -1);
-
   if (req.headers.authorization) {
+    req.headers.authorization = req.headers.authorization.substr(1);
+    req.headers.authorization = req.headers.authorization.slice(0, -1);
     const token = req.headers.authorization; // header에서 access token을 가져옵니다.
     const result = verify(token); // token을 검증합니다.
     if (result.ok) {
@@ -13,17 +12,25 @@ const authJWT = (req, res, next) => {
       next();
     } else {
       // 검증에 실패하거나 토큰이 만료되었다면 클라이언트에게 메세지를 담아서 응답합니다.
-      res.status(401).send({
+      res.status(402).send({
         ok: false,
         message: result.message, // jwt가 만료되었다면 메세지는 'jwt expired'입니다.
       });
     }
   } else {
     //세션 스토리지에 access 토큰이 없는 경우
+<<<<<<< HEAD
     res.status(401).send({
       ok: false,
       message: "accessToken이 지급되지 않았습니다",
     });
+=======
+    return res.status(401).send({
+      ok:false,
+      message: "accessToken이 지급되지 않았습니다"
+    })
+    
+>>>>>>> 6926a80959eaa4185c27eae23b20c5f5d8bfacde
   }
 };
 //dasdas

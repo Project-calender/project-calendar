@@ -7,6 +7,7 @@ export function Today() {
 
 class Moment {
   constructor(moment = Today()) {
+    if (typeof moment === 'number') moment = new Date(moment);
     if (!moment.time) moment = convertDateToObject(moment);
     const { year, month, date, day, time } = moment;
 
@@ -56,6 +57,10 @@ class Moment {
 
   toDate() {
     return new Date(this.time);
+  }
+
+  toDateString() {
+    return `${this.year}년 ${this.month}월 ${this.date}일`;
   }
 }
 

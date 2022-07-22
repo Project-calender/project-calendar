@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { EventBarContext } from '../../../../../../context/EventBarContext';
-import EventBar from '../EventBar';
+import EventBar from '../../../../EventBar';
 
 const Index = ({ dateTime }) => {
   const eventBars = useContext(EventBarContext);

@@ -5,25 +5,24 @@ const {
   Alert,
   Calendar,
   PrivateCalendar,
+  CalendarMember,
+  EventMember,
   PrivateEvent,
 } = require("../models");
 const { User } = require("../models");
 const { Event } = require("../models");
-const { CalendarMember } = require("../models");
-const { EventMember } = require("../models");
+
 const router = express.Router();
 const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
 
-router.get("/getAllEvent", authJWT, async (req, res, next) => {
+router.post("/getAllEvent", authJWT, async (req, res, next) => {
   try {
     const me = await User.findOne({ where: { id: req.myId } });
-    req.body.endDate = req.body.endDate.split("-")
-    req.body.endDate[2] = String(Number(req.body.endDate[2])+1)
+    req.body.endDate = req.body.endDate.split("-");
+    req.body.endDate[2] = String(Number(req.body.endDate[2]) + 1);
 
-    console.log(req.body.endDate)
-    req.body.endDate = req.body.endDate.join("-")
-    console.log(req.body.endDate)
+    req.body.endDate = req.body.endDate.join("-");
     const privateEvents = await me.getPrivateCalendar({
       attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
       include: [
@@ -31,22 +30,20 @@ router.get("/getAllEvent", authJWT, async (req, res, next) => {
           model: PrivateEvent,
           attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
           where: {
-            //끝날짜에 1을 더해야 그 날짜 까지 가져옴
-            // endTime > startDate startTime < endDate
-              [Op.or]: {
-                startTime: {
+            [Op.or]: {
+              startTime: {
                 [Op.and]: {
                   [Op.gte]: req.body.startDate,
-                  [Op.lte]: req.body.endDate
-                }
+                  [Op.lte]: req.body.endDate,
+                },
               },
               endTime: {
                 [Op.and]: {
                   [Op.gte]: req.body.startDate,
-                  [Op.lte]: req.body.endDate
-                }
+                  [Op.lte]: req.body.endDate,
+                },
               },
-            }            
+            },
           },
           separate: true,
         },
@@ -61,8 +58,19 @@ router.get("/getAllEvent", authJWT, async (req, res, next) => {
           as: "GroupEvents",
           attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
           where: {
-            startTime: {
-              [Op.between]: [req.body.startDate, req.body.endDate],
+            [Op.or]: {
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: req.body.startDate,
+                  [Op.lte]: req.body.endDate,
+                },
+              },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: req.body.startDate,
+                  [Op.lte]: req.body.endDate,
+                },
+              },
             },
           },
           separate: true,
@@ -79,7 +87,7 @@ router.get("/getAllEvent", authJWT, async (req, res, next) => {
   }
 });
 
-router.get("/getGroupEvent", authJWT, async (req, res, next) => {
+router.post("/getGroupEvent", authJWT, async (req, res, next) => {
   try {
     const events = await Event.findOne({
       where: { id: req.body.eventId },
@@ -108,6 +116,8 @@ router.get("/getGroupEvent", authJWT, async (req, res, next) => {
     next(error);
   }
 });
+
+router.post("/getGroupEventbyDate", authJWT, async (req, res, next) => {});
 
 router.post("/createGroupEvent", authJWT, async (req, res, next) => {
   try {
@@ -507,7 +517,22 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
   }
 });
 
-router.get("/searchEvent", authJWT, async (req, res, next) => {
+router.post("/customizingGroupEvent", authJWT, async (req, res, next) => {
+  try {
+    const me = await User.findOne({ where: { id: req.myId } });
+    const privateEvent = await PrivateEvent.findOne({
+      where: { id: req.body.privateEventId },
+    });
+
+    privateEvent.update({});
+
+    if (!groupEvent) {
+      return res.status(401).send({ message: "존재하지 않는 이벤트 입니다!" });
+    }
+  } catch {}
+});
+
+router.post("/searchEvent", authJWT, async (req, res, next) => {
   try {
     const searchWord = req.body.searchWord;
 
