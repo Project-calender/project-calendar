@@ -449,7 +449,7 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (!groupEvent) {
-      return res.status(401).send({ message: "존재하지 않는 이벤트 입니다!" });
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
     const hasAuthority = await CalendarMember.findOne({
@@ -459,7 +459,7 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (hasAuthority.authority < 2) {
-      return res.status(400).send({ message: "삭제 권한이 없습니다!" });
+      return res.status(401).send({ message: "삭제 권한이 없습니다!" });
     }
 
     await sequelize.transaction(async (t) => {
