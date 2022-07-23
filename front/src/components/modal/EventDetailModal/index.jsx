@@ -9,7 +9,6 @@ import {
   faCalendarDay,
   faEllipsisVertical,
   faEnvelope,
-  faLocationDot,
   faPen,
   faTrashCan,
   faUserGroup,
@@ -68,14 +67,6 @@ const Index = ({ modalData, hideModal }) => {
           </div>
 
           <div>
-            <FontAwesomeIcon icon={faLocationDot} />
-            <div>
-              <h3>장소</h3>
-              <p>상세 주소</p>
-            </div>
-          </div>
-
-          <div>
             <FontAwesomeIcon icon={faUserGroup} />
             <div>
               <h3>참석자 1명</h3>
@@ -86,7 +77,7 @@ const Index = ({ modalData, hideModal }) => {
           <div>
             <FontAwesomeIcon icon={faBarsStaggered} />
             <div>
-              <h3>메모입니다.</h3>
+              <h3>{event.memo}</h3>
             </div>
           </div>
 
@@ -102,6 +93,17 @@ const Index = ({ modalData, hideModal }) => {
             <FontAwesomeIcon icon={faBriefcase} />
             <div>
               <h3>한가함</h3>
+            </div>
+          </div>
+        </div>
+        <div className={styles.modal_footer}>
+          <div className={styles.modal_line} />
+          <div>
+            <em>참석 여부</em>
+            <div>
+              <button>예</button>
+              <button>아니요</button>
+              <button>미정</button>
             </div>
           </div>
         </div>
