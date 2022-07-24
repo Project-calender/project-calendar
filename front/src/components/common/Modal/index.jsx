@@ -10,9 +10,10 @@ import { useRef } from 'react';
 const Index = ({
   children,
   hideModal,
-  triggerDOM = '',
+  triggerDOM = null,
   style = {},
   isCloseButtom = false,
+  isBackground = false,
 }) => {
   const $modal = useRef();
   useEffect(() => {
@@ -30,16 +31,19 @@ const Index = ({
   }
 
   return (
-    <div className={styles.modal_container} ref={$modal} style={style}>
-      {isCloseButtom && (
-        <div className={styles.modal_close_icon}>
-          <Tooltip title={'닫기'}>
-            <FontAwesomeIcon icon={faXmark} onClick={hideModal} />
-          </Tooltip>
-        </div>
-      )}
-      <div className={styles.modal_contexts}>{children}</div>
-    </div>
+    <>
+      {isBackground && <div className={styles.modal_background} />}
+      <div className={styles.modal_container} ref={$modal} style={style}>
+        {isCloseButtom && (
+          <div className={styles.modal_close_icon}>
+            <Tooltip title={'닫기'}>
+              <FontAwesomeIcon icon={faXmark} onClick={hideModal} />
+            </Tooltip>
+          </div>
+        )}
+        <div className={styles.modal_contexts}>{children}</div>
+      </div>
+    </>
   );
 };
 
@@ -49,5 +53,6 @@ Index.propTypes = {
   triggerDOM: PropTypes.string,
   style: PropTypes.object,
   isCloseButtom: PropTypes.bool,
+  isBackground: PropTypes.bool,
 };
 export default Index;

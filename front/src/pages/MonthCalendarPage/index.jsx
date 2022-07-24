@@ -7,6 +7,7 @@ import WeekDayHeader from '../../components/calendar/month/WeekDayHeader';
 import CalendarBody from '../../components/calendar/month/CalendarBody';
 import EventListModalLayout from '../../components/modal/layout/EventListModalLayout';
 import EventDetailMaodalLayout from '../../components/modal/layout/EventDetailMaodalLayout';
+import CreateEventMaodalLayout from '../../components/modal/layout/CreateModalLayout';
 
 import { EventBarContext } from '../../context/EventBarContext';
 
@@ -25,9 +26,8 @@ const Index = () => {
     isMouseDown,
     selectedDateRange,
   } = useDragDate();
-  const { monthEventBars } = useMonthEventBar(selectedDateRange);
-
-  const { changeMonth } = useAddMonthByWheel();
+  const eventBarData = useMonthEventBar(selectedDateRange);
+  const eventBarContextData = { isMouseDown, ...eventBarData };
 
   const dispatch = useDispatch();
   const month = useSelector(monthSelector);
@@ -40,27 +40,30 @@ const Index = () => {
     );
   }, [dispatch, month]);
 
+  const { changeMonth } = useAddMonthByWheel();
   return (
     <div className={styles.calendar} onWheel={changeMonth}>
-      <EventDetailMaodalLayout>
-        <EventListModalLayout>
-          <table
-            className={styles.calendar_table}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseMove={isMouseDown ? handleDrag : null}
-          >
-            <thead>
-              <WeekDayHeader />
-            </thead>
-            <tbody>
-              <EventBarContext.Provider value={monthEventBars}>
-                <CalendarBody month={month} />
-              </EventBarContext.Provider>
-            </tbody>
-          </table>
-        </EventListModalLayout>
-      </EventDetailMaodalLayout>
+      <EventBarContext.Provider value={eventBarContextData}>
+        <CreateEventMaodalLayout>
+          <EventDetailMaodalLayout>
+            <EventListModalLayout>
+              <table
+                className={styles.calendar_table}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseMove={isMouseDown ? handleDrag : null}
+              >
+                <thead>
+                  <WeekDayHeader />
+                </thead>
+                <tbody>
+                  <CalendarBody month={month} />
+                </tbody>
+              </table>
+            </EventListModalLayout>
+          </EventDetailMaodalLayout>
+        </CreateEventMaodalLayout>
+      </EventBarContext.Provider>
     </div>
   );
 };

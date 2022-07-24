@@ -3,14 +3,14 @@ import { initDateRange } from './useDragDate';
 import Moment from '../utils/moment';
 
 export default function useMonthEventBar(selectedDateRange = initDateRange) {
-  const [monthEventBars, setMonthEventBars] = useState([]);
+  const [newEventBars, setNewEventBars] = useState([]);
 
   useLayoutEffect(() => {
     const eventBars = createEventBar(selectedDateRange);
-    setMonthEventBars(eventBars);
+    setNewEventBars(eventBars);
   }, [selectedDateRange]);
 
-  return { monthEventBars };
+  return { newEventBars, setNewEventBars };
 }
 
 export function createEventBar(dateRange) {

@@ -9,6 +9,7 @@ import {
   faCalendarDay,
   faEllipsisVertical,
   faEnvelope,
+  faLocationDot,
   faPen,
   faTrashCan,
   faUserGroup,
@@ -67,6 +68,13 @@ const Index = ({ modalData, hideModal }) => {
           </div>
 
           <div>
+            <FontAwesomeIcon icon={faLocationDot} />
+            <div>
+              <h3>대한민국</h3>
+              <p>대한민국</p>
+            </div>
+          </div>
+          <div>
             <FontAwesomeIcon icon={faUserGroup} />
             <div>
               <h3>참석자 1명</h3>
@@ -85,7 +93,7 @@ const Index = ({ modalData, hideModal }) => {
             <FontAwesomeIcon icon={faCalendarDay} />
             <div>
               <h3>{calendar.name}</h3>
-              <p>만든 사용자:</p>
+              <p>만든 사용자: 사용자</p>
             </div>
           </div>
 
