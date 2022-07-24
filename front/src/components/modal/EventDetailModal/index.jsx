@@ -5,14 +5,17 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarsStaggered,
+  faBell,
   faBriefcase,
   faCalendarDay,
+  faCheck,
   faEllipsisVertical,
   faEnvelope,
   faLocationDot,
   faPen,
   faTrashCan,
   faUserGroup,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Modal from '../../common/Modal';
@@ -77,8 +80,36 @@ const Index = ({ modalData, hideModal }) => {
           <div>
             <FontAwesomeIcon icon={faUserGroup} />
             <div>
-              <h3>참석자 1명</h3>
-              <p>초대 수락 1명</p>
+              <h3>참석자 2명</h3>
+              <p>초대 수락 1명, 초대 거부 1명</p>
+            </div>
+          </div>
+
+          <div>
+            <div />
+            <div>
+              <div className={styles.user_info}>
+                <em className={styles.user_profile}>
+                  K
+                  <FontAwesomeIcon
+                    className={`${styles.user_state} ${styles.accept}`}
+                    icon={faCheck}
+                  />
+                </em>
+
+                <h3>사용자</h3>
+              </div>
+              <div className={styles.user_info}>
+                <em className={styles.user_profile}>
+                  J
+                  <FontAwesomeIcon
+                    className={`${styles.user_state} ${styles.reject}`}
+                    icon={faXmark}
+                  />
+                </em>
+
+                <h3>사용자2</h3>
+              </div>
             </div>
           </div>
 
@@ -86,6 +117,13 @@ const Index = ({ modalData, hideModal }) => {
             <FontAwesomeIcon icon={faBarsStaggered} />
             <div>
               <h3>{event.memo}</h3>
+            </div>
+          </div>
+
+          <div>
+            <FontAwesomeIcon icon={faBell} />
+            <div>
+              <h3>30분 전</h3>
             </div>
           </div>
 
@@ -110,7 +148,7 @@ const Index = ({ modalData, hideModal }) => {
             <em>참석 여부</em>
             <div>
               <button>예</button>
-              <button>아니요</button>
+              <button className={styles.button_active}>아니요</button>
               <button>미정</button>
             </div>
           </div>
