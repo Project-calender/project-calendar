@@ -35,7 +35,6 @@ const refresh = async (req, res, next) => {
       유저의 id를 가져와 refresh token을 검증합니다. */
     const refreshResult = await refreshVerify(refreshToken, decoded.id);
 
-
     if (authResult.ok === false && authResult.message === "jwt expired") {
       if (refreshResult === false) {
         res.status(405).send({
