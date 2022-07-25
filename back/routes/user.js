@@ -174,7 +174,7 @@ router.post("/signup", async (req, res, next) => {
 
       await newUser.createPrivateCalendar(
         {
-          name: "MyCalendar",
+          name: newUser.nickname,
         },
         { transaction: t }
       );

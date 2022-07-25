@@ -10,6 +10,7 @@ const router = express.Router();
 const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
 
+//캘린더 만들엇을때 checkedCalendar에 체크해주기ㄴ
 router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
   try {
     await sequelize.transaction(async (t) => {
@@ -45,7 +46,6 @@ router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
         }
       );
     });
-
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
