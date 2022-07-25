@@ -41,6 +41,8 @@ const Index = ({ modalData, hideModal }) => {
     if (left && left + $modal.current?.offsetWidth > window.innerWidth) {
       left = window.innerWidth - $modal.current?.offsetWidth - 60;
     }
+
+    if (left && window.innerWidth <= 660) left = 10;
     setPosition({ top, left });
   }, [style]);
 
