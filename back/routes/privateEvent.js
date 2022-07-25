@@ -30,7 +30,7 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
       { transaction: t }
     );
     await t.commit();
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ privateCalendar });
   } catch (error) {
     console.error(error);
     await t.rollback();
