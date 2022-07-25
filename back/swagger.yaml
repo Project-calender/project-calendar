@@ -429,7 +429,22 @@ paths:
           description: 성공
           schema:
             properties:
-              success:
+              id:
+                type: string
+                example: true
+              name:
+                type: string
+                example: true
+              color:
+                type: string
+                example: true
+              OwnerId:
+                type: string
+                example: true
+              updatedAt:
+                type: string
+                example: true
+              createdAt:
                 type: string
                 example: true
         '401':
