@@ -56,7 +56,7 @@ app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/privateEvent", privateEventRouter);
-app.use("/api/privateEvent", alertRouter);
+app.use("/api/alert", alertRouter);
 
 app.get("/", (req, res) => {
   res.send("jenkins why");

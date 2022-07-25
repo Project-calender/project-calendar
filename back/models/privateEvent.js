@@ -31,7 +31,7 @@ module.exports = class PrivateEvent extends Model {
           type: DataTypes.INTEGER,
         },
         state: {
-          type: DataTypes.STRING(20),
+          type: DataTypes.INTEGER,
           default: 0,
         },
         allDay: {

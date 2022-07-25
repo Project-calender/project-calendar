@@ -9,7 +9,24 @@
         required: true
     responses:
       200:
-        $ref: "./openapi.yaml#/success"
+        description: 성공
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+              content:
+                type: string
+              checked:
+                type: boolean
+              eventCalendarId:
+                type: integer
+              eventDate:
+                type: string
       500:
         $ref: "./openapi.yaml#/serverError"
 
