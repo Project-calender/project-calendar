@@ -305,7 +305,25 @@ paths:
           description: 성공
           schema:
             properties:
-              success:
+              id:
+                type: string
+                example: true
+              name:
+                type: string
+                example: true
+              color:
+                type: string
+                example: true
+              createdAt:
+                type: string
+                example: true
+              updatedAt:
+                type: string
+                example: true
+              deletedAt:
+                type: string
+                example: true
+              UserId:
                 type: string
                 example: true
   /api/privateEvent/editPrivateEvent:
