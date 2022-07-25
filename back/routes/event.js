@@ -277,8 +277,9 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
         },
         { transaction: t }
       );
+
+      return res.status(200).send(newGroupEvent);
     });
-    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
     next(error);
@@ -359,7 +360,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
       );
     });
 
-    return res.status(200).send({ success: true });
+    return res.status(200).send(guest);
   } catch (error) {
     console.error(error);
     next(error);
