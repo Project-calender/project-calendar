@@ -45,8 +45,9 @@ router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
           transaction: t,
         }
       );
+      
+      return res.status(200).send({ newGroupCalendar });
     });
-    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
     next(error);
