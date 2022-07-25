@@ -1,18 +1,18 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export default function useEventModal(initalState = false) {
   const [isModalShown, toggleModal] = useState(initalState);
   const [modalData, setModalData] = useState(null);
 
-  const showModal = data => {
+  const showModal = useCallback(data => {
     setModalData(data);
     toggleModal(true);
-  };
+  }, []);
 
-  const hideModal = () => {
+  const hideModal = useCallback(() => {
     setModalData(null);
     toggleModal(false);
-  };
+  }, []);
 
   return { isModalShown, modalData, showModal, hideModal, setModalData };
 }
