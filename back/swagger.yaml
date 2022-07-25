@@ -91,6 +91,7 @@ paths:
                     type: string
                   checkedCalendar:
                     type: string
+                    example: '0,1,24'
                   ProfileImages:
                     type: object
                     properties:
@@ -669,30 +670,95 @@ paths:
           description: 성공
           schema:
             properties:
-              userData:
+              privateEvents:
                 type: object
                 properties:
                   id:
                     type: integer
-                  email:
+                  name:
                     type: string
-                  nickname:
+                  color:
                     type: string
-                  checkedCalendar:
+                  UserId:
                     type: string
-                  ProfileImages:
-                    type: object
-                    properties:
-                      src:
-                        type: string
-                  refreshToken:
-                    type: string
-                  accessToken:
-                    type: string
+                  privateEvents:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        color:
+                          type: string
+                        priority:
+                          type: integer
+                        memo:
+                          type: string
+                        startTime:
+                          type: string
+                        endTime:
+                          type: string
+                        groupEventId:
+                          type: integer
+                        state:
+                          type: integer
+                        allDay:
+                          type: boolean
+                        privateCalendarId:
+                          type: integer
+              groupEvents:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    color:
+                      type: string
+                    OwnerId:
+                      type: integer
+                    CalendarMember:
+                      type: object
+                      properties:
+                        authority:
+                          type: integer
+                        UserId:
+                          type: integer
+                        CalendarId:
+                          type: integer
+                    GroupEvents:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          color:
+                            type: string
+                          priority:
+                            type: integer
+                          memo:
+                            type: string
+                          startTime:
+                            type: string
+                          endTime:
+                            type: string
+                          allDay:
+                            type: integer
+                          EventHostId:
+                            type: integer
+                          CalendarId:
+                            type: integer
         '500':
           $ref: '#/serverError'
   /api/event/getGroupEvent:
-    get:
+    post:
       tags:
         - event
       summary: 특정 이벤트의 모든 정보 가져오기
@@ -714,46 +780,154 @@ paths:
           description: 성공
           schema:
             properties:
-              userData:
+              id:
+                type: integer
+              color:
+                type: string
+              priority:
+                type: string
+              memo:
+                type: string
+              startTime:
+                type: string
+              endTime:
+                type: string
+              EventHostId:
+                type: string
+              CalendarId:
+                type: string
+              EventHost:
                 type: object
                 properties:
                   id:
                     type: integer
-                  color:
+                  email:
                     type: string
-                  priority:
+                  nickname:
                     type: string
-                  memo:
-                    type: string
-                  startTime:
-                    type: string
-                  endTime:
-                    type: string
-                  EventHostId:
-                    type: string
-                  CalendarId:
-                    type: string
-                  EventMembers:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                      nickname:
-                        type: string
-                      EventMember:
+              EventMembers:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    email:
+                      type: string
+                    nickname:
+                      type: string
+                    EventMember:
+                      type: object
+                      properties:
+                        state:
+                          type: integer
+                        createdAt:
+                          type: string
+                        updatedAt:
+                          type: string
+                        deletedAt:
+                          type: string
+                        UserId:
+                          type: integer
+                        EventId:
+                          type: integer
+        '500':
+          $ref: '#/serverError'
+  /api/event/getEventByDate:
+    post:
+      tags:
+        - event
+      summary: 특정 날짜의 이벤트들 모두 가져오기
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              date:
+                type: string
+                example: '2022-08-20'
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              privateEvents:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  privateEvents:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        color:
+                          type: string
+                        priority:
+                          type: integer
+                        memo:
+                          type: string
+                        startTime:
+                          type: string
+                        endTime:
+                          type: string
+                        groupEventId:
+                          type: integer
+                        state:
+                          type: integer
+                        allDay:
+                          type: boolean
+                        privateCalendarId:
+                          type: integer
+              groupEvents:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    CalendarMember:
+                      type: object
+                      properties:
+                        authority:
+                          type: integer
+                        UserId:
+                          type: integer
+                        CalendarId:
+                          type: integer
+                    GroupEvents:
+                      type: array
+                      items:
                         type: object
                         properties:
-                          state:
+                          id:
                             type: integer
-                          createdAt:
+                          name:
                             type: string
-                          updatedAt:
+                          color:
                             type: string
-                          deletedAt:
-                            type: string
-                          UserId:
+                          priority:
                             type: integer
-                          EventId:
+                          memo:
+                            type: string
+                          startTime:
+                            type: string
+                          endTime:
+                            type: string
+                          allDay:
+                            type: integer
+                          EventHostId:
+                            type: integer
+                          CalendarId:
                             type: integer
         '500':
           $ref: '#/serverError'
@@ -1003,7 +1177,7 @@ paths:
         '500':
           $ref: '#/serverError'
   /api/event/searchEvent:
-    get:
+    post:
       tags:
         - event
       summary: 이벤트 이름으로 검색하기
@@ -1021,7 +1195,24 @@ paths:
                 type: string
       responses:
         '200':
-          $ref: '#/success'
+          description: 성공
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                startTime:
+                  type: string
+                endTime:
+                  type: string
+                allDay:
+                  type: boolean
+                CalendarId:
+                  type: integer
         '500':
           $ref: '#/serverError'
   /api/alert/getAlerts:
@@ -1035,7 +1226,24 @@ paths:
           required: true
       responses:
         '200':
-          $ref: '#/success'
+          description: 성공
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                type:
+                  type: string
+                content:
+                  type: string
+                checked:
+                  type: boolean
+                eventCalendarId:
+                  type: integer
+                eventDate:
+                  type: string
         '500':
           $ref: '#/serverError'
   /api/alert/read:

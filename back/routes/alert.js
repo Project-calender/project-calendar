@@ -10,6 +10,7 @@ router.get("/getAlerts", authJWT, async (req, res, next) => {
     const alerts = await Alert.findAll({
       where: { UserId: req.myId },
       attributes: [
+        "id",
         "type",
         "content",
         "checked",

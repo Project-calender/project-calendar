@@ -70,6 +70,7 @@
                   type: string
                 checkedCalendar:
                   type: string
+                  example: "0,1,24"
                 ProfileImages:
                   type: object
                   properties:
@@ -85,7 +86,7 @@
           properties:
             message:
               type: string
-              example: 
+              example:
       402:
         description: 비밀번호 일치하지 않음 (이메일은 맞지만 비밀번호가 틀린 경우)
         schema:
