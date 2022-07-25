@@ -18,11 +18,7 @@ const Index = ({ event, date }) => {
   function handleEventDetailMadal(e, event) {
     const { top, left } = e.target.getBoundingClientRect();
     showEventDetailModal({
-      style: {
-        top: window.innerHeight < top + 400 ? null : top - 100,
-        bottom: window.innerHeight < top + 400 ? 25 : null,
-        left: left - 460,
-      },
+      style: { position: { top: top - 100, left: left - 450 } },
       event,
     });
   }

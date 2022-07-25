@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
@@ -24,11 +24,25 @@ import Moment from '../../../utils/moment';
 
 import { useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
+import { useEffect } from 'react';
 
 export const triggerDOM = 'month-event-detail';
 
 const Index = ({ modalData, hideModal }) => {
+  const $modal = useRef();
   const { style, event } = modalData;
+  const [position, setPosition] = useState();
+  useEffect(() => {
+    let { top, left } = style?.position || {};
+    if (top && top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
+      top = window.innerHeight - $modal.current?.offsetHeight - 35;
+    }
+
+    if (left && left + $modal.current?.offsetWidth > window.innerWidth) {
+      left = window.innerWidth - $modal.current?.offsetWidth - 60;
+    }
+    setPosition({ top, left });
+  }, [style]);
 
   const calendar = useSelector(state =>
     calendarByEventIdSelector(state, event),
@@ -38,10 +52,15 @@ const Index = ({ modalData, hideModal }) => {
     <Modal
       hideModal={hideModal}
       triggerDOM={triggerDOM}
-      style={{ ...style, boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)' }}
+      style={{
+        ...style,
+        ...position,
+        boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)',
+        zIndex: 501,
+      }}
       isCloseButtom={true}
     >
-      <div className={styles.modal_container}>
+      <div className={styles.modal_container} ref={$modal}>
         <div className={styles.modal_header}>
           <Tooltip title="일정 수정">
             <FontAwesomeIcon icon={faPen} />
