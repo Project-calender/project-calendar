@@ -20,6 +20,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import axios from '../../../utils/token';
+import Input from '../../common/Input';
 
 const Index = ({ hideModal, style }) => {
   const { setNewEventBars } = useContext(EventBarContext);
@@ -43,10 +44,11 @@ const Index = ({ hideModal, style }) => {
         <div className={styles.modal_context}>
           <div>
             <div />
-            <input
-              className={styles.event_title_input}
+            <Input
               type="text"
               placeholder="제목 및 시간 추가"
+              className={styles.event_title}
+              inputClassName={styles.event_title_input}
             />
           </div>
 
@@ -60,20 +62,26 @@ const Index = ({ hideModal, style }) => {
 
           <div>
             <FontAwesomeIcon icon={faClock} />
-            <div style={{ width: '62%' }}>
-              <h3>5월 31일(화요일) - 5월31일(화요일)</h3>
+            <div className={styles.time_title}>
+              <h3>5월 31일 (화요일)</h3> <h3>-</h3> <h3>5월 31일 (화요일)</h3>
               <h5>반복 안함</h5>
             </div>
             <button className={styles.time_add_button}>시간 추가</button>
           </div>
 
-          <div>
+          <div className={styles.time_find}>
             <div />
             <button className={styles.time_find_button}>시간 찾기</button>
           </div>
+
           <div>
             <FontAwesomeIcon icon={faUserGroup} />
-            <h4>참석자 추가</h4>
+            <Input
+              type="text"
+              placeholder="참석자 추가"
+              className={styles.event_data}
+              inputClassName={styles.event_data_input}
+            />
           </div>
 
           <div className={styles.google_meet}>
@@ -90,16 +98,26 @@ const Index = ({ hideModal, style }) => {
           <div className={styles.modal_line} />
           <div>
             <FontAwesomeIcon icon={faLocationDot} />
-            <h4>위치 추가</h4>
+            <Input
+              type="text"
+              placeholder="위치 추가"
+              className={styles.event_data}
+              inputClassName={styles.event_data_input}
+            />
           </div>
 
           <div className={styles.modal_line} />
           <div>
             <FontAwesomeIcon icon={faBarsStaggered} />
-            <h4>설명 추가</h4>
+            <Input
+              type="text"
+              placeholder="설명 추가"
+              className={styles.memo}
+              inputClassName={styles.memo_input}
+            />
           </div>
           <div>
-            <FontAwesomeIcon icon={faPaperclip} />
+            <FontAwesomeIcon icon={faPaperclip} className={styles.clip_icon} />
             <h4>첨부파일 추가</h4>
           </div>
 
@@ -107,25 +125,27 @@ const Index = ({ hideModal, style }) => {
           <div>
             <FontAwesomeIcon icon={faCalendarDay} />
             <div className={styles.calendar_info}>
-              <h3>
+              <h3 className={styles.list_modal}>
                 내 캘린더
                 <FontAwesomeIcon
                   className={styles.caret_down}
                   icon={faCaretDown}
                 />
               </h3>
-              <div className={styles.calendar_info_colors} />
-              <FontAwesomeIcon
-                className={styles.caret_down}
-                icon={faCaretDown}
-              />
+              <div className={`${styles.list_modal} ${styles.calendar_info}`}>
+                <div className={styles.calendar_info_colors} />
+                <FontAwesomeIcon
+                  className={styles.caret_down}
+                  icon={faCaretDown}
+                />
+              </div>
             </div>
           </div>
 
           <div>
             <FontAwesomeIcon icon={faBriefcase} />
             <div>
-              <h3>
+              <h3 className={styles.list_modal}>
                 한가함
                 <FontAwesomeIcon
                   className={styles.caret_down}
@@ -137,24 +157,21 @@ const Index = ({ hideModal, style }) => {
 
           <div>
             <FontAwesomeIcon icon={faLock} />
-            <div>
-              <h3>
+            <div className={styles.calendar_info}>
+              <h3 className={styles.list_modal}>
                 기본 공개 설정
                 <FontAwesomeIcon
                   className={styles.caret_down}
                   icon={faCaretDown}
                 />
-                <FontAwesomeIcon
-                  icon={faCircleQuestion}
-                  style={{ marginLeft: '5px' }}
-                />
               </h3>
+              <FontAwesomeIcon icon={faCircleQuestion} />
             </div>
           </div>
           <div>
             <FontAwesomeIcon icon={faBell} />
             <div>
-              <h4>알림 추가</h4>
+              <h4 className={styles.list_modal}>알림 추가</h4>
             </div>
           </div>
         </div>

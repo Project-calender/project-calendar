@@ -1,5 +1,5 @@
 .modal_container { width: 450px; height: 100%; color: #6b6b6b; } 
-.modal_container button { color: #6b6b6b; border-radius: 5px; } 
+.modal_container button { color: #6b6b6b; border-radius: 5px; cursor: pointer; } 
 .modal_container button:hover { filter: brightness(98%); } 
 .modal_container h3 { font-weight: 500; } 
 .modal_container h4 { font-weight: 300; } 
@@ -11,21 +11,49 @@
 .modal_header svg:hover { background: #f1f3f4; } 
 
 .modal_context { padding-top: 35px; } 
-.modal_context > div { display: flex; align-items: center; margin: 18px 0px; } 
+.modal_context > div { display: flex; align-items: center; margin: 10px 0px; } 
 
 .modal_context > div >:nth-child(1) { width: 14%; } 
-.modal_context svg { width: 16px; height: 16px; color: #848484; position:relative; left: -4px;} 
+.modal_context svg { width: 16px; height: 16px; color: #848484; position:relative; left: -4px; } 
+
+.event_title { width: 83% !important; } 
+.event_title_input { font-size: 22px; } 
 
 .modal_context_category { display: flex; } 
 .modal_context_category > * { width: 58px; height: 35px; margin-right: 5px; background: white; } 
 .category_active { background: #e8f0fe; color:#1967d2 !important; } 
 
-.google_meet img { width: 10%; height: 30px; object-fit: contain; position:relative; left: -4px;} 
-.google_meet button { width: 220px !important; height: 35px; font-size: 14px; background: #1a73e8; color: white; } 
+.time_title { position: relative; left: -10px; width: 62%; padding: 5px 10px; cursor: pointer; border-radius: 4px; } 
+.time_title:hover { background: #f7f7f7; } 
+.time_title > h3 { display: inline-block; border-bottom: 1px solid transparent; } 
+.time_title > h3:hover { border-bottom: 1px solid #afafb0; } 
+.time_title > h3:nth-child(2) { margin: 0px 5px; font-size: 16px; } 
 
-.calendar_info { display: flex; } 
-.calendar_info h3 { margin-right: 25px; } 
+.time_add_button { background: white; border: 1px solid gainsboro; width: 80px; height: 30px; } 
+.time_find { margin-top: -5px !important; } 
+.time_find_button { position: relative; left: -10px; color:#1967d2 !important; padding: 5px 10px; background: white; font-size: 14px; border-radius: 3px; } 
+
+.event_data { background: #ededed; height: 100%; padding: 10px 5px; border-radius: 5px; width: 82% !important; } 
+.event_data_input { background: #ededed; border:none !important; transform : scaleY(1.1)} 
+.event_data input::placeholder { color: #6f6f6f ; font-weight: 600;} 
+
+.google_meet img { width: 10%; height: 30px; object-fit: contain; position:relative; left: -4px; } 
+.google_meet button { width: 220px !important; height: 35px; font-size: 14px; background: #1a73e8; color: white; } 
+.google_meet button:hover {filter:brightness(110%)}
+
+.memo { background: #ededed; height: 100%; padding: 10px 5px; border-radius: 5px; width: 82% !important; } 
+.memo_input { background: #ededed; border:none !important; word-break: break-all; } 
+.memo input::placeholder { color: #a1a1a1; } 
+
+.clip_icon { transform: rotate(-45deg); } 
+
+.calendar_info { display: flex; align-items: center; } 
+.calendar_info h3 { margin-right: 20px; } 
 .calendar_info_colors { background: #f66767; width: 18px; height: 18px; border-radius: 100%; } 
+
+.list_modal {display: flex; align-items: center; position: relative; left: -10px; padding: 5px 5px 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 0px !important; }
+.list_modal svg { margin-right: 0px; }
+.list_modal:hover {background: #f7f7f7;}
 
 .modal_line { position: relative; background: #e8e8e8; height: 1px; width: calc(100% + 16px); left: -8px; z-index: 2; margin-bottom: 10px; } 
 .modal_footer { display: flex; justify-content: right; margin-top: 20px; } 
@@ -36,6 +64,3 @@
 
 .caret_down { margin: 0px 10px; } 
 
-.event_title_input { width: 80%; border: none; border-bottom: 2px solid gainsboro; font-size: 22px; } 
-.time_add_button { background: white; border: 1px solid gainsboro; width: 80px; height: 30px; } 
-.time_find_button { color:#1967d2 !important; padding: 5px 10px; background: white; font-size: 14px; position: relative; left: -10px;}
