@@ -7,6 +7,7 @@ import { checkedCalendarSelector } from '../../../../store/selectors/user';
 import { useDispatch, useSelector } from 'react-redux';
 import OptionButtons from '../OptionButtons';
 import { checkCalendar } from '../../../../store/user';
+import CheckBox from '../../../common/CheckBox';
 
 const Index = ({ calendar }) => {
   const checked = useSelector(state =>
@@ -14,36 +15,24 @@ const Index = ({ calendar }) => {
   );
 
   const dispatch = useDispatch();
-  function handleCheckBox(e) {
+  function handleCheckBox() {
     dispatch(checkCalendar(calendar));
-    const { background, border } = checkBoxStyle(e.target.checked);
-    e.target.style.background = background;
-    e.target.style.border = border;
   }
 
   return (
     <div className={styles.calendar_item}>
-      <label>
-        <input
-          type="checkbox"
-          style={checkBoxStyle(checked)}
-          onChange={e => handleCheckBox(e)}
-          defaultChecked={checked}
-        />
+      <CheckBox
+        onChange={handleCheckBox}
+        defaultChecked={checked}
+        color={calendar.color}
+      >
         <Tooltip key={calendar.id} title={calendar.name}>
           <p>{calendar.name}</p>
         </Tooltip>
-      </label>
+      </CheckBox>
       <OptionButtons calendarType={calendar.type} />
     </div>
   );
-
-  function checkBoxStyle(checked) {
-    return {
-      background: checked ? calendar.color : 'white',
-      border: checked ? 'none' : `2px solid ${calendar.color}`,
-    };
-  }
 };
 
 Index.propTypes = {

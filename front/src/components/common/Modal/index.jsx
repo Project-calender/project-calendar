@@ -18,7 +18,11 @@ const Index = ({
   const $modal = useRef();
   useEffect(() => {
     document.addEventListener('click', clickModalOutside);
-    return () => document.removeEventListener('click', clickModalOutside);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('click', clickModalOutside);
+      document.body.style.overflow = 'auto';
+    };
   });
 
   function clickModalOutside(event) {
@@ -32,8 +36,18 @@ const Index = ({
 
   return (
     <>
-      {isBackground && <div className={styles.modal_background} />}
-      <div className={styles.modal_container} ref={$modal} style={style}>
+      {isBackground && (
+        <div
+          className={styles.modal_background}
+          onWheel={e => e.stopPropagation()}
+        />
+      )}
+      <div
+        className={styles.modal_container}
+        ref={$modal}
+        style={style}
+        onWheel={e => e.stopPropagation()}
+      >
         {isCloseButtom && (
           <div className={styles.modal_close_icon}>
             <Tooltip title={'닫기'}>

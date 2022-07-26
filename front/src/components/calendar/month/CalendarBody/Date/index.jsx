@@ -20,6 +20,7 @@ const Index = ({ date }) => {
   useEffect(() => {
     setMaxHight(containerDiv.current.clientHeight);
     window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [containerDiv.current]);
 
   return (
@@ -30,7 +31,7 @@ const Index = ({ date }) => {
         data-date-id={date.time}
         ref={containerDiv}
       >
-        <NewEvent dateTime={date.time} />
+        <NewEvent dateTime={date.time} setMaxHight={setMaxHight} />
         <EventList date={date} maxHeight={maxHeight} />
         <div className={styles.event_list}></div>
       </div>

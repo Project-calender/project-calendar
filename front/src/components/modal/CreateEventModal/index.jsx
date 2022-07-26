@@ -21,7 +21,13 @@ import {
 
 import axios from '../../../utils/token';
 import Input from '../../common/Input';
+import CheckBox from '../../common/CheckBox';
+
 import Moment from '../../../utils/moment';
+import useEventModal from '../../../hooks/useEventModal';
+import ListModal, { triggerDOM } from '../ListModal';
+import { useSelector } from 'react-redux';
+import { selectAllCalendar } from '../../../store/selectors/calendars';
 
 const Index = ({ hideModal, style }) => {
   const { selectedDateRange, setNewEventBars } = useContext(EventBarContext);
@@ -30,192 +36,256 @@ const Index = ({ hideModal, style }) => {
     .sort((a, b) => a - b)
     .map(time => new Moment(time));
 
-  function handleModal() {
+  const {
+    isModalShown: isListModalShown,
+    modalData: listModalData,
+    showModal: showListModal,
+    hideModal: hideListModal,
+  } = useEventModal();
+
+  const calendars = useSelector(selectAllCalendar);
+
+  function handleCreateEventModal() {
     setNewEventBars([]);
     hideModal();
   }
 
+  function handleListModal(e, data) {
+    const { top, left } = e.target.getBoundingClientRect();
+    showListModal({
+      data,
+      position: { top, left },
+    });
+  }
+
   return (
-    <Modal
-      hideModal={handleModal}
-      isCloseButtom={true}
-      isBackground={true}
-      style={{ ...style, boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)' }}
-    >
-      <div className={styles.modal_container}>
-        <div className={styles.modal_header}>
-          <FontAwesomeIcon icon={faGripLines} />
-        </div>
-        <div className={styles.modal_context}>
-          <div>
-            <div />
-            <Input
-              type="text"
-              placeholder="제목 및 시간 추가"
-              className={styles.event_title}
-              inputClassName={styles.event_title_input}
-              onBlur={e => {
-                setNewEventBars(bars =>
-                  bars.map(bar => ({ ...bar, name: e.target.value })),
-                );
-              }}
-            />
+    <>
+      <Modal
+        hideModal={handleCreateEventModal}
+        isCloseButtom={true}
+        isBackground={true}
+        style={{
+          ...style,
+          boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)',
+        }}
+      >
+        {isListModalShown && (
+          <ListModal hideModal={hideListModal} modalData={listModalData} />
+        )}
+        <div className={styles.modal_container}>
+          <div className={styles.modal_header}>
+            <FontAwesomeIcon icon={faGripLines} />
           </div>
-
-          <div>
-            <div />
-            <div className={styles.modal_context_category}>
-              <button className={styles.category_active}>이벤트</button>
-              <button>할 일</button>
+          <div className={styles.modal_context}>
+            <div>
+              <div />
+              <Input
+                type="text"
+                placeholder="제목 및 시간 추가"
+                className={styles.event_title}
+                inputClassName={styles.event_title_input}
+                onBlur={e => {
+                  setNewEventBars(bars =>
+                    bars.map(bar => ({ ...bar, name: e.target.value })),
+                  );
+                }}
+              />
             </div>
-          </div>
 
-          <div>
-            <FontAwesomeIcon icon={faClock} />
-            <div className={styles.time_title}>
-              <h3>
-                {startDate.month}월 {startDate.date}일 ({startDate.weekDay}요일)
-              </h3>
-              <h3>-</h3>
-              <h3>
-                {endDate.month}월 {endDate.date}일 ({endDate.weekDay}요일)
-              </h3>
-              <h5>반복 안함</h5>
+            <div>
+              <div />
+              <div className={styles.modal_context_category}>
+                <button className={styles.category_active}>이벤트</button>
+                <button>할 일</button>
+              </div>
             </div>
-            <button className={styles.time_add_button}>시간 추가</button>
-          </div>
 
-          <div className={styles.time_find}>
-            <div />
-            <button className={styles.time_find_button}>시간 찾기</button>
-          </div>
+            <div>
+              <FontAwesomeIcon icon={faClock} />
+              <div className={styles.time_title}>
+                <h3>
+                  {startDate.month}월 {startDate.date}일 ({startDate.weekDay}
+                  요일)
+                </h3>
+                <h3>-</h3>
+                <h3>
+                  {endDate.month}월 {endDate.date}일 ({endDate.weekDay}요일)
+                </h3>
+                {/* <h5>반복 안함</h5> */}
+              </div>
+              {/* <button className={styles.time_add_button}>시간 추가</button> */}
+            </div>
 
-          <div>
-            <FontAwesomeIcon icon={faUserGroup} />
-            <Input
-              type="text"
-              placeholder="참석자 추가"
-              className={styles.event_data}
-              inputClassName={styles.event_data_input}
-            />
-          </div>
+            <div>
+              <div />
+              <div>
+                <CheckBox>
+                  <h3>종일</h3>
+                </CheckBox>
+              </div>
+            </div>
 
-          <div className={styles.google_meet}>
-            <img
-              className={styles.google_meet_img}
-              src={`${process.env.PUBLIC_URL}/img/google_meet_icon.png`}
-              alt="구글 미팅"
-            />
-            <button>
-              <b>Google Meet</b> 화상 회의 추가
-            </button>
-          </div>
+            <div>
+              <div />
+              <div>
+                <h3 className={styles.list_modal}>
+                  반복 안함
+                  <FontAwesomeIcon
+                    className={styles.caret_down}
+                    icon={faCaretDown}
+                  />
+                </h3>
+              </div>
+            </div>
 
-          <div className={styles.modal_line} />
-          <div>
-            <FontAwesomeIcon icon={faLocationDot} />
-            <Input
-              type="text"
-              placeholder="위치 추가"
-              className={styles.event_data}
-              inputClassName={styles.event_data_input}
-            />
-          </div>
+            <div className={styles.time_find}>
+              <div />
+              <button className={styles.time_find_button}>시간 찾기</button>
+            </div>
 
-          <div className={styles.modal_line} />
-          <div>
-            <FontAwesomeIcon icon={faBarsStaggered} />
-            <Input
-              type="text"
-              placeholder="설명 추가"
-              className={styles.memo}
-              inputClassName={styles.memo_input}
-            />
-          </div>
-          <div>
-            <FontAwesomeIcon icon={faPaperclip} className={styles.clip_icon} />
-            <h4>첨부파일 추가</h4>
-          </div>
+            <div>
+              <FontAwesomeIcon icon={faUserGroup} />
+              <Input
+                type="text"
+                placeholder="참석자 추가"
+                className={styles.event_data}
+                inputClassName={styles.event_data_input}
+              />
+            </div>
 
-          <div className={styles.modal_line} />
-          <div>
-            <FontAwesomeIcon icon={faCalendarDay} />
-            <div className={styles.calendar_info}>
-              <h3 className={styles.list_modal}>
-                내 캘린더
-                <FontAwesomeIcon
-                  className={styles.caret_down}
-                  icon={faCaretDown}
-                />
-              </h3>
-              <div className={`${styles.list_modal} ${styles.calendar_info}`}>
-                <div className={styles.calendar_info_colors} />
-                <FontAwesomeIcon
-                  className={styles.caret_down}
-                  icon={faCaretDown}
-                />
+            <div className={styles.google_meet}>
+              <img
+                className={styles.google_meet_img}
+                src={`${process.env.PUBLIC_URL}/img/google_meet_icon.png`}
+                alt="구글 미팅"
+              />
+              <button>
+                <b>Google Meet</b> 화상 회의 추가
+              </button>
+            </div>
+
+            <div className={styles.modal_line} />
+            <div>
+              <FontAwesomeIcon icon={faLocationDot} />
+              <Input
+                type="text"
+                placeholder="위치 추가"
+                className={styles.event_data}
+                inputClassName={styles.event_data_input}
+              />
+            </div>
+
+            <div className={styles.modal_line} />
+            <div>
+              <FontAwesomeIcon icon={faBarsStaggered} />
+              <Input
+                type="text"
+                placeholder="설명 추가"
+                className={styles.memo}
+                inputClassName={styles.memo_input}
+              />
+            </div>
+            <div>
+              <FontAwesomeIcon
+                icon={faPaperclip}
+                className={styles.clip_icon}
+              />
+              <h4>첨부파일 추가</h4>
+            </div>
+
+            <div className={styles.modal_line} />
+            <div>
+              <FontAwesomeIcon icon={faCalendarDay} />
+              <div
+                className={styles.calendar_info}
+                onClick={e =>
+                  handleListModal(
+                    e,
+                    calendars.map(calendar => calendar.name),
+                  )
+                }
+              >
+                <h3 className={styles.list_modal} data-modal={triggerDOM}>
+                  내 캘린더
+                  <FontAwesomeIcon
+                    className={styles.caret_down}
+                    icon={faCaretDown}
+                  />
+                </h3>
+                <div className={`${styles.list_modal} ${styles.calendar_info}`}>
+                  <div className={styles.calendar_info_colors} />
+                  <FontAwesomeIcon
+                    className={styles.caret_down}
+                    icon={faCaretDown}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <FontAwesomeIcon icon={faBriefcase} />
+              <div onClick={e => handleListModal(e, ['바쁨', '한가함'])}>
+                <h3 className={styles.list_modal} data-modal={triggerDOM}>
+                  한가함
+                  <FontAwesomeIcon
+                    className={styles.caret_down}
+                    icon={faCaretDown}
+                  />
+                </h3>
+              </div>
+            </div>
+
+            <div>
+              <FontAwesomeIcon icon={faLock} />
+              <div
+                className={styles.calendar_info}
+                onClick={e =>
+                  handleListModal(e, ['기본 공개 설정', '전체 공개', '비공개'])
+                }
+              >
+                <h3 className={styles.list_modal} data-modal={triggerDOM}>
+                  기본 공개 설정
+                  <FontAwesomeIcon
+                    className={styles.caret_down}
+                    icon={faCaretDown}
+                  />
+                </h3>
+                <FontAwesomeIcon icon={faCircleQuestion} />
+              </div>
+            </div>
+            <div>
+              <FontAwesomeIcon icon={faBell} />
+              <div>
+                <h4 className={styles.list_modal}>알림 추가</h4>
               </div>
             </div>
           </div>
-
-          <div>
-            <FontAwesomeIcon icon={faBriefcase} />
-            <div>
-              <h3 className={styles.list_modal}>
-                한가함
-                <FontAwesomeIcon
-                  className={styles.caret_down}
-                  icon={faCaretDown}
-                />
-              </h3>
-            </div>
-          </div>
-
-          <div>
-            <FontAwesomeIcon icon={faLock} />
-            <div className={styles.calendar_info}>
-              <h3 className={styles.list_modal}>
-                기본 공개 설정
-                <FontAwesomeIcon
-                  className={styles.caret_down}
-                  icon={faCaretDown}
-                />
-              </h3>
-              <FontAwesomeIcon icon={faCircleQuestion} />
-            </div>
-          </div>
-          <div>
-            <FontAwesomeIcon icon={faBell} />
-            <div>
-              <h4 className={styles.list_modal}>알림 추가</h4>
-            </div>
+          <div className={styles.modal_line} />
+          <div className={styles.modal_footer}>
+            <button>옵션 더보기</button>
+            <button
+              onClick={() => {
+                axios
+                  .post('event/createGroupEvent', {
+                    groupCalendarId: 1,
+                    eventName: '이벤트2',
+                    color: '#ff602b',
+                    priority: 1,
+                    memo: '메모입니다.',
+                    startTime: '2022-08-01T00:00:00',
+                    endTime: '2022-08-02T00:00:00',
+                    allDay: true,
+                  })
+                  .then(res => console.log(res))
+                  .catch(e => console.log(e));
+              }}
+            >
+              저장
+            </button>
           </div>
         </div>
-        <div className={styles.modal_line} />
-        <div className={styles.modal_footer}>
-          <button>옵션 더보기</button>
-          <button
-            onClick={() => {
-              axios
-                .post('event/createGroupEvent', {
-                  groupCalendarId: 1,
-                  eventName: '이벤트2',
-                  color: '#ff602b',
-                  priority: 1,
-                  memo: '메모입니다.',
-                  startTime: '2022-08-01T00:00:00',
-                  endTime: '2022-08-02T00:00:00',
-                  allDay: true,
-                })
-                .then(res => console.log(res))
-                .catch(e => console.log(e));
-            }}
-          >
-            저장
-          </button>
-        </div>
-      </div>
-    </Modal>
+      </Modal>
+    </>
   );
 };
 
