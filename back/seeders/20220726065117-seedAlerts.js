@@ -36,7 +36,7 @@ module.exports = {
       dummyAlerts.push(alert);
     }
 
-    await queryInterface.bulkInsert("alerts", dummyAlerts);
+    await queryInterface.bulkInsert("Alerts", dummyAlerts);
   },
 
   async down(queryInterface, Sequelize) {},

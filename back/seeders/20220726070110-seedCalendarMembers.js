@@ -17,7 +17,7 @@ module.exports = {
       }
     }
 
-    await queryInterface.bulkInsert("calendarMembers", calendarMembers);
+    await queryInterface.bulkInsert("CalendarMembers", calendarMembers);
   },
 
   async down(queryInterface, Sequelize) {

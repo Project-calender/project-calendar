@@ -15,7 +15,7 @@ module.exports = {
       });
     }
 
-    await queryInterface.bulkInsert("users", dummyUser);
+    await queryInterface.bulkInsert("Users", dummyUser);
 
     var privateCalendars = [];
     var privateCalendar = {
@@ -27,7 +27,7 @@ module.exports = {
       UserId: 1,
     };
     privateCalendars.push(privateCalendar);
-    await queryInterface.bulkInsert("privateCalendars", privateCalendars);
+    await queryInterface.bulkInsert("PrivateCalendars", privateCalendars);
   },
 
   async down(queryInterface, Sequelize) {

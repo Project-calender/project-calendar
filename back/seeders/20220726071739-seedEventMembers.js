@@ -18,7 +18,7 @@ module.exports = {
       }
     }
 
-    await queryInterface.bulkInsert("eventMembers", dummyEventMembers);
+    await queryInterface.bulkInsert("EventMembers", dummyEventMembers);
   },
 
   async down(queryInterface, Sequelize) {
