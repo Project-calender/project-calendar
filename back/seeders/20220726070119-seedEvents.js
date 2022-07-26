@@ -49,8 +49,8 @@ module.exports = {
       dummyPrivateEvents.push(privateEvent);
     }
 
-    await queryInterface.bulkInsert("events", dummyEvents);
-    await queryInterface.bulkInsert("privateEvents", dummyPrivateEvents);
+    await queryInterface.bulkInsert("Events", dummyEvents);
+    await queryInterface.bulkInsert("PrivateEvents", dummyPrivateEvents);
   },
 
   async down(queryInterface, Sequelize) {

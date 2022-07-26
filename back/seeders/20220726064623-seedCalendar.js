@@ -26,9 +26,9 @@ module.exports = {
       dummyCalendarOwner.push(Owner);
     }
 
-    await queryInterface.bulkInsert("calendars", dummyCalendars);
+    await queryInterface.bulkInsert("Calendars", dummyCalendars);
 
-    await queryInterface.bulkInsert("calendarMembers", dummyCalendarOwner);
+    await queryInterface.bulkInsert("CalendarMembers", dummyCalendarOwner);
   },
 
   async down(queryInterface, Sequelize) {

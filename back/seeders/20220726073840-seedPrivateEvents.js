@@ -30,7 +30,7 @@ module.exports = {
       dummyPrivateEvents.push(privateEvent);
     }
 
-    await queryInterface.bulkInsert("privateEvents", dummyPrivateEvents);
+    await queryInterface.bulkInsert("PrivateEvents", dummyPrivateEvents);
   },
 
   async down(queryInterface, Sequelize) {
