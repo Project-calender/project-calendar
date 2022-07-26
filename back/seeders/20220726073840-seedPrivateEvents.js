@@ -4,16 +4,16 @@ const { faker } = require("@faker-js/faker");
 module.exports = {
   async up(queryInterface, Sequelize) {
     var dummyPrivateEvents = [];
-    var startTime = faker.date.between(
-      "2022-07-01T00:00:00.000Z",
-      "2022-08-30T00:00:00.000Z"
-    );
-    var endDate = new Date(startTime);
-    endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 5));
 
     var allDays = [true, false, false, false, false, false];
 
     for (var i = 20; i < 50; i++) {
+      var startTime = faker.date.between(
+        "2022-07-01T00:00:00.000Z",
+        "2022-08-30T00:00:00.000Z"
+      );
+      var endDate = new Date(startTime);
+      endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 5));
       var privateEvent = {
         id: i + 1,
         name: faker.word.adjective(),
