@@ -21,9 +21,14 @@ import {
 
 import axios from '../../../utils/token';
 import Input from '../../common/Input';
+import Moment from '../../../utils/moment';
 
 const Index = ({ hideModal, style }) => {
-  const { setNewEventBars } = useContext(EventBarContext);
+  const { selectedDateRange, setNewEventBars } = useContext(EventBarContext);
+  const { standardDateTime, endDateTime } = selectedDateRange;
+  const [startDate, endDate] = [standardDateTime, endDateTime]
+    .sort((a, b) => a - b)
+    .map(time => new Moment(time));
 
   function handleModal() {
     setNewEventBars([]);
@@ -49,6 +54,12 @@ const Index = ({ hideModal, style }) => {
               placeholder="제목 및 시간 추가"
               className={styles.event_title}
               inputClassName={styles.event_title_input}
+              onBlur={e => {
+                setNewEventBars(bars =>
+                  bars.map(bar => ({ ...bar, name: e.target.value })),
+                );
+                console.log(e.target.value);
+              }}
             />
           </div>
 
@@ -63,7 +74,13 @@ const Index = ({ hideModal, style }) => {
           <div>
             <FontAwesomeIcon icon={faClock} />
             <div className={styles.time_title}>
-              <h3>5월 31일 (화요일)</h3> <h3>-</h3> <h3>5월 31일 (화요일)</h3>
+              <h3>
+                {startDate.month}월 {startDate.date}일 ({startDate.weekDay}요일)
+              </h3>
+              <h3>-</h3>
+              <h3>
+                {endDate.month}월 {endDate.date}일 ({endDate.weekDay}요일)
+              </h3>
               <h5>반복 안함</h5>
             </div>
             <button className={styles.time_add_button}>시간 추가</button>

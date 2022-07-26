@@ -40,7 +40,9 @@ const Index = ({
           data-modal={triggerDOM}
           onClick={e => handleEventDetailMadal(e, event)}
         >
-          <em data-modal={triggerDOM}>{event?.name || '(제목 없음)'} </em>
+          <em data-modal={triggerDOM}>
+            {event?.name || eventBar.name || '(제목 없음)'}{' '}
+          </em>
         </div>
       )}
 

@@ -12,7 +12,7 @@ import CreateEventMaodalLayout from '../../components/modal/layout/CreateModalLa
 import { EventBarContext } from '../../context/EventBarContext';
 
 import useDragDate from '../../hooks/useDragDate';
-import useMonthEventBar from '../../hooks/useMonthEventBar';
+import useCreateEventBar from '../../hooks/useCreateEventBar';
 import useAddMonthByWheel from '../../hooks/useAddMonthByWheel';
 
 import { fetchCalendarsAndEvents } from '../../store/thunk';
@@ -25,9 +25,15 @@ const Index = () => {
     handleDrag,
     isMouseDown,
     selectedDateRange,
+    changeDateRange,
   } = useDragDate();
-  const eventBarData = useMonthEventBar(selectedDateRange);
-  const eventBarContextData = { isMouseDown, ...eventBarData };
+  const newEventData = useCreateEventBar(selectedDateRange);
+  const newEventContextData = {
+    isMouseDown,
+    ...newEventData,
+    selectedDateRange,
+    changeDateRange,
+  };
 
   const dispatch = useDispatch();
   const month = useSelector(monthSelector);
@@ -43,7 +49,7 @@ const Index = () => {
   const { changeMonth } = useAddMonthByWheel();
   return (
     <div className={styles.calendar} onWheel={changeMonth}>
-      <EventBarContext.Provider value={eventBarContextData}>
+      <EventBarContext.Provider value={newEventContextData}>
         <CreateEventMaodalLayout>
           <EventDetailMaodalLayout>
             <EventListModalLayout>

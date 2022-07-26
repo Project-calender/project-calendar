@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { createEventBar } from '../hooks/useMonthEventBar';
+import { createEventBar } from '../hooks/useCreateEventBar';
 import Moment from '../utils/moment';
 import { fetchCalendarsAndEvents } from './thunk';
 
