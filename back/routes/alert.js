@@ -16,6 +16,7 @@ router.get("/getAlerts", authJWT, async (req, res, next) => {
         "checked",
         "eventCalendarId",
         "eventDate",
+        "createdAt",
       ],
     });
 
