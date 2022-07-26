@@ -18,8 +18,8 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
-import Modal from '../../common/Modal';
-import Tooltip from '../../common/Tooltip';
+import Modal from '../../../components/common/Modal';
+import Tooltip from '../../../components/common/Tooltip';
 import Moment from '../../../utils/moment';
 
 import { useSelector } from 'react-redux';

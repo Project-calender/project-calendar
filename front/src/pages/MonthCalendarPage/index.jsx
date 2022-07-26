@@ -5,9 +5,9 @@ import styles from './style.module.css';
 
 import WeekDayHeader from '../../components/calendar/month/WeekDayHeader';
 import CalendarBody from '../../components/calendar/month/CalendarBody';
-import EventListModalLayout from '../../components/modal/layout/EventListModalLayout';
-import EventDetailMaodalLayout from '../../components/modal/layout/EventDetailMaodalLayout';
-import CreateEventMaodalLayout from '../../components/modal/layout/CreateModalLayout';
+import EventListModalLayout from '../../modal/layout/EventListModalLayout';
+import EventDetailMaodalLayout from '../../modal/layout/EventDetailMaodalLayout';
+import CreateEventMaodalLayout from '../../modal/layout/CreateModalLayout';
 
 import { EventBarContext } from '../../context/EventBarContext';
 

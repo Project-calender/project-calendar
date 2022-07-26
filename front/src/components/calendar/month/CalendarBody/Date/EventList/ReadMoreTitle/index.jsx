@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import { triggerDOM } from '../../../../../../modal/EventListModal';
+import { triggerDOM } from '../../../../../../../modal/component/EventListModal';
 
 const Index = ({ events, clickReadMore }) => {
   if (!events.length) return;

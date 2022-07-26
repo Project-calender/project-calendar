@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { triggerDOM } from '../../../modal/component/EventDetailModal';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { eventSelector } from '../../../store/selectors/events';
-import { triggerDOM } from '../../modal/EventDetailModal';
 import styles from './style.module.css';
 
 const Index = ({

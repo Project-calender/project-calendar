@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import Modal from '../../common/Modal';
+import Modal from '../../../components/common/Modal';
 import { EventBarContext } from '../../../context/EventBarContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -20,8 +20,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import axios from '../../../utils/token';
-import Input from '../../common/Input';
-import CheckBox from '../../common/CheckBox';
+import Input from '../../../components/common/Input';
+import CheckBox from '../../../components/common/CheckBox';
 
 import Moment from '../../../utils/moment';
 import useEventModal from '../../../hooks/useEventModal';

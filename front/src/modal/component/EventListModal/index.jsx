@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import Modal from '../../common/Modal';
+import Modal from '../../../components/common/Modal';
 import EventContainer from './EventContainer';
 
 export const triggerDOM = 'month-event-list';

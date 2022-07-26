@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { EventDetailModalContext } from '../../../../context/EventModalContext';
-import EventDetailModal from '../../EventDetailModal';
-import useEventModal from '../../../../hooks/useEventModal';
+import EventDetailModal from '../../component/EventDetailModal';
+import { EventDetailModalContext } from '../../../context/EventModalContext';
+import useEventModal from '../../../hooks/useEventModal';
 
 const Index = ({ children }) => {
   const { isModalShown, modalData, showModal, hideModal } = useEventModal();

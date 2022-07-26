@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './style.module.css';
-import Modal from '../../common/Modal';
 import PropTypes from 'prop-types';
+import Modal from '../../../components/common/Modal';
 
 export const triggerDOM = 'list-items';
 const Index = ({ hideModal, modalData }) => {
