@@ -15,7 +15,7 @@ import useDragDate from '../../hooks/useDragDate';
 import useCreateEventBar from '../../hooks/useCreateEventBar';
 import useAddMonthByWheel from '../../hooks/useAddMonthByWheel';
 
-import { fetchCalendarsAndEvents } from '../../store/thunk';
+import { getAllCalendarAndEvent } from '../../store/thunk';
 import { useEffect } from 'react';
 
 const Index = () => {
@@ -27,6 +27,7 @@ const Index = () => {
     selectedDateRange,
     changeDateRange,
   } = useDragDate();
+
   const newEventData = useCreateEventBar(selectedDateRange);
   const newEventContextData = {
     isMouseDown,
@@ -39,10 +40,10 @@ const Index = () => {
   const month = useSelector(monthSelector);
   useEffect(() => {
     dispatch(
-      fetchCalendarsAndEvents(
-        month[0][0].time,
-        month[month.length - 1][6].time,
-      ),
+      getAllCalendarAndEvent({
+        startTime: month[0][0].time,
+        endTime: month[month.length - 1][6].time,
+      }),
     );
   }, [dispatch, month]);
 

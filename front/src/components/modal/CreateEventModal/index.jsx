@@ -58,7 +58,6 @@ const Index = ({ hideModal, style }) => {
                 setNewEventBars(bars =>
                   bars.map(bar => ({ ...bar, name: e.target.value })),
                 );
-                console.log(e.target.value);
               }}
             />
           </div>
