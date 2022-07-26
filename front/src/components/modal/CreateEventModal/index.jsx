@@ -19,6 +19,8 @@ import {
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 
+import axios from '../../../utils/token';
+
 const Index = ({ hideModal, style }) => {
   const { setNewEventBars } = useContext(EventBarContext);
 
@@ -159,7 +161,25 @@ const Index = ({ hideModal, style }) => {
         <div className={styles.modal_line} />
         <div className={styles.modal_footer}>
           <button>옵션 더보기</button>
-          <button>저장</button>
+          <button
+            onClick={() => {
+              axios
+                .post('event/createGroupEvent', {
+                  groupCalendarId: 1,
+                  eventName: '이벤트2',
+                  color: '#ff602b',
+                  priority: 1,
+                  memo: '메모입니다.',
+                  startTime: '2022-08-01T00:00:00',
+                  endTime: '2022-08-02T00:00:00',
+                  allDay: true,
+                })
+                .then(res => console.log(res))
+                .catch(e => console.log(e));
+            }}
+          >
+            저장
+          </button>
         </div>
       </div>
     </Modal>
