@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 module.exports = {
   async up(queryInterface, Sequelize) {
     var dummyUser = [];
+    var dummyProfiles = [];
     for (var i = 0; i < 20; i++) {
       dummyUser.push({
         email: faker.internet.email(),
@@ -13,9 +14,18 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
+
+      dummyProfiles.push({
+        id: i + 1,
+        src: "https://baeminback.s3.ap-northeast-2.amazonaws.com/basicProfile.png",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        UserId: i + 1,
+      });
     }
 
     await queryInterface.bulkInsert("Users", dummyUser);
+    await queryInterface.bulkInsert("ProfileImages", dummyProfiles);
 
     var privateCalendars = [];
     var privateCalendar = {
