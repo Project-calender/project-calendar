@@ -26,6 +26,7 @@ const Index = ({
   });
 
   function clickModalOutside(event) {
+    console.log($modal.current.contains(event.target));
     if (
       !$modal.current.contains(event.target) &&
       event.target.dataset?.modal !== triggerDOM

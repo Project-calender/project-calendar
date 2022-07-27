@@ -25,7 +25,11 @@ import CheckBox from '../../../components/common/CheckBox';
 
 import Moment from '../../../utils/moment';
 import useEventModal from '../../../hooks/useEventModal';
-import ListModal, { triggerDOM } from '../ListModal';
+import ListModal, { triggerDOM as listModalTriggerDOM } from '../ListModal';
+import EventColorListModal, {
+  triggerDOM as ColorListModalTriggerDOM,
+} from '../EventColorListModal';
+
 import { useSelector } from 'react-redux';
 import { selectAllCalendar } from '../../../store/selectors/calendars';
 
@@ -43,6 +47,13 @@ const Index = ({ hideModal, style }) => {
     hideModal: hideListModal,
   } = useEventModal();
 
+  const {
+    isModalShown: isColorListModalShown,
+    modalData: colorListModalData,
+    showModal: showColorListModal,
+    hideModal: hideColorListModal,
+  } = useEventModal();
+
   const calendars = useSelector(selectAllCalendar);
 
   function handleCreateEventModal() {
@@ -50,9 +61,10 @@ const Index = ({ hideModal, style }) => {
     hideModal();
   }
 
-  function handleListModal(e, data) {
-    const { top, left } = e.target.getBoundingClientRect();
-    showListModal({
+  function handleSubModal(event, showSubModal, data) {
+    console.log(event);
+    const { top, left } = (event?.target || event).getBoundingClientRect();
+    showSubModal({
       data,
       position: { top, left },
     });
@@ -71,6 +83,12 @@ const Index = ({ hideModal, style }) => {
       >
         {isListModalShown && (
           <ListModal hideModal={hideListModal} modalData={listModalData} />
+        )}
+        {isColorListModalShown && (
+          <EventColorListModal
+            hideModal={hideColorListModal}
+            modalData={colorListModalData}
+          />
         )}
         <div className={styles.modal_container}>
           <div className={styles.modal_header}>
@@ -196,27 +214,43 @@ const Index = ({ hideModal, style }) => {
             <div className={styles.modal_line} />
             <div>
               <FontAwesomeIcon icon={faCalendarDay} />
-              <div
-                className={styles.calendar_info}
-                onClick={e =>
-                  handleListModal(
-                    e,
-                    calendars.map(calendar => calendar.name),
-                  )
-                }
-              >
-                <h3 className={styles.list_modal} data-modal={triggerDOM}>
+              <div className={styles.calendar_info}>
+                <h3
+                  className={styles.list_modal}
+                  onClick={e =>
+                    handleSubModal(
+                      e,
+                      showListModal,
+                      calendars.map(calendar => calendar.name),
+                    )
+                  }
+                  data-modal={listModalTriggerDOM}
+                >
                   내 캘린더
                   <FontAwesomeIcon
                     className={styles.caret_down}
                     icon={faCaretDown}
+                    data-modal={listModalTriggerDOM}
                   />
                 </h3>
-                <div className={`${styles.list_modal} ${styles.calendar_info}`}>
-                  <div className={styles.calendar_info_colors} />
+                <div
+                  className={`${styles.list_modal} ${styles.calendar_info}`}
+                  id="event_color"
+                  onClick={() =>
+                    handleSubModal(
+                      document.getElementById('event_color'),
+                      showColorListModal,
+                    )
+                  }
+                >
+                  <div
+                    className={styles.calendar_info_colors}
+                    data-modal={ColorListModalTriggerDOM}
+                  />
                   <FontAwesomeIcon
                     className={styles.caret_down}
                     icon={faCaretDown}
+                    data-modal={ColorListModalTriggerDOM}
                   />
                 </div>
               </div>
@@ -224,8 +258,16 @@ const Index = ({ hideModal, style }) => {
 
             <div>
               <FontAwesomeIcon icon={faBriefcase} />
-              <div onClick={e => handleListModal(e, ['바쁨', '한가함'])}>
-                <h3 className={styles.list_modal} data-modal={triggerDOM}>
+
+              <div
+                onClick={e =>
+                  handleSubModal(e, showListModal, ['바쁨', '한가함'])
+                }
+              >
+                <h3
+                  className={styles.list_modal}
+                  data-modal={listModalTriggerDOM}
+                >
                   한가함
                   <FontAwesomeIcon
                     className={styles.caret_down}
@@ -240,10 +282,17 @@ const Index = ({ hideModal, style }) => {
               <div
                 className={styles.calendar_info}
                 onClick={e =>
-                  handleListModal(e, ['기본 공개 설정', '전체 공개', '비공개'])
+                  handleSubModal(e, showListModal, [
+                    '기본 공개 설정',
+                    '전체 공개',
+                    '비공개',
+                  ])
                 }
               >
-                <h3 className={styles.list_modal} data-modal={triggerDOM}>
+                <h3
+                  className={styles.list_modal}
+                  data-modal={listModalTriggerDOM}
+                >
                   기본 공개 설정
                   <FontAwesomeIcon
                     className={styles.caret_down}

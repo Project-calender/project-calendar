@@ -49,7 +49,10 @@
 .calendar_info { display: flex; align-items: center; } 
 .calendar_info h3 { margin-right: 20px; } 
 .calendar_info_colors { background: #f66767; width: 18px; height: 18px; border-radius: 100%; } 
-
+.calendar_info svg path {
+    position: relative;
+    z-index: -1;
+}
 .list_modal {display: flex; align-items: center; position: relative; left: -10px; padding: 5px 5px 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 0px !important; }
 .list_modal svg { margin-right: 0px; }
 .list_modal:hover {background: #f7f7f7;}

@@ -37,5 +37,4 @@ export const EVENT_COLOR = {
   라벤더: CALENDAR_COLOR['라벤더'],
   포도: CALENDAR_COLOR['포도'],
   흑연: CALENDAR_COLOR['흑연'],
-  캘린더색상: null,
 };
