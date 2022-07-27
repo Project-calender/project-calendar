@@ -1,0 +1,99 @@
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.events {
+  margin: 20px 15vw;
+}
+
+.event {
+  height: 50px;
+  margin-bottom: 10px;
+  padding: 10px 20px;
+  border-width: 1px;
+  border: solid;
+  border-color: rgb(80, 204, 212);
+  border-radius: 10px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content {
+  margin-top: 5px;
+}
+
+.inviteBtns {
+  display: flex;
+}
+
+.acceptInvite {
+  padding: 3px 7px;
+  border-radius: 8px;
+  border: solid;
+  border-width: 2.5px;
+  border-color: rgb(80, 204, 212);
+  cursor: pointer;
+
+  margin-right: 10px;
+}
+.acceptInvite:hover {
+  transform: scale(1.05);
+}
+
+.rejectInvite {
+  padding: 3px 7px;
+  border-radius: 8px;
+  border: solid;
+  border-width: 2.5px;
+  border-color: rgb(80, 204, 212);
+  cursor: pointer;
+}
+
+.rejectInvite:hover {
+  transform: scale(1.05);
+}
+
+.toEvent {
+  cursor: pointer;
+}
+
+.toEvent:hover {
+  font-weight: 500;
+  transform: scale(1.05);
+}
+
+.pageBtn {
+  display: flex;
+  justify-content: space-between;
+}
+
+.prevPage {
+  cursor: pointer;
+  font-size: medium;
+  margin: 10px 0 0 10px;
+}
+
+.prevPage:hover {
+  font-weight: 500;
+  transform: scale(1.1);
+}
+
+.nextPage {
+  cursor: pointer;
+  font-size: medium;
+  margin: 10px 10px 0 0;
+}
+
+.nextPage:hover {
+  font-weight: 500;
+  transform: scale(1.1);
+}
+
+.toEvent:focus {
+}
+
+.acceptInvite {
+}
