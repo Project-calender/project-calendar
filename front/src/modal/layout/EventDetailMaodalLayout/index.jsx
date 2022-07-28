@@ -7,7 +7,7 @@ import useEventModal from '../../../hooks/useEventModal';
 const Index = ({ children }) => {
   const { isModalShown, modalData, showModal, hideModal } = useEventModal();
 
-  const modalContextData = { isModalShown, showModal };
+  const modalContextData = { isModalShown, showModal, hideModal };
   return (
     <>
       {isModalShown && (

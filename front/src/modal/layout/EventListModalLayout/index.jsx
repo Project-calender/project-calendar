@@ -8,7 +8,7 @@ const Index = ({ children }) => {
   const { isModalShown, modalData, setModalData, showModal, hideModal } =
     useEventModal();
 
-  const modalContextData = { setModalData, showModal };
+  const modalContextData = { setModalData, showModal, hideModal };
   return (
     <>
       {isModalShown && (

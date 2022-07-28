@@ -26,8 +26,6 @@ import { useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { useEffect } from 'react';
 
-export const triggerDOM = 'month-event-detail';
-
 const Index = ({ modalData, hideModal }) => {
   const $modal = useRef();
   const { style, event } = modalData;
@@ -53,7 +51,6 @@ const Index = ({ modalData, hideModal }) => {
   return (
     <Modal
       hideModal={hideModal}
-      triggerDOM={triggerDOM}
       style={{
         ...style,
         ...position,

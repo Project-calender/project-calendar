@@ -25,10 +25,8 @@ import CheckBox from '../../../components/common/CheckBox';
 
 import Moment from '../../../utils/moment';
 import useEventModal from '../../../hooks/useEventModal';
-import ListModal, { triggerDOM as listModalTriggerDOM } from '../ListModal';
-import EventColorListModal, {
-  triggerDOM as ColorListModalTriggerDOM,
-} from '../EventColorListModal';
+import ListModal from '../ListModal';
+import EventColorListModal from '../EventColorListModal';
 
 import { useSelector } from 'react-redux';
 import { selectAllCalendar } from '../../../store/selectors/calendars';
@@ -61,13 +59,19 @@ const Index = ({ hideModal, style }) => {
     hideModal();
   }
 
-  function handleSubModal(event, showSubModal, data) {
-    console.log(event);
-    const { top, left } = (event?.target || event).getBoundingClientRect();
-    showSubModal({
-      data,
-      position: { top, left },
-    });
+  function handleSubModal(e, showSubModal, data) {
+    const { top, left } = e.currentTarget.getBoundingClientRect();
+    hideListModal();
+    hideColorListModal();
+    setTimeout(
+      () =>
+        showSubModal({
+          data,
+          position: { top, left },
+        }),
+      10,
+    );
+    e.stopPropagation();
   }
 
   return (
@@ -146,7 +150,20 @@ const Index = ({ hideModal, style }) => {
             <div>
               <div />
               <div>
-                <h3 className={styles.list_modal}>
+                <h3
+                  className={styles.list_modal}
+                  onClick={e =>
+                    handleSubModal(e, showListModal, [
+                      '반복 안함',
+                      '매일',
+                      `매주 ${startDate.weekDay}요일`,
+                      `매월 마지막 ${startDate.weekDay}요일`,
+                      `매년 ${startDate.month}월 ${startDate.date}일`,
+                      '주중 매일(월-금)',
+                      '맞춤...',
+                    ])
+                  }
+                >
                   반복 안함
                   <FontAwesomeIcon
                     className={styles.caret_down}
@@ -224,33 +241,22 @@ const Index = ({ hideModal, style }) => {
                       calendars.map(calendar => calendar.name),
                     )
                   }
-                  data-modal={listModalTriggerDOM}
                 >
                   내 캘린더
                   <FontAwesomeIcon
                     className={styles.caret_down}
                     icon={faCaretDown}
-                    data-modal={listModalTriggerDOM}
                   />
                 </h3>
                 <div
                   className={`${styles.list_modal} ${styles.calendar_info}`}
                   id="event_color"
-                  onClick={() =>
-                    handleSubModal(
-                      document.getElementById('event_color'),
-                      showColorListModal,
-                    )
-                  }
+                  onClick={e => handleSubModal(e, showColorListModal)}
                 >
-                  <div
-                    className={styles.calendar_info_colors}
-                    data-modal={ColorListModalTriggerDOM}
-                  />
+                  <div className={styles.calendar_info_colors} />
                   <FontAwesomeIcon
                     className={styles.caret_down}
                     icon={faCaretDown}
-                    data-modal={ColorListModalTriggerDOM}
                   />
                 </div>
               </div>
@@ -264,10 +270,7 @@ const Index = ({ hideModal, style }) => {
                   handleSubModal(e, showListModal, ['바쁨', '한가함'])
                 }
               >
-                <h3
-                  className={styles.list_modal}
-                  data-modal={listModalTriggerDOM}
-                >
+                <h3 className={styles.list_modal}>
                   한가함
                   <FontAwesomeIcon
                     className={styles.caret_down}
@@ -279,19 +282,16 @@ const Index = ({ hideModal, style }) => {
 
             <div>
               <FontAwesomeIcon icon={faLock} />
-              <div
-                className={styles.calendar_info}
-                onClick={e =>
-                  handleSubModal(e, showListModal, [
-                    '기본 공개 설정',
-                    '전체 공개',
-                    '비공개',
-                  ])
-                }
-              >
+              <div className={styles.calendar_info}>
                 <h3
                   className={styles.list_modal}
-                  data-modal={listModalTriggerDOM}
+                  onClick={e =>
+                    handleSubModal(e, showListModal, [
+                      '기본 공개 설정',
+                      '전체 공개',
+                      '비공개',
+                    ])
+                  }
                 >
                   기본 공개 설정
                   <FontAwesomeIcon

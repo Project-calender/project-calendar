@@ -16,11 +16,12 @@ const Index = ({ event, date }) => {
   );
 
   function handleEventDetailMadal(e, event) {
-    const { top, left } = e.target.getBoundingClientRect();
+    const { top, left } = e.currentTarget.getBoundingClientRect();
     showEventDetailModal({
       style: { position: { top: top - 100, left: left - 450 } },
       event,
     });
+    e.stopPropagation();
   }
 
   return (

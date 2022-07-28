@@ -10,7 +10,6 @@ import { useRef } from 'react';
 const Index = ({
   children,
   hideModal,
-  triggerDOM = null,
   style = {},
   isCloseButtom = false,
   isBackground = false,
@@ -26,11 +25,7 @@ const Index = ({
   });
 
   function clickModalOutside(event) {
-    console.log($modal.current.contains(event.target));
-    if (
-      !$modal.current.contains(event.target) &&
-      event.target.dataset?.modal !== triggerDOM
-    ) {
+    if (!$modal.current.contains(event.target)) {
       hideModal();
     }
   }
@@ -65,7 +60,6 @@ const Index = ({
 Index.propTypes = {
   children: PropTypes.node,
   hideModal: PropTypes.func,
-  triggerDOM: PropTypes.string,
   style: PropTypes.object,
   isCloseButtom: PropTypes.bool,
   isBackground: PropTypes.bool,

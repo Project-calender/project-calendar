@@ -3,13 +3,11 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import Modal from '../../../components/common/Modal';
 
-export const triggerDOM = 'list-items';
 const Index = ({ hideModal, modalData }) => {
   const { data, position } = modalData;
   return (
     <Modal
       hideModal={hideModal}
-      triggerDOM={triggerDOM}
       style={{
         ...position,
         zIndex: 600,

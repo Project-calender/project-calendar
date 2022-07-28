@@ -8,7 +8,6 @@ import Moment from '../../../../../../utils/moment';
 import styles from './style.module.css';
 import { getAllCalendarAndEvent } from '../../../../../../store/thunk';
 import { eventsByDateSelector } from '../../../../../../store/selectors/events';
-import { triggerDOM } from '../../../../../../modal/component/EventListModal';
 import { EventListModalContext } from '../../../../../../context/EventModalContext';
 
 const Index = ({ month, date }) => {
@@ -55,9 +54,8 @@ const Index = ({ month, date }) => {
       className={`${initDateClassName(date, month, selectedDate)}`}
       onClick={e => handleDate(e, date)}
       onDoubleClick={() => moveDayCalendar(date)}
-      data-modal={triggerDOM}
     >
-      <em data-modal={triggerDOM}>{date.date}</em>
+      <em>{date.date}</em>
     </td>
   );
 };

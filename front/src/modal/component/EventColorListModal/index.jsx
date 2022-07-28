@@ -5,14 +5,12 @@ import Modal from '../../../components/common/Modal';
 import Tooltip from '../../../components/common/Tooltip';
 import { EVENT_COLOR } from '../../../styles/color';
 
-export const triggerDOM = 'color-list-items';
 const Index = ({ hideModal, modalData }) => {
   const { position } = modalData;
 
   return (
     <Modal
       hideModal={hideModal}
-      triggerDOM={triggerDOM}
       style={{
         ...position,
         zIndex: 600,

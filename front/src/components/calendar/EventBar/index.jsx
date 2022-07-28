@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { triggerDOM } from '../../../modal/component/EventDetailModal';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { eventSelector } from '../../../store/selectors/events';
 import styles from './style.module.css';
@@ -30,19 +29,16 @@ const Index = ({
   };
 
   return (
-    <div className={styles.event_container} style={eventBarStyle.container}>
+    <div
+      className={styles.event_container}
+      style={eventBarStyle.container}
+      onClick={e => handleEventDetailMadal(e, event)}
+    >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
       {eventBar.scale && (
-        <div
-          className={styles.event_bar}
-          style={eventBarStyle.main}
-          data-modal={triggerDOM}
-          onClick={e => handleEventDetailMadal(e, event)}
-        >
-          <em data-modal={triggerDOM}>
-            {event?.name || eventBar.name || '(제목 없음)'}
-          </em>
+        <div className={styles.event_bar} style={eventBarStyle.main}>
+          <em>{event?.name || eventBar.name || '(제목 없음)'}</em>
         </div>
       )}
 
