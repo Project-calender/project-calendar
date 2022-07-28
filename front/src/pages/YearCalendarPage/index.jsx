@@ -2,8 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styles from './style.module.css';
 import MonthCalendar from '../../components/calendar/year/MonthCalendar';
-import EventListModalLayout from '../../components/modal/layout/EventListModalLayout';
-import EventDetailMaodalLayout from '../../components/modal/layout/EventDetailMaodalLayout';
+import EventListModalLayout from '../../modal/layout/EventListModalLayout';
+import EventDetailMaodalLayout from '../../modal/layout/EventDetailMaodalLayout';
 
 import { selectedDateSelector } from '../../store/selectors/date';
 

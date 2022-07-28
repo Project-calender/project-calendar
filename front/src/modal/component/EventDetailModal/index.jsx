@@ -18,15 +18,13 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
-import Modal from '../../common/Modal';
-import Tooltip from '../../common/Tooltip';
+import Modal from '../../../components/common/Modal';
+import Tooltip from '../../../components/common/Tooltip';
 import Moment from '../../../utils/moment';
 
 import { useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { useEffect } from 'react';
-
-export const triggerDOM = 'month-event-detail';
 
 const Index = ({ modalData, hideModal }) => {
   const $modal = useRef();
@@ -53,7 +51,6 @@ const Index = ({ modalData, hideModal }) => {
   return (
     <Modal
       hideModal={hideModal}
-      triggerDOM={triggerDOM}
       style={{
         ...style,
         ...position,

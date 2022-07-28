@@ -10,7 +10,6 @@ import { useRef } from 'react';
 const Index = ({
   children,
   hideModal,
-  triggerDOM = null,
   style = {},
   isCloseButtom = false,
   isBackground = false,
@@ -18,22 +17,33 @@ const Index = ({
   const $modal = useRef();
   useEffect(() => {
     document.addEventListener('click', clickModalOutside);
-    return () => document.removeEventListener('click', clickModalOutside);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('click', clickModalOutside);
+      document.body.style.overflow = 'auto';
+    };
   });
 
   function clickModalOutside(event) {
-    if (
-      !$modal.current.contains(event.target) &&
-      event.target.dataset?.modal !== triggerDOM
-    ) {
+    if (!$modal.current.contains(event.target)) {
       hideModal();
     }
   }
 
   return (
     <>
-      {isBackground && <div className={styles.modal_background} />}
-      <div className={styles.modal_container} ref={$modal} style={style}>
+      {isBackground && (
+        <div
+          className={styles.modal_background}
+          onWheel={e => e.stopPropagation()}
+        />
+      )}
+      <div
+        className={styles.modal_container}
+        ref={$modal}
+        style={style}
+        onWheel={e => e.stopPropagation()}
+      >
         {isCloseButtom && (
           <div className={styles.modal_close_icon}>
             <Tooltip title={'닫기'}>
@@ -50,7 +60,6 @@ const Index = ({
 Index.propTypes = {
   children: PropTypes.node,
   hideModal: PropTypes.func,
-  triggerDOM: PropTypes.string,
   style: PropTypes.object,
   isCloseButtom: PropTypes.bool,
   isBackground: PropTypes.bool,

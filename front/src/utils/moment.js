@@ -62,6 +62,12 @@ class Moment {
   toDateString() {
     return `${this.year}년 ${this.month}월 ${this.date}일`;
   }
+
+  toSimpleDateString() {
+    return `${this.year}-${String(this.month).padStart(2, '0')}-${String(
+      this.date,
+    ).padStart(2, '0')}`;
+  }
 }
 
 export default Moment;

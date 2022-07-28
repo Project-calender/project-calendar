@@ -2,7 +2,7 @@ import { useLayoutEffect, useState } from 'react';
 import { initDateRange } from './useDragDate';
 import Moment from '../utils/moment';
 
-export default function useMonthEventBar(selectedDateRange = initDateRange) {
+export default function useCreateEventBar(selectedDateRange = initDateRange) {
   const [newEventBars, setNewEventBars] = useState([]);
 
   useLayoutEffect(() => {

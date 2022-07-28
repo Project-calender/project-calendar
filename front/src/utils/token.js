@@ -10,7 +10,6 @@ axios.interceptors.request.use(
     const accessToken = sessionStorage.getItem('accessToken'); // access 토큰을 가져오는 변수
     if (accessToken) {
       config.headers.Authorization = accessToken;
-      console.log('토큰');
     }
     return config;
   },

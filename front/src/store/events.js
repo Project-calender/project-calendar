@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { createEventBar } from '../hooks/useMonthEventBar';
+import { createEventBar } from '../hooks/useCreateEventBar';
 import Moment from '../utils/moment';
-import { fetchCalendarsAndEvents } from './thunk';
+import { getAllCalendarAndEvent } from './thunk';
 
 const eventSort = (event, other) => {
   const eventDate = new Moment(new Date(event.startTime)).resetTime();
@@ -33,7 +33,7 @@ const events = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchCalendarsAndEvents.fulfilled, (state, { payload }) => {
+    builder.addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
       const events = payload.events
         .map(event => ({
           ...event,

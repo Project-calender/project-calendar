@@ -1,21 +1,14 @@
 import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import Modal from '../../common/Modal';
+import Modal from '../../../components/common/Modal';
 import EventContainer from './EventContainer';
-
-export const triggerDOM = 'month-event-list';
 
 const Index = ({ modalData, hideModal }) => {
   const { date, events, style } = modalData;
 
   return (
-    <Modal
-      hideModal={hideModal}
-      triggerDOM={triggerDOM}
-      style={style}
-      isCloseButtom={true}
-    >
+    <Modal hideModal={hideModal} style={style} isCloseButtom={true}>
       <div className={styles.modal_container}>
         <strong>{date.weekDay}</strong>
         <h1>{date.date}</h1>
