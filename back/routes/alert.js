@@ -5,7 +5,7 @@ const { Alert } = require("../models");
 const router = express.Router();
 const authJWT = require("../utils/authJWT");
 
-router.get("/getAlerts", authJWT, async (req, res, next) => {
+router.post("/getAlerts", authJWT, async (req, res, next) => {
   try {
     const alerts = await Alert.findAll({
       where: { UserId: req.myId },
@@ -16,7 +16,11 @@ router.get("/getAlerts", authJWT, async (req, res, next) => {
         "checked",
         "eventCalendarId",
         "eventDate",
+        "createdAt",
       ],
+      order: [["id", "DESC"]],
+      limit: 8, //limit개 가져와라
+      offset: (req.body.page - 1) * 8, //offset부터
     });
 
     return res.status(200).send(alerts);

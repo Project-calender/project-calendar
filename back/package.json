@@ -12,10 +12,10 @@
   "author": "minseo",
   "license": "MIT",
   "devDependencies": {
-    "@faker-js/faker": "^7.3.0",
     "nodemon": "^2.0.18"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.3.0",
     "aws-sdk": "^2.1171.0",
     "bcrypt": "^5.0.1",
     "connect-redis": "^6.1.3",

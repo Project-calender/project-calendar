@@ -9,6 +9,7 @@ import Join from './pages/Join';
 import YearCalendarPage from './pages/YearCalendarPage';
 import MonthCalendarPage from './pages/MonthCalendarPage';
 import DayCalendarPage from './pages/DayCalendarPage';
+import AlertPage from './pages/AlertPage';
 import { CALENDAR_PATH, USER_PATH } from './constants/path';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             path={CALENDAR_PATH.CUSTOMDAY}
             element={<div>4일</div>}
           ></Route>
+          <Route path={CALENDAR_PATH.ALERT} element={<AlertPage />}></Route>
         </Route>
         <Route path={USER_PATH.LOGIN} element={<Login />}></Route>
         <Route path={USER_PATH.JOIN} element={<Join />}></Route>

@@ -351,7 +351,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
       await Alert.create(
         {
           UserId: guest.id,
-          type: "eventInvite",
+          type: "event",
           eventCalendarId: req.body.groupCalendarId,
           eventDate: groupEvent.startTime,
           content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
@@ -431,7 +431,7 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
             await Alert.create(
               {
                 UserId: member.id,
-                type: "eventNewMember",
+                type: "event",
                 eventCalendarId: invitedEvent.CalendarId,
                 eventDate: invitedEvent.startTime,
                 content: `${me.nickname}님이 ${invitedEvent.name}이벤트에 참여했어요!`,
@@ -448,7 +448,7 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
             await Alert.create(
               {
                 UserId: member.id,
-                type: "eventLeaveMember",
+                type: "event",
                 eventCalendarId: invitedEvent.CalendarId,
                 eventDate: invitedEvent.startTime,
                 content: `${me.nickname}님이 ${invitedEvent.name}이벤트에서 탈퇴했어요!!`,
@@ -533,7 +533,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
           await Alert.create(
             {
               UserId: member.id,
-              type: "eventChanged",
+              type: "event",
               eventCalendarId: groupEvent.CalendarId,
               eventDate: groupEvent.startTime,
               content: `${groupEvent.name} 이벤트가 수정되었어요!`,
