@@ -42,6 +42,7 @@ const Index = ({ date, maxHeight }) => {
 
   function handleEventDetailMadal(e, event) {
     const { top, left } = e.target.getBoundingClientRect();
+
     showEventDetailModal({
       style: {
         position: {

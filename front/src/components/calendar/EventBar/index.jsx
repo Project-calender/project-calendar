@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { EVENT_URL } from '../../../constants/api';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { eventSelector } from '../../../store/selectors/events';
+import axios from '../../../utils/token';
 import styles from './style.module.css';
 
 const Index = ({
@@ -28,11 +30,19 @@ const Index = ({
     right: { borderLeftColor: event?.color },
   };
 
+  async function clickEventBar(e) {
+    const { data } = await axios.post(EVENT_URL.GET_EVENT_DETAIL, {
+      eventId: event.PrivateCalendarId ? event.groupEventId : event.id,
+    });
+    const { EventMembers, EventHost } = data || {};
+    handleEventDetailMadal(e, { ...event, EventMembers, EventHost });
+  }
+
   return (
     <div
       className={styles.event_container}
       style={eventBarStyle.container}
-      onClick={e => handleEventDetailMadal(e, event)}
+      onClick={clickEventBar}
     >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 

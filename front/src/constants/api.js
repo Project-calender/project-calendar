@@ -8,4 +8,5 @@ export const USER_URL = {
 
 export const EVENT_URL = {
   GET_ALL_CALENDAR_AND_EVENT: '/event/getAllEvent',
+  GET_EVENT_DETAIL: '/event/getGroupEvent',
 };

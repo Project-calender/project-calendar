@@ -1,9 +1,10 @@
-.modal_container { width: 420px; text-align: center; } 
+.modal_container { width: 420px; text-align: center;} 
 
 .modal_header { display: flex; justify-content: right; margin-right: 35px; height: 25px; align-items: center; } 
 .modal_header svg { margin-right: 5px; width: 16px; height: 16px; color: #515151; border-radius: 100%; padding:10px; } 
 .modal_header svg:hover { background: #f0f0f0; } 
 
+.modal_body { max-height: 500px; overflow-y: auto; overflow-x: hidden;}
 .modal_body > div { display: flex; align-items: center; margin-bottom: 16px; } 
 .modal_body > div:nth-child(1) { align-items: baseline; } 
 .modal_body > div >:nth-child(1) { margin: 0px 20px; width: 18px; height: 18px; color: #848484; } 
@@ -15,11 +16,6 @@
 
 .event_color { width: 14px !important; height: 14px !important; border-radius: 3px; margin-left: 24px !important; margin-right: 23px !important; } 
 
-.user_info { display: flex; margin-bottom: 10px; } 
-.user_info .user_profile { position: relative; display: flex; align-items: center; justify-content: center; border-radius: 100%; background: orange; width: 25px; height: 25px; color: white; margin-right: 15px; } 
-.user_info .user_state { border-radius: 100%; background: gainsboro; color: #515151; padding: 2px; width: 10px; height: 10px; border: 1px solid white; position: absolute; left: 19px; top: 9px } 
-.user_info .reject { background: #ffcece !important; color: #da1515; } 
-.user_info .accept { background: #b4eecf; color: #046a1f; } 
 
 .modal_line { position: relative; background: #e8e8e8; height: 1px; width: calc(100% + 16px); left: -8px; z-index: 2; margin-bottom: 10px; } 
 .modal_footer >:nth-child(2) { display: flex; justify-content: space-between; } 
