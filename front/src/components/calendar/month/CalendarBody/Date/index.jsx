@@ -22,7 +22,7 @@ const Index = ({ date }) => {
     setMaxHight(containerDiv.current.clientHeight);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [handleResize]);
+  }, [handleResize, date]);
 
   return (
     <td className={initClassName(date)}>
