@@ -16,10 +16,6 @@ const Index = ({ event, date }) => {
   );
 
   function handleEventDetailMadal(e) {
-    // const { top, left } = e.target.getBoundingClientRect();
-    // showEventDetailModal({
-    //   style: { position: { top: top - 100, left: left - 450 } },
-    // });
     showEventDetailModal();
     e.stopPropagation();
 

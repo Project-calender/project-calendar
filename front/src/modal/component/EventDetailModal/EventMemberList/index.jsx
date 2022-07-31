@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Index = ({ eventMembers }) => {
-  const EVENT_STATE_KEY = ['default', 'accept', 'refuse', 'toBeDetermined'];
+  const EVENT_STATE_KEY = ['default', 'accept', 'toBeDetermined', 'refuse'];
   const EVENT_STATE = {
     accept: { message: '초대 수락', icon: faCheck },
     refuse: { message: '초대 거절', icon: faXmark },

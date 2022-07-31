@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { useEffect } from 'react';
 import EventMemberList from './EventMemberList';
+import EventAttendanceButtons from './EventAttendanceButtons';
 
 const Index = ({ modalData, hideModal }) => {
   const $modal = useRef();
@@ -48,6 +49,7 @@ const Index = ({ modalData, hideModal }) => {
 
   if (!event) return;
 
+  console.log('eventDetail', event);
   return (
     <Modal
       hideModal={hideModal}
@@ -130,17 +132,13 @@ const Index = ({ modalData, hideModal }) => {
             </div>
           </div>
         </div>
-        <div className={styles.modal_footer}>
-          <div className={styles.modal_line} />
-          <div>
-            <em>참석 여부</em>
-            <div>
-              <button>예</button>
-              <button className={styles.button_active}>아니요</button>
-              <button>미정</button>
-            </div>
+
+        {Number.isInteger(event.state) && (
+          <div className={styles.modal_footer}>
+            <div className={styles.modal_line} />
+            <EventAttendanceButtons event={event} />
           </div>
-        </div>
+        )}
       </div>
     </Modal>
   );
