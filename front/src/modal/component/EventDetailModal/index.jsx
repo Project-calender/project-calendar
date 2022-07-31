@@ -26,9 +26,8 @@ import EventMemberList from './EventMemberList';
 
 const Index = ({ modalData, hideModal }) => {
   const $modal = useRef();
-  const { style, event } = modalData;
+  const { style, event } = modalData || {};
   const [position, setPosition] = useState();
-
   useEffect(() => {
     let { top, left } = style?.position || {};
     if (top && top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
@@ -46,6 +45,8 @@ const Index = ({ modalData, hideModal }) => {
   const calendar = useSelector(state =>
     calendarByEventIdSelector(state, event),
   );
+
+  if (!event) return;
 
   return (
     <Modal

@@ -5,7 +5,7 @@ export default function useEventModal(initalState = false) {
   const [modalData, setModalData] = useState(null);
 
   const showModal = useCallback(data => {
-    setModalData(data);
+    if (data) setModalData(data);
     toggleModal(true);
   }, []);
 

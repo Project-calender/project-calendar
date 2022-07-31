@@ -42,20 +42,12 @@ const Index = ({ date, maxHeight }) => {
     e.stopPropagation();
   }
 
-  function handleEventDetailMadal(e, event) {
-    const { top, left } = e.target.getBoundingClientRect();
-
-    showEventDetailModal({
-      style: {
-        position: {
-          top: top + 23,
-          left: left,
-        },
-      },
-      event,
-    });
+  function handleEventDetailMadal(e) {
+    showEventDetailModal();
     hideEventListModal();
     e.stopPropagation();
+
+    return { offsetTop: 23 };
   }
 
   return (

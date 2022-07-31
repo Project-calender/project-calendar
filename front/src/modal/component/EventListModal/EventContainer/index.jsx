@@ -15,13 +15,15 @@ const Index = ({ event, date }) => {
     EventDetailModalContext,
   );
 
-  function handleEventDetailMadal(e, event) {
-    const { top, left } = e.currentTarget.getBoundingClientRect();
-    showEventDetailModal({
-      style: { position: { top: top - 100, left: left - 450 } },
-      event,
-    });
+  function handleEventDetailMadal(e) {
+    // const { top, left } = e.target.getBoundingClientRect();
+    // showEventDetailModal({
+    //   style: { position: { top: top - 100, left: left - 450 } },
+    // });
+    showEventDetailModal();
     e.stopPropagation();
+
+    return { offsetTop: -100, offsetLeft: -450 };
   }
 
   return (
