@@ -21,7 +21,7 @@ const Index = ({ date, maxHeight }) => {
   const $eventList = useRef();
   if (!events) return;
 
-  const countEventBar = Math.floor(maxHeight / 32);
+  const countEventBar = Math.floor(maxHeight / 30);
   const previewEvent = countEventBar ? events.slice(0, countEventBar) : [];
   const restEvent = events.slice(countEventBar);
 
@@ -30,7 +30,9 @@ const Index = ({ date, maxHeight }) => {
     const minLeft = window.innerWidth - 250;
     showEventListModal({
       date,
-      events: events.map(event => ({ ...event, scale: 1 })),
+      events: events
+        .filter(event => event)
+        .map(event => ({ ...event, scale: 1 })),
       style: {
         top: top - 35,
         left: minLeft < left ? minLeft : left,

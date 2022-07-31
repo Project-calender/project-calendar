@@ -28,7 +28,7 @@ const Index = ({ modalData, hideModal }) => {
   const $modal = useRef();
   const { style, event } = modalData;
   const [position, setPosition] = useState();
-  console.log('event', event);
+
   useEffect(() => {
     let { top, left } = style?.position || {};
     if (top && top + $modal.current?.offsetHeight + 15 > window.innerHeight) {

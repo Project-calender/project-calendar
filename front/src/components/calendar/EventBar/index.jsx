@@ -14,11 +14,10 @@ const Index = ({
   outerRight = false,
   handleEventDetailMadal = () => {},
 }) => {
-  const event = useSelector(state => eventSelector(state, eventBar.id));
+  const event = useSelector(state => eventSelector(state, eventBar?.id));
   const calendar = useSelector(state =>
     calendarByEventIdSelector(state, event),
   );
-
   const eventBarStyle = {
     container: {
       width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
@@ -38,6 +37,10 @@ const Index = ({
     handleEventDetailMadal(e, { ...event, EventMembers, EventHost });
   }
 
+  if (!eventBar || !eventBar.scale) {
+    return <div className={styles.event_container} />;
+  }
+
   return (
     <div
       className={styles.event_container}
@@ -46,11 +49,9 @@ const Index = ({
     >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
-      {eventBar.scale && (
-        <div className={styles.event_bar} style={eventBarStyle.main}>
-          <em>{event?.name || eventBar.name || '(제목 없음)'}</em>
-        </div>
-      )}
+      <div className={styles.event_bar} style={eventBarStyle.main}>
+        <em>{event?.name || eventBar.name || '(제목 없음)'}</em>
+      </div>
 
       {right && (
         <div
