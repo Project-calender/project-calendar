@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { debounce } from '../utils/delay';
 
 export const initDateRange = { standardDateTime: 0, endDateTime: 0 };
-export const eventTarget = e => +e.target.dataset.dateId;
+export const eventTarget = e => +e.target.dataset.dragDate;
 
 export default function useDragDate() {
   const [isMouseDown, toggleMouseDown] = useState(false);

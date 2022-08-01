@@ -56,7 +56,7 @@ const Index = ({
   }
 
   if (!eventBar || !eventBar.scale) {
-    return <div className={styles.event_container} />;
+    return <div className={styles.empty_event_bar} />;
   }
 
   return (
