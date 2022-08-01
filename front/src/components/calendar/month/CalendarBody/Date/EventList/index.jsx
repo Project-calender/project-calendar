@@ -13,42 +13,41 @@ import {
 
 const Index = ({ date, maxHeight }) => {
   const events = useSelector(state => eventsByDateSelector(state, date));
-  const { showModal: showEventListModal } = useContext(EventListModalContext);
-  const { showModal: showEventDetailModal } = useContext(
-    EventDetailModalContext,
-  );
+  const { showModal: showEventListModal, hideModal: hideEventListModal } =
+    useContext(EventListModalContext);
+  const { showModal: showEventDetailModal, hideModal: hideEventDetailModal } =
+    useContext(EventDetailModalContext);
 
   const $eventList = useRef();
   if (!events) return;
 
-  const countEventBar = Math.floor(maxHeight / 32);
+  const countEventBar = Math.floor(maxHeight / 30);
   const previewEvent = countEventBar ? events.slice(0, countEventBar) : [];
   const restEvent = events.slice(countEventBar);
 
-  function clickReadMore() {
+  function clickReadMore(e) {
     const { top, left } = $eventList.current.getBoundingClientRect();
     const minLeft = window.innerWidth - 250;
     showEventListModal({
       date,
-      events: events.map(event => ({ ...event, scale: 1 })),
+      events: events
+        .filter(event => event)
+        .map(event => ({ ...event, scale: 1 })),
       style: {
         top: top - 35,
         left: minLeft < left ? minLeft : left,
       },
     });
+    hideEventDetailModal();
+    e.stopPropagation();
   }
 
-  function handleEventDetailMadal(e, event) {
-    const { top, left } = e.target.getBoundingClientRect();
-    showEventDetailModal({
-      style: {
-        top: window.innerHeight < top + 400 ? null : top + 30,
-        bottom: window.innerHeight < top + 400 ? 25 : null,
-        left: window.innerWidth < left + 450 ? null : left,
-        right: window.innerWidth < left + 450 ? 55 : null,
-      },
-      event,
-    });
+  function handleEventDetailMadal(e) {
+    showEventDetailModal();
+    hideEventListModal();
+    e.stopPropagation();
+
+    return { offsetTop: 23 };
   }
 
   return (

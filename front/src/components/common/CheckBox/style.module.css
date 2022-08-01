@@ -1,0 +1,5 @@
+.checkbox { display: flex; align-items: center; width: 80%; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } 
+.checkbox input { -moz-appearance:none; -webkit-appearance:none; -o-appearance:none; outline: none; content: none; border-radius: 3px; width: 18px; height: 18px; margin-right: 10px; transition: all .4s; } 
+.checkbox p { text-align: left; } 
+
+.checkbox input:checked { content: url('../../../../public/img/check-solid.svg'); border: none; padding: 2px; padding-left: 3px; } 

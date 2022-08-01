@@ -1,15 +1,21 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../mocks/api';
+import { EVENT_URL } from '../../constants/api';
+import Moment from '../../utils/moment';
+import axios from '../../utils/token';
 
-export const fetchCalendarsAndEvents = createAsyncThunk(
-  'events/getAllEvent',
-  async () => {
-    const response = await api.getAllEvent(); // 가짜 API
+export const getAllCalendarAndEvent = createAsyncThunk(
+  EVENT_URL.GET_ALL_CALENDAR_AND_EVENT,
+  async ({ startTime, endTime }) => {
+    const { data } = await axios.post(EVENT_URL.GET_ALL_CALENDAR_AND_EVENT, {
+      startDate: new Moment(startTime).toSimpleDateString(),
+      endDate: new Moment(endTime).toSimpleDateString(),
+    });
+
     const privateCalendar = {
-      ...response.privateEvents,
-      id: response.privateEvents.id * -1,
+      ...data.privateEvents,
+      id: data.privateEvents.id * -1,
     };
-    const groupCalendars = response.groupEvents;
+    const groupCalendars = data.groupEvents;
     const [privateEvents, groupEvents] = [
       privateCalendar.PrivateEvents.map(info => ({
         ...info,

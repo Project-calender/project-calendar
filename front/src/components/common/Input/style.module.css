@@ -1,0 +1,33 @@
+.input_container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.input_container :nth-child(2) {
+   text-align: center;
+}
+
+.input_container input {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-bottom: 2px solid #e4e4e4;
+}
+
+.input_line {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    border: none;
+    width: 0px;
+    height: 2px;
+    background-color: #1967d2;
+    transition: all 0.3s;
+    z-index:1;
+}
+
+.line_active {
+    width: 100%;
+    left: 0;
+}

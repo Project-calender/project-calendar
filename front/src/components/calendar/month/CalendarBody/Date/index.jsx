@@ -6,21 +6,23 @@ import useNavigateDayCalendar from '../../../../../hooks/useNavigateDayCalendar'
 
 import NewEvent from './NewEvent';
 import EventList from './EventList';
+import { useCallback } from 'react';
 
 const Index = ({ date }) => {
   const { moveDayCalendar } = useNavigateDayCalendar();
   const containerDiv = useRef();
   const [maxHeight, setMaxHight] = useState(0);
 
-  function handleResize() {
+  const handleResize = useCallback(() => {
     const height = containerDiv.current?.clientHeight;
     if (height && maxHeight !== height) setMaxHight(height);
-  }
+  }, [maxHeight, setMaxHight]);
 
   useEffect(() => {
     setMaxHight(containerDiv.current.clientHeight);
     window.addEventListener('resize', handleResize);
-  }, [containerDiv.current]);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize, date]);
 
   return (
     <td className={initClassName(date)}>
@@ -30,7 +32,7 @@ const Index = ({ date }) => {
         data-date-id={date.time}
         ref={containerDiv}
       >
-        <NewEvent dateTime={date.time} />
+        <NewEvent dateTime={date.time} setMaxHight={setMaxHight} />
         <EventList date={date} maxHeight={maxHeight} />
         <div className={styles.event_list}></div>
       </div>

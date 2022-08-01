@@ -91,6 +91,7 @@ paths:
                     type: string
                   checkedCalendar:
                     type: string
+                    example: '0,1,24'
                   ProfileImages:
                     type: object
                     properties:
@@ -106,7 +107,7 @@ paths:
             properties:
               message:
                 type: string
-                example: 유저가 존재하지 않습니다!
+                example: null
         '402':
           description: 비밀번호 일치하지 않음 (이메일은 맞지만 비밀번호가 틀린 경우)
           schema:
@@ -121,13 +122,13 @@ paths:
       tags:
         - user
       summary: 로그아웃
-    parameters:
-      - name: Authorization
-        in: header
-        required: true
-    responses:
-      '200':
-        $ref: '#/success'
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+      responses:
+        '200':
+          $ref: '#/success'
   /api/user/refresh:
     get:
       tags:
@@ -157,6 +158,27 @@ paths:
                   refreshToken:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU4MjA4NDQzLCJleHAiOjE2NTgyOTQ4NDN9.xI5ylpNtkeC5wnf4mnqcP3nbFMpm1mKjrHySxLJyN_4
+        '403':
+          description: 'refresh 토큰 발급 도중 access token, refresh token이 모두 헤더에 없는 경우'
+          schema:
+            properties:
+              success:
+                type: string
+                example: Access token and refresh token are need for refresh!
+        '405':
+          description: refresh 토큰 발급 도중 토큰에 유저 정보가 없을 경우
+          schema:
+            properties:
+              success:
+                type: string
+                example: No authorized!
+        '406':
+          description: refresh 토큰 발급 도중 토큰이 지급되지 않을 경우
+          schema:
+            properties:
+              success:
+                type: string
+                example: accessToken이 지급되지 않았습니다
         '500':
           $ref: '#/serverError'
   /api/user/setUserProfileImage:
@@ -203,6 +225,54 @@ paths:
           $ref: '#/success'
         '500':
           $ref: '#/serverError'
+  /tokenError:
+    post:
+      tags:
+        - user
+      summary: 토큰 에러
+      responses:
+        '401':
+          description: 토큰이 지급되지 않을 경우
+          schema:
+            properties:
+              success:
+                type: string
+                example: accessToken이 지급되지 않았습니다
+        '402':
+          description: 토큰이 검증에 실패했거나 만료됐을 경우
+          schema:
+            properties:
+              success:
+                type: string
+                example: jwt expired
+        '403':
+          description: 'refresh 토큰 발급 도중 access token, refresh token이 모두 헤더에 없는 경우'
+          schema:
+            properties:
+              success:
+                type: string
+                example: Access token and refresh token are need for refresh!
+        '405':
+          description: refresh 토큰 발급 도중 토큰에 유저 정보가 없을 경우
+          schema:
+            properties:
+              success:
+                type: string
+                example: No authorized!
+        '406':
+          description: refresh 토큰 발급 도중 토큰이 지급되지 않을 경우
+          schema:
+            properties:
+              success:
+                type: string
+                example: accessToken이 지급되지 않았습니다
+        '407':
+          description: refresh 토큰 발급 도중 access 토큰이 만료되지 않았을경우
+          schema:
+            properties:
+              success:
+                type: string
+                example: Access token is not expired!
   /api/privateEvent/createPrivateEvent:
     post:
       tags:
@@ -235,7 +305,25 @@ paths:
           description: 성공
           schema:
             properties:
-              success:
+              id:
+                type: string
+                example: true
+              name:
+                type: string
+                example: true
+              color:
+                type: string
+                example: true
+              createdAt:
+                type: string
+                example: true
+              updatedAt:
+                type: string
+                example: true
+              deletedAt:
+                type: string
+                example: true
+              UserId:
                 type: string
                 example: true
   /api/privateEvent/editPrivateEvent:
@@ -341,7 +429,22 @@ paths:
           description: 성공
           schema:
             properties:
-              success:
+              id:
+                type: string
+                example: true
+              name:
+                type: string
+                example: true
+              color:
+                type: string
+                example: true
+              OwnerId:
+                type: string
+                example: true
+              updatedAt:
+                type: string
+                example: true
+              createdAt:
                 type: string
                 example: true
         '401':
@@ -600,40 +703,91 @@ paths:
           description: 성공
           schema:
             properties:
-              userData:
+              privateEvents:
                 type: object
                 properties:
                   id:
                     type: integer
-                  email:
+                  name:
                     type: string
-                  nickname:
+                  color:
                     type: string
-                  checkedCalendar:
+                  UserId:
                     type: string
-                  ProfileImages:
-                    type: object
-                    properties:
-                      src:
-                        type: string
-                  refreshToken:
-                    type: string
-                  accessToken:
-                    type: string
-        '401':
-          description: 존재하지 않는 유저 (이메일이 틀린 경우)
-          schema:
-            properties:
-              message:
-                type: string
-                example: 유저가 존재하지 않습니다!
-        '402':
-          description: 비밀번호 일치하지 않음 (이메일은 맞지만 비밀번호가 틀린 경우)
-          schema:
-            properties:
-              message:
-                type: string
-                example: 패스워드가 일치하지 않습니다!
+                  privateEvents:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        color:
+                          type: string
+                        priority:
+                          type: integer
+                        memo:
+                          type: string
+                        startTime:
+                          type: string
+                        endTime:
+                          type: string
+                        groupEventId:
+                          type: integer
+                        state:
+                          type: integer
+                        allDay:
+                          type: boolean
+                        privateCalendarId:
+                          type: integer
+              groupEvents:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    color:
+                      type: string
+                    OwnerId:
+                      type: integer
+                    CalendarMember:
+                      type: object
+                      properties:
+                        authority:
+                          type: integer
+                        UserId:
+                          type: integer
+                        CalendarId:
+                          type: integer
+                    GroupEvents:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          color:
+                            type: string
+                          priority:
+                            type: integer
+                          memo:
+                            type: string
+                          startTime:
+                            type: string
+                          endTime:
+                            type: string
+                          allDay:
+                            type: integer
+                          EventHostId:
+                            type: integer
+                          CalendarId:
+                            type: integer
         '500':
           $ref: '#/serverError'
   /api/event/getGroupEvent:
@@ -659,46 +813,154 @@ paths:
           description: 성공
           schema:
             properties:
-              userData:
+              id:
+                type: integer
+              color:
+                type: string
+              priority:
+                type: string
+              memo:
+                type: string
+              startTime:
+                type: string
+              endTime:
+                type: string
+              EventHostId:
+                type: string
+              CalendarId:
+                type: string
+              EventHost:
                 type: object
                 properties:
                   id:
                     type: integer
-                  color:
+                  email:
                     type: string
-                  priority:
+                  nickname:
                     type: string
-                  memo:
-                    type: string
-                  startTime:
-                    type: string
-                  endTime:
-                    type: string
-                  EventHostId:
-                    type: string
-                  CalendarId:
-                    type: string
-                  EventMembers:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                      nickname:
-                        type: string
-                      EventMember:
+              EventMembers:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    email:
+                      type: string
+                    nickname:
+                      type: string
+                    EventMember:
+                      type: object
+                      properties:
+                        state:
+                          type: integer
+                        createdAt:
+                          type: string
+                        updatedAt:
+                          type: string
+                        deletedAt:
+                          type: string
+                        UserId:
+                          type: integer
+                        EventId:
+                          type: integer
+        '500':
+          $ref: '#/serverError'
+  /api/event/getEventByDate:
+    post:
+      tags:
+        - event
+      summary: 특정 날짜의 이벤트들 모두 가져오기
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              date:
+                type: string
+                example: '2022-08-20'
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              privateEvents:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  privateEvents:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        color:
+                          type: string
+                        priority:
+                          type: integer
+                        memo:
+                          type: string
+                        startTime:
+                          type: string
+                        endTime:
+                          type: string
+                        groupEventId:
+                          type: integer
+                        state:
+                          type: integer
+                        allDay:
+                          type: boolean
+                        privateCalendarId:
+                          type: integer
+              groupEvents:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    CalendarMember:
+                      type: object
+                      properties:
+                        authority:
+                          type: integer
+                        UserId:
+                          type: integer
+                        CalendarId:
+                          type: integer
+                    GroupEvents:
+                      type: array
+                      items:
                         type: object
                         properties:
-                          state:
+                          id:
                             type: integer
-                          createdAt:
+                          name:
                             type: string
-                          updatedAt:
+                          color:
                             type: string
-                          deletedAt:
-                            type: string
-                          UserId:
+                          priority:
                             type: integer
-                          EventId:
+                          memo:
+                            type: string
+                          startTime:
+                            type: string
+                          endTime:
+                            type: string
+                          allDay:
+                            type: integer
+                          EventHostId:
+                            type: integer
+                          CalendarId:
                             type: integer
         '500':
           $ref: '#/serverError'
@@ -948,7 +1210,7 @@ paths:
         '500':
           $ref: '#/serverError'
   /api/event/searchEvent:
-    get:
+    post:
       tags:
         - event
       summary: 이벤트 이름으로 검색하기
@@ -966,7 +1228,24 @@ paths:
                 type: string
       responses:
         '200':
-          $ref: '#/success'
+          description: 성공
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                startTime:
+                  type: string
+                endTime:
+                  type: string
+                allDay:
+                  type: boolean
+                CalendarId:
+                  type: integer
         '500':
           $ref: '#/serverError'
   /api/alert/getAlerts:
@@ -980,7 +1259,24 @@ paths:
           required: true
       responses:
         '200':
-          $ref: '#/success'
+          description: 성공
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                type:
+                  type: string
+                content:
+                  type: string
+                checked:
+                  type: boolean
+                eventCalendarId:
+                  type: integer
+                eventDate:
+                  type: string
         '500':
           $ref: '#/serverError'
   /api/alert/read:

@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { createEventBar } from '../hooks/useMonthEventBar';
+import { createEventBar } from '../hooks/useCreateEventBar';
 import Moment from '../utils/moment';
-import { fetchCalendarsAndEvents } from './thunk';
+import { getAllCalendarAndEvent } from './thunk';
 
 const eventSort = (event, other) => {
   const eventDate = new Moment(new Date(event.startTime)).resetTime();
@@ -33,7 +33,7 @@ const events = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(fetchCalendarsAndEvents.fulfilled, (state, { payload }) => {
+    builder.addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
       const events = payload.events
         .map(event => ({
           ...event,
@@ -43,31 +43,29 @@ const events = createSlice({
         .sort(eventSort);
 
       const byDate = events.reduce((byDate, event) => {
-        const startDate = new Moment(new Date(event.startTime)).resetTime();
         const endDate = new Moment(new Date(event.endTime)).resetTime();
-        const key = startDate.time;
-
-        byDate[key] = byDate[key] || [];
-        let index = byDate[key].findIndex(event => !event);
-        index = index === -1 ? byDate[key].length : index;
-
-        let nextDate = new Moment(new Date(event.startTime)).resetTime();
-        do {
-          const key = nextDate.time;
-          byDate[key] = byDate[key] || [];
-          byDate[key][index] = { id: event.id, scale: null };
-        } while (
-          nextDate.time !== endDate.time &&
-          (nextDate = nextDate.addDate(1))
-        );
+        const startDate = new Moment(new Date(event.startTime)).resetTime();
 
         const eventBars = createEventBar({
           standardDateTime: startDate.time,
           endDateTime: endDate.time,
         });
-        eventBars.forEach(
-          event => (byDate[event.time][index].scale = event.scale),
-        );
+
+        eventBars.forEach(eventBar => {
+          const key = eventBar.time;
+
+          byDate[key] = byDate[key] || [];
+          let index = byDate[key].findIndex(event => !event);
+          if (index === -1) index = byDate[key].length;
+          byDate[key][index] = { id: event.id, scale: eventBar.scale };
+
+          for (let i = 1; i < eventBar.scale; i++) {
+            let nextDate = new Moment(eventBar.time).addDate(i);
+            const key = nextDate.time;
+            byDate[key] = byDate[key] || Array(5).fill(null);
+            byDate[key][index] = { id: event.id, scale: null };
+          }
+        });
 
         return byDate;
       }, {});

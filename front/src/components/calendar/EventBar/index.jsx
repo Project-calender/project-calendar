@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { EVENT_URL } from '../../../constants/api';
+import { EventDetailModalContext } from '../../../context/EventModalContext';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { eventSelector } from '../../../store/selectors/events';
-import { triggerDOM } from '../../modal/EventDetailModal';
+import axios from '../../../utils/token';
 import styles from './style.module.css';
 
 const Index = ({
@@ -13,9 +15,13 @@ const Index = ({
   outerRight = false,
   handleEventDetailMadal = () => {},
 }) => {
-  const event = useSelector(state => eventSelector(state, eventBar.id));
+  const event = useSelector(state => eventSelector(state, eventBar?.id));
   const calendar = useSelector(state =>
     calendarByEventIdSelector(state, event),
+  );
+
+  const { setModalData: setEventDetailModalData } = useContext(
+    EventDetailModalContext,
   );
 
   const eventBarStyle = {
@@ -29,20 +35,41 @@ const Index = ({
     right: { borderLeftColor: event?.color },
   };
 
+  async function clickEventBar(e) {
+    const { offsetTop = 0, offsetLeft = 0 } = handleEventDetailMadal(e);
+    const { top, left } = e.currentTarget.getBoundingClientRect();
+
+    const { data } = await axios.post(EVENT_URL.GET_EVENT_DETAIL, {
+      eventId: event.PrivateCalendarId ? event.groupEventId : event.id,
+    });
+    const { EventMembers, EventHost } = data;
+    setEventDetailModalData(data => ({
+      ...data,
+      event: { ...event, EventMembers, EventHost },
+      style: {
+        position: {
+          top: top + offsetTop,
+          left: left + offsetLeft,
+        },
+      },
+    }));
+  }
+
+  if (!eventBar || !eventBar.scale) {
+    return <div className={styles.event_container} />;
+  }
+
   return (
-    <div className={styles.event_container} style={eventBarStyle.container}>
+    <div
+      className={styles.event_container}
+      style={eventBarStyle.container}
+      onClick={clickEventBar}
+    >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
-      {eventBar.scale && (
-        <div
-          className={styles.event_bar}
-          style={eventBarStyle.main}
-          data-modal={triggerDOM}
-          onClick={e => handleEventDetailMadal(e, event)}
-        >
-          <em data-modal={triggerDOM}>{event?.name || '(제목 없음)'} </em>
-        </div>
-      )}
+      <div className={styles.event_bar} style={eventBarStyle.main}>
+        <em>{event?.name || eventBar.name || '(제목 없음)'}</em>
+      </div>
 
       {right && (
         <div

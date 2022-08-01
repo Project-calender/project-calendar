@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
 import { CALENDAR_PATH } from './../../constants/path';
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../store/user';
 
@@ -36,7 +35,7 @@ const Index = () => {
       .then(res => {
         console.log('성공', res);
         saveWebStorage(res);
-        navigate(`${CALENDAR_PATH.DAY}`);
+        navigate(`${CALENDAR_PATH.MAIN}`);
       })
       .catch(error => {
         console.log('실패', error);
@@ -59,12 +58,6 @@ const Index = () => {
       JSON.stringify(res.data.userData.ProfileImages[0].src),
     );
   }
-
-  useEffect(() => {
-    sessionStorage.getItem('accessToken')
-      ? navigate(`${CALENDAR_PATH.DAY}`)
-      : null;
-  }, []);
 
   return (
     <div>

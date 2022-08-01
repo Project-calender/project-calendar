@@ -70,6 +70,7 @@
                   type: string
                 checkedCalendar:
                   type: string
+                  example: "0,1,24"
                 ProfileImages:
                   type: object
                   properties:
@@ -85,7 +86,7 @@
           properties:
             message:
               type: string
-              example: 
+              example:
       402:
         description: 비밀번호 일치하지 않음 (이메일은 맞지만 비밀번호가 틀린 경우)
         schema:
@@ -138,6 +139,27 @@
                 refreshToken:
                   type: string
                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU4MjA4NDQzLCJleHAiOjE2NTgyOTQ4NDN9.xI5ylpNtkeC5wnf4mnqcP3nbFMpm1mKjrHySxLJyN_4"
+      403:
+        description: refresh 토큰 발급 도중 access token, refresh token이 모두 헤더에 없는 경우
+        schema:
+          properties:
+            success:
+              type: string
+              example: Access token and refresh token are need for refresh!
+      405:
+        description: refresh 토큰 발급 도중 토큰에 유저 정보가 없을 경우
+        schema:
+          properties:
+            success:
+              type: string
+              example: No authorized!
+      406:
+        description: refresh 토큰 발급 도중 토큰이 지급되지 않을 경우
+        schema:
+          properties:
+            success:
+              type: string
+              example: accessToken이 지급되지 않았습니다
       500:
         $ref: "./openapi.yaml#/serverError"
 

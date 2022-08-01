@@ -6,9 +6,8 @@ import useNavigateDayCalendar from '../../../../../../hooks/useNavigateDayCalend
 import { selectDate } from '../../../../../../store/date';
 import Moment from '../../../../../../utils/moment';
 import styles from './style.module.css';
-import { fetchCalendarsAndEvents } from '../../../../../../store/thunk';
+import { getAllCalendarAndEvent } from '../../../../../../store/thunk';
 import { eventsByDateSelector } from '../../../../../../store/selectors/events';
-import { triggerDOM } from '../../../../../modal/EventListModal';
 import { EventListModalContext } from '../../../../../../context/EventModalContext';
 
 const Index = ({ month, date }) => {
@@ -20,7 +19,7 @@ const Index = ({ month, date }) => {
   const dispatch = useDispatch();
   function handleDate(e, date) {
     dispatch(selectDate(date));
-    dispatch(fetchCalendarsAndEvents(date.time, date.time));
+    dispatch(getAllCalendarAndEvent(date.time, date.time));
 
     const {
       top: targetTop,
@@ -55,9 +54,8 @@ const Index = ({ month, date }) => {
       className={`${initDateClassName(date, month, selectedDate)}`}
       onClick={e => handleDate(e, date)}
       onDoubleClick={() => moveDayCalendar(date)}
-      data-modal={triggerDOM}
     >
-      <em data-modal={triggerDOM}>{date.date}</em>
+      <em>{date.date}</em>
     </td>
   );
 };

@@ -41,5 +41,6 @@ export default function useDragDate() {
     handleDrag,
     isMouseDown,
     selectedDateRange,
+    changeDateRange,
   };
 }

@@ -1,29 +1,30 @@
 const express = require("express");
+var { CronJob } = require("cron");
 
 const {
   sequelize,
+  User,
+  Event,
   Alert,
   Calendar,
+  ProfileImage,
   PrivateCalendar,
+  CalendarMember,
+  EventMember,
   PrivateEvent,
 } = require("../models");
-const { User } = require("../models");
-const { Event } = require("../models");
-const { CalendarMember } = require("../models");
-const { EventMember } = require("../models");
+
 const router = express.Router();
 const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
 
-router.get("/getAllEvent", authJWT, async (req, res, next) => {
+router.post("/getAllEvent", authJWT, async (req, res, next) => {
   try {
     const me = await User.findOne({ where: { id: req.myId } });
-    req.body.endDate = req.body.endDate.split("-")
-    req.body.endDate[2] = String(Number(req.body.endDate[2])+1)
+    req.body.endDate = req.body.endDate.split("-");
+    req.body.endDate[2] = String(Number(req.body.endDate[2]) + 1);
+    req.body.endDate = req.body.endDate.join("-");
 
-    console.log(req.body.endDate)
-    req.body.endDate = req.body.endDate.join("-")
-    console.log(req.body.endDate)
     const privateEvents = await me.getPrivateCalendar({
       attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
       include: [
@@ -31,44 +32,69 @@ router.get("/getAllEvent", authJWT, async (req, res, next) => {
           model: PrivateEvent,
           attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
           where: {
-            //끝날짜에 1을 더해야 그 날짜 까지 가져옴
-            // endTime > startDate startTime < endDate
-              [Op.or]: {
-                startTime: {
+            [Op.or]: {
+              startTime: {
                 [Op.and]: {
                   [Op.gte]: req.body.startDate,
-                  [Op.lte]: req.body.endDate
-                }
+                  [Op.lte]: req.body.endDate,
+                },
               },
               endTime: {
                 [Op.and]: {
                   [Op.gte]: req.body.startDate,
-                  [Op.lte]: req.body.endDate
-                }
+                  [Op.lte]: req.body.endDate,
+                },
               },
-            }            
-          },
-          separate: true,
-        },
-      ],
-    });
-
-    const groupEvents = await me.getGroupCalendars({
-      attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
-      include: [
-        {
-          model: Event,
-          as: "GroupEvents",
-          attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
-          where: {
-            startTime: {
-              [Op.between]: [req.body.startDate, req.body.endDate],
             },
           },
           separate: true,
         },
       ],
     });
+
+    const groupCalendars = await CalendarMember.findAll({
+      where: { UserId: req.myId },
+    });
+
+    var groupEvents = [];
+    await Promise.all(
+      groupCalendars.map(async (groupCalendar) => {
+        var groupEvent = await Calendar.findAll({
+          where: { id: groupCalendar.CalendarId },
+          attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+          include: [
+            {
+              model: Event,
+              as: "GroupEvents",
+              attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+              where: {
+                [Op.and]: {
+                  [Op.or]: {
+                    startTime: {
+                      [Op.and]: {
+                        [Op.gte]: req.body.startDate,
+                        [Op.lte]: req.body.endDate,
+                      },
+                    },
+                    endTime: {
+                      [Op.and]: {
+                        [Op.gte]: req.body.startDate,
+                        [Op.lte]: req.body.endDate,
+                      },
+                    },
+                  },
+                  permission: { [Op.lte]: groupCalendar.authority },
+                },
+              },
+              separate: true,
+            },
+          ],
+        });
+
+        groupEvent.push({ authority: groupCalendar.authority });
+        groupEvents.push(groupEvent);
+      })
+    );
 
     return res
       .status(200)
@@ -79,7 +105,7 @@ router.get("/getAllEvent", authJWT, async (req, res, next) => {
   }
 });
 
-router.get("/getGroupEvent", authJWT, async (req, res, next) => {
+router.post("/getGroupEvent", authJWT, async (req, res, next) => {
   try {
     const events = await Event.findOne({
       where: { id: req.body.eventId },
@@ -87,7 +113,8 @@ router.get("/getGroupEvent", authJWT, async (req, res, next) => {
         "id",
         "name",
         "color",
-        "priority",
+        "permission",
+        "busy",
         "memo",
         "startTime",
         "endTime",
@@ -97,8 +124,27 @@ router.get("/getGroupEvent", authJWT, async (req, res, next) => {
       include: [
         {
           model: User,
+          as: "EventHost",
+          attributes: {
+            exclude: [
+              "password",
+              "checkedCalendar",
+              "createdAt",
+              "updatedAt",
+              "deletedAt",
+            ],
+          },
+        },
+        {
+          model: User,
           as: "EventMembers",
           attributes: ["id", "email", "nickname"],
+          include: [
+            {
+              model: ProfileImage,
+              attributes: ["src"],
+            },
+          ],
         },
       ],
     });
@@ -109,11 +155,108 @@ router.get("/getGroupEvent", authJWT, async (req, res, next) => {
   }
 });
 
+router.post("/getEventByDate", authJWT, async (req, res, next) => {
+  try {
+    const me = await User.findOne({ where: { id: req.myId } });
+    var start = req.body.date;
+    var end = req.body.date.split("-");
+    end[2] = String(Number(end[2]) + 1);
+    end = end.join("-");
+
+    const privateEvents = await me.getPrivateCalendar({
+      attributes: {
+        exclude: [
+          "name",
+          "color",
+          "UserId",
+          "createdAt",
+          "updatedAt",
+          "deletedAt",
+        ],
+      },
+      include: [
+        {
+          model: PrivateEvent,
+          attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+          where: {
+            [Op.or]: {
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: start,
+                  [Op.lte]: end,
+                },
+              },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: start,
+                  [Op.lte]: end,
+                },
+              },
+            },
+          },
+          separate: true,
+        },
+      ],
+    });
+
+    const groupCalendars = await CalendarMember.findAll({
+      where: { UserId: req.myId },
+    });
+
+    var groupEvents = [];
+    await Promise.all(
+      groupCalendars.map(async (groupCalendar) => {
+        var groupEvent = await Calendar.findAll({
+          where: { id: groupCalendar.CalendarId },
+          attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+          include: [
+            {
+              model: Event,
+              as: "GroupEvents",
+              attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+              where: {
+                [Op.and]: {
+                  [Op.or]: {
+                    startTime: {
+                      [Op.and]: {
+                        [Op.gte]: start,
+                        [Op.lte]: end,
+                      },
+                    },
+                    endTime: {
+                      [Op.and]: {
+                        [Op.gte]: start,
+                        [Op.lte]: end,
+                      },
+                    },
+                  },
+                  permission: { [Op.lte]: groupCalendar.authority },
+                },
+              },
+            },
+          ],
+        });
+
+        if (groupEvent.length !== 0) {
+          groupEvents.push(groupEvent);
+        }
+      })
+    );
+
+    return res
+      .status(200)
+      .send({ privateEvents: privateEvents, groupEvents: groupEvents });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/createGroupEvent", authJWT, async (req, res, next) => {
   try {
-    const me = await User.findOne({
-      where: { id: req.myId },
-    });
+    // const me = await User.findOne({
+    //   where: { id: req.myId },
+    // });
     const isGroupMember = await CalendarMember.findOne({
       where: {
         [Op.and]: { UserId: req.myId, CalendarId: req.body.groupCalendarId },
@@ -142,34 +285,36 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
         { transaction: t }
       );
 
-      await EventMember.create(
-        {
-          state: 1,
-          UserId: req.myId,
-          EventId: newGroupEvent.id,
-        },
-        { transaction: t }
-      );
+      // await EventMember.create(
+      //   {
+      //     state: 4,
+      //     UserId: req.myId,
+      //     EventId: newGroupEvent.id,
+      //   },
+      //   { transaction: t }
+      // );
 
-      const privateCalendar = await me.getPrivateCalendar();
-      await privateCalendar.createPrivateEvent(
-        {
-          name: newGroupEvent.name,
-          color: newGroupEvent.color,
-          priority: newGroupEvent.priority,
-          memo: newGroupEvent.memo,
-          startTime: newGroupEvent.startTime,
-          endTime: newGroupEvent.endTime,
-          allDay: req.body.allDay,
-          groupEventId: newGroupEvent.id,
-          state: 1,
-        },
-        { transaction: t }
-      );
+      // const privateCalendar = await me.getPrivateCalendar();
+      // await privateCalendar.createPrivateEvent(
+      //   {
+      //     name: newGroupEvent.name,
+      //     color: newGroupEvent.color,
+      //     priority: newGroupEvent.priority,
+      //     memo: newGroupEvent.memo,
+      //     startTime: newGroupEvent.startTime,
+      //     endTime: newGroupEvent.endTime,
+      //     allDay: req.body.allDay,
+      //     groupEventId: newGroupEvent.id,
+      //     state: 4,
+      //   },
+      //   { transaction: t }
+      // );
+
+      return res.status(200).send(newGroupEvent);
     });
-    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
+    await t.rollback();
     next(error);
   }
 });
@@ -190,7 +335,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
     });
     if (!isGroupMember) {
       return res
-        .status(401)
+        .status(400)
         .send({ message: "그룹 캘린더에 존재하지 않는 유저입니다!" });
     }
 
@@ -239,7 +384,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
       await Alert.create(
         {
           UserId: guest.id,
-          type: "eventInvite",
+          type: "event",
           eventCalendarId: req.body.groupCalendarId,
           eventDate: groupEvent.startTime,
           content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
@@ -248,7 +393,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
       );
     });
 
-    return res.status(200).send({ success: true });
+    return res.status(200).send(guest);
   } catch (error) {
     console.error(error);
     next(error);
@@ -264,15 +409,15 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
       where: { id: req.body.invitedEventId },
     });
 
-    var nowDate = new Date();
-
     if (!invitedEvent) {
+      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
-
-    if (invitedEvent.endTime < nowDate) {
-      return res.status(401).send({ message: "이미 종료된 이벤트 입니다!" });
-    }
+    // var nowDate = new Date();
+    // if (invitedEvent.endTime < nowDate) {
+    //   await t.rollback();
+    //   return res.status(400).send({ message: "이미 종료된 이벤트 입니다!" });
+    // }
 
     const changeState = await EventMember.findOne({
       where: {
@@ -319,7 +464,7 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
             await Alert.create(
               {
                 UserId: member.id,
-                type: "eventNewMember",
+                type: "event",
                 eventCalendarId: invitedEvent.CalendarId,
                 eventDate: invitedEvent.startTime,
                 content: `${me.nickname}님이 ${invitedEvent.name}이벤트에 참여했어요!`,
@@ -336,7 +481,7 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
             await Alert.create(
               {
                 UserId: member.id,
-                type: "eventLeaveMember",
+                type: "event",
                 eventCalendarId: invitedEvent.CalendarId,
                 eventDate: invitedEvent.startTime,
                 content: `${me.nickname}님이 ${invitedEvent.name}이벤트에서 탈퇴했어요!!`,
@@ -366,6 +511,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (!groupEvent) {
+      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
@@ -376,7 +522,8 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (hasAuthority.authority < 2) {
-      return res.status(401).send({ message: "수정 권한이 없습니다!" });
+      await t.rollback();
+      return res.status(400).send({ message: "수정 권한이 없습니다!" });
     }
 
     await groupEvent.update(
@@ -421,7 +568,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
           await Alert.create(
             {
               UserId: member.id,
-              type: "eventChanged",
+              type: "event",
               eventCalendarId: groupEvent.CalendarId,
               eventDate: groupEvent.startTime,
               content: `${groupEvent.name} 이벤트가 수정되었어요!`,
@@ -449,7 +596,8 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (!groupEvent) {
-      return res.status(401).send({ message: "존재하지 않는 이벤트 입니다!" });
+      await t.rollback();
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
     const hasAuthority = await CalendarMember.findOne({
@@ -459,6 +607,7 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (hasAuthority.authority < 2) {
+      await t.rollback();
       return res.status(400).send({ message: "삭제 권한이 없습니다!" });
     }
 
@@ -507,7 +656,7 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
   }
 });
 
-router.get("/searchEvent", authJWT, async (req, res, next) => {
+router.post("/searchEvent", authJWT, async (req, res, next) => {
   try {
     const searchWord = req.body.searchWord;
 
@@ -531,6 +680,42 @@ router.get("/searchEvent", authJWT, async (req, res, next) => {
     });
 
     return res.status(200).send(searchEvents);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 서버가 재시작 될 시 모든 알람이 삭제된다,,
+
+// 밑의 알람을 hooks로 빼고 함수로 실행하면 된다. ?
+
+// db에 따로 저장하고 서버가 실행될때 반복문으로 다 돌면서 다시 알람을 설정한다?
+
+//,,알람을 바꾸거나 취소할땐 어떻게 해야하지?
+
+// db에 cron table을 따로만든다 -> 객체 이름을 저장한다. event userId column과 같이 추가 해놓는다
+
+// 변경시 ? -> 기존 객체 삭제 새로 만들기
+
+// 삭제 ? -> 그냥 삭제
+
+router.post("/test2", async (req, res, next) => {
+  try {
+    new CronJob(
+      "* * * * * *",
+      async function () {
+        await Alert.create({
+          UserId: 1,
+          type: "eventAlarm",
+          content: req.body.testCode,
+        });
+      },
+      null,
+      true
+    );
+
+    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
     next(error);

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarsStaggered,
+  faBell,
   faBriefcase,
   faCalendarDay,
   faEllipsisVertical,
@@ -12,33 +13,55 @@ import {
   faLocationDot,
   faPen,
   faTrashCan,
-  faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 
-import Modal from '../../common/Modal';
-import Tooltip from '../../common/Tooltip';
+import Modal from '../../../components/common/Modal';
+import Tooltip from '../../../components/common/Tooltip';
 import Moment from '../../../utils/moment';
 
 import { useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
-
-export const triggerDOM = 'month-event-detail';
+import { useEffect } from 'react';
+import EventMemberList from './EventMemberList';
+import EventAttendanceButtons from './EventAttendanceButtons';
 
 const Index = ({ modalData, hideModal }) => {
-  const { style, event } = modalData;
+  const $modal = useRef();
+  const { style, event } = modalData || {};
+  const [position, setPosition] = useState();
+  useEffect(() => {
+    let { top, left } = style?.position || {};
+    if (top && top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
+      top = window.innerHeight - $modal.current?.offsetHeight - 35;
+    }
+
+    if (left && left + $modal.current?.offsetWidth > window.innerWidth) {
+      left = window.innerWidth - $modal.current?.offsetWidth - 60;
+    }
+
+    if (left && window.innerWidth <= 660) left = 10;
+    setPosition({ top, left });
+  }, [style]);
 
   const calendar = useSelector(state =>
     calendarByEventIdSelector(state, event),
   );
 
+  if (!event) return;
+
+  console.log('eventDetail', event);
   return (
     <Modal
       hideModal={hideModal}
-      triggerDOM={triggerDOM}
-      style={{ ...style, boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)' }}
+      style={{
+        ...style,
+        ...position,
+        boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)',
+        zIndex: 501,
+      }}
       isCloseButtom={true}
     >
-      <div className={styles.modal_container}>
+      <div className={styles.modal_container} ref={$modal}>
         <div className={styles.modal_header}>
           <Tooltip title="일정 수정">
             <FontAwesomeIcon icon={faPen} />
@@ -62,39 +85,46 @@ const Index = ({ modalData, hideModal }) => {
             />
             <div>
               <h1>{event.name || '(제목 없음)'}</h1>
-              <h3>{intiDateTitle(event)}</h3>
-              <p>매년</p>
+              <h3>{initDateTitle(event)}</h3>
+              {event.repeat && <p>매년</p>}
             </div>
           </div>
 
-          <div>
-            <FontAwesomeIcon icon={faLocationDot} />
+          {event.location && (
             <div>
-              <h3>장소</h3>
-              <p>상세 주소</p>
+              <FontAwesomeIcon icon={faLocationDot} />
+              <div>
+                <h3>대한민국</h3>
+                <p>대한민국</p>
+              </div>
             </div>
-          </div>
+          )}
+          {event.EventMembers && (
+            <EventMemberList eventMembers={event.EventMembers} />
+          )}
 
-          <div>
-            <FontAwesomeIcon icon={faUserGroup} />
+          {event.memo && (
             <div>
-              <h3>참석자 1명</h3>
-              <p>초대 수락 1명</p>
+              <FontAwesomeIcon icon={faBarsStaggered} />
+              <div>
+                <h3>{event.memo}</h3>
+              </div>
             </div>
-          </div>
-
-          <div>
-            <FontAwesomeIcon icon={faBarsStaggered} />
+          )}
+          {event.alert && (
             <div>
-              <h3>메모입니다.</h3>
+              <FontAwesomeIcon icon={faBell} />
+              <div>
+                <h3>30분 전</h3>
+              </div>
             </div>
-          </div>
+          )}
 
           <div>
             <FontAwesomeIcon icon={faCalendarDay} />
             <div>
               <h3>{calendar.name}</h3>
-              <p>만든 사용자:</p>
+              {event.EventHost && <p>만든 사용자: {event.EventHost.email}</p>}
             </div>
           </div>
 
@@ -105,15 +135,22 @@ const Index = ({ modalData, hideModal }) => {
             </div>
           </div>
         </div>
+
+        {Number.isInteger(event.state) && (
+          <div className={styles.modal_footer}>
+            <div className={styles.modal_line} />
+            <EventAttendanceButtons event={event} />
+          </div>
+        )}
       </div>
     </Modal>
   );
 };
 
-function intiDateTitle(event) {
+function initDateTitle(event) {
   const [startDate, endDate] = [
-    new Moment(event.startTime),
-    new Moment(event.endTime),
+    new Moment(new Date(event.startTime)),
+    new Moment(new Date(event.endTime)),
   ];
   const startDateTitle = startDate.toDateString().split(' ');
   const endDateTitle = endDate.toDateString().split(' ');

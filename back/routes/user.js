@@ -52,24 +52,19 @@ router.post(
 );
 
 router.post("/checkedCalendar", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
   try {
     const me = await User.findOne({
       where: { id: req.myId },
     });
 
-    await me.update(
-      {
-        checkedCalendar: req.body.checkedList,
-      },
-      { transaction: t }
-    );
+    checkedList = req.body.checkedList.join(",");
+    await me.update({
+      checkedCalendar: checkedList,
+    });
 
-    await t.commit();
-    return res.status(200).status({ success: true });
+    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
-    await t.rollback();
     next(error);
   }
 });
@@ -115,6 +110,7 @@ router.post("/signin", async (req, res, next) => {
     accessToken,
   });
 });
+
 router.post("/signup", async (req, res, next) => {
   try {
     console.log(req.body);
@@ -159,26 +155,25 @@ router.post("/signup", async (req, res, next) => {
         );
 
         await newUser.addProfileImage(profileImage, { transaction: t });
+      } else {
+        const profileImage = await ProfileImage.create(
+          {
+            src: BASIC_IMG_SRC,
+          },
+          {
+            transaction: t,
+          }
+        );
+        await newUser.addProfileImage(profileImage, { transaction: t });
       }
-
-      const profileImage = await ProfileImage.create(
-        {
-          src: BASIC_IMG_SRC,
-        },
-        {
-          transaction: t,
-        }
-      );
-      await newUser.addProfileImage(profileImage, { transaction: t });
 
       await newUser.createPrivateCalendar(
         {
-          name: "MyCalendar",
+          name: newUser.nickname,
         },
         { transaction: t }
       );
     });
-
     return res.status(200).send({ success: true });
   } catch (error) {
     console.log(error);

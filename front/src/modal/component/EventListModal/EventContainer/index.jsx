@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
+import Moment from '../../../../utils/moment';
+import EventBar from '../../../../components/calendar/EventBar';
 import { useSelector } from 'react-redux';
 import { eventSelector } from '../../../../store/selectors/events';
-import Moment from '../../../../utils/moment';
-import EventBar from '../../../calendar/EventBar';
 import { EventDetailModalContext } from '../../../../context/EventModalContext';
 
 const Index = ({ event, date }) => {
@@ -15,16 +15,11 @@ const Index = ({ event, date }) => {
     EventDetailModalContext,
   );
 
-  function handleEventDetailMadal(e, event) {
-    const { top, left } = e.target.getBoundingClientRect();
-    showEventDetailModal({
-      style: {
-        top: window.innerHeight < top + 400 ? null : top - 100,
-        bottom: window.innerHeight < top + 400 ? 25 : null,
-        left: left - 460,
-      },
-      event,
-    });
+  function handleEventDetailMadal(e) {
+    showEventDetailModal();
+    e.stopPropagation();
+
+    return { offsetTop: -100, offsetLeft: -450 };
   }
 
   return (
