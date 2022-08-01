@@ -3,14 +3,10 @@ import PropTypes from 'prop-types';
 
 import Moment from '../../../../utils/moment';
 import EventBar from '../../../../components/calendar/EventBar';
-import { useSelector } from 'react-redux';
-import { eventSelector } from '../../../../store/selectors/events';
 import { EventDetailModalContext } from '../../../../context/EventModalContext';
 
-const Index = ({ event, date }) => {
-  const { startTime, endTime } = useSelector(state =>
-    eventSelector(state, event.id),
-  );
+const Index = ({ event, calendarColor, date }) => {
+  const { startTime, endTime } = event;
   const { showModal: showEventDetailModal } = useContext(
     EventDetailModalContext,
   );
@@ -24,7 +20,9 @@ const Index = ({ event, date }) => {
 
   return (
     <EventBar
-      eventBar={event}
+      eventBar={{ scale: 1 }}
+      event={event}
+      calendarColor={calendarColor}
       left={new Moment(new Date(startTime)).resetTime().time !== date.time}
       right={new Moment(new Date(endTime)).resetTime().time !== date.time}
       outerRight={true}
@@ -35,6 +33,7 @@ const Index = ({ event, date }) => {
 
 Index.propTypes = {
   event: PropTypes.object,
+  calendarColor: PropTypes.string,
   date: PropTypes.object,
 };
 

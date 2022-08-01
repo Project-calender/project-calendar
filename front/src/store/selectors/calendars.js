@@ -31,3 +31,13 @@ export const calendarByEventIdSelector = createSelector(
   [state => state, (_, event) => event?.PrivateCalendarId || event?.CalendarId],
   (state, calendarId) => selectCalendarById(state, calendarId),
 );
+
+export const calendarByEventIdsSelector = createSelector(
+  [
+    state => state,
+    (_, events) =>
+      events.map(event => event?.PrivateCalendarId || event?.CalendarId),
+  ],
+  (state, calendarIds) =>
+    calendarIds.map(calendarId => selectCalendarById(state, calendarId)),
+);

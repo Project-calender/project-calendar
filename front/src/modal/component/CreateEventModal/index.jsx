@@ -141,7 +141,7 @@ const Index = ({ hideModal, style }) => {
             <div>
               <div />
               <div>
-                <CheckBox>
+                <CheckBox onClick={() => {}}>
                   <h3>종일</h3>
                 </CheckBox>
               </div>
