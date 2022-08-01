@@ -16,26 +16,26 @@ export const getAllCalendarAndEvent = createAsyncThunk(
       id: data.privateEvents.id * -1,
     };
     const groupCalendars = data.groupEvents;
+
     const [privateEvents, groupEvents] = [
       privateCalendar.PrivateEvents.map(info => ({
         ...info,
         id: info.id * -1,
         PrivateCalendarId: info.PrivateCalendarId * -1,
       })),
-      groupCalendars.flatMap(calendar => calendar.GroupEvents),
+      groupCalendars.flatMap(calendar => calendar[0].GroupEvents),
     ];
 
-    const calendars = [privateCalendar, ...groupCalendars].map(calendar => {
-      const { id, name, color, UserId, OwnerId } = calendar;
-      if (UserId) return { id, name, color, UserId, authority: 3 };
-      return {
-        id,
-        name,
-        color,
-        OwnerId,
-        authority: calendar.CalendarMember.authority,
-      };
+    const calendars = [
+      privateCalendar,
+      ...groupCalendars.map(([info, authority]) => ({ ...info, ...authority })),
+    ].map(calendar => {
+      delete calendar.GroupEvents, delete calendar.privateEvents;
+
+      if (calendar.UserId) return { ...calendar, authority: 3 };
+      return calendar;
     });
+
     const events = privateEvents.concat(groupEvents);
 
     return { calendars, events };
