@@ -86,7 +86,7 @@ const Index = ({ modalData, hideModal }) => {
             <div>
               <h1>{event.name || '(제목 없음)'}</h1>
               <h3>{initDateTitle(event)}</h3>
-              {/* <p>매년</p> */}
+              {event.repeat && <p>매년</p>}
             </div>
           </div>
 
@@ -103,19 +103,22 @@ const Index = ({ modalData, hideModal }) => {
             <EventMemberList eventMembers={event.EventMembers} />
           )}
 
-          <div>
-            <FontAwesomeIcon icon={faBarsStaggered} />
+          {event.memo && (
             <div>
-              <h3>{event.memo}</h3>
+              <FontAwesomeIcon icon={faBarsStaggered} />
+              <div>
+                <h3>{event.memo}</h3>
+              </div>
             </div>
-          </div>
-
-          <div>
-            <FontAwesomeIcon icon={faBell} />
+          )}
+          {event.alert && (
             <div>
-              <h3>30분 전</h3>
+              <FontAwesomeIcon icon={faBell} />
+              <div>
+                <h3>30분 전</h3>
+              </div>
             </div>
-          </div>
+          )}
 
           <div>
             <FontAwesomeIcon icon={faCalendarDay} />

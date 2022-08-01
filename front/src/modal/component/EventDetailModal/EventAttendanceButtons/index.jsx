@@ -23,6 +23,7 @@ const Index = ({ event }) => {
       invitedEventId: -event.id,
       state: e.target.value,
     });
+
     [...e.currentTarget.children].forEach($button => {
       $button.classList.toggle(
         styles.button_active,
