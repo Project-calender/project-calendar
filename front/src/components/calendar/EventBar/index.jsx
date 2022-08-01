@@ -1,24 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
 import { EVENT_URL } from '../../../constants/api';
 import { EventDetailModalContext } from '../../../context/EventModalContext';
-import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
-import { eventSelector } from '../../../store/selectors/events';
 import axios from '../../../utils/token';
 import styles from './style.module.css';
 
 const Index = ({
-  eventBar,
+  event,
+  calendarColor,
+  eventBarScale,
   left = false,
   right = false,
   outerRight = false,
   handleEventDetailMadal = () => {},
 }) => {
-  const event = useSelector(state => eventSelector(state, eventBar?.id));
-  const calendar = useSelector(state =>
-    calendarByEventIdSelector(state, event),
-  );
+  // const event = useSelector(state => eventSelector(state, eventBar?.id));
+  // const calendar = useSelector(state =>
+  //   calendarByEventIdSelector(state, event),
+  // );
 
   const { setModalData: setEventDetailModalData } = useContext(
     EventDetailModalContext,
@@ -26,12 +25,14 @@ const Index = ({
 
   const eventBarStyle = {
     container: {
-      width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
+      width: `calc(100% * ${eventBarScale} + ${eventBarScale}px - 5px)`,
     },
     main: {
-      background: `linear-gradient(to right, ${calendar?.color} 5px, ${event?.color} 5px)`,
+      background: `linear-gradient(to right, ${calendarColor} 5px, ${
+        event?.color || calendarColor
+      } 5px)`,
     },
-    left: { borderRightColor: calendar?.color },
+    left: { borderRightColor: calendarColor },
     right: { borderLeftColor: event?.color },
   };
 
@@ -55,7 +56,7 @@ const Index = ({
     }));
   }
 
-  if (!eventBar || !eventBar.scale) {
+  if (!eventBarScale) {
     return <div className={styles.empty_event_bar} />;
   }
 
@@ -68,7 +69,7 @@ const Index = ({
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
       <div className={styles.event_bar} style={eventBarStyle.main}>
-        <em>{event?.name || eventBar.name || '(제목 없음)'}</em>
+        <em>{event?.name || '(제목 없음)'}</em>
       </div>
 
       {right && (
@@ -84,7 +85,9 @@ const Index = ({
 };
 
 Index.propTypes = {
-  eventBar: PropTypes.object,
+  event: PropTypes.object,
+  calendarColor: PropTypes.string,
+  eventBarScale: PropTypes.number,
   left: PropTypes.bool,
   right: PropTypes.bool,
   outerRight: PropTypes.bool,
