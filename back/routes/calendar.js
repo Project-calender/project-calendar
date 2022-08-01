@@ -62,6 +62,7 @@ router.post("/editGroupCalendar", authJWT, async (req, res, next) => {
     });
 
     if (changeCalendar.OwnerId !== req.myId) {
+      await t.rollback();
       return res
         .status(400)
         .send({ message: "캘린더의 오너만 캘린더를 수정할 수 있습니다!" });
@@ -174,6 +175,7 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
       },
     });
     if (!groupCalendar) {
+      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 캘린더입니다!" });
     }
 
@@ -249,6 +251,7 @@ router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
       },
     });
     if (!groupCalendar) {
+      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 캘린더입니다!" });
     }
 
@@ -314,6 +317,7 @@ router.post("/giveAuthority", authJWT, async (req, res, next) => {
     });
 
     if (req.myId != groupCalendar.OwnerId) {
+      await t.rollback();
       return res
         .status(400)
         .send({ message: "권한 부여는 달력의 오너만 가능합니다!" });
@@ -323,6 +327,7 @@ router.post("/giveAuthority", authJWT, async (req, res, next) => {
       where: { email: req.body.memberEmail },
     });
     if (!member) {
+      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
     }
 
@@ -333,12 +338,14 @@ router.post("/giveAuthority", authJWT, async (req, res, next) => {
     });
 
     if (!isGroupMember) {
+      await t.rollback();
       return res
         .status(400)
         .send({ message: "그룹 캘린더에 존재하지 초대되지 않은 유저입니다!" });
     }
 
     if (req.body.newAuthority > 2) {
+      await t.rollback();
       return res
         .status(400)
         .send({ message: "달력 오너보다 낮은 권한만 부여할 수 있습니다!" });
