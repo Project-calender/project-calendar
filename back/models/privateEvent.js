@@ -13,8 +13,9 @@ module.exports = class PrivateEvent extends Model {
           type: DataTypes.STRING(20),
           allowNull: false,
         },
-        priority: {
+        busy: {
           type: DataTypes.INTEGER,
+          defaultValue: 0,
         },
         memo: {
           type: DataTypes.TEXT,

@@ -19,7 +19,8 @@ module.exports = {
         id: i + 1,
         name: faker.word.adjective(),
         color: faker.color.rgb(),
-        priority: parseInt(faker.random.numeric(), 10),
+        busy: Math.floor(Math.random() * 2),
+        permission: Math.floor(Math.random() * 2) + 1,
         memo: faker.lorem.lines(),
         startTime: startTime,
         endTime: endDate,
@@ -35,8 +36,8 @@ module.exports = {
         id: i + 1,
         name: dummyEvent.name,
         color: dummyEvent.color,
-        priority: dummyEvent.priority,
         memo: dummyEvent.memo,
+        busy: Math.floor(Math.random() * 2),
         startTime: dummyEvent.startTime,
         endTime: dummyEvent.endTime,
         allDay: dummyEvent.allDay,
@@ -50,7 +51,7 @@ module.exports = {
     }
 
     await queryInterface.bulkInsert("Events", dummyEvents);
-    await queryInterface.bulkInsert("PrivateEvents", dummyPrivateEvents);
+    // await queryInterface.bulkInsert("PrivateEvents", dummyPrivateEvents);
   },
 
   async down(queryInterface, Sequelize) {

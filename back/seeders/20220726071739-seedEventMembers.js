@@ -4,11 +4,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     var dummyEventMembers = [];
 
-    var dummyStates = [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 2, 2];
-    for (var i = 1; i < 20; i++) {
+    var dummyStates = [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 2, 2, 3, 3];
+    for (var i = 0; i < 20; i++) {
       for (var j = 0; j < 20; j++) {
         var calendarMember = {
-          state: dummyStates[Math.floor(Math.random() * 12)],
+          state: i === 0 ? 1 : dummyStates[Math.floor(Math.random() * 12)],
           createdAt: new Date(),
           updatedAt: new Date(),
           UserId: i + 1,
