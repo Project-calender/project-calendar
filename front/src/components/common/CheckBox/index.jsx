@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 
 const Index = ({
   children,
-  onChange,
+  onChange = () => {},
   defaultChecked = true,
   color = '#1a73e8',
 }) => {
   function handleCheckBox(e) {
-    onChange(e);
     const { background, border } = checkBoxStyle(e.target.checked);
     e.target.style.background = background;
     e.target.style.border = border;
+    onChange(e);
   }
 
   function checkBoxStyle(checked) {

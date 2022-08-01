@@ -8,7 +8,7 @@ import styles from './style.module.css';
 const Index = ({
   event,
   calendarColor,
-  eventBarScale,
+  eventBar,
   left = false,
   right = false,
   outerRight = false,
@@ -25,7 +25,7 @@ const Index = ({
 
   const eventBarStyle = {
     container: {
-      width: `calc(100% * ${eventBarScale} + ${eventBarScale}px - 5px)`,
+      width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
     },
     main: {
       background: `linear-gradient(to right, ${calendarColor} 5px, ${
@@ -56,7 +56,7 @@ const Index = ({
     }));
   }
 
-  if (!eventBarScale) {
+  if (!eventBar || !eventBar.scale) {
     return <div className={styles.empty_event_bar} />;
   }
 
@@ -69,7 +69,7 @@ const Index = ({
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
       <div className={styles.event_bar} style={eventBarStyle.main}>
-        <em>{event?.name || '(제목 없음)'}</em>
+        <em>{event?.name || eventBar.name || '(제목 없음)'}</em>
       </div>
 
       {right && (
@@ -87,7 +87,7 @@ const Index = ({
 Index.propTypes = {
   event: PropTypes.object,
   calendarColor: PropTypes.string,
-  eventBarScale: PropTypes.number,
+  eventBar: PropTypes.object,
   left: PropTypes.bool,
   right: PropTypes.bool,
   outerRight: PropTypes.bool,

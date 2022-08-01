@@ -70,7 +70,7 @@ const Index = ({ date, maxHeight }) => {
           key={index}
           event={events[index]}
           calendarColor={calendars[index]?.color}
-          eventBarScale={eventBar?.scale}
+          eventBar={eventBar}
           handleEventDetailMadal={handleEventDetailMadal}
         />
       ))}

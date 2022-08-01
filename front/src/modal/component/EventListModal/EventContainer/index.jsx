@@ -20,7 +20,7 @@ const Index = ({ event, calendarColor, date }) => {
 
   return (
     <EventBar
-      eventBarScale={1}
+      eventBar={{ scale: 1 }}
       event={event}
       calendarColor={calendarColor}
       left={new Moment(new Date(startTime)).resetTime().time !== date.time}

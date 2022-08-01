@@ -28,7 +28,7 @@ const Index = ({ dateTime }) => {
   if (!eventBar) return;
   return (
     <div className={styles.new_event_bar} ref={$eventBarParent}>
-      <EventBar eventBarScale={eventBar.scale} />
+      <EventBar eventBar={eventBar} />
     </div>
   );
 };
