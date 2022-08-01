@@ -12,7 +12,7 @@
 
 .modal_body h1 { font-size: 20px; font-weight: 500; color: #6b6b6b; } 
 .modal_body h3 { font-size: 15px; font-weight: 400; color: #6b6b6b; } 
-.modal_body p { font-size: 13px; font-weight: 300; } 
+.modal_body p { font-size: 13px; font-weight: 300; color: #737373; } 
 
 .event_color { width: 14px !important; height: 14px !important; border-radius: 3px; margin-left: 24px !important; margin-right: 23px !important; } 
 

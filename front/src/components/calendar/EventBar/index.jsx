@@ -1,24 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
 import { EVENT_URL } from '../../../constants/api';
 import { EventDetailModalContext } from '../../../context/EventModalContext';
-import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
-import { eventSelector } from '../../../store/selectors/events';
 import axios from '../../../utils/token';
 import styles from './style.module.css';
 
 const Index = ({
+  event,
+  calendarColor,
   eventBar,
   left = false,
   right = false,
   outerRight = false,
   handleEventDetailMadal = () => {},
 }) => {
-  const event = useSelector(state => eventSelector(state, eventBar?.id));
-  const calendar = useSelector(state =>
-    calendarByEventIdSelector(state, event),
-  );
+  // const event = useSelector(state => eventSelector(state, eventBar?.id));
+  // const calendar = useSelector(state =>
+  //   calendarByEventIdSelector(state, event),
+  // );
 
   const { setModalData: setEventDetailModalData } = useContext(
     EventDetailModalContext,
@@ -29,9 +28,11 @@ const Index = ({
       width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
     },
     main: {
-      background: `linear-gradient(to right, ${calendar?.color} 5px, ${event?.color} 5px)`,
+      background: `linear-gradient(to right, ${calendarColor} 5px, ${
+        event?.color || calendarColor
+      } 5px)`,
     },
-    left: { borderRightColor: calendar?.color },
+    left: { borderRightColor: calendarColor },
     right: { borderLeftColor: event?.color },
   };
 
@@ -84,6 +85,8 @@ const Index = ({
 };
 
 Index.propTypes = {
+  event: PropTypes.object,
+  calendarColor: PropTypes.string,
   eventBar: PropTypes.object,
   left: PropTypes.bool,
   right: PropTypes.bool,
