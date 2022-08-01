@@ -4,8 +4,10 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { EVENT_URL } from '../../../../constants/api';
+import { useDispatch } from 'react-redux';
+import { updateEvent } from '../../../../store/events';
 
-const Index = ({ event }) => {
+const Index = ({ event, hideModal }) => {
   const $groupButton = useRef();
   useEffect(() => {
     [...$groupButton.current.children].forEach($button => {
@@ -16,20 +18,21 @@ const Index = ({ event }) => {
     });
   }, [event]);
 
+  const dispatch = useDispatch();
   async function changeEventInviteState(e) {
     if (!e.target.matches('button')) return;
 
-    await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
-      invitedEventId: -event.id,
-      state: e.target.value,
+    const state = +e.target.value;
+    [...e.currentTarget.children].forEach($button => {
+      $button.classList.toggle(styles.button_active, $button.value === state);
     });
 
-    [...e.currentTarget.children].forEach($button => {
-      $button.classList.toggle(
-        styles.button_active,
-        $button.value == e.target.value,
-      );
+    await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
+      invitedEventId: -event.id,
+      state,
     });
+    dispatch(updateEvent({ ...event, state }));
+    hideModal();
   }
 
   return (
@@ -46,6 +49,7 @@ const Index = ({ event }) => {
 
 Index.propTypes = {
   event: PropTypes.object,
+  hideModal: PropTypes.func,
 };
 
 export default Index;

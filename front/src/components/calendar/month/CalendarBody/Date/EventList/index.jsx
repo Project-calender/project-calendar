@@ -51,7 +51,11 @@ const Index = ({ date, maxHeight }) => {
   }
 
   return (
-    <div className={styles.event_list} ref={$eventList}>
+    <div
+      className={styles.event_list}
+      ref={$eventList}
+      data-drag-date={date.time}
+    >
       {previewEvent.slice(0, countEventBar).map((event, index) => (
         <EventBar
           key={index}

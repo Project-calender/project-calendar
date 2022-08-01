@@ -29,7 +29,7 @@ const Index = ({ date }) => {
       <em onClick={() => moveDayCalendar(date)}>{getTitleDate(date)}</em>
       <div
         className={styles.event_selection_container}
-        data-date-id={date.time}
+        data-drag-date={date.time}
         ref={containerDiv}
       >
         <NewEvent dateTime={date.time} setMaxHight={setMaxHight} />
