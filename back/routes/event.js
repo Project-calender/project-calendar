@@ -409,17 +409,15 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
       where: { id: req.body.invitedEventId },
     });
 
-    var nowDate = new Date();
-
     if (!invitedEvent) {
       await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
-
-    if (invitedEvent.endTime < nowDate) {
-      await t.rollback();
-      return res.status(400).send({ message: "이미 종료된 이벤트 입니다!" });
-    }
+    // var nowDate = new Date();
+    // if (invitedEvent.endTime < nowDate) {
+    //   await t.rollback();
+    //   return res.status(400).send({ message: "이미 종료된 이벤트 입니다!" });
+    // }
 
     const changeState = await EventMember.findOne({
       where: {
