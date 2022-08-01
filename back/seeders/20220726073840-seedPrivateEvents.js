@@ -18,7 +18,7 @@ module.exports = {
         id: i + 1,
         name: faker.word.adjective(),
         color: faker.color.rgb(),
-        priority: parseInt(faker.random.numeric(), 10),
+        busy: Math.floor(Math.random() * 2),
         memo: faker.lorem.lines(),
         startTime: startTime,
         endTime: endDate,
