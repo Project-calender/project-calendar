@@ -335,7 +335,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
     });
     if (!isGroupMember) {
       return res
-        .status(401)
+        .status(400)
         .send({ message: "그룹 캘린더에 존재하지 않는 유저입니다!" });
     }
 
@@ -412,11 +412,13 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
     var nowDate = new Date();
 
     if (!invitedEvent) {
+      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
     if (invitedEvent.endTime < nowDate) {
-      return res.status(401).send({ message: "이미 종료된 이벤트 입니다!" });
+      await t.rollback();
+      return res.status(400).send({ message: "이미 종료된 이벤트 입니다!" });
     }
 
     const changeState = await EventMember.findOne({
@@ -511,6 +513,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (!groupEvent) {
+      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
@@ -521,7 +524,8 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (hasAuthority.authority < 2) {
-      return res.status(401).send({ message: "수정 권한이 없습니다!" });
+      await t.rollback();
+      return res.status(400).send({ message: "수정 권한이 없습니다!" });
     }
 
     await groupEvent.update(
@@ -594,6 +598,7 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (!groupEvent) {
+      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
@@ -604,7 +609,8 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
     });
 
     if (hasAuthority.authority < 2) {
-      return res.status(401).send({ message: "삭제 권한이 없습니다!" });
+      await t.rollback();
+      return res.status(400).send({ message: "삭제 권한이 없습니다!" });
     }
 
     await sequelize.transaction(async (t) => {
