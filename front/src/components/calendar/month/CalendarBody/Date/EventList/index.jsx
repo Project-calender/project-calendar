@@ -21,13 +21,21 @@ const Index = ({ date, maxHeight }) => {
   const { showModal: showEventDetailModal, hideModal: hideEventDetailModal } =
     useContext(EventDetailModalContext);
   const $eventList = useRef();
+  const eventBars = useSelector(state =>
+    eventsByDateSelector(state, date),
+  )?.filter(
+    eventBar =>
+      !eventBar ||
+      localStorage
+        .getItem('checkedCalendar')
+        .includes(eventBar?.PrivateCalendarId || eventBar?.CalendarId),
+  );
 
-  const eventBars = useSelector(state => eventsByDateSelector(state, date));
+  const calendars = useSelector(state =>
+    calendarByEventIdsSelector(state, eventBars || []),
+  );
   const events = useSelector(state =>
     eventsByEventIdsSelector(state, eventBars || []),
-  );
-  const calendars = useSelector(state =>
-    calendarByEventIdsSelector(state, events || []),
   );
 
   if (!eventBars) return;

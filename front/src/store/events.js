@@ -34,6 +34,11 @@ const events = createSlice({
 
   reducers: {
     updateEvent: eventsAdapter.upsertOne,
+    updateEventBar(state) {
+      const { selectAll } = eventsAdapter.getSelectors();
+      const byDate = setEventsByDate(selectAll(state));
+      state.byDate = byDate;
+    },
   },
 
   extraReducers: builder => {
@@ -46,39 +51,63 @@ const events = createSlice({
         }))
         .sort(eventSort);
 
-      const byDate = events.reduce((byDate, event) => {
-        const endDate = new Moment(new Date(event.endTime)).resetTime();
-        const startDate = new Moment(new Date(event.startTime)).resetTime();
-
-        const eventBars = createEventBar({
-          standardDateTime: startDate.time,
-          endDateTime: endDate.time,
-        });
-
-        eventBars.forEach(eventBar => {
-          const key = eventBar.time;
-
-          byDate[key] = byDate[key] || [];
-          let index = byDate[key].findIndex(event => !event);
-          if (index === -1) index = byDate[key].length;
-          byDate[key][index] = { id: event.id, scale: eventBar.scale };
-
-          for (let i = 1; i < eventBar.scale; i++) {
-            let nextDate = new Moment(eventBar.time).addDate(i);
-            const key = nextDate.time;
-            byDate[key] = byDate[key] || Array(5).fill(null);
-            byDate[key][index] = { id: event.id, scale: null };
-          }
-        });
-
-        return byDate;
-      }, {});
-
       eventsAdapter.setAll(state, events);
-      state.byDate = byDate;
+      state.byDate = setEventsByDate(events);
     });
   },
 });
 
-export const { updateEvent } = events.actions;
+function setEventsByDate(events) {
+  return events.reduce((byDate, event) => {
+    if (
+      !localStorage
+        .getItem('checkedCalendar')
+        .includes(event?.PrivateCalendarId || event?.CalendarId)
+    )
+      return byDate;
+
+    const endDate = new Moment(new Date(event.endTime)).resetTime();
+    const startDate = new Moment(new Date(event.startTime)).resetTime();
+
+    const eventBars = createEventBar({
+      standardDateTime: startDate.time,
+      endDateTime: endDate.time,
+    });
+
+    eventBars.forEach(eventBar => {
+      const key = eventBar.time;
+
+      byDate[key] = byDate[key] || [];
+      let index = byDate[key].findIndex(event => !event);
+      if (index === -1) index = byDate[key].length;
+      byDate[key][index] = {
+        id: event.id,
+        scale: eventBar.scale,
+        PrivateCalendarId: event.PrivateCalendarId,
+        CalendarId: event.CalendarId,
+      };
+
+      for (let i = 1; i < eventBar.scale; i++) {
+        let nextDate = new Moment(eventBar.time).addDate(i);
+        const key = nextDate.time;
+        byDate[key] = byDate[key] || [];
+        byDate[key][index] = {
+          id: event.id,
+          scale: null,
+          PrivateCalendarId: event.PrivateCalendarId,
+          CalendarId: event.CalendarId,
+        };
+
+        for (let i = index - 1; i >= 0; i--) {
+          if (byDate[key][i]) break;
+          byDate[key][i] = null;
+        }
+      }
+    });
+
+    return byDate;
+  }, {});
+}
+
+export const { updateEvent, updateEventBar } = events.actions;
 export default events.reducer;

@@ -16,17 +16,16 @@ const user = createSlice({
       state = payload;
     },
 
-    checkCalendar(state, { payload }) {
-      const target = payload.id;
+    checkCalendar(state, { payload: { id, checked } }) {
       const checkedCalendar = new Set(state.checkedCalendar);
-      if (checkedCalendar.has(target)) checkedCalendar.delete(target);
-      else checkedCalendar.add(target);
+      if (checked) checkedCalendar.add(id);
+      else checkedCalendar.delete(id);
 
       axios.post(USER_URL.CHECK_CALENDAR, {
-        checkedList: state.checkedCalendar,
+        checkedList: [...checkedCalendar],
       });
-      localStorage.setItem('checkedCalendar', state.checkedCalendar.join(','));
       state.checkedCalendar = [...checkedCalendar];
+      localStorage.setItem('checkedCalendar', state.checkedCalendar.join(','));
     },
   },
 });
