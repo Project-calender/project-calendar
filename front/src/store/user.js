@@ -2,14 +2,15 @@ import { createSlice } from '@reduxjs/toolkit';
 import { USER_URL } from '../constants/api';
 import axios from '../utils/token';
 
-const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
-const checkedCalendar = localStorage.getItem('checkedCalendar') || '';
+export const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+export const getCheckedCalendar = () =>
+  (localStorage.getItem('checkedCalendar') || '').split(',').map(Number);
 
 const user = createSlice({
   name: 'user',
   initialState: {
     ...userInfo,
-    checkedCalendar: checkedCalendar.split(',').map(Number),
+    checkedCalendar: getCheckedCalendar(),
   },
   reducers: {
     updateUser(state, { payload }) {
@@ -29,6 +30,12 @@ const user = createSlice({
     },
   },
 });
+
+export function isCheckedCalander(event) {
+  return getCheckedCalendar().includes(
+    event?.PrivateCalendarId || event?.CalendarId,
+  );
+}
 
 export const { updateUser, checkCalendar } = user.actions;
 export default user.reducer;
