@@ -5,7 +5,7 @@ import Moment from '../../../../utils/moment';
 import EventBar from '../../../../components/calendar/EventBar';
 import { EventDetailModalContext } from '../../../../context/EventModalContext';
 
-const Index = ({ event, calendarColor, date }) => {
+const Index = ({ event, calendar, date }) => {
   const { startTime, endTime } = event;
   const { showModal: showEventDetailModal } = useContext(
     EventDetailModalContext,
@@ -22,7 +22,7 @@ const Index = ({ event, calendarColor, date }) => {
     <EventBar
       eventBar={{ scale: 1 }}
       event={event}
-      calendarColor={calendarColor}
+      calendar={calendar}
       left={new Moment(new Date(startTime)).resetTime().time !== date.time}
       right={new Moment(new Date(endTime)).resetTime().time !== date.time}
       outerRight={true}
@@ -33,7 +33,7 @@ const Index = ({ event, calendarColor, date }) => {
 
 Index.propTypes = {
   event: PropTypes.object,
-  calendarColor: PropTypes.string,
+  calendar: PropTypes.object,
   date: PropTypes.object,
 };
 

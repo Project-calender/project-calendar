@@ -7,18 +7,13 @@ import styles from './style.module.css';
 
 const Index = ({
   event,
-  calendarColor,
+  calendar,
   eventBar,
   left = false,
   right = false,
   outerRight = false,
   handleEventDetailMadal = () => {},
 }) => {
-  // const event = useSelector(state => eventSelector(state, eventBar?.id));
-  // const calendar = useSelector(state =>
-  //   calendarByEventIdSelector(state, event),
-  // );
-
   const { setModalData: setEventDetailModalData } = useContext(
     EventDetailModalContext,
   );
@@ -28,11 +23,11 @@ const Index = ({
       width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
     },
     main: {
-      background: `linear-gradient(to right, ${calendarColor} 5px, ${
-        event?.color || calendarColor
+      background: `linear-gradient(to right, ${calendar?.color} 5px, ${
+        event?.color || calendar?.color
       } 5px)`,
     },
-    left: { borderRightColor: calendarColor },
+    left: { borderRightColor: calendar },
     right: { borderLeftColor: event?.color },
   };
 
@@ -86,7 +81,7 @@ const Index = ({
 
 Index.propTypes = {
   event: PropTypes.object,
-  calendarColor: PropTypes.string,
+  calendar: PropTypes.object,
   eventBar: PropTypes.object,
   left: PropTypes.bool,
   right: PropTypes.bool,

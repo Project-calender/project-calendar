@@ -23,7 +23,7 @@ const Index = ({ modalData, hideModal }) => {
             <EventContainer
               key={event.id}
               event={event}
-              calendarColor={calendars[index].color}
+              calendar={calendars[index]}
               date={date}
             />
           ))
