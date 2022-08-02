@@ -31,7 +31,11 @@ const initialState = {
 const events = createSlice({
   name: 'events',
   initialState: initialState,
-  reducers: {},
+
+  reducers: {
+    updateEvent: eventsAdapter.upsertOne,
+  },
+
   extraReducers: builder => {
     builder.addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
       const events = payload.events
@@ -76,5 +80,5 @@ const events = createSlice({
   },
 });
 
-export const { setEventsByDate } = events.actions;
+export const { updateEvent } = events.actions;
 export default events.reducer;

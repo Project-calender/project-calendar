@@ -49,7 +49,6 @@ const Index = ({ modalData, hideModal }) => {
 
   if (!event) return;
 
-  console.log('eventDetail', event);
   return (
     <Modal
       hideModal={hideModal}
@@ -139,7 +138,7 @@ const Index = ({ modalData, hideModal }) => {
         {Number.isInteger(event.state) && (
           <div className={styles.modal_footer}>
             <div className={styles.modal_line} />
-            <EventAttendanceButtons event={event} />
+            <EventAttendanceButtons event={event} hideModal={hideModal} />
           </div>
         )}
       </div>

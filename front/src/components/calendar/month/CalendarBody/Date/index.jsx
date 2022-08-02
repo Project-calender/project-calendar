@@ -29,7 +29,7 @@ const Index = ({ date }) => {
       <em onClick={() => moveDayCalendar(date)}>{getTitleDate(date)}</em>
       <div
         className={styles.event_selection_container}
-        data-date-id={date.time}
+        data-drag-date={date.time}
         ref={containerDiv}
       >
         <NewEvent dateTime={date.time} setMaxHight={setMaxHight} />
@@ -41,13 +41,14 @@ const Index = ({ date }) => {
 };
 
 function getTitleDate(date) {
-  return date.date === 1 ? `${date.month}월 1일` : date.date;
+  return !isSameDate(date, new Moment()) && date.date === 1
+    ? `${date.month}월 1일`
+    : date.date;
 }
 
 function initClassName(date) {
-  let className = styles.calendar_td + ' ';
-  if (isSameDate(date, new Moment())) className += styles.calendar_today;
-
+  const className = styles.calendar_td + ' ';
+  if (isSameDate(date, new Moment())) return className + styles.calendar_today;
   return className;
 }
 
