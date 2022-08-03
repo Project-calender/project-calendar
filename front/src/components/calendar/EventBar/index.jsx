@@ -57,13 +57,18 @@ const Index = ({
 
   return (
     <div
-      className={styles.event_container}
+      className={`${styles.event_container} event_bar_div`}
       style={eventBarStyle.container}
       onClick={clickEventBar}
     >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
-      <div className={styles.event_bar} style={eventBarStyle.main}>
+      <div
+        className={`${styles.event_bar} ${
+          left ? styles.none_left_border : null
+        } ${right ? styles.none_right_border : null} event_bar `}
+        style={eventBarStyle.main}
+      >
         <em>{event?.name || eventBar.name || '(제목 없음)'}</em>
       </div>
 

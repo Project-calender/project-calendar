@@ -11,10 +11,8 @@ const Index = ({ event, calendar, date }) => {
     EventDetailModalContext,
   );
 
-  function handleEventDetailMadal(e) {
+  function handleEventDetailMadal() {
     showEventDetailModal();
-    e.stopPropagation();
-
     return { offsetTop: -100, offsetLeft: -450 };
   }
 
