@@ -11,9 +11,10 @@ const Index = ({ event, calendar, date }) => {
     EventDetailModalContext,
   );
 
-  function handleEventDetailMadal() {
+  function handleEventDetailMadal(e) {
     showEventDetailModal();
-    return { offsetTop: -100, offsetLeft: -450 };
+    const { left } = e.target.getBoundingClientRect();
+    return { offsetTop: -100, offsetLeft: left > 500 ? -450 : 220 };
   }
 
   return (

@@ -38,14 +38,10 @@ const Index = ({ date, maxHeight }) => {
 
   function clickReadMore(e) {
     const { top, left } = $eventList.current.getBoundingClientRect();
-    const minLeft = window.innerWidth - 250;
     showEventListModal({
       date,
       events: events.filter(event => event),
-      style: {
-        top: top - 35,
-        left: minLeft < left ? minLeft : left,
-      },
+      style: { top: top - 35, left },
     });
     hideEventDetailModal();
     e.stopPropagation();
