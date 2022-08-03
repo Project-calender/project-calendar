@@ -26,13 +26,7 @@ const events = createSlice({
 
   extraReducers: builder => {
     builder.addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
-      const events = payload.events
-        .map(event => ({
-          ...event,
-          startTime: new Date(event.startTime).getTime(),
-          endTime: new Date(event.endTime).getTime(),
-        }))
-        .sort(eventSort);
+      const events = payload.events.sort(eventSort);
 
       eventsAdapter.setAll(state, events);
       state.byDate = classifyEventsByDate(events);
