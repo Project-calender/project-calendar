@@ -64,7 +64,13 @@ module.exports = class User extends Model {
       foreignKey: "CalendarHostId",
     });
 
+    //ProfileImage
     db.User.hasMany(db.ProfileImage);
+
+    //Alert
     db.User.hasMany(db.Alert);
+
+    //RealTimeAlert
+    db.User.hasMany(db.RealTimeAlert);
   }
 };
