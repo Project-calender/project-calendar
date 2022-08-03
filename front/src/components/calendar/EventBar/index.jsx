@@ -91,7 +91,7 @@ const Index = ({
       {calendar?.color && (
         <div
           className={`${styles.event_bar_calendar} ${
-            left ? styles.none_left_border : null
+            left ? styles.none_left_border : ''
           }`}
           style={eventBarStyle.calendar}
         />
@@ -99,11 +99,12 @@ const Index = ({
 
       <div
         className={`${styles.event_bar} ${
-          event?.state === 2 ? styles.event_bar_slash : null
-        } ${right ? styles.none_right_border : null} event_bar `}
+          event?.state === 2 ? styles.event_bar_slash : ''
+        } ${right ? styles.none_right_border : ''}`}
         style={eventBarStyle.main}
+        name="event_bar"
       >
-        <em className={`${event?.state === 3 ? styles.refuse_text : null}`}>
+        <em className={`${event?.state === 3 ? styles.refuse_text : ''}`}>
           {event?.name || eventBar.name || '(제목 없음)'}
         </em>
       </div>
