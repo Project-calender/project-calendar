@@ -24,7 +24,6 @@ const Index = ({ event, calendar, date }) => {
       calendar={calendar}
       left={new Moment(new Date(startTime)).resetTime().time !== date.time}
       right={new Moment(new Date(endTime)).resetTime().time !== date.time}
-      outerRight={true}
       handleEventDetailMadal={handleEventDetailMadal}
     />
   );
