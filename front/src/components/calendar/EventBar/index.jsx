@@ -4,6 +4,8 @@ import { EVENT_URL } from '../../../constants/api';
 import { EventDetailModalContext } from '../../../context/EventModalContext';
 import axios from '../../../utils/token';
 import styles from './style.module.css';
+import Moment from '../../../utils/moment.js';
+import EventTimeBar from '../EventTimeBar';
 
 const Index = ({
   event,
@@ -63,6 +65,20 @@ const Index = ({
   if (!eventBar || !eventBar.scale) {
     return <div className={styles.empty_event_bar} />;
   }
+
+  if (
+    event &&
+    !event?.allDay &&
+    new Moment(event.startTime).toSimpleDateString() ===
+      new Moment(event.endTime).toSimpleDateString()
+  )
+    return (
+      <EventTimeBar
+        event={event}
+        color={eventBarColor}
+        clickEventBar={clickEventBar}
+      />
+    );
 
   return (
     <div
