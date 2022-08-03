@@ -30,16 +30,16 @@ const Index = ({ modalData, hideModal }) => {
   const { style, event } = modalData || {};
   const [position, setPosition] = useState();
   useEffect(() => {
-    let { top, left } = style?.position || {};
-    if (top && top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
+    let { top = 0, left = 0 } = style?.position || {};
+    if (top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
       top = window.innerHeight - $modal.current?.offsetHeight - 35;
     }
 
-    if (left && left + $modal.current?.offsetWidth > window.innerWidth) {
+    if (left + $modal.current?.offsetWidth > window.innerWidth) {
       left = window.innerWidth - $modal.current?.offsetWidth - 60;
     }
 
-    if (left && window.innerWidth <= 660) left = 10;
+    if (window.innerWidth <= 660) left = 10;
     setPosition({ top, left });
   }, [style]);
 

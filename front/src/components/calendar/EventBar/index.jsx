@@ -7,18 +7,13 @@ import styles from './style.module.css';
 
 const Index = ({
   event,
-  calendarColor,
+  calendar,
   eventBar,
   left = false,
   right = false,
   outerRight = false,
   handleEventDetailMadal = () => {},
 }) => {
-  // const event = useSelector(state => eventSelector(state, eventBar?.id));
-  // const calendar = useSelector(state =>
-  //   calendarByEventIdSelector(state, event),
-  // );
-
   const { setModalData: setEventDetailModalData } = useContext(
     EventDetailModalContext,
   );
@@ -28,11 +23,11 @@ const Index = ({
       width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
     },
     main: {
-      background: `linear-gradient(to right, ${calendarColor} 5px, ${
-        event?.color || calendarColor
+      background: `linear-gradient(to right, ${calendar?.color} 5px, ${
+        event?.color || calendar?.color
       } 5px)`,
     },
-    left: { borderRightColor: calendarColor },
+    left: { borderRightColor: calendar },
     right: { borderLeftColor: event?.color },
   };
 
@@ -62,13 +57,18 @@ const Index = ({
 
   return (
     <div
-      className={styles.event_container}
+      className={`${styles.event_container} event_bar_div`}
       style={eventBarStyle.container}
       onClick={clickEventBar}
     >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
-      <div className={styles.event_bar} style={eventBarStyle.main}>
+      <div
+        className={`${styles.event_bar} ${
+          left ? styles.none_left_border : null
+        } ${right ? styles.none_right_border : null} event_bar `}
+        style={eventBarStyle.main}
+      >
         <em>{event?.name || eventBar.name || '(제목 없음)'}</em>
       </div>
 
@@ -86,7 +86,7 @@ const Index = ({
 
 Index.propTypes = {
   event: PropTypes.object,
-  calendarColor: PropTypes.string,
+  calendar: PropTypes.object,
   eventBar: PropTypes.object,
   left: PropTypes.bool,
   right: PropTypes.bool,
