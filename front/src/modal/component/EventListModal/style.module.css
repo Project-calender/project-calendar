@@ -1,20 +1,24 @@
-.modal_container {
-    width: 200px;
-    text-align: center;
-}
-.modal_container > strong {font-size: 11px; color: #9d9d9d }
-.modal_container > h1 {font-size: 20px; margin-top:3px; margin-bottom: 10px;}
+.modal_container { 
+ width: 200px; 
+ text-align: center; 
+ } 
+.modal_container > strong { font-size: 11px; color: #9d9d9d } 
+.modal_container > h1 { font-size: 20px; margin-top:3px; margin-bottom: 10px; } 
 
-.modal_container > div{
-  height: 22px;
-}
+.modal_container > div { 
+ height: 22px; 
+ } 
 
-.modal_container > div > *{
-  border-width: 11px;
-  border-left-width: 8px;
-  border-right-width: 8px;
-}
+.modal_container > div > * { 
+ border-width: 11px; 
+ border-left-width: 8px; 
+ border-right-width: 8px; 
+ } 
 
+.event_bar_active { 
+ z-index: 5; 
+ } 
 
-.event_left { position: relative; border: 0.65rem solid transparent; border-left: 0px; border-right: 0.65rem solid rgb(192, 202, 51); left: 1.3px; z-index: 4; } 
-.event_right { position: relative; border: 0.65rem solid transparent; border-right: 0px; border-left: 0.65rem solid rgb(192, 202, 51); right: 1.3px; z-index: 4; } 
+.event_bar_active > div { 
+ box-shadow: 0px 6px 9px -4px rgb(0, 0, 0, 0.5); 
+ } 

@@ -23,11 +23,11 @@ const Index = ({ date, maxHeight }) => {
   const $eventList = useRef();
 
   const eventBars = useSelector(state => eventsByDateSelector(state, date));
+  const calendars = useSelector(state =>
+    calendarByEventIdsSelector(state, eventBars || []),
+  );
   const events = useSelector(state =>
     eventsByEventIdsSelector(state, eventBars || []),
-  );
-  const calendars = useSelector(state =>
-    calendarByEventIdsSelector(state, events || []),
   );
 
   if (!eventBars) return;
@@ -38,14 +38,10 @@ const Index = ({ date, maxHeight }) => {
 
   function clickReadMore(e) {
     const { top, left } = $eventList.current.getBoundingClientRect();
-    const minLeft = window.innerWidth - 250;
     showEventListModal({
       date,
       events: events.filter(event => event),
-      style: {
-        top: top - 35,
-        left: minLeft < left ? minLeft : left,
-      },
+      style: { top: top - 35, left },
     });
     hideEventDetailModal();
     e.stopPropagation();
@@ -69,7 +65,7 @@ const Index = ({ date, maxHeight }) => {
         <EventBar
           key={index}
           event={events[index]}
-          calendarColor={calendars[index]?.color}
+          calendar={calendars[index]}
           eventBar={eventBar}
           handleEventDetailMadal={handleEventDetailMadal}
         />
