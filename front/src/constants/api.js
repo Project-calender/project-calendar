@@ -7,6 +7,10 @@ export const USER_URL = {
   CHECK_CALENDAR: '/user/checkedCalendar',
 };
 
+export const CALENDAR_URL = {
+  CREATE_CALENDAR: '/calendar/createGroupCalendar',
+};
+
 export const EVENT_URL = {
   GET_ALL_CALENDAR_AND_EVENT: '/event/getAllEvent',
   GET_EVENT_DETAIL: '/event/getGroupEvent',

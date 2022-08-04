@@ -7,7 +7,9 @@ const initialState = calendarsAdapter.getInitialState();
 const calendars = createSlice({
   name: 'calendars',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    addCalendar: calendarsAdapter.addOne,
+  },
   extraReducers: builder => {
     builder.addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) =>
       calendarsAdapter.setAll(state, payload.calendars),
@@ -15,6 +17,6 @@ const calendars = createSlice({
   },
 });
 
-export const { action } = calendars.actions;
+export const { addCalendar } = calendars.actions;
 
 export default calendars.reducer;

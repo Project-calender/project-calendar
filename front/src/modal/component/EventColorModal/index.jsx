@@ -7,9 +7,16 @@ import { useContext } from 'react';
 import { EventColorModalContext } from '../../../context/EventModalContext';
 
 const Index = () => {
-  const { hideModal, modalData } = useContext(EventColorModalContext);
+  const { hideModal, modalData, setModalData } = useContext(
+    EventColorModalContext,
+  );
   const { style, colors } = modalData;
 
+  function clickColor(e, calendarColor) {
+    setModalData(data => ({ ...data, calendarColor }));
+    hideModal(false);
+    e.stopPropagation();
+  }
   return (
     <Modal
       hideModal={hideModal}
@@ -26,6 +33,7 @@ const Index = () => {
             <div
               className={styles.color_list_item}
               style={{ background: color }}
+              onClick={e => clickColor(e, color)}
             />
           </Tooltip>
         ))}

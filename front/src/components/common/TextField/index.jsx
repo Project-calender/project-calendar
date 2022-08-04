@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
-const Index = ({ autoFocus = false, label, onBlur = () => {} }) => {
+const Index = ({ autoFocus = false, label, onBlur = () => {} }, ref) => {
   const [isInputFocus, setInputFocus] = useState(false);
   const [inputValue, setInputValue] = useState();
 
@@ -29,6 +29,7 @@ const Index = ({ autoFocus = false, label, onBlur = () => {} }) => {
         onChange={e => {
           setInputValue(e.target.value);
         }}
+        ref={ref}
       />
       <hr className={`${styles.input_line} ${styles.line_active}`} />
       <hr
@@ -48,4 +49,4 @@ Index.propTypes = {
   onBlur: PropTypes.func,
 };
 
-export default Index;
+export default React.forwardRef(Index);
