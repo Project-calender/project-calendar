@@ -31,7 +31,7 @@ module.exports = {
     var privateCalendar = {
       id: 1,
       name: "testPrivate",
-      color: "#ffffff",
+      color: "#1e90ff",
       createdAt: new Date(),
       updatedAt: new Date(),
       UserId: 1,

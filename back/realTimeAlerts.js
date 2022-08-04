@@ -1,28 +1,30 @@
-var cron = require("cron").CronJob;
-const { RealTimeAlert } = require("./models");
+const DataTypes = require("sequelize");
+const { Model } = DataTypes;
 
-const addAlert = async (userId, content, date) => {
-  try {
-    const newAlert = await RealTimeAlert.create({
-      UserId: userId,
-      content: content,
-      date: date,
-    });
-    const a = cron.scheduleJob(`${newAlert.id}`, date, async () => {
-      //여기에 socket을 단다
-      console.log("onon");
-
-      //알림을 지운다.
-      await RealTimeAlert.destroy({
-        where: { id: newAlert.id },
-        force: true,
-      });
-    });
-  } catch (error) {
-    console.error(error);
+module.exports = class RealTimeAlert extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        content: {
+          type: DataTypes.STRING(200),
+          allowNull: false,
+        },
+        date: {
+          type: DataTypes.DATE,
+          allowNull: false,
+        },
+      },
+      {
+        modelName: "RealTimeAlert",
+        tableName: "RealTimeAlerts",
+        timestamps: false,
+        paranoid: true,
+        charset: "utf8",
+        sequelize,
+      }
+    );
+  }
+  static associate(db) {
+    db.RealTimeAlert.belongsTo(db.User);
   }
 };
-
-module.exports = addAlert;
-
-// crtl + s로 새로고침을 했을때는 한번만 실행된다 겹치는거 아님
