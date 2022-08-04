@@ -1,9 +1,6 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { getAllCalendarAndEvent } from './thunk';
 
-export const getCalendarCheckId = calendar =>
-  calendar.UserId ? 'p' : `${calendar.id}`;
-
 export const calendarsAdapter = createEntityAdapter();
 const initialState = calendarsAdapter.getInitialState();
 
