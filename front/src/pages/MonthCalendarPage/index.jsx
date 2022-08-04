@@ -7,7 +7,7 @@ import WeekDayHeader from '../../components/calendar/month/WeekDayHeader';
 import CalendarBody from '../../components/calendar/month/CalendarBody';
 import EventListModalLayout from '../../modal/layout/EventListModalLayout';
 import EventDetailMaodalLayout from '../../modal/layout/EventDetailMaodalLayout';
-import CreateEventMaodalLayout from '../../modal/layout/CreateModalLayout';
+import CreateEventMaodalLayout from '../../modal/layout/CreateEventModalLayout';
 
 import { EventBarContext } from '../../context/EventBarContext';
 
