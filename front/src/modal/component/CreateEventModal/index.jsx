@@ -3,7 +3,10 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import Modal from '../../../components/common/Modal';
 import { EventBarContext } from '../../../context/EventBarContext';
-import { EventColorModalContext } from '../../../context/EventModalContext';
+import {
+  EventColorModalContext,
+  ListModalContext,
+} from '../../../context/EventModalContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarsStaggered,
@@ -25,54 +28,30 @@ import Input from '../../../components/common/Input';
 import CheckBox from '../../../components/common/CheckBox';
 
 import Moment from '../../../utils/moment';
-import useEventModal from '../../../hooks/useEventModal';
-import ListModal from '../ListModal';
+import { EVENT_COLOR } from '../../../styles/color';
 
 import { useSelector } from 'react-redux';
 import { selectAllCalendar } from '../../../store/selectors/calendars';
 
-const Index = ({ hideModal, style, children }) => {
+const Index = ({ hideModal, style, children: ModalList }) => {
   const { selectedDateRange, setNewEventBars } = useContext(EventBarContext);
   const { standardDateTime, endDateTime } = selectedDateRange;
   const [startDate, endDate] = [standardDateTime, endDateTime]
     .sort((a, b) => a - b)
     .map(time => new Moment(time));
 
-  const {
-    isModalShown: isListModalShown,
-    modalData: listModalData,
-    showModal: showListModal,
-    hideModal: hideListModal,
-  } = useEventModal();
-
-  const { showModal: showEventColorModal, hideModal: hideEventColorModal } =
-    useContext(EventColorModalContext);
-
+  const { showModal: showListModal } = useContext(ListModalContext);
+  const { showModal: showEventColorModal } = useContext(EventColorModalContext);
   const calendars = useSelector(selectAllCalendar);
 
-  function handleCreateEventModal() {
+  function hideCreateEventModal() {
     setNewEventBars([]);
     hideModal();
   }
 
-  function handleSubModal(e, showSubModal, data) {
-    const { top, left } = e.currentTarget.getBoundingClientRect();
-    hideListModal();
-    hideEventColorModal();
-    setTimeout(
-      () =>
-        showSubModal({
-          data,
-          position: { top, left },
-        }),
-      10,
-    );
-    e.stopPropagation();
-  }
-
   return (
     <Modal
-      hideModal={handleCreateEventModal}
+      hideModal={hideCreateEventModal}
       isCloseButtom
       isBackground
       style={{
@@ -80,23 +59,18 @@ const Index = ({ hideModal, style, children }) => {
         boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)',
       }}
     >
-      {isListModalShown && (
-        <ListModal hideModal={hideListModal} modalData={listModalData} />
-      )}
-      {children}
+      {ModalList}
 
       <div className={styles.modal_container}>
         <div className={styles.modal_header}>
           <FontAwesomeIcon icon={faGripLines} />
         </div>
         <div className={styles.modal_context}>
-          <div>
+          <div className={styles.event_title}>
             <div />
             <Input
               type="text"
               placeholder="제목 및 시간 추가"
-              className={styles.event_title}
-              inputClassName={styles.event_title_input}
               onBlur={e => {
                 setNewEventBars(bars =>
                   bars.map(bar => ({ ...bar, name: e.target.value })),
@@ -144,7 +118,7 @@ const Index = ({ hideModal, style, children }) => {
               <h3
                 className={styles.list_modal}
                 onClick={e =>
-                  handleSubModal(e, showListModal, [
+                  showListModal(e, [
                     '반복 안함',
                     '매일',
                     `매주 ${startDate.weekDay}요일`,
@@ -169,14 +143,9 @@ const Index = ({ hideModal, style, children }) => {
             <button className={styles.time_find_button}>시간 찾기</button>
           </div>
 
-          <div>
+          <div className={styles.event_info_input}>
             <FontAwesomeIcon icon={faUserGroup} />
-            <Input
-              type="text"
-              placeholder="참석자 추가"
-              className={styles.event_data}
-              inputClassName={styles.event_data_input}
-            />
+            <Input type="text" placeholder="참석자 추가" />
           </div>
 
           <div className={styles.google_meet}>
@@ -191,25 +160,16 @@ const Index = ({ hideModal, style, children }) => {
           </div>
 
           <div className={styles.modal_line} />
-          <div>
+          <div className={styles.event_info_input}>
             <FontAwesomeIcon icon={faLocationDot} />
-            <Input
-              type="text"
-              placeholder="위치 추가"
-              className={styles.event_data}
-              inputClassName={styles.event_data_input}
-            />
+            <Input type="text" placeholder="위치 추가" />
           </div>
 
           <div className={styles.modal_line} />
-          <div>
+
+          <div className={styles.memo}>
             <FontAwesomeIcon icon={faBarsStaggered} />
-            <Input
-              type="text"
-              placeholder="설명 추가"
-              className={styles.memo}
-              inputClassName={styles.memo_input}
-            />
+            <Input type="text" placeholder="설명 추가" />
           </div>
           <div>
             <FontAwesomeIcon icon={faPaperclip} className={styles.clip_icon} />
@@ -223,9 +183,8 @@ const Index = ({ hideModal, style, children }) => {
               <h3
                 className={styles.list_modal}
                 onClick={e =>
-                  handleSubModal(
+                  showListModal(
                     e,
-                    showListModal,
                     calendars.map(calendar => calendar.name),
                   )
                 }
@@ -239,7 +198,7 @@ const Index = ({ hideModal, style, children }) => {
               <div
                 className={`${styles.list_modal} ${styles.calendar_info}`}
                 id="event_color"
-                onClick={e => handleSubModal(e, showEventColorModal)}
+                onClick={e => showEventColorModal(e, EVENT_COLOR)}
               >
                 <div className={styles.calendar_info_colors} />
                 <FontAwesomeIcon
@@ -253,11 +212,7 @@ const Index = ({ hideModal, style, children }) => {
           <div>
             <FontAwesomeIcon icon={faBriefcase} />
 
-            <div
-              onClick={e =>
-                handleSubModal(e, showListModal, ['바쁨', '한가함'])
-              }
-            >
+            <div onClick={e => showListModal(e, ['바쁨', '한가함'])}>
               <h3 className={styles.list_modal}>
                 한가함
                 <FontAwesomeIcon
@@ -274,11 +229,7 @@ const Index = ({ hideModal, style, children }) => {
               <h3
                 className={styles.list_modal}
                 onClick={e =>
-                  handleSubModal(e, showListModal, [
-                    '기본 공개 설정',
-                    '전체 공개',
-                    '비공개',
-                  ])
+                  showListModal(e, ['기본 공개 설정', '전체 공개', '비공개'])
                 }
               >
                 기본 공개 설정

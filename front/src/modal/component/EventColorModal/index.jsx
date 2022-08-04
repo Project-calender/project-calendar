@@ -3,10 +3,9 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import Modal from '../../../components/common/Modal';
 import Tooltip from '../../../components/common/Tooltip';
-import { EVENT_COLOR } from '../../../styles/color';
 
 const Index = ({ hideModal, modalData }) => {
-  const { position } = modalData;
+  const { position, colors } = modalData;
 
   return (
     <Modal
@@ -19,7 +18,7 @@ const Index = ({ hideModal, modalData }) => {
       }}
     >
       <div className={styles.color_list}>
-        {[...Object.entries(EVENT_COLOR)].map(([name, color]) => (
+        {[...Object.entries(colors)].map(([name, color]) => (
           <Tooltip title={name} key={color}>
             <div
               className={styles.color_list_item}
