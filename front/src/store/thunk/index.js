@@ -36,7 +36,11 @@ export const getAllCalendarAndEvent = createAsyncThunk(
       return calendar;
     });
 
-    const events = privateEvents.concat(groupEvents);
+    const events = privateEvents.concat(groupEvents).map(event => ({
+      ...event,
+      startTime: new Date(event.startTime).getTime(),
+      endTime: new Date(event.endTime).getTime(),
+    }));
 
     return { calendars, events };
   },

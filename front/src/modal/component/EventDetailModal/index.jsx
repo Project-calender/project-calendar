@@ -84,7 +84,9 @@ const Index = ({ modalData, hideModal }) => {
             />
             <div>
               <h1>{event.name || '(제목 없음)'}</h1>
-              <h3>{initDateTitle(event)}</h3>
+              <h3>
+                {event.allDay ? initDateTitle(event) : initTimeDateTitle(event)}
+              </h3>
               {event.repeat && <p>매년</p>}
             </div>
           </div>
@@ -151,13 +153,27 @@ function initDateTitle(event) {
     new Moment(new Date(event.startTime)),
     new Moment(new Date(event.endTime)),
   ];
+
+  if (startDate.toDateString() === endDate.toDateString())
+    return startDate.toNormalDateString();
+
   const startDateTitle = startDate.toDateString().split(' ');
   const endDateTitle = endDate.toDateString().split(' ');
-  if (startDateTitle.join(' ') === endDateTitle.join(' '))
-    return `${startDate.month}월 ${startDate.date}일 (${startDate.weekDay}요일)`;
-
   const index = startDateTitle.findIndex(str => !endDateTitle.includes(str));
   return `${startDateTitle.join(' ')} - ${endDateTitle.slice(index).join(' ')}`;
+}
+
+function initTimeDateTitle(event) {
+  const [startDate, endDate] = [
+    new Moment(new Date(event.startTime)),
+    new Moment(new Date(event.endTime)),
+  ];
+
+  if (startDate.toSimpleDateString() !== endDate.toSimpleDateString())
+    return `${startDate.toDateString()}, ${startDate.toTimeString()} ~ ${endDate.toDateString()}, ${endDate.toTimeString()}`;
+  if (startDate.getTimeType() === endDate.getTimeType())
+    return `${startDate.toNormalDateString()} ⋅ ${startDate.getTimeType()} ${startDate.getSimpleTime()} ~ ${endDate.getSimpleTime()}`;
+  return `${startDate.toNormalDateString()} ⋅ ${startDate.toTimeString()} ~ ${endDate.toTimeString()}`;
 }
 
 Index.propTypes = {

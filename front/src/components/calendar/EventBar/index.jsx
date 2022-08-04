@@ -4,6 +4,8 @@ import { EVENT_URL } from '../../../constants/api';
 import { EventDetailModalContext } from '../../../context/EventModalContext';
 import axios from '../../../utils/token';
 import styles from './style.module.css';
+import Moment from '../../../utils/moment.js';
+import EventTimeBar from '../EventTimeBar';
 
 const Index = ({
   event,
@@ -11,23 +13,32 @@ const Index = ({
   eventBar,
   left = false,
   right = false,
-  outerRight = false,
   handleEventDetailMadal = () => {},
 }) => {
   const { setModalData: setEventDetailModalData } = useContext(
     EventDetailModalContext,
   );
 
+  const eventBarColor = event?.color || calendar?.color || null;
   const eventBarStyle = {
     container: {
       width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
     },
-    main: {
-      background: `linear-gradient(to right, ${calendar?.color} 5px, ${
-        event?.color || calendar?.color
-      } 5px)`,
+    calendar: {
+      background: calendar?.color,
+      border: `1px solid ${calendar?.color}`,
     },
-    left: { borderRightColor: calendar },
+    main: {
+      background:
+        event?.state === 0 || event?.state === 3 ? 'white' : eventBarColor,
+      color: event?.state === 0 || event?.state === 3 ? eventBarColor : 'white',
+      border: `1px solid ${eventBarColor}`,
+      borderRightColor:
+        right && (event?.state === 0 || event?.state === 3)
+          ? 'white'
+          : eventBarColor,
+    },
+    left: { borderRightColor: calendar?.color },
     right: { borderLeftColor: event?.color },
   };
 
@@ -55,6 +66,20 @@ const Index = ({
     return <div className={styles.empty_event_bar} />;
   }
 
+  if (
+    event &&
+    !event?.allDay &&
+    new Moment(event.startTime).toSimpleDateString() ===
+      new Moment(event.endTime).toSimpleDateString()
+  )
+    return (
+      <EventTimeBar
+        event={event}
+        color={eventBarColor}
+        clickEventBar={clickEventBar}
+      />
+    );
+
   return (
     <div
       className={`${styles.event_container} event_bar_div`}
@@ -63,22 +88,43 @@ const Index = ({
     >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
+      {calendar?.color && (
+        <div
+          className={`${styles.event_bar_calendar} ${
+            left ? styles.none_left_border : ''
+          }`}
+          style={eventBarStyle.calendar}
+        />
+      )}
+
       <div
         className={`${styles.event_bar} ${
-          left ? styles.none_left_border : null
-        } ${right ? styles.none_right_border : null} event_bar `}
+          event?.state === 2 ? styles.event_bar_slash : ''
+        } ${right ? styles.none_right_border : ''}`}
         style={eventBarStyle.main}
+        name="event_bar"
       >
-        <em>{event?.name || eventBar.name || '(제목 없음)'}</em>
+        <em className={`${event?.state === 3 ? styles.refuse_text : ''}`}>
+          {event?.name || eventBar.name || '(제목 없음)'}
+        </em>
       </div>
 
       {right && (
-        <div
-          className={`${styles.event_right} ${
-            outerRight ? styles.event_right_outer : null
-          }`}
-          style={eventBarStyle.right}
-        />
+        <>
+          <div className={styles.event_right} style={eventBarStyle.right} />
+          {(event?.state === 0 || event?.state === 3) && (
+            <>
+              <div
+                className={`${styles.event_right} ${styles.event_right_temp}`}
+                style={eventBarStyle.right}
+              />
+              <div
+                className={`${styles.event_right} ${styles.event_right_line}`}
+                style={eventBarStyle.right}
+              />
+            </>
+          )}
+        </>
       )}
     </div>
   );
@@ -90,7 +136,6 @@ Index.propTypes = {
   eventBar: PropTypes.object,
   left: PropTypes.bool,
   right: PropTypes.bool,
-  outerRight: PropTypes.bool,
   handleEventDetailMadal: PropTypes.func,
 };
 

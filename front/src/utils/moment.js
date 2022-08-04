@@ -63,10 +63,30 @@ class Moment {
     return `${this.year}년 ${this.month}월 ${this.date}일`;
   }
 
+  toNormalDateString() {
+    return `${this.month}월 ${this.date}일 (${this.weekDay}요일)`;
+  }
+
   toSimpleDateString() {
     return `${this.year}-${String(this.month).padStart(2, '0')}-${String(
       this.date,
     ).padStart(2, '0')}`;
+  }
+
+  toTimeString() {
+    return `${this.getTimeType()} ${this.getSimpleTime()}`;
+  }
+
+  getTimeType() {
+    const date = new Date(this.time);
+    return date.getHours() < 12 ? '오전' : '오후';
+  }
+
+  getSimpleTime() {
+    const date = new Date(this.time);
+    const [hour, mimute] = [date.getHours(), date.getMinutes()];
+    const hourText = (hour > 12 ? hour % 12 : hour) || 12;
+    return `${hourText}:${mimute.toString().padStart(2, '0')}`;
   }
 }
 

@@ -30,16 +30,12 @@ const Index = ({ month, date }) => {
     dispatch(
       getAllCalendarAndEvent({ startTime: date.time, endTime: date.time }),
     ).then(({ payload }) => {
-      const { top, left, bottom } = $date.current.getBoundingClientRect();
+      const { top, left } = $date.current.getBoundingClientRect();
       const minLeft = window.innerWidth / 2 + 100;
       showEventListModal({
         date,
         events: payload.events.filter(isCheckedCalander),
-        style: {
-          top: window.innerHeight < bottom + 150 ? null : top,
-          left: minLeft < left ? left - 222 : left + 35,
-          bottom: window.innerHeight < bottom + 150 ? 30 : null,
-        },
+        style: { top, left: minLeft < left ? left - 222 : left + 35 },
       });
       hideEventDetailModal();
     });
