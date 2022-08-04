@@ -28,7 +28,7 @@ const Index = ({ calendar }) => {
         defaultChecked={checked}
         color={calendar.color}
       >
-        <Tooltip key={calendar.id} title={calendar.name}>
+        <Tooltip key={calendar.id} title={calendar.name} top={18}>
           <p>{calendar.name}</p>
         </Tooltip>
       </CheckBox>
