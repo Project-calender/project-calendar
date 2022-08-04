@@ -48,7 +48,7 @@ const Index = ({ modalData, hideModal }) => {
     <Modal
       hideModal={hideModal}
       style={{ ...style, ...position }}
-      isCloseButtom={true}
+      isCloseButtom
     >
       <div
         className={styles.modal_container}

@@ -1,4 +1,0 @@
-.calendar { position: relative; } 
-
-.calendar_icon_plus { font-size:14px; color: #5c5c5c; position: absolute; top: -1px; right: 45px; border-radius: 100%; padding: 10px; z-index: 1; } 
-.calendar_icon_plus:hover { background-color: #f8f8f8; } 

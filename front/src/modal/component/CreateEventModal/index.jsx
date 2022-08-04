@@ -78,8 +78,8 @@ const Index = ({ hideModal, style }) => {
     <>
       <Modal
         hideModal={handleCreateEventModal}
-        isCloseButtom={true}
-        isBackground={true}
+        isCloseButtom
+        isBackground
         style={{
           ...style,
           boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)',

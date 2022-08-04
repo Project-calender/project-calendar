@@ -58,7 +58,7 @@ const Index = ({ modalData, hideModal }) => {
         boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)',
         zIndex: 501,
       }}
-      isCloseButtom={true}
+      isCloseButtom
     >
       <div className={styles.modal_container} ref={$modal}>
         <div className={styles.modal_header}>
