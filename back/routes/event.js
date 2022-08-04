@@ -1,5 +1,5 @@
 const express = require("express");
-const addAlert = require("../realTimeAlerts");
+const { addAlert } = require("../realTimeAlerts");
 
 const {
   sequelize,
@@ -36,17 +36,24 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
           attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
           where: {
             [Op.or]: {
-              startTime: {
-                [Op.and]: {
-                  [Op.gte]: startDate,
-                  [Op.lte]: endDate,
+              [Op.or]: {
+                startTime: {
+                  [Op.and]: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate,
+                  },
+                },
+                endTime: {
+                  [Op.and]: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate,
+                  },
                 },
               },
-              endTime: {
-                [Op.and]: {
-                  [Op.gte]: startDate,
-                  [Op.lte]: endDate,
-                },
+
+              [Op.and]: {
+                startTime: { [Op.lte]: startDate },
+                endTime: { [Op.gte]: endDate },
               },
             },
           },
@@ -73,19 +80,27 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
               where: {
                 [Op.and]: {
                   [Op.or]: {
-                    startTime: {
-                      [Op.and]: {
-                        [Op.gte]: startDate,
-                        [Op.lte]: endDate,
+                    [Op.or]: {
+                      startTime: {
+                        [Op.and]: {
+                          [Op.gte]: startDate,
+                          [Op.lte]: endDate,
+                        },
+                      },
+                      endTime: {
+                        [Op.and]: {
+                          [Op.gte]: startDate,
+                          [Op.lte]: endDate,
+                        },
                       },
                     },
-                    endTime: {
-                      [Op.and]: {
-                        [Op.gte]: startDate,
-                        [Op.lte]: endDate,
-                      },
+
+                    [Op.and]: {
+                      startTime: { [Op.lte]: startDate },
+                      endTime: { [Op.gte]: endDate },
                     },
                   },
+
                   permission: { [Op.lte]: groupCalendar.authority },
                 },
               },
@@ -182,17 +197,24 @@ router.post("/getEventByDate", authJWT, async (req, res, next) => {
           attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
           where: {
             [Op.or]: {
-              startTime: {
-                [Op.and]: {
-                  [Op.gte]: startDate,
-                  [Op.lte]: endDate,
+              [Op.or]: {
+                startTime: {
+                  [Op.and]: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate,
+                  },
+                },
+                endTime: {
+                  [Op.and]: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate,
+                  },
                 },
               },
-              endTime: {
-                [Op.and]: {
-                  [Op.gte]: startDate,
-                  [Op.lte]: endDate,
-                },
+
+              [Op.and]: {
+                startTime: { [Op.lte]: startDate },
+                endTime: { [Op.gte]: endDate },
               },
             },
           },
@@ -219,19 +241,27 @@ router.post("/getEventByDate", authJWT, async (req, res, next) => {
               where: {
                 [Op.and]: {
                   [Op.or]: {
-                    startTime: {
-                      [Op.and]: {
-                        [Op.gte]: start,
-                        [Op.lte]: end,
+                    [Op.or]: {
+                      startTime: {
+                        [Op.and]: {
+                          [Op.gte]: startDate,
+                          [Op.lte]: endDate,
+                        },
+                      },
+                      endTime: {
+                        [Op.and]: {
+                          [Op.gte]: startDate,
+                          [Op.lte]: endDate,
+                        },
                       },
                     },
-                    endTime: {
-                      [Op.and]: {
-                        [Op.gte]: start,
-                        [Op.lte]: end,
-                      },
+
+                    [Op.and]: {
+                      startTime: { [Op.lte]: startDate },
+                      endTime: { [Op.gte]: endDate },
                     },
                   },
+
                   permission: { [Op.lte]: groupCalendar.authority },
                 },
               },
@@ -703,19 +733,37 @@ router.post("/searchEvent", authJWT, async (req, res, next) => {
 
 // 삭제 ? -> 그냥 삭제
 
+router.post("/test2", async (req, res, next) => {
+  try {
+    const me = await Alert.findOne({ where: { id: 1 } });
+
+    return res.status(200).send(me);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/test", async (req, res, next) => {
   try {
     //req.body [ { type: 'hour' } ]
     if (req.body.alert) {
       var afterMinute = new Date();
-      addAlert(
-        req.myId,
-        "test",
-        afterMinute.setDate(afterMinute.getMinutes() + 1)
-      );
-    }
+      afterMinute.setMinutes(afterMinute.getMinutes() + 1);
 
-    return res.status(200).send({ succes: true });
+      addAlert(1, "test", afterMinute)
+        .then(() => {
+          console.log("b");
+          return res.status(200).send({ succes: true });
+        })
+        .catch((error) => {
+          console.error(error);
+          next(error);
+        });
+    } else {
+      console.log("b");
+      return res.status(200).send({ succes: true });
+    }
   } catch (error) {
     console.error(error);
     next(error);
