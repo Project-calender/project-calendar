@@ -1,23 +1,26 @@
 import React from 'react';
 import styles from './style.module.css';
-import PropTypes from 'prop-types';
+
 import Modal from '../../../components/common/Modal';
 import Tooltip from '../../../components/common/Tooltip';
+import { useContext } from 'react';
+import { EventColorModalContext } from '../../../context/EventModalContext';
 
-const Index = ({ hideModal, modalData }) => {
-  const { position, colors } = modalData;
+const Index = () => {
+  const { hideModal, modalData } = useContext(EventColorModalContext);
+  const { style, colors } = modalData;
 
   return (
     <Modal
       hideModal={hideModal}
       style={{
-        ...position,
+        ...style,
         zIndex: 600,
         borderRadius: 0,
         padding: '8px 0px 8px 8px',
       }}
     >
-      <div className={styles.color_list}>
+      <div className={styles.color_list} style={{ width: style.width || 55 }}>
         {[...Object.entries(colors)].map(([name, color]) => (
           <Tooltip title={name} key={color}>
             <div
@@ -29,11 +32,6 @@ const Index = ({ hideModal, modalData }) => {
       </div>
     </Modal>
   );
-};
-
-Index.propTypes = {
-  hideModal: PropTypes.func,
-  modalData: PropTypes.object,
 };
 
 export default Index;

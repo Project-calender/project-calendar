@@ -27,9 +27,9 @@ const Index = ({ children }) => {
     eventInfoModal.hideModal();
     eventColorModal.showModal({
       colors,
-      position: { top, left },
-    }),
-      e.stopPropagation();
+      style: { top, left },
+    });
+    e.stopPropagation();
   }
 
   function showEventInfoModal(e, data) {
@@ -37,10 +37,15 @@ const Index = ({ children }) => {
     eventColorModal.hideModal();
     eventInfoModal.showModal({
       data,
-      position: { top, left },
-    }),
-      e.stopPropagation();
+      style: { top, left },
+    });
+    e.stopPropagation();
   }
+
+  const createEventModalContext = {
+    ...createEventModal,
+    hideModal: hideCreateEventModal,
+  };
   const eventColorModalContext = {
     ...eventColorModal,
     showModal: showEventColorModal,
@@ -51,34 +56,19 @@ const Index = ({ children }) => {
   };
 
   return (
-    <>
+    <CreateEventModalContext.Provider value={createEventModalContext}>
       {createEventModal.isModalShown && (
         <EventColorModalContext.Provider value={eventColorModalContext}>
           <ListModalContext.Provider value={eventInfoModalContext}>
-            <CreateEventModal
-              hideModal={hideCreateEventModal}
-              style={createEventModal.modalData.style}
-            >
-              {eventColorModal.isModalShown && (
-                <EventColorModal
-                  hideModal={eventColorModal.hideModal}
-                  modalData={eventColorModal.modalData}
-                />
-              )}
-              {eventInfoModal.isModalShown && (
-                <ListModal
-                  hideModal={eventInfoModal.hideModal}
-                  modalData={eventInfoModal.modalData}
-                />
-              )}
+            <CreateEventModal>
+              {eventColorModal.isModalShown && <EventColorModal />}
+              {eventInfoModal.isModalShown && <ListModal />}
             </CreateEventModal>
           </ListModalContext.Provider>
         </EventColorModalContext.Provider>
       )}
-      <CreateEventModalContext.Provider value={createEventModal}>
-        {children}
-      </CreateEventModalContext.Provider>
-    </>
+      {children}
+    </CreateEventModalContext.Provider>
   );
 };
 

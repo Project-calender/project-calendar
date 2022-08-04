@@ -5,19 +5,13 @@ import { EventDetailModalContext } from '../../../context/EventModalContext';
 import useEventModal from '../../../hooks/useEventModal';
 
 const Index = ({ children }) => {
-  const { isModalShown, modalData, showModal, hideModal, setModalData } =
-    useEventModal();
+  const eventDetailModal = useEventModal();
 
-  const modalContextData = { isModalShown, showModal, hideModal, setModalData };
   return (
-    <>
-      {isModalShown && (
-        <EventDetailModal modalData={modalData} hideModal={hideModal} />
-      )}
-      <EventDetailModalContext.Provider value={modalContextData}>
-        {children}
-      </EventDetailModalContext.Provider>
-    </>
+    <EventDetailModalContext.Provider value={eventDetailModal}>
+      {eventDetailModal.isModalShown && <EventDetailModal />}
+      {children}
+    </EventDetailModalContext.Provider>
   );
 };
 

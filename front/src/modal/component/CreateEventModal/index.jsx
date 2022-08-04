@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Modal from '../../../components/common/Modal';
 import { EventBarContext } from '../../../context/EventBarContext';
 import {
-  EventColorModalContext,
+  CreateEventModalContext,
   ListModalContext,
 } from '../../../context/EventModalContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,39 +28,41 @@ import Input from '../../../components/common/Input';
 import CheckBox from '../../../components/common/CheckBox';
 
 import Moment from '../../../utils/moment';
-import { EVENT_COLOR } from '../../../styles/color';
 
 import { useSelector } from 'react-redux';
 import { selectAllCalendar } from '../../../store/selectors/calendars';
 
-const Index = ({ hideModal, style, children: ModalList }) => {
+import EventColorOption from '../../../components/calendar/EventColorOption';
+import { EVENT_COLOR } from '../../../styles/color';
+
+const Index = ({ children: ModalList }) => {
   const { selectedDateRange, setNewEventBars } = useContext(EventBarContext);
+  const { hideModal: hideCreateEventModal, modalData } = useContext(
+    CreateEventModalContext,
+  );
+  const { showModal: showListModal } = useContext(ListModalContext);
+  function initCreateEventModal() {
+    setNewEventBars([]);
+    hideCreateEventModal();
+  }
+
   const { standardDateTime, endDateTime } = selectedDateRange;
   const [startDate, endDate] = [standardDateTime, endDateTime]
     .sort((a, b) => a - b)
     .map(time => new Moment(time));
 
-  const { showModal: showListModal } = useContext(ListModalContext);
-  const { showModal: showEventColorModal } = useContext(EventColorModalContext);
   const calendars = useSelector(selectAllCalendar);
-
-  function hideCreateEventModal() {
-    setNewEventBars([]);
-    hideModal();
-  }
-
   return (
     <Modal
-      hideModal={hideCreateEventModal}
+      hideModal={initCreateEventModal}
       isCloseButtom
       isBackground
       style={{
-        ...style,
+        ...modalData?.style,
         boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)',
       }}
     >
       {ModalList}
-
       <div className={styles.modal_container}>
         <div className={styles.modal_header}>
           <FontAwesomeIcon icon={faGripLines} />
@@ -195,17 +197,10 @@ const Index = ({ hideModal, style, children: ModalList }) => {
                   icon={faCaretDown}
                 />
               </h3>
-              <div
-                className={`${styles.list_modal} ${styles.calendar_info}`}
-                id="event_color"
-                onClick={e => showEventColorModal(e, EVENT_COLOR)}
-              >
-                <div className={styles.calendar_info_colors} />
-                <FontAwesomeIcon
-                  className={styles.caret_down}
-                  icon={faCaretDown}
-                />
-              </div>
+              <EventColorOption
+                colors={EVENT_COLOR}
+                color={calendars[0].color}
+              />
             </div>
           </div>
 
@@ -277,8 +272,6 @@ const Index = ({ hideModal, style, children: ModalList }) => {
 };
 
 Index.propTypes = {
-  hideModal: PropTypes.func,
-  style: PropTypes.object,
   children: PropTypes.node,
 };
 
