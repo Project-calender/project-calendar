@@ -853,6 +853,7 @@ paths:
                 example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
         '500':
           $ref: '#/serverError'
+
   /api/event/getAllEvent:
     post:
       tags:

@@ -378,6 +378,63 @@
               example: 캘린더의 오너만 캘린더를 수정할 수 있습니다!
       500:
         $ref: "./openapi.yaml#/serverError"
+
+/api/calendar/editGroupCalendar:
+  post:
+    tags:
+      - calendar
+    summary: 그룹캘린더 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            calendarId:
+              type: string
+            newCalendarName:
+              type: string
+            newCalendarColor:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            changeCalendar:
+              type: object
+              properties: 
+                id:
+                  type: number
+                  example: 7
+                name:
+                  type: string
+                  example: stri312ng
+                color:
+                  type: string
+                  example: stri312ng12
+                updatedAt:
+                  type: string
+                  example: 2022-08-05T08:10:47.000Z
+                createdAt:
+                  type: string
+                  example: 2022-08-05T08:11:52.687Z
+                OwnerId:
+                  type: number
+                  example: 21
+      400:
+        description: 캘린더를 수정 시도한 유저가 캘린더 오너가 아닐 경우
+        schema:
+          properties:
+            message:
+              type: string
+              example: 캘린더의 오너만 캘린더를 수정할 수 있습니다!
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/privateCalendar/editPrivateCalendar:
   post:
     tags:
