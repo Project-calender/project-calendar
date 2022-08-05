@@ -19,6 +19,8 @@ tags:
     description: API about event
   - name: alert
     description: API about alert
+  - name: privateCalendar
+    description: API about privateCalendar
 
 paths:
   $ref: "./userAPI.yaml"
