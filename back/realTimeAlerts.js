@@ -1,30 +1,42 @@
 var CronJob = require("cron").CronJob;
-const { RealTimeAlert } = require("./models");
+const { RealTimeAlert, sequelize } = require("./models");
+const { Op } = require("sequelize");
 
 let alerts = {};
-const addAlert = async (userId, content, date) => {
+const addAlert = async (userId, eventId, content, date, next) => {
   try {
-    const newAlert = await RealTimeAlert.create({
-      UserId: userId,
-      content: content,
-      date: date,
-    });
-    alerts[`${newAlert.id}`] = new CronJob(
-      date,
-      async function () {
-        console.log("You will see this message every second");
+    await sequelize.transaction(async (t) => {
+      const newAlert = await RealTimeAlert.create(
+        {
+          userId: userId,
+          eventId: eventId,
+          content: content,
+          date: date,
+        },
+        {
+          transaction: t,
+        }
+      );
 
-        await RealTimeAlert.destroy({
-          where: { id: newAlert.id },
-          force: true,
-        });
-      },
-      null,
-      true
-    );
-    console.log("a");
+      if (newAlert) {
+        alerts[`${newAlert.id}`] = new CronJob(
+          date,
+          async function () {
+            console.log(`${content}`);
+
+            await RealTimeAlert.destroy({
+              where: { id: newAlert.id },
+              force: true,
+            });
+          },
+          null,
+          true
+        );
+      }
+    });
   } catch (error) {
     console.error(error);
+    next(error);
   }
 };
 
