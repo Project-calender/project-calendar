@@ -18,7 +18,6 @@ const Index = ({ calendar }) => {
 
   const dispatch = useDispatch();
   function handleCheckBox(e) {
-    console.log(e.target.checked);
     dispatch(
       updateCheckedCalendar({
         checkedList: e.target.checked
@@ -31,8 +30,8 @@ const Index = ({ calendar }) => {
   return (
     <div className={styles.calendar_item}>
       <CheckBox
-        onClick={handleCheckBox}
-        defaultChecked={checked}
+        onChange={handleCheckBox}
+        checked={checked}
         color={calendar.color}
       >
         <Tooltip key={calendar.id} title={calendar.name} top={18}>
