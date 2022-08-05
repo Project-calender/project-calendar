@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { createEventBar } from '../hooks/useCreateEventBar';
 import Moment from '../utils/moment';
-import { getAllCalendarAndEvent } from './thunk';
+import { getAllCalendarAndEvent } from './thunk/event';
 import { isCheckedCalander } from './user';
 
 export const eventsAdapter = createEntityAdapter({

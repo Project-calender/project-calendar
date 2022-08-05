@@ -17,6 +17,7 @@ const Index = () => {
     hideModal(false);
     e.stopPropagation();
   }
+
   return (
     <Modal
       hideModal={hideModal}

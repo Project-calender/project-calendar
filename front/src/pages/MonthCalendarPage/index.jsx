@@ -15,7 +15,7 @@ import useDragDate from '../../hooks/useDragDate';
 import useCreateEventBar from '../../hooks/useCreateEventBar';
 import useAddMonthByWheel from '../../hooks/useAddMonthByWheel';
 
-import { getAllCalendarAndEvent } from '../../store/thunk';
+import { getAllCalendarAndEvent } from '../../store/thunk/event';
 import { useEffect } from 'react';
 
 const Index = () => {

@@ -15,51 +15,35 @@ import {
 } from '../../../context/EventModalContext';
 import { CALENDAR_COLOR } from '../../../styles/color';
 import { useRef } from 'react';
-import axios from '../../../utils/token';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { CALENDAR_URL } from '../../../constants/api';
-import { addCalendar } from '../../../store/calendars';
+import { addCalendar } from '../../../store/thunk/calendar';
 
 const Index = ({ children: ModalList }) => {
   const { hideModal, modalData } = useContext(CreateCalendarModalContext);
   const { modalData: eventColorModaldata } = useContext(EventColorModalContext);
-  const selectedColor = eventColorModaldata?.calendarColor || '';
+  const { calendarColor = CALENDAR_COLOR['토마토'] } = eventColorModaldata;
 
   const userEmail = useSelector(userEmailSelector);
   const $calendarName = useRef();
-  const [calendarColor, setCalendarColor] = useState(CALENDAR_COLOR['토마토']);
-
-  useEffect(() => {
-    if (selectedColor) {
-      setCalendarColor(selectedColor);
-    }
-  }, [selectedColor]);
 
   const dispatch = useDispatch();
   function createNewCalendar() {
-    if (!$calendarName.current.value) return;
-    axios
-      .post(CALENDAR_URL.CREATE_CALENDAR, {
-        calendarName: $calendarName.current.value,
-        calendarColor,
-      })
-      .then(({ data }) => {
-        const {
-          id,
-          color,
-          name,
-          OwnerId,
-          authority = 3,
-        } = data.newGroupCalendar;
-        dispatch(addCalendar({ id, color, name, OwnerId, authority }));
-        hideModal();
-      });
+    if (!$calendarName.current.value) {
+      $calendarName.current.setErrorMessage('잘못된 캘린더 이름입니다.');
+      $calendarName.current.focus();
+      return;
+    }
+
+    dispatch(
+      addCalendar({ calendarName: $calendarName.current.value, calendarColor }),
+    );
+    hideModal();
   }
+
   return (
     <Modal
       hideModal={hideModal}
       isBackground
+      isCloseButtom
       style={{
         ...modalData?.style,
         boxShadow: '4px 4px 15px 8px rgb(0, 0, 0, 0.3)',

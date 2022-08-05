@@ -6,7 +6,7 @@ import useNavigateDayCalendar from '../../../../../../hooks/useNavigateDayCalend
 import { selectDate } from '../../../../../../store/date';
 import Moment from '../../../../../../utils/moment';
 import styles from './style.module.css';
-import { getAllCalendarAndEvent } from '../../../../../../store/thunk';
+import { getAllCalendarAndEvent } from '../../../../../../store/thunk/event';
 import {
   EventDetailModalContext,
   EventListModalContext,
