@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const Index = ({
   children,
-  onChange = () => {},
+  onClick = () => {},
   defaultChecked = true,
   color = '#1a73e8',
 }) => {
@@ -12,7 +12,7 @@ const Index = ({
     const { background, border } = checkBoxStyle(e.target.checked);
     e.target.style.background = background;
     e.target.style.border = border;
-    onChange(e);
+    onClick(e);
   }
 
   function checkBoxStyle(checked) {
@@ -27,7 +27,7 @@ const Index = ({
       <input
         type="checkbox"
         style={checkBoxStyle(defaultChecked)}
-        onChange={handleCheckBox}
+        onClick={handleCheckBox}
         defaultChecked={defaultChecked}
       />
       {children}
@@ -37,7 +37,7 @@ const Index = ({
 
 Index.propTypes = {
   children: PropTypes.node,
-  onChange: PropTypes.func,
+  onClick: PropTypes.func,
   defaultChecked: PropTypes.bool,
   color: PropTypes.string,
 };
