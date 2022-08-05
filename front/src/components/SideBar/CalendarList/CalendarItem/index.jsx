@@ -3,22 +3,28 @@ import styles from './style.module.css';
 
 import PropTypes from 'prop-types';
 import Tooltip from '../../../common/Tooltip';
+import CheckBox from '../../../common/CheckBox';
+import OptionButtons from '../OptionButtons';
+
 import { checkedCalendarSelector } from '../../../../store/selectors/user';
 import { useDispatch, useSelector } from 'react-redux';
-import OptionButtons from '../OptionButtons';
-import { checkCalendar } from '../../../../store/user';
-import CheckBox from '../../../common/CheckBox';
-import { updateEventBar } from '../../../../store/events';
+import { updateCheckedCalendar } from '../../../../store/thunk/user';
 
 const Index = ({ calendar }) => {
-  const checked = useSelector(state =>
+  const checkedCalendar = useSelector(state =>
     checkedCalendarSelector(state, calendar),
   );
+  const checked = checkedCalendar.includes(calendar?.id);
 
   const dispatch = useDispatch();
   function handleCheckBox(e) {
-    dispatch(checkCalendar({ id: calendar.id, checked: e.target.checked }));
-    dispatch(updateEventBar());
+    dispatch(
+      updateCheckedCalendar({
+        checkedList: e.target.checked
+          ? checkedCalendar.concat(calendar.id)
+          : checkedCalendar.filter(id => id != calendar.id),
+      }),
+    );
   }
 
   return (
@@ -32,7 +38,7 @@ const Index = ({ calendar }) => {
           <p>{calendar.name}</p>
         </Tooltip>
       </CheckBox>
-      <OptionButtons calendarType={calendar.type} />
+      <OptionButtons calendar={calendar} />
     </div>
   );
 };

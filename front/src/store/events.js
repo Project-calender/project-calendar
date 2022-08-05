@@ -2,6 +2,7 @@ import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { createEventBar } from '../hooks/useCreateEventBar';
 import Moment from '../utils/moment';
 import { getAllCalendarAndEvent } from './thunk/event';
+import { updateCheckedCalendar } from './thunk/user';
 import { isCheckedCalander } from './user';
 
 export const eventsAdapter = createEntityAdapter({
@@ -25,12 +26,16 @@ const events = createSlice({
   },
 
   extraReducers: builder => {
-    builder.addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
-      const events = payload.events.sort(eventSort);
-
-      eventsAdapter.setAll(state, events);
-      state.byDate = classifyEventsByDate(events);
-    });
+    builder
+      .addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
+        const events = payload.events.sort(eventSort);
+        eventsAdapter.setAll(state, events);
+        state.byDate = classifyEventsByDate(events);
+      })
+      .addCase(updateCheckedCalendar.fulfilled, state => {
+        const { selectAll } = eventsAdapter.getSelectors();
+        state.byDate = classifyEventsByDate(selectAll(state));
+      });
   },
 });
 

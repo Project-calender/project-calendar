@@ -10,7 +10,7 @@ export default function useEventModal(initalState = false) {
   }, []);
 
   const hideModal = useCallback((reset = true) => {
-    if (reset) setModalData(null);
+    if (reset) setModalData({});
     toggleModal(false);
   }, []);
 

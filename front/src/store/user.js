@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { USER_URL } from '../constants/api';
-import axios from '../utils/token';
+import { updateCheckedCalendar } from './thunk/user';
 
 export const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
 export const getCheckedCalendar = () =>
@@ -16,18 +15,12 @@ const user = createSlice({
     updateUser(state, { payload }) {
       state = payload;
     },
-
-    checkCalendar(state, { payload: { id, checked } }) {
-      const checkedCalendar = new Set(state.checkedCalendar);
-      if (checked) checkedCalendar.add(id);
-      else checkedCalendar.delete(id);
-
-      axios.post(USER_URL.CHECK_CALENDAR, {
-        checkedList: [...checkedCalendar],
-      });
-      state.checkedCalendar = [...checkedCalendar];
-      localStorage.setItem('checkedCalendar', state.checkedCalendar.join(','));
-    },
+  },
+  extraReducers: builder => {
+    builder.addCase(updateCheckedCalendar.fulfilled, (state, { payload }) => {
+      state.checkedCalendar = payload;
+      localStorage.setItem('checkedCalendar', payload.join(','));
+    });
   },
 });
 
@@ -37,5 +30,5 @@ export function isCheckedCalander(event) {
   );
 }
 
-export const { updateUser, checkCalendar } = user.actions;
+export const { updateUser } = user.actions;
 export default user.reducer;
