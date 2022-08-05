@@ -15,8 +15,8 @@
 .modal_context > div >:nth-child(1) { width: 14%; } 
 .modal_context svg { width: 16px; height: 16px; color: #848484; position:relative; left: -4px; } 
 
-.event_title { width: 83% !important; } 
-.event_title_input { font-size: 22px; } 
+.event_title > div {  width: 83%;; } 
+.event_title :nth-child(2) input { font-size: 22px; margin-bottom: 5px; } 
 
 .modal_context_category { display: flex; } 
 .modal_context_category > * { width: 58px; height: 35px; margin-right: 5px; background: white; } 
@@ -32,27 +32,22 @@
 .time_find { margin-top: -5px !important; } 
 .time_find_button { position: relative; left: -10px; color:#1967d2 !important; padding: 5px 10px; background: white; font-size: 14px; border-radius: 3px; } 
 
-.event_data { background: #ededed; height: 100%; padding: 10px 5px; border-radius: 5px; width: 82% !important; } 
-.event_data_input { background: #ededed; border:none !important; transform : scaleY(1.1)} 
-.event_data input::placeholder { color: #6f6f6f ; font-weight: 600;} 
+.event_info_input > div { background: #ededed; height: 100%; padding: 10px 5px; border-radius: 5px; width: 82% !important; } 
+.event_info_input input { background: #ededed; border:none !important; transform : scaleY(1.1)} 
+.event_info_input input::placeholder { color: #6f6f6f ; font-weight: 600;} 
 
 .google_meet img { width: 10%; height: 30px; object-fit: contain; position:relative; left: -4px; } 
 .google_meet button { width: 220px !important; height: 35px; font-size: 14px; background: #1a73e8; color: white; } 
 .google_meet button:hover {filter:brightness(110%)}
 
-.memo { background: #ededed; height: 100%; padding: 10px 5px; border-radius: 5px; width: 82% !important; } 
-.memo_input { background: #ededed; border:none !important; word-break: break-all; } 
+.memo > div { background: #ededed; height: 100%; padding: 10px 5px; border-radius: 5px; width: 82% !important; } 
+.memo input { background: #ededed; border:none !important; word-break: break-all; } 
 .memo input::placeholder { color: #a1a1a1; } 
 
 .clip_icon { transform: rotate(-45deg); } 
 
 .calendar_info { display: flex; align-items: center; } 
-.calendar_info h3 { margin-right: 20px; } 
-.calendar_info_colors { background: #f66767; width: 18px; height: 18px; border-radius: 100%; } 
-.calendar_info svg path {
-    position: relative;
-    z-index: -1;
-}
+
 .list_modal {display: flex; align-items: center; position: relative; left: -10px; padding: 5px 5px 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 0px !important; }
 .list_modal svg { margin-right: 0px; }
 .list_modal:hover {background: #f7f7f7;}

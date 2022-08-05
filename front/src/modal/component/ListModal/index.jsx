@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styles from './style.module.css';
-import PropTypes from 'prop-types';
-import Modal from '../../../components/common/Modal';
 
-const Index = ({ hideModal, modalData }) => {
-  const { data, position } = modalData;
+import Modal from '../../../components/common/Modal';
+import { ListModalContext } from '../../../context/EventModalContext';
+
+const Index = () => {
+  const { hideModal, modalData } = useContext(ListModalContext);
+  const { data, style } = modalData;
   return (
     <Modal
       hideModal={hideModal}
       style={{
-        ...position,
+        ...style,
         zIndex: 600,
         borderRadius: 0,
         padding: '8px 0px',
@@ -22,11 +24,6 @@ const Index = ({ hideModal, modalData }) => {
       </div>
     </Modal>
   );
-};
-
-Index.propTypes = {
-  hideModal: PropTypes.func,
-  modalData: PropTypes.object,
 };
 
 export default Index;
