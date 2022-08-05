@@ -5,6 +5,14 @@ module.exports = class RealTimeAlert extends Model {
   static init(sequelize) {
     return super.init(
       {
+        userId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        eventId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
         content: {
           type: DataTypes.STRING(200),
           allowNull: false,
