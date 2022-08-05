@@ -92,7 +92,7 @@ router.post("/editGroupCalendar", authJWT, async (req, res, next) => {
       )
     );
     await t.commit();
-    return res.status(200).send({ success: true });
+    return res.status(200).send({ changeCalendar });
   } catch (error) {
     console.error(error);
     await t.rollback();

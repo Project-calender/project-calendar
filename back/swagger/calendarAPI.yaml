@@ -348,9 +348,27 @@
         description: 성공
         schema:
           properties:
-            success:
-              type: boolean
-              example: true
+            changeCalendar:
+              type: object
+              properties: 
+                id:
+                  type: number
+                  example: 7
+                name:
+                  type: string
+                  example: stri312ng
+                color:
+                  type: string
+                  example: stri312ng12
+                updatedAt:
+                  type: string
+                  example: 2022-08-05T08:10:47.000Z
+                createdAt:
+                  type: string
+                  example: 2022-08-05T08:11:52.687Z
+                OwnerId:
+                  type: number
+                  example: 21
       400:
         description: 캘린더를 수정 시도한 유저가 캘린더 오너가 아닐 경우
         schema:
