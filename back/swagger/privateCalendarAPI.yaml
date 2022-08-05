@@ -1,122 +1,7 @@
-
-/api/privateEvent/createPrivateEvent:
-  post:
-    tags:
-    - privateEvent
-    summary: 개인 이벤트 만들기
-    parameters:
-      - name: Authorization
-        in: header
-        required: true
-      - name: body
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            name: 
-              type: string
-            color:
-              type: string
-            priority: 
-              type: string
-            memo:
-              type: string
-            startTime: 
-              type: string
-            endTime:
-              type: string
-    responses:
-      200: 
-        description: 성공
-        schema:
-          properties:
-            success:
-              type: string
-              example: true
-/api/privateEvent/editPrivateEvent:
-  post:
-    tags:
-    - privateEvent
-    summary: 개인 이벤트 수정
-    parameters:
-    - name: Authorization
-      in: header
-      required: true
-    - name: body
-      in: body
-      required: true
-      schema:
-        type: object
-        properties:
-          eventId:
-            type: string
-          name: 
-            type: string
-          color:
-            type: string
-          priority: 
-            type: string
-          memo:
-            type: string
-          startTime: 
-            type: string
-          endTime:
-            type: string
-    responses:
-      200: 
-        description: 성공
-        schema:
-          properties:
-            success:
-              type: string
-              example: true
-      401:
-        description: 수정할 개인 이벤트 조회 결과가 없을 경우
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 수정할 개인이벤트의 조회 결과가 없습니다
-/api/privateEvent/deletePrivateEvent:
-  post:
-    tags:
-    - privateEvent
-    summary: 개인 이벤트 삭제
-    parameters:
-    - name: Authorization
-      in: header
-      required: true
-    - name: body
-      in: body
-      required: true
-      schema:
-        type: object
-        properties:
-          eventId:
-            type: string
-    responses:
-      200: 
-        description: 성공
-        schema:
-          type: object
-          properties:
-            success:
-              type: string
-              example: true
-      401:
-        description: 삭제하려는 이벤트의 조회 결과가 없는 경우
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 삭제하려는 이벤트의 조회 결과가 없습니다
 /api/privateCalendar/editPrivateCalendar:
   post:
     tags:
-      - privateCalendar
+      - calendar
     summary: 개인 캘린더 수정
     parameters:
       - name: Authorization
@@ -148,7 +33,7 @@
               properties: 
                 id:
                   type: number
-                  example: 7
+                  example: 2
                 name:
                   type: string
                   example: stri312ng
@@ -164,37 +49,22 @@
                 OwnerId:
                   type: number
                   example: 21
+      400:
+        description: 개인 캘린더 조회 결과가 없는 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 개인 캘린더 조회 결과가 없습니다 입력값을 다시 확인해주세요
       401:
-        description: 로그인된 사람이 달력의 오너가 아닌 경우
+        description: 수정 시도한 유저가 개인 캘린더 주인이 아닐 경우
         schema:
           type: object
           properties:
             message:
               type: string
-              example: 권한 부여는 달력의 오너만 가능합니다!
-      402:
-        description: 유저 조회 결과가 없는 경우
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 존재하지 않는 유저입니다!
-      403:
-        description: 권한 조정을 받은 유저가 그룹 맴버가 아닌 경우
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 그룹 캘린더에 존재하지 초대되지 않은 유저입니다!
-      405:
-        description: 달력의 오너보다 높은 권한을 부여하는 경우
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 달력 오너보다 낮은 권한만 부여할 수 있습니다!
+              example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
       500:
         $ref: "./openapi.yaml#/serverError"
+$ref: "./eventAPI.yaml"
