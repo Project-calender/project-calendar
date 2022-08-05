@@ -379,4 +379,129 @@
       500:
         $ref: "./openapi.yaml#/serverError"
 
+/api/calendar/editGroupCalendar:
+  post:
+    tags:
+      - calendar
+    summary: 그룹캘린더 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            calendarId:
+              type: string
+            newCalendarName:
+              type: string
+            newCalendarColor:
+              type: string
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            changeCalendar:
+              type: object
+              properties: 
+                id:
+                  type: number
+                  example: 7
+                name:
+                  type: string
+                  example: stri312ng
+                color:
+                  type: string
+                  example: stri312ng12
+                updatedAt:
+                  type: string
+                  example: 2022-08-05T08:10:47.000Z
+                createdAt:
+                  type: string
+                  example: 2022-08-05T08:11:52.687Z
+                OwnerId:
+                  type: number
+                  example: 21
+      400:
+        description: 캘린더를 수정 시도한 유저가 캘린더 오너가 아닐 경우
+        schema:
+          properties:
+            message:
+              type: string
+              example: 캘린더의 오너만 캘린더를 수정할 수 있습니다!
+      500:
+        $ref: "./openapi.yaml#/serverError"
+/api/privateCalendar/editPrivateCalendar:
+  post:
+    tags:
+      - calendar
+    summary: 개인 캘린더 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            privateCalendarId:
+              type: string
+              required: true
+              example: 2
+            newName:
+              type: string
+              example: dasda4124sd
+            newColor:
+              type: string
+              example: rqeeqww
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            exPrivateCalendar:
+              type: object
+              properties: 
+                id:
+                  type: number
+                  example: 2
+                name:
+                  type: string
+                  example: stri312ng
+                color:
+                  type: string
+                  example: stri312ng12
+                updatedAt:
+                  type: string
+                  example: 2022-08-05T08:10:47.000Z
+                createdAt:
+                  type: string
+                  example: 2022-08-05T08:11:52.687Z
+                OwnerId:
+                  type: number
+                  example: 21
+      400:
+        description: 개인 캘린더 조회 결과가 없는 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 개인 캘린더 조회 결과가 없습니다 입력값을 다시 확인해주세요
+      401:
+        description: 수정 시도한 유저가 개인 캘린더 주인이 아닐 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
+      500:
+        $ref: "./openapi.yaml#/serverError"
 $ref: "./eventAPI.yaml"
