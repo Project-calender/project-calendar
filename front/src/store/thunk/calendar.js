@@ -13,3 +13,15 @@ export const addCalendar = createAsyncThunk(
     return { id, name, color, OwnerId, authority };
   },
 );
+
+export const updateCalendar = createAsyncThunk(
+  CALENDAR_URL.UPDATE_GROUP_CALENDAR,
+  async ({ calendarId, newCalendarName, newCalendarColor }) => {
+    const { data } = await axios.post(CALENDAR_URL.UPDATE_GROUP_CALENDAR, {
+      calendarId,
+      newCalendarName,
+      newCalendarColor,
+    });
+    return data.changeCalendar;
+  },
+);

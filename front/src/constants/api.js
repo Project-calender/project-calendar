@@ -9,6 +9,7 @@ export const USER_URL = {
 
 export const CALENDAR_URL = {
   CREATE_CALENDAR: '/calendar/createGroupCalendar',
+  UPDATE_GROUP_CALENDAR: '/calendar/editGroupCalendar',
 };
 
 export const EVENT_URL = {

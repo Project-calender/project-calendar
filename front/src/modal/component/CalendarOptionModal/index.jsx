@@ -8,16 +8,24 @@ import { useContext } from 'react';
 import EventColor from '../../../components/calendar/EventColor';
 import { CALENDAR_COLOR } from '../../../styles/color.js';
 import { updateCheckedCalendar } from '../../../store/thunk/user';
+import { updateCalendar } from '../../../store/thunk/calendar';
 const Index = () => {
   const { hideModal, modalData } = useContext(ModalContext);
 
   const { calendar, style } = modalData;
-  console.log(calendar);
+  const dispatch = useDispatch();
+
   function onClickColor(e, color) {
-    console.log(e, color);
+    dispatch(
+      updateCalendar({
+        calendarId: calendar.id,
+        newCalendarName: calendar.name,
+        newCalendarColor: color,
+      }),
+    );
+    hideModal();
   }
 
-  const dispatch = useDispatch();
   function checkOnlyOneCalendar() {
     dispatch(updateCheckedCalendar({ checkedList: [calendar.id] }));
     hideModal();
