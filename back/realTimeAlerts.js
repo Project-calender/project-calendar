@@ -2,7 +2,7 @@ var CronJob = require("cron").CronJob;
 const { RealTimeAlert, sequelize } = require("./models");
 const { Op } = require("sequelize");
 
-let alerts = {};
+let alertsObject = {};
 const addAlert = async (userId, eventId, content, date, next) => {
   try {
     await sequelize.transaction(async (t) => {
@@ -18,8 +18,9 @@ const addAlert = async (userId, eventId, content, date, next) => {
         }
       );
 
+      console.log(date);
       if (newAlert) {
-        alerts[`${newAlert.id}`] = new CronJob(
+        alertsObject[newAlert.id] = new CronJob(
           date,
           async function () {
             console.log(`${content}`);
@@ -40,8 +41,36 @@ const addAlert = async (userId, eventId, content, date, next) => {
   }
 };
 
-const deleteAlert = async (userId, eventId) => {};
+const deleteAlerts = async (userId, eventId, next) => {
+  try {
+    await RealTimeAlert.findAll({
+      where: {
+        [Op.and]: {
+          userId: userId,
+          eventId: eventId,
+        },
+      },
+    }).then(async (alerts) => {
+      if (alerts.length === 0) return;
 
-module.exports = { addAlert };
+      console.log("can");
+
+      var alertIds = [];
+      await Promise.all(
+        alerts.map((alert) => {
+          alertIds.push(alert.id);
+          alertsObject[alert.id].stop();
+        })
+      ).then(async () => {
+        await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
+      });
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+module.exports = { addAlert, deleteAlerts };
 
 // crtl + s로 새로고침을 했을때는 한번만 실행된다 겹치는거 아님
