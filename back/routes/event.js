@@ -1,5 +1,5 @@
 const express = require("express");
-const { addAlert } = require("../realTimeAlerts");
+const { addAlert, deleteAlerts } = require("../realTimeAlerts");
 
 const {
   sequelize,
@@ -534,6 +534,33 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
 
 router.post("/editGroupEvent", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
+
+  async function sameCode() {
+    const privateCalendar = await me.getPrivateCalendar();
+    const changePrivateEvent = await PrivateEvent.findOne({
+      where: {
+        [Op.and]: {
+          groupEventId: req.body.groupEventId,
+          PrivateCalendarId: privateCalendar.id,
+        },
+      },
+    });
+    await changePrivateEvent.update(
+      {
+        name: req.body.name,
+        color: req.body.color,
+        busy: req.body.busy,
+        memo: req.body.memo,
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
+        allDay: req.body.allDay,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+    return res.status(200).send({ success: true });
+  }
   try {
     const me = await User.findOne({ where: { id: req.myId } });
     const groupEvent = await Event.findOne({
@@ -571,7 +598,9 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
       { transaction: t }
     );
 
-    if (req.body.alerts) {
+    deleteAlerts(req.myId, req.body.groupEventId, next);
+
+    if (req.body.alerts.length > 0) {
       if (req.body.allDay === true) {
       } else {
         await Promise.all(
@@ -604,58 +633,12 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
             await t.rollback();
             next(error);
           } else {
-            const privateCalendar = await me.getPrivateCalendar();
-            const changePrivateEvent = await PrivateEvent.findOne({
-              where: {
-                [Op.and]: {
-                  groupEventId: req.body.groupEventId,
-                  PrivateCalendarId: privateCalendar.id,
-                },
-              },
-            });
-            await changePrivateEvent.update(
-              {
-                name: req.body.name,
-                color: req.body.color,
-                busy: req.body.busy,
-                memo: req.body.memo,
-                startTime: req.body.startTime,
-                endTime: req.body.endTime,
-                allDay: req.body.allDay,
-              },
-              { transaction: t }
-            );
-
-            await t.commit();
-            return res.status(200).send({ success: true });
+            sameCode();
           }
         });
       }
     } else {
-      const privateCalendar = await me.getPrivateCalendar();
-      const changePrivateEvent = await PrivateEvent.findOne({
-        where: {
-          [Op.and]: {
-            groupEventId: req.body.groupEventId,
-            PrivateCalendarId: privateCalendar.id,
-          },
-        },
-      });
-      await changePrivateEvent.update(
-        {
-          name: req.body.name,
-          color: req.body.color,
-          busy: req.body.busy,
-          memo: req.body.memo,
-          startTime: req.body.startTime,
-          endTime: req.body.endTime,
-          allDay: req.body.allDay,
-        },
-        { transaction: t }
-      );
-
-      await t.commit();
-      return res.status(200).send({ success: true });
+      sameCode();
     }
   } catch (error) {
     console.error(error);
