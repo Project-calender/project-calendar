@@ -2,7 +2,7 @@
 
 .modal_container li { font-size: 14px; padding: 10px 15px; } 
 .modal_container li:hover { background: #f1f1f1; } 
-.modal_container hr { background: #f1f1f1; border-color: #f1f1f1; border: 0.5px solid #dadada; margin: 0px; } 
+.modal_container hr { background: #dadada; border:none; height: 1px; margin: 0px; } 
 
 .color_list { display: flex; flex-wrap: wrap; width: 80%; padding: 10px 15px; padding-bottom: 20px; } 
 .show_icon { visibility: visible; opacity: 1;}
