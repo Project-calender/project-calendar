@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import styles from './style.module.css';
-import rootStyles from '../../../styles/style.module.css';
 
 import Modal from '../../../components/common/Modal';
 import { ModalContext } from '../../../context/EventModalContext';
@@ -13,11 +12,6 @@ import { updateCalendar } from '../../../store/thunk/calendar';
 const Index = () => {
   const { hideModal, modalData } = useContext(ModalContext);
 
-  function handleHideModal() {
-    modalData.target.map(icon => icon.classList.remove(rootStyles.show_icon));
-    hideModal();
-  }
-
   const dispatch = useDispatch();
   const { calendar } = modalData;
   function onClickColor(e, color) {
@@ -28,17 +22,17 @@ const Index = () => {
         newCalendarColor: color,
       }),
     );
-    handleHideModal();
+    hideModal();
   }
 
   function checkOnlyOneCalendar() {
     dispatch(updateCheckedCalendar({ checkedList: [calendar.id] }));
-    handleHideModal();
+    hideModal();
   }
 
   return (
     <Modal
-      hideModal={handleHideModal}
+      hideModal={hideModal}
       style={{ ...modalData.style, borderRadius: 0, padding: 0 }}
     >
       <div className={styles.modal_container}>
