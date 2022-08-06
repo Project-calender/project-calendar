@@ -33,11 +33,8 @@ export const updateCalendar = createAsyncThunk(
 
 export const deleteCalendar = createAsyncThunk(
   CALENDAR_URL.DELETE_GROUP_CALENDAR,
-  async ({ calendarId }) => {
-    const { data } = await axios.post(CALENDAR_URL.DELETE_GROUP_CALENDAR, {
-      calendarId: calendarId,
-    });
-    console.log(data);
-    return { calendarId };
+  async calendarId => {
+    await axios.post(CALENDAR_URL.DELETE_GROUP_CALENDAR, { calendarId });
+    return calendarId;
   },
 );

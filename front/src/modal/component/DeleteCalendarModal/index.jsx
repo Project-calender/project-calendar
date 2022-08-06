@@ -1,14 +1,21 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import styles from './style.module.css';
 
 import Modal from '../../../components/common/Modal';
 import { DeleteCalendarContext } from '../../../context/EventModalContext';
 import { useContext } from 'react';
+import { deleteCalendar } from '../../../store/thunk/calendar';
 
 const Index = () => {
   const { hideModal, modalData } = useContext(DeleteCalendarContext);
   const { calendar } = modalData;
 
+  const dispatch = useDispatch();
+  function handleDeleteCalendar() {
+    dispatch(deleteCalendar(calendar.id));
+    hideModal();
+  }
   return (
     <Modal
       hideModal={hideModal}
@@ -24,7 +31,7 @@ const Index = () => {
         </p>
         <div>
           <button onClick={hideModal}>취소</button>
-          <button>캘린더 삭제</button>
+          <button onClick={handleDeleteCalendar}>캘린더 삭제</button>
         </div>
       </div>
     </Modal>
