@@ -34,6 +34,7 @@ const Index = () => {
   return (
     <Modal
       hideModal={hideModal}
+      isBackground
       style={{ ...modalData.style, borderRadius: 0, padding: 0 }}
     >
       <div className={styles.modal_container}>

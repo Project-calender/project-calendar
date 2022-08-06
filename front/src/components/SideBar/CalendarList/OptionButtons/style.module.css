@@ -1,3 +1,5 @@
-.calendar_item_icon { text-align: right; width: 20%; display: flex; justify-content: space-between;} 
-.calendar_item_icon .icon_mark, .icon_option { width: 10px; visibility: hidden; opacity: 0; transition: all 0.4s; } 
+.calendar_item_icon { text-align: right; width: 25%; display: flex; justify-content: flex-end; align-items: center; margin-top: 3px;}
+.calendar_item_icon .icon_mark, .icon_option { width: 22px; height: 17px; visibility: hidden; opacity: 0; transition: all 0.4s; color: #676767;  } 
 .show_icon svg { visibility: visible !important;  opacity: 1 !important; } 
+.show_icon :nth-child(3) { background: #f1f1f1; border-radius: 100%; } 
+.space {margin:0px 6px;}

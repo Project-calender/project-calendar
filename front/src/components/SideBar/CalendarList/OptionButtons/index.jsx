@@ -38,9 +38,10 @@ const Index = ({ calendar }) => {
     hideCalendarOptionModal();
 
     const { top, left } = e.currentTarget.getBoundingClientRect();
+    const maxTop = window.innerHeight - 260;
     showCalendarOptionModal({
       calendar,
-      style: { top, left: left + 20 },
+      style: { top: top + 5 > maxTop ? maxTop : top + 5, left: left },
     });
     e.stopPropagation();
   }
@@ -52,7 +53,7 @@ const Index = ({ calendar }) => {
         calendar === calendarOptionData.calendar ? styles.show_icon : ''
       }`}
     >
-      {isGroupCalendar ? (
+      {isGroupCalendar && (
         <Tooltip title={'구독 취소'}>
           <FontAwesomeIcon
             icon={faXmark}
@@ -60,9 +61,8 @@ const Index = ({ calendar }) => {
             onClick={onClickCancel}
           />
         </Tooltip>
-      ) : (
-        <div />
       )}
+      <div className={styles.space} />
       <Tooltip title={'옵션'}>
         <FontAwesomeIcon
           icon={faEllipsisVertical}
