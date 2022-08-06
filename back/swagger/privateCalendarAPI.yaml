@@ -13,14 +13,14 @@
         schema:
           type: object
           properties:
-            privateCalendarId:
+            calendarId:
               type: string
               required: true
               example: 2
-            newName:
+            newCalendarName:
               type: string
               example: dasda4124sd
-            newColor:
+            newCalendarColor:
               type: string
               example: rqeeqww
     responses:
