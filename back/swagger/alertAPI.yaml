@@ -29,7 +29,6 @@
                 type: string
       500:
         $ref: "./openapi.yaml#/serverError"
-
 /api/alert/read:
   post:
     tags:
@@ -52,3 +51,5 @@
         $ref: "./openapi.yaml#/success"
       500:
         $ref: "./openapi.yaml#/serverError"
+
+$ref: "./privateCalendarAPI.yaml"
