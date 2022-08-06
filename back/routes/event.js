@@ -1,5 +1,5 @@
 const express = require("express");
-const { addAlert } = require("../realTimeAlerts");
+const { addAlert, deleteAlerts } = require("../realTimeAlerts");
 
 const {
   sequelize,
@@ -21,9 +21,6 @@ const authJWT = require("../utils/authJWT");
 router.post("/getAllEvent", authJWT, async (req, res, next) => {
   try {
     const me = await User.findOne({ where: { id: req.myId } });
-    // req.body.endDate = req.body.endDate.split("-");
-    // req.body.endDate[2] = String(Number(req.body.endDate[2]) + 1);
-    // req.body.endDate = req.body.endDate.join("-");
     var startDate = new Date(req.body.startDate);
     var endDate = new Date(req.body.endDate);
     endDate.setDate(endDate.getDate() + 1);
@@ -306,7 +303,8 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
         {
           name: req.body.eventName,
           color: req.body.color,
-          priority: req.body.priority,
+          busy: req.body.busy,
+          permission: req.body.permission,
           memo: req.body.memo,
           startTime: req.body.startTime,
           endTime: req.body.endTime,
@@ -346,7 +344,6 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    await t.rollback();
     next(error);
   }
 });
@@ -401,7 +398,8 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
         {
           name: groupEvent.name,
           color: groupEvent.color,
-          priority: groupEvent.priority,
+          busy: req.body.busy,
+          permission: req.body.permission,
           memo: groupEvent.memo,
           startTime: groupEvent.startTime,
           endTime: groupEvent.endTime,
@@ -536,6 +534,33 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
 
 router.post("/editGroupEvent", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
+
+  async function sameCode() {
+    const privateCalendar = await me.getPrivateCalendar();
+    const changePrivateEvent = await PrivateEvent.findOne({
+      where: {
+        [Op.and]: {
+          groupEventId: req.body.groupEventId,
+          PrivateCalendarId: privateCalendar.id,
+        },
+      },
+    });
+    await changePrivateEvent.update(
+      {
+        name: req.body.name,
+        color: req.body.color,
+        busy: req.body.busy,
+        memo: req.body.memo,
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
+        allDay: req.body.allDay,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+    return res.status(200).send({ success: true });
+  }
   try {
     const me = await User.findOne({ where: { id: req.myId } });
     const groupEvent = await Event.findOne({
@@ -558,6 +583,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
       return res.status(400).send({ message: "수정 권한이 없습니다!" });
     }
 
+    //'2022-07-26 07:00:18'
     await groupEvent.update(
       {
         name: req.body.eventName,
@@ -565,55 +591,55 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
         busy: req.body.busy,
         permission: req.body.permission,
         memo: req.body.memo,
-        startTime: req.body.startTime,
-        endTime: req.body.endTime,
+        startTime: new Date(req.body.startTime),
+        endTime: new Date(req.body.endTime),
         allDay: req.body.allDay,
       },
       { transaction: t }
     );
 
-    const privateCalendar = await me.getPrivateCalendar();
-    const changePrivateEvent = await PrivateEvent.findOne({
-      where: {
-        [Op.and]: {
-          groupEventId: req.body.groupEventId,
-          PrivateCalendarId: privateCalendar.id,
-        },
-      },
-    });
-    changePrivateEvent.update(
-      {
-        name: req.body.name,
-        color: req.body.color,
-        busy: req.body.priority,
-        memo: req.body.memo,
-        startTime: req.body.startTime,
-        endTime: req.body.endTime,
-        allDay: req.body.allDay,
-      },
-      { transaction: t }
-    );
+    deleteAlerts(req.myId, req.body.groupEventId, next);
 
-    // const members = await groupEvent.getEventMembers();
-    // await Promise.all(
-    //   members.map(async (member) => {
-    //     if (member.id !== req.myId) {
-    //       await Alert.create(
-    //         {
-    //           UserId: member.id,
-    //           type: "event",
-    //           eventCalendarId: groupEvent.CalendarId,
-    //           eventDate: groupEvent.startTime,
-    //           content: `${groupEvent.name} 이벤트가 수정되었어요!`,
-    //         },
-    //         { transaction: t }
-    //       );
-    //     }
-    //   })
-    // );
-
-    await t.commit();
-    return res.status(200).send({ success: true });
+    if (req.body.alerts.length > 0) {
+      if (req.body.allDay === true) {
+      } else {
+        await Promise.all(
+          req.body.alerts.map((alert) => {
+            if (alert.type === "minute") {
+              const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
+              const date = new Date(req.body.startTime);
+              date.setMinutes(date.getMinutes() - parseInt(alert.time));
+              addAlert(req.myId, req.body.groupEventId, content, date, next);
+            } else if (alert.type === "hour") {
+              const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
+              const date = new Date(req.body.startTime);
+              date.setHours(date.getHours() - alert.time);
+              addAlert(req.myId, req.body.groupEventId, content, date, next);
+            } else if (alert.type === "day") {
+              const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
+              const date = new Date(req.body.startTime);
+              date.setDate(date.getDate() - alert.time);
+              addAlert(req.myId, req.body.groupEventId, content, date, next);
+            } else if (alert.type === "week") {
+              const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
+              const date = new Date(req.body.startTime);
+              date.setDate(date.getDate() - alert.time * 7);
+              addAlert(req.myId, req.body.groupEventId, content, date, next);
+            }
+          })
+        ).then(async (error) => {
+          if (error) {
+            console.error(error);
+            await t.rollback();
+            next(error);
+          } else {
+            sameCode();
+          }
+        });
+      }
+    } else {
+      sameCode();
+    }
   } catch (error) {
     console.error(error);
     await t.rollback();
@@ -719,25 +745,11 @@ router.post("/searchEvent", authJWT, async (req, res, next) => {
   }
 });
 
-// 서버가 재시작 될 시 모든 알람이 삭제된다,,
-
-// 밑의 알람을 hooks로 빼고 함수로 실행하면 된다. ?
-
-// db에 따로 저장하고 서버가 실행될때 반복문으로 다 돌면서 다시 알람을 설정한다?
-
-//,,알람을 바꾸거나 취소할땐 어떻게 해야하지?
-
-// db에 cron table을 따로만든다 -> 객체 이름을 저장한다. event userId column과 같이 추가 해놓는다
-
-// 변경시 ? -> 기존 객체 삭제 새로 만들기
-
-// 삭제 ? -> 그냥 삭제
-
 router.post("/test2", async (req, res, next) => {
   try {
-    const me = await Alert.findOne({ where: { id: 1 } });
+    const now = new Date();
 
-    return res.status(200).send(me);
+    return res.status(200).send(now);
   } catch (error) {
     console.error(error);
     next(error);
@@ -746,24 +758,17 @@ router.post("/test2", async (req, res, next) => {
 
 router.post("/test", async (req, res, next) => {
   try {
-    //req.body [ { type: 'hour' } ]
-    if (req.body.alert) {
-      var afterMinute = new Date();
-      afterMinute.setMinutes(afterMinute.getMinutes() + 1);
-
-      addAlert(1, "test", afterMinute)
-        .then(() => {
-          console.log("b");
-          return res.status(200).send({ succes: true });
-        })
-        .catch((error) => {
-          console.error(error);
-          next(error);
-        });
-    } else {
-      console.log("b");
-      return res.status(200).send({ succes: true });
-    }
+    const test = await User.findOne({
+      where: { id: 1 },
+      include: [
+        {
+          model: Calendar,
+          as: "GroupCalendars",
+          through: { attributes: [] },
+        },
+      ],
+    });
+    return res.status(200).send(test);
   } catch (error) {
     console.error(error);
     next(error);

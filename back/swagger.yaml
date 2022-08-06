@@ -19,6 +19,8 @@ tags:
     description: API about event
   - name: alert
     description: API about alert
+  - name: privateCalendar
+    description: API about privateCalendar
 paths:
   /api/user/signup:
     post:
@@ -454,6 +456,8 @@ paths:
               message:
                 type: string
                 example: 이미 같은 이름의 캘린더가 존재합니다!
+        '500':
+          $ref: '#/serverError'
   /api/calendar/inviteGroupCalendar:
     post:
       tags:
@@ -513,6 +517,8 @@ paths:
               message:
                 type: string
                 example: 이미 캘린더의 그룹원 입니다!
+        '500':
+          $ref: '#/serverError'
   /api/calendar/acceptCalendarInvite:
     post:
       tags:
@@ -565,6 +571,8 @@ paths:
               message:
                 type: string
                 example: 존재하지 않는 초대장입니다
+        '500':
+          $ref: '#/serverError'
   /api/calendar/rejectCalendarInvite:
     post:
       tags:
@@ -617,6 +625,8 @@ paths:
               message:
                 type: string
                 example: 존재하지 않는 초대장입니다!
+        '500':
+          $ref: '#/serverError'
   /api/calendar/giveAuthority:
     post:
       tags:
@@ -677,6 +687,105 @@ paths:
               message:
                 type: string
                 example: 달력 오너보다 낮은 권한만 부여할 수 있습니다!
+        '500':
+          $ref: '#/serverError'
+  /api/calendar/deleteGroupCalendar:
+    post:
+      tags:
+        - calendar
+      summary: 그룹캘린더 삭제
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              calendarId:
+                type: string
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              success:
+                type: boolean
+                example: true
+        '400':
+          description: 삭제할 캘린더의 조회 결과가 없을 경우
+          schema:
+            properties:
+              message:
+                type: string
+                example: 삭제하려는 캘린더를 찾을 수 없습니다 입력값을 다시 확인해주세요
+        '401':
+          description: 캘린더 삭제를 시도하는 유저가 캘린더의 주인이 아닐 경우
+          schema:
+            properties:
+              message:
+                type: string
+                example: 삭제하려는 유저가 캘린더의 주인이 아닙니다 본인의 캘린더인지 다시 확인해주세요
+        '500':
+          $ref: '#/serverError'
+  /api/calendar/editGroupCalendar:
+    post:
+      tags:
+        - calendar
+      summary: 그룹캘린더 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              calendarId:
+                type: string
+              newCalendarName:
+                type: string
+              newCalendarColor:
+                type: string
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              changeCalendar:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 7
+                  name:
+                    type: string
+                    example: stri312ng
+                  color:
+                    type: string
+                    example: stri312ng12
+                  updatedAt:
+                    type: string
+                    example: 2022-08-05T08:10:47.000Z
+                  createdAt:
+                    type: string
+                    example: 2022-08-05T08:11:52.687Z
+                  OwnerId:
+                    type: number
+                    example: 21
+        '400':
+          description: 캘린더를 수정 시도한 유저가 캘린더 오너가 아닐 경우
+          schema:
+            properties:
+              message:
+                type: string
+                example: 캘린더의 오너만 캘린더를 수정할 수 있습니다!
+        '500':
+          $ref: '#/serverError'
   /api/event/getAllEvent:
     post:
       tags:
@@ -849,6 +958,11 @@ paths:
                       type: string
                     nickname:
                       type: string
+                    ProfileImages:
+                      type: object
+                      properties:
+                        src:
+                          type: integer
                     EventMember:
                       type: object
                       properties:
@@ -1299,6 +1413,75 @@ paths:
       responses:
         '200':
           $ref: '#/success'
+        '500':
+          $ref: '#/serverError'
+  /api/privateCalendar/editPrivateCalendar:
+    post:
+      tags:
+        - privateCalendar
+      summary: 개인 캘린더 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              privateCalendarId:
+                type: string
+                required: true
+                example: 2
+              newName:
+                type: string
+                example: dasda4124sd
+              newColor:
+                type: string
+                example: rqeeqww
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              exPrivateCalendar:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 2
+                  name:
+                    type: string
+                    example: stri312ng
+                  color:
+                    type: string
+                    example: stri312ng12
+                  updatedAt:
+                    type: string
+                    example: 2022-08-05T08:10:47.000Z
+                  createdAt:
+                    type: string
+                    example: 2022-08-05T08:11:52.687Z
+                  OwnerId:
+                    type: number
+                    example: 21
+        '400':
+          description: 개인 캘린더 조회 결과가 없는 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 개인 캘린더 조회 결과가 없습니다 입력값을 다시 확인해주세요
+        '401':
+          description: 수정 시도한 유저가 개인 캘린더 주인이 아닐 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
         '500':
           $ref: '#/serverError'
 success:
