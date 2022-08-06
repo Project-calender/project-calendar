@@ -1,7 +1,7 @@
 /api/privateCalendar/editPrivateCalendar:
   post:
     tags:
-      - calendar
+      - privateCalendar
     summary: 개인 캘린더 수정
     parameters:
       - name: Authorization
@@ -67,4 +67,4 @@
               example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
       500:
         $ref: "./openapi.yaml#/serverError"
-$ref: "./eventAPI.yaml"
+
