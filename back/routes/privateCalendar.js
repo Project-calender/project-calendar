@@ -8,7 +8,7 @@ router.post('/editPrivateCalendar', authJWT, async (req, res, next) => {
     try {
         const exPrivateCalendar = await PrivateCalendar.findOne({
             where: {
-                id: req.body.privateCalendarId
+                id: req.body.calendarId
             }
         })
 
@@ -21,8 +21,8 @@ router.post('/editPrivateCalendar', authJWT, async (req, res, next) => {
         }
 
         exPrivateCalendar.update({
-            name: req.body.newName,
-            color: req.body.newColor
+            name: req.body.newCalendarName,
+            color: req.body.newCalendarColor
         })
 
         res.status(200).send({ exPrivateCalendar })
