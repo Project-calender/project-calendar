@@ -3,18 +3,19 @@ import { useDispatch } from 'react-redux';
 import styles from './style.module.css';
 
 import Modal from '../../../components/common/Modal';
-import { ModalContext } from '../../../context/EventModalContext';
+import { CalendarOptionContext } from '../../../context/EventModalContext';
 import { useContext } from 'react';
 import EventColor from '../../../components/calendar/EventColor';
 import { CALENDAR_COLOR } from '../../../styles/color.js';
 import { updateCheckedCalendar } from '../../../store/thunk/user';
 import { updateCalendar } from '../../../store/thunk/calendar';
+
 const Index = () => {
-  const { hideModal, modalData } = useContext(ModalContext);
+  const { hideModal, modalData } = useContext(CalendarOptionContext);
 
   const dispatch = useDispatch();
   const { calendar } = modalData;
-  function onClickColor(e, color) {
+  function onClickColor(color) {
     dispatch(
       updateCalendar({
         calendarId: calendar.id,

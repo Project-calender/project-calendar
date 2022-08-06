@@ -7,13 +7,13 @@
  width: calc(100vw + 265px); 
  height: 100vh; 
  z-index: 499; 
-} 
+ } 
 
 @keyframes openEffect { 
  from { transform: scale(0); } 
  to { transform: scale(1); } 
-} 
+ } 
 
-.modal_close_icon { position: absolute; top: 8px; right: 10px; border-radius: 100%; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; z-index:3;} 
+.modal_close_icon { position: absolute; top: 8px; right: 10px; border-radius: 100%; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; z-index:3; } 
 .modal_close_icon svg { width: 18px; height: 18px; color: #525252; } 
 .modal_close_icon:hover { background: #f1f1f1; } 

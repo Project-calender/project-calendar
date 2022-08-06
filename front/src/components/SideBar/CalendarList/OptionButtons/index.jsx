@@ -7,16 +7,34 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import { useContext } from 'react';
-import { ModalContext } from '../../../../context/EventModalContext';
+import {
+  DeleteCalendarContext,
+  CalendarOptionContext,
+} from '../../../../context/EventModalContext';
 
 const Index = ({ calendar }) => {
   const {
     showModal: showCalendarOptionModal,
     hideModal: hideCalendarOptionModal,
     modalData: calendarOptionData,
-  } = useContext(ModalContext);
+  } = useContext(CalendarOptionContext);
 
-  function onCLickOption(e) {
+  const { showModal: showDeleteCalendarModal } = useContext(
+    DeleteCalendarContext,
+  );
+
+  function onClickCancel(e) {
+    showDeleteCalendarModal({
+      calendar,
+      style: {
+        top: window.innerHeight / 2 - 100,
+        left: window.innerWidth / 2 - 150,
+      },
+    });
+    e.stopPropagation();
+  }
+
+  function onClickOption(e) {
     hideCalendarOptionModal();
 
     const { top, left } = e.currentTarget.getBoundingClientRect();
@@ -36,7 +54,11 @@ const Index = ({ calendar }) => {
     >
       {isGroupCalendar ? (
         <Tooltip title={'구독 취소'}>
-          <FontAwesomeIcon icon={faXmark} className={styles.icon_mark} />
+          <FontAwesomeIcon
+            icon={faXmark}
+            className={styles.icon_mark}
+            onClick={onClickCancel}
+          />
         </Tooltip>
       ) : (
         <div />
@@ -45,7 +67,7 @@ const Index = ({ calendar }) => {
         <FontAwesomeIcon
           icon={faEllipsisVertical}
           className={styles.icon_option}
-          onClick={onCLickOption}
+          onClick={onClickOption}
         />
       </Tooltip>
     </div>

@@ -3,18 +3,19 @@ import PropTypes from 'prop-types';
 import useEventModal from '../../../hooks/useEventModal';
 import { ModalContext } from '../../../context/EventModalContext';
 
-const Index = ({ Modal, children }) => {
+const Index = ({ Modal, Context = ModalContext, children }) => {
   const modal = useEventModal();
   return (
-    <ModalContext.Provider value={modal}>
+    <Context.Provider value={modal}>
       {modal.isModalShown && <Modal />}
       {children}
-    </ModalContext.Provider>
+    </Context.Provider>
   );
 };
 
 Index.propTypes = {
   Modal: PropTypes.func,
+  Context: PropTypes.object,
   children: PropTypes.node,
 };
 

@@ -2,7 +2,7 @@
 .close { margin-left: -258px; } 
 
 .sidebar_event_button { width: inherit; height: 70px; padding-top: 10px; padding-left: 10px; transition: all 0.4s; } 
-.sidebar_event_button button { background: rgb(255, 255, 255, 0.5); position: absolute; z-index: 2; } 
+.sidebar_event_button button { background: rgb(255, 255, 255, 0.5); position: absolute; z-index: 10; } 
 .sidebar.close .sidebar_event_button { margin-left: 280px; } 
 .sidebar.close .sidebar_event_button button { width: 50px; height: 50px; border-radius: 100%; padding-left: 11px; } 
 .sidebar.close .sidebar_event_button button *:nth-child(n+2) { display: none; } 
