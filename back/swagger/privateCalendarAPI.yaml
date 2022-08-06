@@ -1,9 +1,8 @@
-
-/api/privateEvent/createPrivateEvent:
+/api/privateCalendar/editPrivateCalendar:
   post:
     tags:
-    - privateEvent
-    summary: 개인 이벤트 만들기
+      - calendar
+    summary: 개인 캘린더 수정
     parameters:
       - name: Authorization
         in: header
@@ -14,103 +13,58 @@
         schema:
           type: object
           properties:
-            name: 
+            privateCalendarId:
               type: string
-            color:
+              required: true
+              example: 2
+            newName:
               type: string
-            priority: 
+              example: dasda4124sd
+            newColor:
               type: string
-            memo:
-              type: string
-            startTime: 
-              type: string
-            endTime:
-              type: string
+              example: rqeeqww
     responses:
-      200: 
+      200:
         description: 성공
         schema:
           properties:
-            success:
-              type: string
-              example: true
-/api/privateEvent/editPrivateEvent:
-  post:
-    tags:
-    - privateEvent
-    summary: 개인 이벤트 수정
-    parameters:
-    - name: Authorization
-      in: header
-      required: true
-    - name: body
-      in: body
-      required: true
-      schema:
-        type: object
-        properties:
-          eventId:
-            type: string
-          name: 
-            type: string
-          color:
-            type: string
-          priority: 
-            type: string
-          memo:
-            type: string
-          startTime: 
-            type: string
-          endTime:
-            type: string
-    responses:
-      200: 
-        description: 성공
-        schema:
-          properties:
-            success:
-              type: string
-              example: true
-      401:
-        description: 수정할 개인 이벤트 조회 결과가 없을 경우
+            exPrivateCalendar:
+              type: object
+              properties: 
+                id:
+                  type: number
+                  example: 2
+                name:
+                  type: string
+                  example: stri312ng
+                color:
+                  type: string
+                  example: stri312ng12
+                updatedAt:
+                  type: string
+                  example: 2022-08-05T08:10:47.000Z
+                createdAt:
+                  type: string
+                  example: 2022-08-05T08:11:52.687Z
+                OwnerId:
+                  type: number
+                  example: 21
+      400:
+        description: 개인 캘린더 조회 결과가 없는 경우
         schema:
           type: object
           properties:
             message:
               type: string
-              example: 수정할 개인이벤트의 조회 결과가 없습니다
-/api/privateEvent/deletePrivateEvent:
-  post:
-    tags:
-    - privateEvent
-    summary: 개인 이벤트 삭제
-    parameters:
-    - name: Authorization
-      in: header
-      required: true
-    - name: body
-      in: body
-      required: true
-      schema:
-        type: object
-        properties:
-          eventId:
-            type: string
-    responses:
-      200: 
-        description: 성공
-        schema:
-          type: object
-          properties:
-            success:
-              type: string
-              example: true
+              example: 개인 캘린더 조회 결과가 없습니다 입력값을 다시 확인해주세요
       401:
-        description: 삭제하려는 이벤트의 조회 결과가 없는 경우
+        description: 수정 시도한 유저가 개인 캘린더 주인이 아닐 경우
         schema:
           type: object
           properties:
             message:
               type: string
-              example: 삭제하려는 이벤트의 조회 결과가 없습니다
-      
+              example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
+      500:
+        $ref: "./openapi.yaml#/serverError"
+$ref: "./eventAPI.yaml"
