@@ -7,21 +7,33 @@ import MyCalendarList from './MyCalendarList';
 import OtherCalendarList from './OtherCalendarList';
 import MiniCalendar from './MiniCalendar';
 
+import ModalLayout from '../../modal/layout/ModalLayout';
+import {
+  DeleteCalendarContext,
+  CalendarOptionContext,
+} from '../../context/EventModalContext';
+import CalendarOptionModal from '../../modal/component/CalendarOptionModal';
+import DeleteCalendarModal from '../../modal/component/DeleteCalendarModal';
+
 const Index = ({ isSideBarOn }) => {
   return (
-    <aside
-      className={`${styles.sidebar} ${!isSideBarOn ? styles.close : null}`}
-    >
-      <div className={styles.sidebar_event_button}>
-        <AddEventButton />
-      </div>
-      <div className={styles.sidebar_calender}>
-        <MiniCalendar />
-        <UserSearch />
-        <MyCalendarList />
-        <OtherCalendarList />
-      </div>
-    </aside>
+    <ModalLayout Modal={DeleteCalendarModal} Context={DeleteCalendarContext}>
+      <ModalLayout Modal={CalendarOptionModal} Context={CalendarOptionContext}>
+        <aside
+          className={`${styles.sidebar} ${!isSideBarOn ? styles.close : null}`}
+        >
+          <div className={styles.sidebar_event_button}>
+            <AddEventButton />
+          </div>
+          <div className={styles.sidebar_calender}>
+            <MiniCalendar />
+            <UserSearch />
+            <MyCalendarList />
+            <OtherCalendarList />
+          </div>
+        </aside>
+      </ModalLayout>
+    </ModalLayout>
   );
 };
 

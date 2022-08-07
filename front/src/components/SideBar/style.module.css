@@ -7,6 +7,6 @@
 .sidebar.close .sidebar_event_button button { width: 50px; height: 50px; border-radius: 100%; padding-left: 11px; } 
 .sidebar.close .sidebar_event_button button *:nth-child(n+2) { display: none; } 
 
-.sidebar_calender { position: fixed; overflow-y: scroll; overflow-x: hidden; overscroll-behavior: contain; z-index: 10; width: 250px; height: 82vh; margin-right: 10px; padding-bottom: 10px; text-align: center; } 
-.sidebar_calender::-webkit-scrollbar-thumb { visibility: hidden; } 
+.sidebar_calender { position: relative; overflow-y: scroll; overflow-x: hidden; z-index: 10; width: 250px; height: 82vh; margin-right: 10px; padding-bottom: 10px; text-align: center; } 
+.sidebar_calender::-webkit-scrollbar-thumb { visibility: hidden; position: absolute !important; } 
 .sidebar_calender:hover.sidebar_calender::-webkit-scrollbar-thumb { visibility: visible; } 
