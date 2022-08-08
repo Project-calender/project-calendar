@@ -69,5 +69,7 @@ module.exports = class User extends Model {
 
     //Alert
     db.User.hasMany(db.Alert);
+
+    db.User.hasMany(db.RealTimeAlert);
   }
 };
