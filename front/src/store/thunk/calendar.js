@@ -13,3 +13,28 @@ export const addCalendar = createAsyncThunk(
     return { id, name, color, OwnerId, authority };
   },
 );
+
+export const updateCalendar = createAsyncThunk(
+  CALENDAR_URL.UPDATE_GROUP_CALENDAR,
+  async ({ calendarId, newCalendarName, newCalendarColor }) => {
+    const url =
+      calendarId > 0
+        ? CALENDAR_URL.UPDATE_GROUP_CALENDAR
+        : CALENDAR_URL.UPDATE_PRIVATE_CALENDAR;
+
+    const { data } = await axios.post(url, {
+      calendarId: Math.abs(calendarId),
+      newCalendarName,
+      newCalendarColor,
+    });
+    return { ...data.changeCalendar, id: calendarId };
+  },
+);
+
+export const deleteCalendar = createAsyncThunk(
+  CALENDAR_URL.DELETE_GROUP_CALENDAR,
+  async calendarId => {
+    await axios.post(CALENDAR_URL.DELETE_GROUP_CALENDAR, { calendarId });
+    return calendarId;
+  },
+);

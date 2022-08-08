@@ -125,6 +125,7 @@ router.post("/deleteGroupCalendar", authJWT, async (req, res, next) => {
       where: {
         id: req.body.calendarId,
       },
+
       force: true,
     });
 

@@ -33,8 +33,6 @@ const addAlert = async (userId, eventId, content, date, next) => {
           true
         );
       }
-
-      console.log(alertsObject);
     });
   } catch (error) {
     console.error(error);
