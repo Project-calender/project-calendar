@@ -199,7 +199,7 @@ const Index = ({ children: ModalList }) => {
               </h3>
               <EventColorOption
                 colors={EVENT_COLOR}
-                color={calendars[0].color}
+                color={calendars[0]?.color}
               />
             </div>
           </div>
