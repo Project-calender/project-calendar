@@ -8,12 +8,10 @@ const Index = ({ children }) => {
   const eventListModal = useEventModal();
 
   return (
-    <>
-      <EventListModalContext.Provider value={eventListModal}>
-        {eventListModal.isModalShown && <EventListModal />}
-        {children}
-      </EventListModalContext.Provider>
-    </>
+    <EventListModalContext.Provider value={eventListModal}>
+      {eventListModal.isModalShown && <EventListModal />}
+      {children}
+    </EventListModalContext.Provider>
   );
 };
 

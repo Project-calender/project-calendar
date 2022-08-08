@@ -1,0 +1,9 @@
+.modal_container { width: 300px; margin: 10px 10px; } 
+.modal_container p { font-size: 14px; text-align: left; word-break: break-all;} 
+.modal_container a { color: #1a73e8; text-decoration: underline; cursor: pointer; } 
+.modal_container > div { float: right; margin-top: 15px; } 
+.modal_container button { padding: 5px 10px; border-radius: 3px; background: white; cursor: pointer; } 
+.modal_container button:nth-child(1) { margin-right: 10px; } 
+.modal_container button:nth-child(1):hover { background: #f8f8f8 } 
+.modal_container button:nth-child(2) { color: #1a73e8; } 
+.modal_container button:nth-child(2):hover { background: #f5f9fe; } 
