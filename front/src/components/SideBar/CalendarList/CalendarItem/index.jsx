@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './style.module.css';
 
 import PropTypes from 'prop-types';
-import Tooltip from '../../../common/Tooltip';
 import CheckBox from '../../../common/CheckBox';
 import OptionButtons from '../OptionButtons';
 
@@ -34,9 +33,7 @@ const Index = ({ calendar }) => {
         checked={checked}
         color={calendar.color}
       >
-        <Tooltip key={calendar.id} title={calendar.name} top={18}>
-          <p>{calendar.name}</p>
-        </Tooltip>
+        <p>{calendar.name}</p>
       </CheckBox>
       <OptionButtons calendar={calendar} />
     </div>

@@ -7,7 +7,7 @@ import ListModal from '../../component/ListModal';
 import {
   CreateEventModalContext,
   EventColorModalContext,
-  ListModalContext,
+  EventInfoListModalContext,
 } from '../../../context/EventModalContext';
 import useEventModal from '../../../hooks/useEventModal';
 
@@ -54,17 +54,21 @@ const Index = ({ children }) => {
     ...eventInfoModal,
     showModal: showEventInfoModal,
   };
-
   return (
     <CreateEventModalContext.Provider value={createEventModalContext}>
       {createEventModal.isModalShown && (
         <EventColorModalContext.Provider value={eventColorModalContext}>
-          <ListModalContext.Provider value={eventInfoModalContext}>
+          <EventInfoListModalContext.Provider value={eventInfoModalContext}>
             <CreateEventModal>
               {eventColorModal.isModalShown && <EventColorModal />}
-              {eventInfoModal.isModalShown && <ListModal />}
+              {eventInfoModal.isModalShown && (
+                <ListModal
+                  hideModal={eventInfoModal.hideModal}
+                  modalData={eventInfoModal.modalData}
+                />
+              )}
             </CreateEventModal>
-          </ListModalContext.Provider>
+          </EventInfoListModalContext.Provider>
         </EventColorModalContext.Provider>
       )}
       {children}

@@ -15,7 +15,7 @@ const Index = () => {
 
   const dispatch = useDispatch();
   const { calendar } = modalData;
-  function onClickColor(color) {
+  function onClickColor(e, color) {
     dispatch(
       updateCalendar({
         calendarId: calendar.id,
