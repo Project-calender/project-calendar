@@ -282,8 +282,6 @@ router.post("/getEventByDate", authJWT, async (req, res, next) => {
 });
 
 router.post("/createGroupEvent", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
-
   async function timeOutError(date) {
     var now = new Date();
     if (now > date) {
@@ -354,13 +352,8 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
                 addAlert(req.myId, req.body.groupEventId, content, date, next);
               }
             })
-          ).then(async (error) => {
-            if (error) {
-              console.log(error);
-              next(error);
-            } else {
-              return res.status(200).send(newGroupEvent);
-            }
+          ).then(async () => {
+            return res.status(200).send(newGroupEvent);
           });
         }
       } else {
@@ -368,7 +361,6 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
       }
     });
   } catch (error) {
-    console.log("c");
     console.error(error);
     next(error);
   }
@@ -660,14 +652,8 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
               addAlert(req.myId, req.body.groupEventId, content, date, next);
             }
           })
-        ).then(async (error) => {
-          if (error) {
-            console.error(error);
-            await t.rollback();
-            next(error);
-          } else {
-            sameCode();
-          }
+        ).then(async () => {
+          sameCode();
         });
       }
     } else {
