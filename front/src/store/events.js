@@ -1,7 +1,9 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { createEventBar } from '../hooks/useCreateEventBar';
 import Moment from '../utils/moment';
+import { deleteCalendar } from './thunk/calendar';
 import { getAllCalendarAndEvent } from './thunk/event';
+import { updateCheckedCalendar } from './thunk/user';
 import { isCheckedCalander } from './user';
 
 export const eventsAdapter = createEntityAdapter({
@@ -25,14 +27,29 @@ const events = createSlice({
   },
 
   extraReducers: builder => {
-    builder.addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
-      const events = payload.events.sort(eventSort);
-
-      eventsAdapter.setAll(state, events);
-      state.byDate = classifyEventsByDate(events);
-    });
+    builder
+      .addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
+        const events = payload.events.sort(eventSort);
+        eventsAdapter.setAll(state, events);
+        state.byDate = classifyEventsByDate(events);
+      })
+      .addCase(updateCheckedCalendar.fulfilled, state => {
+        const { selectAll } = eventsAdapter.getSelectors();
+        state.byDate = classifyEventsByDate(selectAll(state));
+      })
+      .addCase(deleteCalendar.fulfilled, (state, { payload: calendarId }) => {
+        const { selectAll } = eventsAdapter.getSelectors();
+        const events = selectAll(state).filter(
+          event => event.PrivateCalendarId || event.CalendarId !== calendarId,
+        );
+        eventsAdapter.setAll(state, events);
+        state.byDate = classifyEventsByDate(events);
+      });
   },
 });
+
+export const { updateEvent, updateEventBar } = events.actions;
+export default events.reducer;
 
 function classifyEventsByDate(events) {
   return events.reduce((byDate, event) => {
@@ -62,9 +79,6 @@ function classifyEventsByDate(events) {
     return byDate;
   }, {});
 }
-
-export const { updateEvent, updateEventBar } = events.actions;
-export default events.reducer;
 
 const eventSort = (event, other) => {
   const eventDate = new Moment(new Date(event.startTime)).resetTime();

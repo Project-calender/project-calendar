@@ -13,6 +13,7 @@ const Index = ({
   style = {},
   isCloseButtom = false,
   isBackground = false,
+  backgroundColor = 'transform',
 }) => {
   const $modal = useRef();
   useEffect(() => {
@@ -35,6 +36,7 @@ const Index = ({
       {isBackground && (
         <div
           className={styles.modal_background}
+          style={{ backgroundColor }}
           onWheel={e => e.stopPropagation()}
         />
       )}
@@ -63,5 +65,6 @@ Index.propTypes = {
   style: PropTypes.object,
   isCloseButtom: PropTypes.bool,
   isBackground: PropTypes.bool,
+  backgroundColor: PropTypes.string,
 };
 export default Index;
