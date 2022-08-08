@@ -20,7 +20,7 @@ router.post('/editPrivateCalendar', authJWT, async (req, res, next) => {
             return res.status(401).send({ message: "수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다"})
         }
 
-        changeCalendar.update({
+        await changeCalendar.update({
             name: req.body.newCalendarName,
             color: req.body.newCalendarColor
         })
