@@ -1,8 +1,6 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { getAllCalendarAndEvent } from './thunk';
-
-export const getCalendarCheckId = calendar =>
-  calendar.UserId ? 'p' : `${calendar.id}`;
+import { addCalendar, deleteCalendar, updateCalendar } from './thunk/calendar';
+import { getAllCalendarAndEvent } from './thunk/event';
 
 export const calendarsAdapter = createEntityAdapter();
 const initialState = calendarsAdapter.getInitialState();
@@ -12,9 +10,20 @@ const calendars = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) =>
-      calendarsAdapter.setAll(state, payload.calendars),
-    );
+    builder
+      .addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) =>
+        calendarsAdapter.setAll(state, payload.calendars),
+      )
+      .addCase(addCalendar.fulfilled, (state, { payload }) =>
+        calendarsAdapter.addOne(state, payload),
+      )
+      .addCase(updateCalendar.fulfilled, (state, { payload }) => {
+        const { id, name, color } = payload;
+        calendarsAdapter.updateOne(state, { id, changes: { name, color } });
+      })
+      .addCase(deleteCalendar.fulfilled, (state, { payload: id }) => {
+        calendarsAdapter.removeOne(state, id);
+      });
   },
 });
 

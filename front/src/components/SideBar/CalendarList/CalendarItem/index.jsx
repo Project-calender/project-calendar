@@ -3,34 +3,42 @@ import styles from './style.module.css';
 
 import PropTypes from 'prop-types';
 import Tooltip from '../../../common/Tooltip';
+import CheckBox from '../../../common/CheckBox';
+import OptionButtons from '../OptionButtons';
+
 import { checkedCalendarSelector } from '../../../../store/selectors/user';
 import { useDispatch, useSelector } from 'react-redux';
-import OptionButtons from '../OptionButtons';
-import { checkCalendar } from '../../../../store/user';
-import CheckBox from '../../../common/CheckBox';
+import { updateCheckedCalendar } from '../../../../store/thunk/user';
 
 const Index = ({ calendar }) => {
-  const checked = useSelector(state =>
+  const checkedCalendar = useSelector(state =>
     checkedCalendarSelector(state, calendar),
   );
+  const checked = checkedCalendar.includes(calendar?.id);
 
   const dispatch = useDispatch();
-  function handleCheckBox() {
-    dispatch(checkCalendar(calendar));
+  function handleCheckBox(e) {
+    dispatch(
+      updateCheckedCalendar({
+        checkedList: e.target.checked
+          ? checkedCalendar.concat(calendar.id)
+          : checkedCalendar.filter(id => id != calendar.id),
+      }),
+    );
   }
 
   return (
     <div className={styles.calendar_item}>
       <CheckBox
         onChange={handleCheckBox}
-        defaultChecked={checked}
+        checked={checked}
         color={calendar.color}
       >
-        <Tooltip key={calendar.id} title={calendar.name}>
+        <Tooltip key={calendar.id} title={calendar.name} top={18}>
           <p>{calendar.name}</p>
         </Tooltip>
       </CheckBox>
-      <OptionButtons calendarType={calendar.type} />
+      <OptionButtons calendar={calendar} />
     </div>
   );
 };

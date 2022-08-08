@@ -1,7 +1,84 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { createEventBar } from '../hooks/useCreateEventBar';
 import Moment from '../utils/moment';
-import { getAllCalendarAndEvent } from './thunk';
+import { deleteCalendar } from './thunk/calendar';
+import { getAllCalendarAndEvent } from './thunk/event';
+import { updateCheckedCalendar } from './thunk/user';
+import { isCheckedCalander } from './user';
+
+export const eventsAdapter = createEntityAdapter({
+  selectId: state => state.id,
+});
+
+const initialState = {
+  ...eventsAdapter.getInitialState(),
+  byDate: {},
+};
+
+const events = createSlice({
+  name: 'events',
+  initialState: initialState,
+  reducers: {
+    updateEvent: eventsAdapter.upsertOne,
+    updateEventBar(state) {
+      const { selectAll } = eventsAdapter.getSelectors();
+      state.byDate = classifyEventsByDate(selectAll(state));
+    },
+  },
+
+  extraReducers: builder => {
+    builder
+      .addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
+        const events = payload.events.sort(eventSort);
+        eventsAdapter.setAll(state, events);
+        state.byDate = classifyEventsByDate(events);
+      })
+      .addCase(updateCheckedCalendar.fulfilled, state => {
+        const { selectAll } = eventsAdapter.getSelectors();
+        state.byDate = classifyEventsByDate(selectAll(state));
+      })
+      .addCase(deleteCalendar.fulfilled, (state, { payload: calendarId }) => {
+        const { selectAll } = eventsAdapter.getSelectors();
+        const events = selectAll(state).filter(
+          event => event.PrivateCalendarId || event.CalendarId !== calendarId,
+        );
+        eventsAdapter.setAll(state, events);
+        state.byDate = classifyEventsByDate(events);
+      });
+  },
+});
+
+export const { updateEvent, updateEventBar } = events.actions;
+export default events.reducer;
+
+function classifyEventsByDate(events) {
+  return events.reduce((byDate, event) => {
+    if (!isCheckedCalander(event)) return byDate;
+
+    const endDate = new Moment(new Date(event.endTime)).resetTime();
+    const startDate = new Moment(new Date(event.startTime)).resetTime();
+    const eventBars = createEventBar({
+      standardDateTime: startDate.time,
+      endDateTime: endDate.time,
+    });
+
+    eventBars.forEach(eventBar => {
+      const key = eventBar.time;
+      byDate[key] = byDate[key] || [];
+
+      const index = findEventBarIndex(byDate[key]);
+      byDate[key][index] = EventBar(event, eventBar.scale);
+
+      for (let i = 1; i < eventBar.scale; i++) {
+        const nextDate = new Moment(eventBar.time).addDate(i);
+        const key = nextDate.time;
+        byDate[key] = createEmptyEventBar(event, byDate[key], index);
+      }
+    });
+
+    return byDate;
+  }, {});
+}
 
 const eventSort = (event, other) => {
   const eventDate = new Moment(new Date(event.startTime)).resetTime();
@@ -19,62 +96,26 @@ const eventSort = (event, other) => {
   return eventDate.time - otherDate.time;
 };
 
-export const eventsAdapter = createEntityAdapter({
-  selectId: state => state.id,
-});
+function findEventBarIndex(date) {
+  const index = date.findIndex(event => !event);
+  return index === -1 ? date.length : index;
+}
 
-const initialState = {
-  ...eventsAdapter.getInitialState(),
-  byDate: {},
-};
+function EventBar(event, scale) {
+  const { id, PrivateCalendarId, CalendarId } = event;
+  return {
+    id,
+    PrivateCalendarId,
+    CalendarId,
+    scale: scale,
+  };
+}
 
-const events = createSlice({
-  name: 'events',
-  initialState: initialState,
-  reducers: {},
-  extraReducers: builder => {
-    builder.addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) => {
-      const events = payload.events
-        .map(event => ({
-          ...event,
-          startTime: new Date(event.startTime).getTime(),
-          endTime: new Date(event.endTime).getTime(),
-        }))
-        .sort(eventSort);
-
-      const byDate = events.reduce((byDate, event) => {
-        const endDate = new Moment(new Date(event.endTime)).resetTime();
-        const startDate = new Moment(new Date(event.startTime)).resetTime();
-
-        const eventBars = createEventBar({
-          standardDateTime: startDate.time,
-          endDateTime: endDate.time,
-        });
-
-        eventBars.forEach(eventBar => {
-          const key = eventBar.time;
-
-          byDate[key] = byDate[key] || [];
-          let index = byDate[key].findIndex(event => !event);
-          if (index === -1) index = byDate[key].length;
-          byDate[key][index] = { id: event.id, scale: eventBar.scale };
-
-          for (let i = 1; i < eventBar.scale; i++) {
-            let nextDate = new Moment(eventBar.time).addDate(i);
-            const key = nextDate.time;
-            byDate[key] = byDate[key] || Array(5).fill(null);
-            byDate[key][index] = { id: event.id, scale: null };
-          }
-        });
-
-        return byDate;
-      }, {});
-
-      eventsAdapter.setAll(state, events);
-      state.byDate = byDate;
-    });
-  },
-});
-
-export const { setEventsByDate } = events.actions;
-export default events.reducer;
+function createEmptyEventBar(event, date = [], index) {
+  date[index] = EventBar(event, null);
+  for (let i = index - 1; i >= 0; i--) {
+    if (date[i]) break;
+    date[i] = null;
+  }
+  return date;
+}

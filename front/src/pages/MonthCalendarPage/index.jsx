@@ -7,7 +7,7 @@ import WeekDayHeader from '../../components/calendar/month/WeekDayHeader';
 import CalendarBody from '../../components/calendar/month/CalendarBody';
 import EventListModalLayout from '../../modal/layout/EventListModalLayout';
 import EventDetailMaodalLayout from '../../modal/layout/EventDetailMaodalLayout';
-import CreateEventMaodalLayout from '../../modal/layout/CreateModalLayout';
+import CreateEventMaodalLayout from '../../modal/layout/CreateEventModalLayout';
 
 import { EventBarContext } from '../../context/EventBarContext';
 
@@ -15,7 +15,7 @@ import useDragDate from '../../hooks/useDragDate';
 import useCreateEventBar from '../../hooks/useCreateEventBar';
 import useAddMonthByWheel from '../../hooks/useAddMonthByWheel';
 
-import { getAllCalendarAndEvent } from '../../store/thunk';
+import { getAllCalendarAndEvent } from '../../store/thunk/event';
 import { useEffect } from 'react';
 
 const Index = () => {

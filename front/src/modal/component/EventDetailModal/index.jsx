@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import styles from './style.module.css';
-import PropTypes from 'prop-types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -24,32 +23,34 @@ import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { useEffect } from 'react';
 import EventMemberList from './EventMemberList';
 import EventAttendanceButtons from './EventAttendanceButtons';
+import { useContext } from 'react';
+import { EventDetailModalContext } from '../../../context/EventModalContext';
 
-const Index = ({ modalData, hideModal }) => {
-  const $modal = useRef();
+const Index = () => {
+  const { modalData, hideModal } = useContext(EventDetailModalContext);
   const { style, event } = modalData || {};
+
+  const $modal = useRef();
   const [position, setPosition] = useState();
-  useEffect(() => {
-    let { top, left } = style?.position || {};
-    if (top && top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
-      top = window.innerHeight - $modal.current?.offsetHeight - 35;
-    }
-
-    if (left && left + $modal.current?.offsetWidth > window.innerWidth) {
-      left = window.innerWidth - $modal.current?.offsetWidth - 60;
-    }
-
-    if (left && window.innerWidth <= 660) left = 10;
-    setPosition({ top, left });
-  }, [style]);
-
   const calendar = useSelector(state =>
     calendarByEventIdSelector(state, event),
   );
 
-  if (!event) return;
+  useEffect(() => {
+    let { top = 0, left = 0 } = style?.position || {};
+    if (top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
+      top = window.innerHeight - $modal.current?.offsetHeight - 35;
+    }
 
-  console.log('eventDetail', event);
+    if (left + $modal.current?.offsetWidth > window.innerWidth) {
+      left = window.innerWidth - $modal.current?.offsetWidth - 60;
+    }
+
+    if (window.innerWidth <= 660) left = 10;
+    setPosition({ top, left });
+  }, [style]);
+
+  if (!event) return;
   return (
     <Modal
       hideModal={hideModal}
@@ -59,7 +60,7 @@ const Index = ({ modalData, hideModal }) => {
         boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)',
         zIndex: 501,
       }}
-      isCloseButtom={true}
+      isCloseButtom
     >
       <div className={styles.modal_container} ref={$modal}>
         <div className={styles.modal_header}>
@@ -85,7 +86,9 @@ const Index = ({ modalData, hideModal }) => {
             />
             <div>
               <h1>{event.name || '(제목 없음)'}</h1>
-              <h3>{initDateTitle(event)}</h3>
+              <h3>
+                {event.allDay ? initDateTitle(event) : initTimeDateTitle(event)}
+              </h3>
               {event.repeat && <p>매년</p>}
             </div>
           </div>
@@ -139,7 +142,7 @@ const Index = ({ modalData, hideModal }) => {
         {Number.isInteger(event.state) && (
           <div className={styles.modal_footer}>
             <div className={styles.modal_line} />
-            <EventAttendanceButtons event={event} />
+            <EventAttendanceButtons event={event} hideModal={hideModal} />
           </div>
         )}
       </div>
@@ -152,18 +155,27 @@ function initDateTitle(event) {
     new Moment(new Date(event.startTime)),
     new Moment(new Date(event.endTime)),
   ];
+
+  if (startDate.toDateString() === endDate.toDateString())
+    return startDate.toNormalDateString();
+
   const startDateTitle = startDate.toDateString().split(' ');
   const endDateTitle = endDate.toDateString().split(' ');
-  if (startDateTitle.join(' ') === endDateTitle.join(' '))
-    return `${startDate.month}월 ${startDate.date}일 (${startDate.weekDay}요일)`;
-
   const index = startDateTitle.findIndex(str => !endDateTitle.includes(str));
   return `${startDateTitle.join(' ')} - ${endDateTitle.slice(index).join(' ')}`;
 }
 
-Index.propTypes = {
-  modalData: PropTypes.object,
-  hideModal: PropTypes.func,
-};
+function initTimeDateTitle(event) {
+  const [startDate, endDate] = [
+    new Moment(new Date(event.startTime)),
+    new Moment(new Date(event.endTime)),
+  ];
+
+  if (startDate.toSimpleDateString() !== endDate.toSimpleDateString())
+    return `${startDate.toDateString()}, ${startDate.toTimeString()} ~ ${endDate.toDateString()}, ${endDate.toTimeString()}`;
+  if (startDate.getTimeType() === endDate.getTimeType())
+    return `${startDate.toNormalDateString()} ⋅ ${startDate.getTimeType()} ${startDate.getSimpleTime()} ~ ${endDate.getSimpleTime()}`;
+  return `${startDate.toNormalDateString()} ⋅ ${startDate.toTimeString()} ~ ${endDate.toTimeString()}`;
+}
 
 export default Index;

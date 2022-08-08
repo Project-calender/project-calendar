@@ -1,28 +1,34 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getCalendarCheckId } from './calendars';
+import { updateCheckedCalendar } from './thunk/user';
 
-const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+export const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+export const getCheckedCalendar = () =>
+  (localStorage.getItem('checkedCalendar') || '').split(',').map(Number);
+
 const user = createSlice({
   name: 'user',
   initialState: {
     ...userInfo,
-    checkedCalendar: (userInfo.checkedCalender || '').split(','),
+    checkedCalendar: getCheckedCalendar(),
   },
   reducers: {
     updateUser(state, { payload }) {
       state = payload;
     },
-
-    checkCalendar(state, { payload }) {
-      const target = `${getCalendarCheckId(payload)}`;
-      const checkedCalendar = new Set(state.checkedCalendar);
-      if (checkedCalendar.has(target)) checkedCalendar.delete(target);
-      else checkedCalendar.add(target);
-
-      state.checkedCalendar = [...checkedCalendar];
-    },
+  },
+  extraReducers: builder => {
+    builder.addCase(updateCheckedCalendar.fulfilled, (state, { payload }) => {
+      state.checkedCalendar = payload;
+      localStorage.setItem('checkedCalendar', payload.join(','));
+    });
   },
 });
 
-export const { updateUser, checkCalendar } = user.actions;
+export function isCheckedCalander(event) {
+  return getCheckedCalendar().includes(
+    event?.PrivateCalendarId || event?.CalendarId,
+  );
+}
+
+export const { updateUser } = user.actions;
 export default user.reducer;
