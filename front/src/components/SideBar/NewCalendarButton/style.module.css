@@ -1,0 +1,3 @@
+.calendar_icon { position: absolute; width: 16px; height: 16px; top: -1px; right: 45px; z-index: 1; padding: 8px 8px; border-radius: 100%; cursor: pointer; }
+.calendar_icon:hover { background-color: #f8f8f8; } 
+.calendar_icon_plus { color: #5c5c5c; border-radius: 100%; width: 16px; height: 16px;} 

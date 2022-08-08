@@ -41,13 +41,14 @@ const Index = ({ date }) => {
 };
 
 function getTitleDate(date) {
-  return date.date === 1 ? `${date.month}월 1일` : date.date;
+  return !isSameDate(date, new Moment()) && date.date === 1
+    ? `${date.month}월 1일`
+    : date.date;
 }
 
 function initClassName(date) {
-  let className = styles.calendar_td + ' ';
-  if (isSameDate(date, new Moment())) className += styles.calendar_today;
-
+  const className = styles.calendar_td + ' ';
+  if (isSameDate(date, new Moment())) return className + styles.calendar_today;
   return className;
 }
 

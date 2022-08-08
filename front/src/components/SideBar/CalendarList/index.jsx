@@ -4,7 +4,6 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import CalendarSummary from './CalendarSummary';
 import CalendarItem from './CalendarItem';
-import { getCalendarCheckId } from '../../../store/calendars';
 
 const Index = ({ title, calendars }) => {
   return (
@@ -12,7 +11,7 @@ const Index = ({ title, calendars }) => {
       <CalendarSummary title={title} />
 
       {calendars.map(calendar => (
-        <CalendarItem key={getCalendarCheckId(calendar)} calendar={calendar} />
+        <CalendarItem key={calendar.id} calendar={calendar} />
       ))}
     </details>
   );

@@ -51,8 +51,8 @@ const Index = ({ eventMembers }) => {
         <div>
           {eventMembers.map(member => (
             <div key={member.id} className={styles.user_info}>
-              <em className={styles.user_profile}>
-                {member.email[0]}
+              <div className={styles.user_profile}>
+                <img src={member.ProfileImages[0].src} alt="profile" />
                 {member.EventMember.state ? (
                   <FontAwesomeIcon
                     className={`${styles.user_state} ${
@@ -64,8 +64,7 @@ const Index = ({ eventMembers }) => {
                     }
                   />
                 ) : null}
-              </em>
-
+              </div>
               <h3>{member.email}</h3>
             </div>
           ))}

@@ -1,0 +1,4 @@
+.calendar_info { display: flex; align-items: center; padding: 5px 5px 5px 10px; border-radius: 4px; cursor: pointer; } 
+.calendar_info:hover { background: #f7f7f7; } 
+.calendar_info_colors { background: #f66767; width: 18px; height: 18px; border-radius: 100%; } 
+.calendar_info svg { margin-left: 10px; } 

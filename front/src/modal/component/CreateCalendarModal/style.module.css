@@ -1,0 +1,14 @@
+.modal_container { text-align: left; width: 300px; height: 100%; padding: 10px; color: #565656; } 
+
+.modal_container h1 { font-size: 18px; color: slategrey; margin-bottom: 13px; margin-left: 5px;} 
+.modal_container em { font-size: 12px; color: slategrey; } 
+
+.calendar_info {display: flex; align-items: flex-end;}
+.calendar_info >:nth-child(2) { margin-left: 10px; }
+.calendar_owner { margin: 10px 5px; } 
+
+.modal_container >:nth-child(2) { width: 100%; margin-left: 5px; } 
+.modal_container input { font-weight: 600;}
+
+.modal_container button { background: #1a73e8; color: white; padding: 8px 20px; border-radius: 5px; margin-top: 20px; width: 100%; cursor: pointer; }
+.modal_container button:hover { filter: brightness(110%);}

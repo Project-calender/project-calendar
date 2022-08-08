@@ -4,6 +4,11 @@ export const USER_URL = {
   LOGIN: '/user/signin',
   SINGUP: '/user/signup',
   LOGOUT: '/user/logout',
+  CHECK_CALENDAR: '/user/checkedCalendar',
+};
+
+export const CALENDAR_URL = {
+  CREATE_CALENDAR: '/calendar/createGroupCalendar',
 };
 
 export const EVENT_URL = {

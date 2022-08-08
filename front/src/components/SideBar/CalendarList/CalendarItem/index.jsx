@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import OptionButtons from '../OptionButtons';
 import { checkCalendar } from '../../../../store/user';
 import CheckBox from '../../../common/CheckBox';
+import { updateEventBar } from '../../../../store/events';
 
 const Index = ({ calendar }) => {
   const checked = useSelector(state =>
@@ -15,8 +16,9 @@ const Index = ({ calendar }) => {
   );
 
   const dispatch = useDispatch();
-  function handleCheckBox() {
-    dispatch(checkCalendar(calendar));
+  function handleCheckBox(e) {
+    dispatch(checkCalendar({ id: calendar.id, checked: e.target.checked }));
+    dispatch(updateEventBar());
   }
 
   return (
@@ -26,7 +28,7 @@ const Index = ({ calendar }) => {
         defaultChecked={checked}
         color={calendar.color}
       >
-        <Tooltip key={calendar.id} title={calendar.name}>
+        <Tooltip key={calendar.id} title={calendar.name} top={18}>
           <p>{calendar.name}</p>
         </Tooltip>
       </CheckBox>

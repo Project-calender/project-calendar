@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedDateSelector } from '../../../../../../store/selectors/date';
@@ -6,54 +6,49 @@ import useNavigateDayCalendar from '../../../../../../hooks/useNavigateDayCalend
 import { selectDate } from '../../../../../../store/date';
 import Moment from '../../../../../../utils/moment';
 import styles from './style.module.css';
-import { getAllCalendarAndEvent } from '../../../../../../store/thunk';
-import { eventsByDateSelector } from '../../../../../../store/selectors/events';
-import { EventListModalContext } from '../../../../../../context/EventModalContext';
+import { getAllCalendarAndEvent } from '../../../../../../store/thunk/event';
+import {
+  EventDetailModalContext,
+  EventListModalContext,
+} from '../../../../../../context/EventModalContext';
+import { useRef } from 'react';
+import { isCheckedCalander } from '../../../../../../store/user';
 
 const Index = ({ month, date }) => {
   const selectedDate = useSelector(selectedDateSelector);
   const { moveDayCalendar } = useNavigateDayCalendar();
-  const { showModal: showEventListModal, setModalData: setEventListModalData } =
-    useContext(EventListModalContext);
-  const events = useSelector(state => eventsByDateSelector(state, date));
+  const { showModal: showEventListModal } = useContext(EventListModalContext);
+  const { hideModal: hideEventDetailModal } = useContext(
+    EventDetailModalContext,
+  );
+
+  const $date = useRef();
   const dispatch = useDispatch();
+
   function handleDate(e, date) {
     dispatch(selectDate(date));
-    dispatch(getAllCalendarAndEvent(date.time, date.time));
-
-    const {
-      top: targetTop,
-      left: targetLeft,
-      bottom,
-    } = e.target.getBoundingClientRect();
-    const left = targetLeft + (e.target.tagName === 'EM' ? 30 : 38);
-    const top = targetTop + (e.target.tagName === 'EM' ? 0 : 5) - 4;
-    const minLeft = window.innerWidth / 2 + 100;
-
-    showEventListModal({
-      date,
-      events: [],
-      style: {
-        top: window.innerHeight < bottom + 150 ? null : top,
-        left: minLeft < left ? left - 260 : left,
-        bottom: window.innerHeight < bottom + 150 ? 30 : null,
-      },
+    dispatch(
+      getAllCalendarAndEvent({ startTime: date.time, endTime: date.time }),
+    ).then(({ payload }) => {
+      const { top, left } = $date.current.getBoundingClientRect();
+      const minLeft = window.innerWidth / 2 + 100;
+      showEventListModal({
+        date,
+        events: payload.events.filter(isCheckedCalander),
+        style: { top, left: minLeft < left ? left - 222 : left + 35 },
+      });
+      hideEventDetailModal();
     });
-  }
 
-  useEffect(() => {
-    if (!events || selectedDate.time !== date.time) return;
-    setEventListModalData(data => ({
-      ...data,
-      events: events?.map(event => ({ ...event, scale: 1 })),
-    }));
-  }, [events, selectedDate.time, date.time, setEventListModalData]);
+    e.stopPropagation();
+  }
 
   return (
     <td
       className={`${initDateClassName(date, month, selectedDate)}`}
       onClick={e => handleDate(e, date)}
       onDoubleClick={() => moveDayCalendar(date)}
+      ref={$date}
     >
       <em>{date.date}</em>
     </td>

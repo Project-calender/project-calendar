@@ -5,38 +5,43 @@ import EventBar from '../../../../EventBar';
 import ReadMoreTitle from './ReadMoreTitle';
 
 import { useSelector } from 'react-redux';
-import { eventsByDateSelector } from '../../../../../../store/selectors/events';
+import {
+  eventsByDateSelector,
+  eventsByEventIdsSelector,
+} from '../../../../../../store/selectors/events';
 import {
   EventDetailModalContext,
   EventListModalContext,
 } from '../../../../../../context/EventModalContext';
+import { calendarByEventIdsSelector } from '../../../../../../store/selectors/calendars';
 
 const Index = ({ date, maxHeight }) => {
-  const events = useSelector(state => eventsByDateSelector(state, date));
   const { showModal: showEventListModal, hideModal: hideEventListModal } =
     useContext(EventListModalContext);
   const { showModal: showEventDetailModal, hideModal: hideEventDetailModal } =
     useContext(EventDetailModalContext);
-
   const $eventList = useRef();
-  if (!events) return;
+
+  const eventBars = useSelector(state => eventsByDateSelector(state, date));
+  const calendars = useSelector(state =>
+    calendarByEventIdsSelector(state, eventBars || []),
+  );
+  const events = useSelector(state =>
+    eventsByEventIdsSelector(state, eventBars || []),
+  );
+
+  if (!eventBars) return;
 
   const countEventBar = Math.floor(maxHeight / 30);
-  const previewEvent = countEventBar ? events.slice(0, countEventBar) : [];
-  const restEvent = events.slice(countEventBar);
+  const previewEvent = countEventBar ? eventBars.slice(0, countEventBar) : [];
+  const restEvent = eventBars.slice(countEventBar);
 
   function clickReadMore(e) {
     const { top, left } = $eventList.current.getBoundingClientRect();
-    const minLeft = window.innerWidth - 250;
     showEventListModal({
       date,
-      events: events
-        .filter(event => event)
-        .map(event => ({ ...event, scale: 1 })),
-      style: {
-        top: top - 35,
-        left: minLeft < left ? minLeft : left,
-      },
+      events: events.filter(event => event),
+      style: { top: top - 35, left },
     });
     hideEventDetailModal();
     e.stopPropagation();
@@ -56,10 +61,12 @@ const Index = ({ date, maxHeight }) => {
       ref={$eventList}
       data-drag-date={date.time}
     >
-      {previewEvent.slice(0, countEventBar).map((event, index) => (
+      {previewEvent.slice(0, countEventBar).map((eventBar, index) => (
         <EventBar
           key={index}
-          eventBar={event}
+          event={events[index]}
+          calendar={calendars[index]}
+          eventBar={eventBar}
           handleEventDetailMadal={handleEventDetailMadal}
         />
       ))}

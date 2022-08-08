@@ -3,31 +3,27 @@ import PropTypes from 'prop-types';
 
 import Moment from '../../../../utils/moment';
 import EventBar from '../../../../components/calendar/EventBar';
-import { useSelector } from 'react-redux';
-import { eventSelector } from '../../../../store/selectors/events';
 import { EventDetailModalContext } from '../../../../context/EventModalContext';
 
-const Index = ({ event, date }) => {
-  const { startTime, endTime } = useSelector(state =>
-    eventSelector(state, event.id),
-  );
+const Index = ({ event, calendar, date }) => {
+  const { startTime, endTime } = event;
   const { showModal: showEventDetailModal } = useContext(
     EventDetailModalContext,
   );
 
   function handleEventDetailMadal(e) {
     showEventDetailModal();
-    e.stopPropagation();
-
-    return { offsetTop: -100, offsetLeft: -450 };
+    const { left } = e.target.getBoundingClientRect();
+    return { offsetTop: -100, offsetLeft: left > 500 ? -450 : 220 };
   }
 
   return (
     <EventBar
-      eventBar={event}
+      eventBar={{ scale: 1 }}
+      event={event}
+      calendar={calendar}
       left={new Moment(new Date(startTime)).resetTime().time !== date.time}
       right={new Moment(new Date(endTime)).resetTime().time !== date.time}
-      outerRight={true}
       handleEventDetailMadal={handleEventDetailMadal}
     />
   );
@@ -35,6 +31,7 @@ const Index = ({ event, date }) => {
 
 Index.propTypes = {
   event: PropTypes.object,
+  calendar: PropTypes.object,
   date: PropTypes.object,
 };
 

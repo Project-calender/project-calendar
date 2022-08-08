@@ -53,12 +53,12 @@ const Index = () => {
     localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken));
     sessionStorage.setItem('accessToken', JSON.stringify(res.data.accessToken));
 
-    dispatch(updateUser(res.data.userData));
-    localStorage.setItem('userInfo', JSON.stringify(res.data.userData));
-    localStorage.setItem(
-      'userImg',
-      JSON.stringify(res.data.userData.ProfileImages[0].src),
-    );
+    const { email, id, nickname, checkedCalendar, ProfileImages } =
+      res.data.userData;
+    localStorage.setItem('userInfo', JSON.stringify({ email, id, nickname }));
+    localStorage.setItem('checkedCalendar', checkedCalendar);
+    localStorage.setItem('userImg', ProfileImages[0].src);
+    dispatch(updateUser({ email, id, nickname, checkedCalendar }));
   }
 
   return (
