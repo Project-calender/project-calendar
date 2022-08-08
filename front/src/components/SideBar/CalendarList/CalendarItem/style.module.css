@@ -1,4 +1,4 @@
-.calendar_item { display: flex; justify-content: space-between; align-items: center; height: 32px; font-size: 14px; padding: 0px 20px; } 
+.calendar_item { display: flex; justify-content: space-between; align-items: center; height: 32px; font-size: 14px; padding: 0px 15px 0px 20px; } 
 .calendar_item * { cursor: pointer;}
 .calendar_item:hover { background-color: #f8f8f8; } 
 

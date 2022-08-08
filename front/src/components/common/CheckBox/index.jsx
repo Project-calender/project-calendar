@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const Index = ({
   children,
   onChange = () => {},
-  defaultChecked = true,
+  checked = true,
   color = '#1a73e8',
 }) => {
   function handleCheckBox(e) {
@@ -26,9 +26,9 @@ const Index = ({
     <label className={styles.checkbox}>
       <input
         type="checkbox"
-        style={checkBoxStyle(defaultChecked)}
+        style={checkBoxStyle(checked)}
         onChange={handleCheckBox}
-        defaultChecked={defaultChecked}
+        checked={checked}
       />
       {children}
     </label>
@@ -38,7 +38,7 @@ const Index = ({
 Index.propTypes = {
   children: PropTypes.node,
   onChange: PropTypes.func,
-  defaultChecked: PropTypes.bool,
+  checked: PropTypes.bool,
   color: PropTypes.string,
 };
 
