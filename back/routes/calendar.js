@@ -108,15 +108,12 @@ router.post("/deleteGroupCalendar", authJWT, async (req, res, next) => {
       },
     });
     if (!exCalendar) {
-      return res
-        .status(400)
-        .send({
-          message:
-            "삭제하려는 캘린더를 찾을 수 없습니다 입력값을 다시 확인해주세요",
-        });
+      return res.status(400).send({
+        message:
+          "삭제하려는 캘린더를 찾을 수 없습니다 입력값을 다시 확인해주세요",
+      });
     }
-    console.log(req.myId);
-    console.log(exCalendar.OwnerId);
+
     if (exCalendar.OwnerId !== req.myId) {
       return res
         .status(401)
@@ -131,6 +128,7 @@ router.post("/deleteGroupCalendar", authJWT, async (req, res, next) => {
       },
       force: true
     });
+
     return res.status(200).send({ success: true });
   } catch (e) {
     console.error(e);

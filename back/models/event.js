@@ -52,5 +52,7 @@ module.exports = class Event extends Model {
     db.Event.belongsTo(db.User, { as: "EventHost" });
 
     db.Event.belongsTo(db.Calendar);
+
+    db.Event.hasMany(db.RealTimeAlert);
   }
 };

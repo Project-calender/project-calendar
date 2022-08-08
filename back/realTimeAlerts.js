@@ -8,8 +8,8 @@ const addAlert = async (userId, eventId, content, date, next) => {
     await sequelize.transaction(async (t) => {
       const newAlert = await RealTimeAlert.create(
         {
-          userId: userId,
-          eventId: eventId,
+          UserId: userId,
+          EventId: eventId,
           content: content,
           date: date,
         },
@@ -18,7 +18,6 @@ const addAlert = async (userId, eventId, content, date, next) => {
         }
       );
 
-      console.log(date);
       if (newAlert) {
         alertsObject[newAlert.id] = new CronJob(
           date,
@@ -34,6 +33,8 @@ const addAlert = async (userId, eventId, content, date, next) => {
           true
         );
       }
+
+      console.log(alertsObject);
     });
   } catch (error) {
     console.error(error);
@@ -46,14 +47,12 @@ const deleteAlerts = async (userId, eventId, next) => {
     await RealTimeAlert.findAll({
       where: {
         [Op.and]: {
-          userId: userId,
-          eventId: eventId,
+          UserId: userId,
+          EventId: eventId,
         },
       },
     }).then(async (alerts) => {
       if (alerts.length === 0) return;
-
-      console.log("can");
 
       var alertIds = [];
       await Promise.all(
@@ -72,5 +71,3 @@ const deleteAlerts = async (userId, eventId, next) => {
 };
 
 module.exports = { addAlert, deleteAlerts };
-
-// crtl + s로 새로고침을 했을때는 한번만 실행된다 겹치는거 아님
