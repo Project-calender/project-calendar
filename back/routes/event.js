@@ -282,10 +282,18 @@ router.post("/getEventByDate", authJWT, async (req, res, next) => {
 });
 
 router.post("/createGroupEvent", authJWT, async (req, res, next) => {
+  const t = await sequelize.transaction();
+
+  async function timeOutError(date) {
+    var now = new Date();
+    if (now > date) {
+      return res.status(400).send({
+        message: "현재 시간보다 이전 시각은 알람을 등록할 수 없습니다!",
+      });
+    }
+  }
+
   try {
-    // const me = await User.findOne({
-    //   where: { id: req.myId },
-    // });
     const isGroupMember = await CalendarMember.findOne({
       where: {
         [Op.and]: { UserId: req.myId, CalendarId: req.body.groupCalendarId },
@@ -315,34 +323,52 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
         { transaction: t }
       );
 
-      // await EventMember.create(
-      //   {
-      //     state: 4,
-      //     UserId: req.myId,
-      //     EventId: newGroupEvent.id,
-      //   },
-      //   { transaction: t }
-      // );
-
-      // const privateCalendar = await me.getPrivateCalendar();
-      // await privateCalendar.createPrivateEvent(
-      //   {
-      //     name: newGroupEvent.name,
-      //     color: newGroupEvent.color,
-      //     priority: newGroupEvent.priority,
-      //     memo: newGroupEvent.memo,
-      //     startTime: newGroupEvent.startTime,
-      //     endTime: newGroupEvent.endTime,
-      //     allDay: req.body.allDay,
-      //     groupEventId: newGroupEvent.id,
-      //     state: 4,
-      //   },
-      //   { transaction: t }
-      // );
-
-      return res.status(200).send(newGroupEvent);
+      if (req.body.alerts) {
+        if (req.body.allDay === true) {
+        } else {
+          await Promise.all(
+            req.body.alerts.map((alert) => {
+              if (alert.type === "minute") {
+                const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
+                const date = new Date(req.body.startTime);
+                date.setMinutes(date.getMinutes() - parseInt(alert.time));
+                timeOutError(date);
+                addAlert(req.myId, req.body.groupEventId, content, date, next);
+              } else if (alert.type === "hour") {
+                const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
+                const date = new Date(req.body.startTime);
+                date.setHours(date.getHours() - alert.time);
+                timeOutError(date);
+                addAlert(req.myId, req.body.groupEventId, content, date, next);
+              } else if (alert.type === "day") {
+                const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
+                const date = new Date(req.body.startTime);
+                date.setDate(date.getDate() - alert.time);
+                timeOutError(date);
+                addAlert(req.myId, req.body.groupEventId, content, date, next);
+              } else if (alert.type === "week") {
+                const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
+                const date = new Date(req.body.startTime);
+                date.setDate(date.getDate() - alert.time * 7);
+                timeOutError(date);
+                addAlert(req.myId, req.body.groupEventId, content, date, next);
+              }
+            })
+          ).then(async (error) => {
+            if (error) {
+              console.log(error);
+              next(error);
+            } else {
+              return res.status(200).send(newGroupEvent);
+            }
+          });
+        }
+      } else {
+        return res.status(200).send(newGroupEvent);
+      }
     });
   } catch (error) {
+    console.log("c");
     console.error(error);
     next(error);
   }
@@ -443,11 +469,6 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
       await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
-    // var nowDate = new Date();
-    // if (invitedEvent.endTime < nowDate) {
-    //   await t.rollback();
-    //   return res.status(400).send({ message: "이미 종료된 이벤트 입니다!" });
-    // }
 
     const changeState = await EventMember.findOne({
       where: {
@@ -535,6 +556,15 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
 router.post("/editGroupEvent", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
 
+  async function timeOutError(date) {
+    var now = new Date();
+    if (now > date) {
+      return res.status(400).send({
+        message: "현재 시간보다 이전 시각은 알람을 등록할 수 없습니다!",
+      });
+    }
+  }
+
   async function sameCode() {
     const privateCalendar = await me.getPrivateCalendar();
     const changePrivateEvent = await PrivateEvent.findOne({
@@ -562,7 +592,6 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
     return res.status(200).send({ success: true });
   }
   try {
-    const me = await User.findOne({ where: { id: req.myId } });
     const groupEvent = await Event.findOne({
       where: { id: req.body.groupEventId },
     });
@@ -600,7 +629,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
 
     deleteAlerts(req.myId, req.body.groupEventId, next);
 
-    if (req.body.alerts.length > 0) {
+    if (req.body.alerts) {
       if (req.body.allDay === true) {
       } else {
         await Promise.all(
@@ -609,21 +638,25 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
               const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
               const date = new Date(req.body.startTime);
               date.setMinutes(date.getMinutes() - parseInt(alert.time));
+              timeOutError(date);
               addAlert(req.myId, req.body.groupEventId, content, date, next);
             } else if (alert.type === "hour") {
               const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
               const date = new Date(req.body.startTime);
               date.setHours(date.getHours() - alert.time);
+              timeOutError(date);
               addAlert(req.myId, req.body.groupEventId, content, date, next);
             } else if (alert.type === "day") {
               const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
               const date = new Date(req.body.startTime);
               date.setDate(date.getDate() - alert.time);
+              timeOutError(date);
               addAlert(req.myId, req.body.groupEventId, content, date, next);
             } else if (alert.type === "week") {
               const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
               const date = new Date(req.body.startTime);
               date.setDate(date.getDate() - alert.time * 7);
+              timeOutError(date);
               addAlert(req.myId, req.body.groupEventId, content, date, next);
             }
           })
@@ -678,6 +711,8 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
         force: true,
         transaction: t,
       });
+
+      deleteAlerts(req.myId, groupEvent.id, next);
 
       const privateCalendar = await me.getPrivateCalendar();
       await PrivateEvent.destroy({
