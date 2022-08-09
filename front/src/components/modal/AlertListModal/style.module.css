@@ -1,0 +1,85 @@
+.date {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.event {
+  padding: 10px 12px;
+  border-top: solid;
+  border-width: 1px;
+  border-color: rgb(80, 204, 212);
+}
+
+.checkedEvent {
+  padding: 10px 12px;
+  border-top: solid;
+  border-width: 1px;
+  border-color: rgb(80, 204, 212);
+  background-color: rgb(232, 236, 236);
+}
+
+.event:hover {
+  background-color: rgb(219, 238, 245);
+}
+
+.checkedEvent:hover {
+  background-color: rgb(219, 238, 245);
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.inviteBtns {
+  display: flex;
+}
+
+.acceptInvite {
+  /* padding: 3px 7px;
+  border-radius: 8px;
+  border: solid;
+  border-width: 2.5px;
+  border-color: rgb(80, 204, 212); */
+
+  cursor: pointer;
+
+  margin-right: 10px;
+}
+.acceptInvite:hover {
+  color: rgb(80, 204, 212);
+}
+
+.rejectInvite {
+  /* padding: 3px 7px;
+  border-radius: 8px;
+  border: solid;
+  border-width: 2.5px;
+  border-color: rgb(80, 204, 212); */
+
+  cursor: pointer;
+}
+
+.rejectInvite:hover {
+  color: rgb(80, 204, 212);
+}
+
+.toEvent {
+  cursor: pointer;
+}
+
+.toEvent:hover {
+  color: rgb(80, 204, 212);
+}
+
+.toAlertPage {
+  padding: 15px 12px;
+  text-align: center;
+  border-top: solid;
+  border-width: 1px;
+  border-color: rgb(80, 204, 212);
+
+  font-weight: 500;
+}

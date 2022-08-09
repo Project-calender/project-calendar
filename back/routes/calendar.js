@@ -120,12 +120,10 @@ router.post("/deleteGroupCalendar", authJWT, async (req, res, next) => {
           "삭제하려는 유저가 캘린더의 주인이 아닙니다 본인의 캘린더인지 다시 확인해주세요",
       });
     }
-
     await Calendar.destroy({
       where: {
         id: req.body.calendarId,
       },
-
       force: true,
     });
 
