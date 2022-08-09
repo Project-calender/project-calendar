@@ -34,7 +34,10 @@ import { selectAllCalendar } from '../../../store/selectors/calendars';
 
 import EventColorOption from '../../../components/calendar/EventColorOption';
 import { EVENT_COLOR } from '../../../styles/color';
-import { setNewEventBars } from '../../../store/events';
+import {
+  setNewEventBars,
+  updateNewEventBarProperty,
+} from '../../../store/events';
 
 const Index = ({ children: ModalList }) => {
   const dispatch = useDispatch();
@@ -48,6 +51,10 @@ const Index = ({ children: ModalList }) => {
   function initCreateEventModal() {
     dispatch(setNewEventBars([]));
     hideCreateEventModal(true);
+  }
+
+  function handleEventTitle(e) {
+    dispatch(updateNewEventBarProperty({ key: 'name', value: e.target.value }));
   }
 
   const { standardDateTime, endDateTime } = selectedDateRange;
@@ -77,11 +84,7 @@ const Index = ({ children: ModalList }) => {
             <Input
               type="text"
               placeholder="제목 및 시간 추가"
-              onBlur={e => {
-                setNewEventBars(bars =>
-                  bars.map(bar => ({ ...bar, name: e.target.value })),
-                );
-              }}
+              onBlur={handleEventTitle}
             />
           </div>
 

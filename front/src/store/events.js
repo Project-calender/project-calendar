@@ -28,6 +28,13 @@ const events = createSlice({
     setNewEventBars(state, { payload }) {
       state.newEventBars = payload;
     },
+    updateNewEventBarProperty(state, { payload }) {
+      const { key, value } = payload;
+      state.newEventBars = state.newEventBars.map(eventBar => ({
+        ...eventBar,
+        [key]: value,
+      }));
+    },
   },
 
   extraReducers: builder => {
@@ -52,7 +59,12 @@ const events = createSlice({
   },
 });
 
-export const { updateEvent, updateEventBar, setNewEventBars } = events.actions;
+export const {
+  updateEvent,
+  updateEventBar,
+  setNewEventBars,
+  updateNewEventBarProperty,
+} = events.actions;
 export default events.reducer;
 
 function classifyEventsByDate(events) {

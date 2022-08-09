@@ -3,6 +3,7 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { EventBarContext } from '../../../../../../context/EventBarContext';
 import EventBar from '../../../../EventBar';
+import EventTimeBar from '../../../../EventTimeBar';
 import { CreateEventModalContext } from '../../../../../../context/EventModalContext';
 import { useSelector } from 'react-redux';
 import { newEventBarsSelector } from '../../../../../../store/selectors/events';
@@ -29,9 +30,25 @@ const Index = ({ dateTime }) => {
   }, [newEventBars, eventBar, isMouseDown, showModal]);
 
   if (!eventBar) return;
+  const date = new Date(dateTime);
+  date.setHours(new Date().getHours());
+  date.setMinutes(new Date().getMinutes() - (new Date().getMinutes() % 15));
+
   return (
     <div className={styles.new_event_bar} ref={$eventBarParent}>
-      <EventBar eventBar={eventBar} />
+      {eventBar?.allDay === false ? (
+        <EventTimeBar
+          event={{
+            startTime: date.getTime(),
+            endTime: date.getTime(),
+            state: 1,
+            allDay: false,
+          }}
+          color={'red'}
+        />
+      ) : (
+        <EventBar eventBar={eventBar} />
+      )}
     </div>
   );
 };

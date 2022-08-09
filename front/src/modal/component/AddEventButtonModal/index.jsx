@@ -28,7 +28,11 @@ const Index = ({ hideModal, modalData }) => {
       endDateTime: newEventTime,
     });
     if (e.target.innerText === '이벤트') {
-      dispatch(setNewEventBars(newEventBar));
+      dispatch(
+        setNewEventBars(
+          newEventBar.map(event => ({ ...event, allDay: false })),
+        ),
+      );
       hideModal();
     }
   }

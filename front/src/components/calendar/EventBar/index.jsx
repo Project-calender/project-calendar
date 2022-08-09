@@ -19,7 +19,7 @@ const Index = ({
     EventDetailModalContext,
   );
 
-  const eventBarColor = event?.color || calendar?.color || null;
+  const eventBarColor = event?.color || calendar?.color || 'red';
   const eventBarStyle = {
     container: {
       width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
