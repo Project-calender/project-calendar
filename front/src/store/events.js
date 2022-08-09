@@ -13,6 +13,7 @@ export const eventsAdapter = createEntityAdapter({
 const initialState = {
   ...eventsAdapter.getInitialState(),
   byDate: {},
+  newEventBars: [],
 };
 
 const events = createSlice({
@@ -23,6 +24,9 @@ const events = createSlice({
     updateEventBar(state) {
       const { selectAll } = eventsAdapter.getSelectors();
       state.byDate = classifyEventsByDate(selectAll(state));
+    },
+    setNewEventBars(state, { payload }) {
+      state.newEventBars = payload;
     },
   },
 
@@ -48,7 +52,7 @@ const events = createSlice({
   },
 });
 
-export const { updateEvent, updateEventBar } = events.actions;
+export const { updateEvent, updateEventBar, setNewEventBars } = events.actions;
 export default events.reducer;
 
 function classifyEventsByDate(events) {

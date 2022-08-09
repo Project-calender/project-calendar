@@ -4,7 +4,7 @@ import styles from './style.module.css';
 import Modal from '../../../components/common/Modal';
 import PropTypes from 'prop-types';
 
-const Index = ({ hideModal, modalData }) => {
+const Index = ({ hideModal, modalData, onClickItem }) => {
   const { data, style } = modalData || {};
   return (
     <Modal
@@ -16,7 +16,7 @@ const Index = ({ hideModal, modalData }) => {
         ...style,
       }}
     >
-      <div className={styles.list_items}>
+      <div className={styles.list_items} onClick={onClickItem}>
         {data?.map(item => (
           <div key={item}>{item}</div>
         ))}
@@ -27,6 +27,7 @@ const Index = ({ hideModal, modalData }) => {
 Index.propTypes = {
   hideModal: PropTypes.func,
   modalData: PropTypes.object,
+  onClickItem: PropTypes.func,
 };
 
 export default Index;

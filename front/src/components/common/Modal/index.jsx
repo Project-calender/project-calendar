@@ -53,7 +53,7 @@ const Index = ({
             </Tooltip>
           </div>
         )}
-        <div className={styles.modal_contexts}>{children}</div>
+        {children}
       </div>
     </>
   );

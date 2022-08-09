@@ -29,14 +29,16 @@ import {
   EventInfoListModalContext,
 } from '../../../context/EventModalContext';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectAllCalendar } from '../../../store/selectors/calendars';
 
 import EventColorOption from '../../../components/calendar/EventColorOption';
 import { EVENT_COLOR } from '../../../styles/color';
+import { setNewEventBars } from '../../../store/events';
 
 const Index = ({ children: ModalList }) => {
-  const { selectedDateRange, setNewEventBars } = useContext(EventBarContext);
+  const dispatch = useDispatch();
+  const { selectedDateRange } = useContext(EventBarContext);
   const { hideModal: hideCreateEventModal, modalData } = useContext(
     CreateEventModalContext,
   );
@@ -44,8 +46,8 @@ const Index = ({ children: ModalList }) => {
     EventInfoListModalContext,
   );
   function initCreateEventModal() {
-    setNewEventBars([]);
-    hideCreateEventModal();
+    dispatch(setNewEventBars([]));
+    hideCreateEventModal(true);
   }
 
   const { standardDateTime, endDateTime } = selectedDateRange;

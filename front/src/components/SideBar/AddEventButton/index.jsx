@@ -5,7 +5,7 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 import useEventModal from '../../../hooks/useEventModal';
-import ListModal from '../../../modal/component/ListModal';
+import AddEventButtonModal from '../../../modal/component/AddEventButtonModal';
 
 const Index = () => {
   const { showModal, isModalShown, hideModal, modalData } = useEventModal();
@@ -14,13 +14,7 @@ const Index = () => {
 
     showModal({
       data: ['이벤트', '할 일'],
-      style: {
-        top: top + 60,
-        left: left + 12,
-        borderRadius: 8,
-        width: 140,
-        boxShodow: '0px 0px 15px 15px rgb(0 0 0 0.6)',
-      },
+      style: { top: top + 60, left: left + 12 },
     });
     e.stopPropagation();
   }
@@ -28,9 +22,12 @@ const Index = () => {
   return (
     <>
       {isModalShown && (
-        <ListModal hideModal={hideModal} modalData={modalData} />
+        <AddEventButtonModal hideModal={hideModal} modalData={modalData} />
       )}
-      <button className={styles.event_btn} onClick={onClick}>
+      <button
+        className={`${styles.event_btn} ${isModalShown ? styles.clicked : ''}`}
+        onClick={onClick}
+      >
         <img
           src={`${process.env.PUBLIC_URL}/img/side_bar_plus.png`}
           className={styles.event_img_plus}

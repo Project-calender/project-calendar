@@ -15,6 +15,7 @@ export default function useCreateEventBar(selectedDateRange = initDateRange) {
 
 export function createEventBar(dateRange) {
   let [minDateTime, maxDateTime] = Object.values(dateRange).sort(ASC_NUMBER);
+  if (!minDateTime || !maxDateTime) return [];
 
   const eventBars = [];
   let start = new Moment(new Date(minDateTime));

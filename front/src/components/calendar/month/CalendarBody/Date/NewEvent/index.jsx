@@ -4,15 +4,18 @@ import PropTypes from 'prop-types';
 import { EventBarContext } from '../../../../../../context/EventBarContext';
 import EventBar from '../../../../EventBar';
 import { CreateEventModalContext } from '../../../../../../context/EventModalContext';
+import { useSelector } from 'react-redux';
+import { newEventBarsSelector } from '../../../../../../store/selectors/events';
 
 const Index = ({ dateTime }) => {
-  const { isMouseDown, newEventBars } = useContext(EventBarContext);
+  const { isMouseDown } = useContext(EventBarContext);
+  const newEventBars = useSelector(newEventBarsSelector);
   const eventBar = newEventBars?.find(({ time }) => dateTime === time);
+
   const { showModal } = useContext(CreateEventModalContext);
   const $eventBarParent = useRef();
-
   useEffect(() => {
-    if (!eventBar || newEventBars[0] !== eventBar || isMouseDown) return;
+    if (!eventBar || isMouseDown) return;
 
     const { left } =
       $eventBarParent.current.children[0].getBoundingClientRect();
