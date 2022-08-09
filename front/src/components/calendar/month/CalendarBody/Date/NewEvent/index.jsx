@@ -32,7 +32,7 @@ const Index = ({ dateTime }) => {
   if (!eventBar) return;
   const date = new Date(dateTime);
   date.setHours(new Date().getHours());
-  date.setMinutes(new Date().getMinutes() - (new Date().getMinutes() % 15));
+  date.setMinutes(Math.floor(new Date().getMinutes() / 15) * 15);
 
   return (
     <div className={styles.new_event_bar} ref={$eventBarParent}>

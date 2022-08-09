@@ -34,13 +34,16 @@ const Index = () => {
   const month = useSelector(monthSelector);
   useEffect(() => {
     if (newEventBars.length) dispatch(setNewEventBars(newEventBars));
+  }, [dispatch, newEventBars]);
+
+  useEffect(() => {
     dispatch(
       getAllCalendarAndEvent({
         startTime: month[0][0].time,
         endTime: month[month.length - 1][6].time,
       }),
     );
-  }, [dispatch, month, newEventBars]);
+  }, [dispatch, month]);
 
   const { changeMonth } = useAddMonthByWheel();
   return (
