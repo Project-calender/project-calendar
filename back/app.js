@@ -18,7 +18,7 @@ const eventRouter = require("./routes/event");
 const userRouter = require("./routes/user");
 const privateEventRouter = require("./routes/privateEvent");
 const alertRouter = require("./routes/alert");
-const privateCalendar = require('./routes/privateCalendar')
+const privateCalendar = require("./routes/privateCalendar");
 
 //swagger
 const swaggerUi = require("swagger-ui-express");
@@ -58,7 +58,11 @@ app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/privateEvent", privateEventRouter);
 app.use("/api/alert", alertRouter);
-app.use("/api/privateCalendar", privateCalendar)
+app.use("/api/privateCalendar", privateCalendar);
+
+app.use(function (error, req, res, next) {
+  res.json({ message: error.message });
+});
 
 app.get("/", (req, res) => {
   res.send("jenkins why");
