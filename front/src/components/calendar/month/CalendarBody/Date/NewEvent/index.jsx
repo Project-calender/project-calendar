@@ -44,6 +44,7 @@ const Index = ({ dateTime }) => {
             state: 1,
             allDay: false,
           }}
+          eventBar={eventBar}
           color={'red'}
         />
       ) : (
