@@ -17,27 +17,25 @@ import useAddMonthByWheel from '../../hooks/useAddMonthByWheel';
 
 import { getAllCalendarAndEvent } from '../../store/thunk/event';
 import { useEffect } from 'react';
+import { setNewEventBars } from '../../store/events';
 
 const Index = () => {
+  const dispatch = useDispatch();
   const {
     handleMouseDown,
     handleMouseUp,
     handleDrag,
     isMouseDown,
     selectedDateRange,
-    changeDateRange,
   } = useDragDate();
+  const dragContextData = { isMouseDown, selectedDateRange };
 
-  const newEventData = useCreateEventBar(selectedDateRange);
-  const newEventContextData = {
-    isMouseDown,
-    ...newEventData,
-    selectedDateRange,
-    changeDateRange,
-  };
-
-  const dispatch = useDispatch();
+  const { newEventBars } = useCreateEventBar(selectedDateRange);
   const month = useSelector(monthSelector);
+  useEffect(() => {
+    if (newEventBars.length) dispatch(setNewEventBars(newEventBars));
+  }, [dispatch, newEventBars]);
+
   useEffect(() => {
     dispatch(
       getAllCalendarAndEvent({
@@ -50,7 +48,7 @@ const Index = () => {
   const { changeMonth } = useAddMonthByWheel();
   return (
     <div className={styles.calendar} onWheel={changeMonth}>
-      <EventBarContext.Provider value={newEventContextData}>
+      <EventBarContext.Provider value={dragContextData}>
         <CreateEventMaodalLayout>
           <EventDetailMaodalLayout>
             <EventListModalLayout>

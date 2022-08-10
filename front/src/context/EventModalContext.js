@@ -10,4 +10,4 @@ export const CalendarOptionContext = createContext({});
 export const DeleteCalendarContext = createContext({});
 export const ModalContext = createContext({});
 
-export const ListModalContext = createContext({});
+export const EventInfoListModalContext = createContext({});

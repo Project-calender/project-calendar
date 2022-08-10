@@ -12,11 +12,13 @@ export const getAllCalendarAndEvent = createAsyncThunk(
       startDate: new Moment(startTime).toSimpleDateString(),
       endDate: new Moment(endTime).toSimpleDateString(),
     });
+
     const privateCalendar = {
       ...data.privateEvents,
       id: convertPrivateId(data.privateEvents.id),
     };
-    const groupCalendars = data.groupEvents.filter(a => a.length === 2);
+    const groupCalendars = data.groupEvents;
+
     const [privateEvents, groupEvents] = [
       privateCalendar.PrivateEvents.map(info => ({
         ...info,

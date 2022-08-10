@@ -1,12 +1,7 @@
 import React, { useContext } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import Modal from '../../../components/common/Modal';
-import { EventBarContext } from '../../../context/EventBarContext';
-import {
-  CreateEventModalContext,
-  ListModalContext,
-} from '../../../context/EventModalContext';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarsStaggered,
@@ -24,26 +19,42 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import axios from '../../../utils/token';
+import Moment from '../../../utils/moment';
 import Input from '../../../components/common/Input';
 import CheckBox from '../../../components/common/CheckBox';
+import Modal from '../../../components/common/Modal';
+import { EventBarContext } from '../../../context/EventBarContext';
+import {
+  CreateEventModalContext,
+  EventInfoListModalContext,
+} from '../../../context/EventModalContext';
 
-import Moment from '../../../utils/moment';
-
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectAllCalendar } from '../../../store/selectors/calendars';
 
 import EventColorOption from '../../../components/calendar/EventColorOption';
 import { EVENT_COLOR } from '../../../styles/color';
+import {
+  setNewEventBars,
+  updateNewEventBarProperty,
+} from '../../../store/events';
 
 const Index = ({ children: ModalList }) => {
-  const { selectedDateRange, setNewEventBars } = useContext(EventBarContext);
+  const dispatch = useDispatch();
+  const { selectedDateRange } = useContext(EventBarContext);
   const { hideModal: hideCreateEventModal, modalData } = useContext(
     CreateEventModalContext,
   );
-  const { showModal: showListModal } = useContext(ListModalContext);
+  const { showModal: showEventInfoListModal } = useContext(
+    EventInfoListModalContext,
+  );
   function initCreateEventModal() {
-    setNewEventBars([]);
-    hideCreateEventModal();
+    dispatch(setNewEventBars([]));
+    hideCreateEventModal(true);
+  }
+
+  function handleEventTitle(e) {
+    dispatch(updateNewEventBarProperty({ key: 'name', value: e.target.value }));
   }
 
   const { standardDateTime, endDateTime } = selectedDateRange;
@@ -73,11 +84,7 @@ const Index = ({ children: ModalList }) => {
             <Input
               type="text"
               placeholder="제목 및 시간 추가"
-              onBlur={e => {
-                setNewEventBars(bars =>
-                  bars.map(bar => ({ ...bar, name: e.target.value })),
-                );
-              }}
+              onBlur={handleEventTitle}
             />
           </div>
 
@@ -120,7 +127,7 @@ const Index = ({ children: ModalList }) => {
               <h3
                 className={styles.list_modal}
                 onClick={e =>
-                  showListModal(e, [
+                  showEventInfoListModal(e, [
                     '반복 안함',
                     '매일',
                     `매주 ${startDate.weekDay}요일`,
@@ -185,7 +192,7 @@ const Index = ({ children: ModalList }) => {
               <h3
                 className={styles.list_modal}
                 onClick={e =>
-                  showListModal(
+                  showEventInfoListModal(
                     e,
                     calendars.map(calendar => calendar.name),
                   )
@@ -207,7 +214,7 @@ const Index = ({ children: ModalList }) => {
           <div>
             <FontAwesomeIcon icon={faBriefcase} />
 
-            <div onClick={e => showListModal(e, ['바쁨', '한가함'])}>
+            <div onClick={e => showEventInfoListModal(e, ['바쁨', '한가함'])}>
               <h3 className={styles.list_modal}>
                 한가함
                 <FontAwesomeIcon
@@ -224,7 +231,11 @@ const Index = ({ children: ModalList }) => {
               <h3
                 className={styles.list_modal}
                 onClick={e =>
-                  showListModal(e, ['기본 공개 설정', '전체 공개', '비공개'])
+                  showEventInfoListModal(e, [
+                    '기본 공개 설정',
+                    '전체 공개',
+                    '비공개',
+                  ])
                 }
               >
                 기본 공개 설정
