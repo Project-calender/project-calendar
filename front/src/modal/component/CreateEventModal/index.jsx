@@ -163,8 +163,8 @@ const Index = ({ children: ModalList }) => {
       createEvent({
         ...eventInfo,
         calendarId: calendars[eventInfo.calendarId].id,
-        startTime: new Date(eventInfo.startTime).toUTCString(),
-        endTime: new Date(eventInfo.endTime).toUTCString(),
+        startTime: new Date(eventInfo.startTime).toISOString(),
+        endTime: new Date(eventInfo.endTime).toISOString(),
         color:
           calendars[eventInfo.calendarId].color === eventInfo.color
             ? null
