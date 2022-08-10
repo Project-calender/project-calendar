@@ -31,11 +31,9 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
     endDate.setDate(endDate.getDate() + 1);
 
     const privateEvents = await me.getPrivateCalendar({
-      attributes: { exclude: ["deletedAt"] },
       include: [
         {
           model: PrivateEvent,
-          attributes: { exclude: ["deletedAt"] },
           where: {
             [Op.or]: {
               [Op.or]: {
@@ -73,12 +71,10 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
       groupCalendars.map(async (groupCalendar) => {
         var groupEvent = await Calendar.findAll({
           where: { id: groupCalendar.CalendarId },
-          attributes: { exclude: ["deletedAt"] },
           include: [
             {
               model: Event,
               as: "GroupEvents",
-              attributes: { exclude: ["deletedAt"] },
               where: {
                 [Op.and]: {
                   [Op.or]: {
@@ -146,7 +142,7 @@ router.post("/getGroupEvent", authJWT, async (req, res, next) => {
           model: User,
           as: "EventHost",
           attributes: {
-            exclude: ["password", "checkedCalendar", "deletedAt"],
+            exclude: ["password", "checkedCalendar"],
           },
         },
         {
@@ -178,12 +174,11 @@ router.post("/getEventByDate", authJWT, async (req, res, next) => {
 
     const privateEvents = await me.getPrivateCalendar({
       attributes: {
-        exclude: ["name", "color", "UserId", "deletedAt"],
+        exclude: ["name", "color", "UserId"],
       },
       include: [
         {
           model: PrivateEvent,
-          attributes: { exclude: ["deletedAt"] },
           where: {
             [Op.or]: {
               [Op.or]: {
@@ -221,12 +216,10 @@ router.post("/getEventByDate", authJWT, async (req, res, next) => {
       groupCalendars.map(async (groupCalendar) => {
         var groupEvent = await Calendar.findAll({
           where: { id: groupCalendar.CalendarId },
-          attributes: { exclude: ["deletedAt"] },
           include: [
             {
               model: Event,
               as: "GroupEvents",
-              attributes: { exclude: ["deletedAt"] },
               where: {
                 [Op.and]: {
                   [Op.or]: {
@@ -726,7 +719,7 @@ router.post("/searchEvent", authJWT, async (req, res, next) => {
     const searchEvents = await me.getGroupEvents({
       where: { name: { [Op.like]: "%" + searchWord + "%" } },
       attributes: {
-        exclude: ["color", "priority", "memo", "deletedAt", "EventHostId"],
+        exclude: ["color", "priority", "memo", "EventHostId"],
       },
       joinTableAttributes: [],
       separate: true,

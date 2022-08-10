@@ -102,12 +102,12 @@ router.post("/signin", async (req, res, next) => {
       {
         model: ProfileImage,
         attributes: {
-          exclude: ["deletedAt", "id", "UserId"],
+          exclude: ["id", "UserId"],
         },
       },
     ],
     attributes: {
-      exclude: ["password", "deletedAt"],
+      exclude: ["password"],
     },
   });
   return res.status(200).send({
