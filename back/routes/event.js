@@ -377,7 +377,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
     });
     if (!isGroupMember) {
       return res
-        .status(400)
+        .status(402)
         .send({ message: "그룹 캘린더에 존재하지 않는 유저입니다!" });
     }
 
@@ -392,7 +392,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
     });
     if (alreadyEventMember) {
       return res
-        .status(402)
+        .status(403)
         .send({ message: "이미 그룹 이벤트의 멤버입니다!" });
     }
 
@@ -448,7 +448,7 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
     const me = await User.findOne({ where: { id: req.myId } });
 
     const invitedEvent = await Event.findOne({
-      where: { id: req.body.invitedEventId },
+      where: { id: req.body.eventId },
     });
 
     if (!invitedEvent) {
@@ -558,7 +558,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
       });
 
       if (hasAuthority.authority < 2) {
-        return res.status(400).send({ message: "수정 권한이 없습니다!" });
+        return res.status(403).send({ message: "수정 권한이 없습니다!" });
       }
 
       //'2022-07-26 07:00:18'
@@ -672,7 +672,7 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
         transaction: t,
       });
 
-      deleteAlerts(req.myId, groupEvent.id, next);
+      await deleteAlerts(req.myId, groupEvent.id);
 
       const privateCalendar = await me.getPrivateCalendar();
       await PrivateEvent.destroy({

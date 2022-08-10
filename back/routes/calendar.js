@@ -14,16 +14,6 @@ const { deleteAlertsByCalendarId } = require("../realTimeAlerts");
 router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
   try {
     await sequelize.transaction(async (t) => {
-      const notUnique = await Calendar.findOne({
-        where: { name: req.body.calendarName },
-      });
-
-      if (notUnique) {
-        return res
-          .status(400)
-          .send({ message: "이미 같은 이름의 캘린더가 존재합니다!" });
-      }
-
       const newGroupCalendar = await Calendar.create(
         {
           name: req.body.calendarName,
@@ -46,7 +36,7 @@ router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
         }
       );
 
-      return res.status(200).send({ newGroupCalendar });
+      return res.status(200).send(newGroupCalendar);
     });
   } catch (error) {
     console.error(error);
@@ -69,8 +59,8 @@ router.post("/editGroupCalendar", authJWT, async (req, res, next) => {
 
       await changeCalendar.update(
         {
-          name: req.body.newCalendarName,
-          color: req.body.newCalendarColor,
+          name: req.body.calendarName,
+          color: req.body.calendarColor,
         },
         {
           transaction: t,
@@ -155,7 +145,7 @@ router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
     });
     if (alreadyInvite) {
       return res
-        .status(400)
+        .status(403)
         .send({ message: "이미 해당 달력에 초대장을 보낸 상대입니다!" });
     }
 
@@ -165,7 +155,7 @@ router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
       },
     });
     if (alreadyCalendarMember) {
-      return res.status(400).send({ message: "이미 캘린더의 그룹원 입니다!" });
+      return res.status(405).send({ message: "이미 캘린더의 그룹원 입니다!" });
     }
 
     await sequelize.transaction(async (t) => {
@@ -205,7 +195,7 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
 
     const groupCalendar = await Calendar.findOne({
       where: {
-        id: req.body.hostCalendarId,
+        id: req.body.calendarId,
       },
     });
     if (!groupCalendar) {
@@ -216,7 +206,7 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
       where: {
         [Op.and]: {
           UserId: req.myId,
-          CalendarId: req.body.hostCalendarId,
+          CalendarId: req.body.calendarId,
         },
       },
     });
@@ -229,7 +219,7 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
         [Op.and]: {
           CalendarGuestId: req.myId,
           CalendarHostId: req.body.hostId,
-          HostCalendarId: req.body.hostCalendarId,
+          HostCalendarId: req.body.calendarId,
         },
       },
     });
@@ -243,7 +233,7 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
           [Op.and]: {
             CalendarGuestId: req.myId,
             CalendarHostId: req.body.hostId,
-            HostCalendarId: req.body.hostCalendarId,
+            HostCalendarId: req.body.calendarId,
           },
         },
         transaction: t,
@@ -267,7 +257,7 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
       );
     });
 
-    return res.status(200).send({ success: true });
+    return res.status(200).send(groupCalendar);
   } catch (error) {
     console.error(error);
     next(error);
@@ -280,7 +270,7 @@ router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
 
     const groupCalendar = await Calendar.findOne({
       where: {
-        id: req.body.hostCalendarId,
+        id: req.body.calendarId,
       },
     });
     if (!groupCalendar) {
@@ -291,7 +281,7 @@ router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
       where: {
         [Op.and]: {
           UserId: req.myId,
-          CalendarId: req.body.hostCalendarId,
+          CalendarId: req.body.calendarId,
         },
       },
     });
@@ -304,7 +294,7 @@ router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
         [Op.and]: {
           CalendarGuestId: req.myId,
           CalendarHostId: req.body.hostId,
-          HostCalendarId: req.body.hostCalendarId,
+          HostCalendarId: req.body.calendarId,
         },
       },
     });
@@ -318,7 +308,7 @@ router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
           [Op.and]: {
             CalendarGuestId: req.myId,
             CalendarHostId: req.body.hostId,
-            HostCalendarId: req.body.hostCalendarId,
+            HostCalendarId: req.body.calendarId,
           },
         },
         transaction: t,

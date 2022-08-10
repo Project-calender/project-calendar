@@ -13,12 +13,15 @@
         schema:
           type: object
           properties:
-            name:
+            eventName:
               type: string
             color:
               type: string
-            priority:
-              type: string
+            busy:
+              type: integer
+            allDay:
+              type: boolean
+              example: true
             memo:
               type: string
             startTime:
@@ -27,30 +30,9 @@
               type: string
     responses:
       200:
-        description: 성공
-        schema:
-          properties:
-            id:
-              type: string
-              example: true
-            name:
-              type: string
-              example: true
-            color:
-              type: string
-              example: true
-            createdAt:
-              type: string
-              example: true
-            updatedAt:
-              type: string
-              example: true
-            deletedAt:
-              type: string
-              example: true
-            UserId:
-              type: string
-              example: true 
+        $ref: "./openapi.yaml#/returnPrivateEvent"
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/privateEvent/editPrivateEvent:
   post:
     tags:
@@ -66,14 +48,15 @@
         schema:
           type: object
           properties:
-            eventId:
-              type: string
-            name:
+            eventName:
               type: string
             color:
               type: string
-            priority:
-              type: string
+            busy:
+              type: integer
+            allDay:
+              type: boolean
+              example: true
             memo:
               type: string
             startTime:
@@ -82,13 +65,8 @@
               type: string
     responses:
       200:
-        description: 성공
-        schema:
-          properties:
-            success:
-              type: string
-              example: true
-      401:
+        $ref: "./openapi.yaml#/returnPrivateEvent"
+      400:
         description: 수정할 개인 이벤트 조회 결과가 없을 경우
         schema:
           type: object
@@ -96,6 +74,8 @@
             message:
               type: string
               example: 수정할 개인이벤트의 조회 결과가 없습니다
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/privateEvent/deletePrivateEvent:
   post:
     tags:
@@ -115,20 +95,7 @@
               type: string
     responses:
       200:
-        description: 성공
-        schema:
-          type: object
-          properties:
-            success:
-              type: string
-              example: true
-      401:
-        description: 삭제하려는 이벤트의 조회 결과가 없는 경우
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 삭제하려는 이벤트의 조회 결과가 없습니다
-
+        $ref: "./openapi.yaml#/success"
+      500:
+        $ref: "./openapi.yaml#/serverError"
 $ref: "./calendarAPI.yaml"

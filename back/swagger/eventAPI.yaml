@@ -111,7 +111,6 @@
                           type: integer
       500:
         $ref: "./openapi.yaml#/serverError"
-
 /api/event/getGroupEvent:
   post:
     tags:
@@ -129,7 +128,6 @@
           properties:
             eventId:
               type: integer
-              example: 1
     responses:
       200:
         description: 성공
@@ -148,9 +146,9 @@
             endTime:
               type: string
             EventHostId:
-              type: string
+              type: integer
             CalendarId:
-              type: string
+              type: integer
             EventHost:
               type: object
               properties:
@@ -193,7 +191,6 @@
                         type: integer
       500:
         $ref: "./openapi.yaml#/serverError"
-
 /api/event/getEventByDate:
   post:
     tags:
@@ -209,9 +206,12 @@
         schema:
           type: object
           properties:
-            date:
+            startDate:
               type: string
               example: "2022-08-20"
+            endDate:
+              type: string
+              example: "2022-08-22"
     responses:
       200:
         description: 성공
@@ -297,7 +297,7 @@
   post:
     tags:
       - event
-    summary: 그룹 이벤트 생성하기
+    summary: 그룹 이벤트 생성하기 permission 1 or 2 / busy 0 or 1
     parameters:
       - name: Authorization
         in: header
@@ -308,17 +308,17 @@
         schema:
           type: object
           properties:
-            groupCalendarId:
+            calendarId:
               type: integer
-              example: 1
             eventName:
               type: string
             color:
               type: integer
               example: "#0e0e03"
-            priority:
+            permission:
               type: integer
-              example: 1
+            busy:
+              type: integer
             memo:
               type: string
             startTime:
@@ -330,6 +330,16 @@
             allDay:
               type: boolean
               example: true
+            alerts:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "minute / hour / day / week"
+                  time:
+                    type: integer
     responses:
       200:
         $ref: "./openapi.yaml#/success"
@@ -360,13 +370,10 @@
           properties:
             guestEmail:
               type: string
-              example: 1
-            groupCalendarId:
+            calendarId:
               type: integer
-              example: 1
-            groupEventId:
+            eventId:
               type: integer
-              example: 1
     responses:
       200:
         $ref: "./openapi.yaml#/success"
@@ -377,14 +384,14 @@
             message:
               type: string
               example: 존재하지 않는 유저입니다!
-      401:
+      402:
         description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
         schema:
           properties:
             message:
               type: string
               example: 그룹 캘린더에 존재하지 않는 유저입니다!
-      402:
+      403:
         description: 이미 그룹이벤트의 이벤트에 멤버일대
         schema:
           properties:
@@ -416,7 +423,7 @@
         schema:
           type: object
           properties:
-            invitedEventId:
+            eventId:
               type: integer
               example: 1
             state:
@@ -432,13 +439,6 @@
             message:
               type: string
               example: 존재하지 않는 이벤트 입니다!
-      401:
-        description: 날짜가 지난 이벤트인 경우
-        schema:
-          properties:
-            message:
-              type: string
-              example: 이미 종료된 이벤트 입니다!
       500:
         $ref: "./openapi.yaml#/serverError"
 
@@ -446,7 +446,7 @@
   post:
     tags:
       - event
-    summary: 그룹 이벤트 수정하기
+    summary: 그룹 이벤트 수정하기 permission 1 or 2 / busy 0 or 1
     parameters:
       - name: Authorization
         in: header
@@ -457,20 +457,21 @@
         schema:
           type: object
           properties:
-            groupCalendarId:
+            calendarId:
               type: integer
               example: 1
-            groupEventId:
-              type: string
+            eventId:
+              type: integer
               example: 1
             eventName:
               type: string
             color:
               type: integer
               example: "#0e0e0e"
-            priority:
+            permission:
               type: integer
-              example: 1
+            busy:
+              type: integer
             memo:
               type: string
             startTime:
@@ -482,6 +483,16 @@
             allDay:
               type: boolean
               example: true
+            alerts:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "minute / hour / day / week"
+                  time:
+                    type: integer
     responses:
       200:
         $ref: "./openapi.yaml#/success"
@@ -492,7 +503,7 @@
             message:
               type: string
               example: 존재하지 않는 이벤트 입니다!
-      401:
+      403:
         description: 수정 권한이 없는 경우 ( 권한 2 미만 )
         schema:
           properties:
@@ -517,11 +528,11 @@
         schema:
           type: object
           properties:
-            groupCalendarId:
+            calendarId:
               type: integer
               example: 1
-            groupEventId:
-              type: string
+            eventId:
+              type: integer
               example: 1
     responses:
       200:
