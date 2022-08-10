@@ -37,6 +37,7 @@ import { EVENT_COLOR } from '../../../styles/color';
 import {
   setNewEventBars,
   updateNewEventBarProperty,
+  updateNewEventBarProperties,
 } from '../../../store/events';
 import { useCallback } from 'react';
 import { checkedCalendarSelector } from '../../../store/selectors/user';
@@ -62,6 +63,10 @@ const Index = ({ children: ModalList }) => {
     dispatch(
       updateNewEventBarProperty({ key: 'eventName', value: e.target.value }),
     );
+  }
+
+  function handleEventMemo(e) {
+    setEventInfo(info => ({ ...info, memo: e.target.value }));
   }
 
   const { standardDateTime, endDateTime } = selectedDateRange;
@@ -95,7 +100,7 @@ const Index = ({ children: ModalList }) => {
         value: calendars[baseCalendarIndex].color,
       }),
     );
-  }, []);
+  }, [dispatch, baseCalendarIndex, calendars]);
 
   const eventInfoList = {
     busy: ['바쁨', '한가함'],
@@ -111,10 +116,13 @@ const Index = ({ children: ModalList }) => {
     permission: ['기본 공개 설정', '전체 공개', '비공개'],
   };
 
-  const changeColor = useCallback(color => {
-    setEventInfo(info => ({ ...info, color }));
-    dispatch(updateNewEventBarProperty({ key: 'eventColor', value: color }));
-  }, []);
+  const changeColor = useCallback(
+    color => {
+      setEventInfo(info => ({ ...info, color }));
+      dispatch(updateNewEventBarProperty({ key: 'eventColor', value: color }));
+    },
+    [dispatch],
+  );
 
   const [EventColorModal, EventInfoListModal] = ModalList;
   function onClickListModalItem(e) {
@@ -125,17 +133,18 @@ const Index = ({ children: ModalList }) => {
 
     if (name === 'calendarId') {
       dispatch(
-        updateNewEventBarProperty({
-          key: 'calendarColor',
-          value: calendars[value].color,
-        }),
+        updateNewEventBarProperties([
+          {
+            key: 'calendarColor',
+            value: calendars[value].color,
+          },
+          {
+            key: 'eventColor',
+            value: null,
+          },
+        ]),
       );
-      dispatch(
-        updateNewEventBarProperty({
-          key: 'eventColor',
-          value: null,
-        }),
-      );
+
       setEventInfo(info => ({
         ...info,
         [name]: value,
@@ -265,7 +274,12 @@ const Index = ({ children: ModalList }) => {
 
           <div className={styles.memo}>
             <FontAwesomeIcon icon={faBarsStaggered} />
-            <Input type="text" placeholder="설명 추가" />
+
+            <Input
+              type="text"
+              placeholder="설명 추가"
+              onBlur={handleEventMemo}
+            />
           </div>
           <div>
             <FontAwesomeIcon icon={faPaperclip} className={styles.clip_icon} />

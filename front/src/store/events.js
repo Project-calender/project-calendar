@@ -35,6 +35,13 @@ const events = createSlice({
         [key]: value,
       }));
     },
+    updateNewEventBarProperties(state, { payload }) {
+      state.newEventBars = state.newEventBars.map(eventBar =>
+        payload.reduce((info, { key, value }) => ({ ...info, [key]: value }), {
+          ...eventBar,
+        }),
+      );
+    },
   },
 
   extraReducers: builder => {
@@ -64,6 +71,7 @@ export const {
   updateEventBar,
   setNewEventBars,
   updateNewEventBarProperty,
+  updateNewEventBarProperties,
 } = events.actions;
 export default events.reducer;
 
