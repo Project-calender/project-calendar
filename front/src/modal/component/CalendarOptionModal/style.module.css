@@ -1,6 +1,6 @@
 .modal_container { width: 190px; text-align: left; } 
 
-.modal_container li { font-size: 14px; padding: 10px 15px; } 
+.modal_container li { font-size: 14px; padding: 10px 15px; cursor: pointer; } 
 .modal_container li:hover { background: #f1f1f1; } 
 .modal_container hr { background: #dadada; border:none; height: 1px; margin: 0px; } 
 

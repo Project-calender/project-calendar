@@ -3,14 +3,14 @@ import Moment from '../../../utils/moment';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
-const Index = ({ event, color, clickEventBar }) => {
+const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
   const eventBarStyle = {
     calendar: {
-      background: event.state === 0 || event.state === 3 ? 'white' : color,
+      background: event?.state === 0 || event?.state === 3 ? 'white' : color,
       border: `1px solid ${color}`,
     },
   };
-
+  console.log(eventBar);
   return (
     <div
       className={`${styles.time_event} event_bar_div`}
@@ -25,14 +25,14 @@ const Index = ({ event, color, clickEventBar }) => {
       />
       <div
         className={`${styles.time_event_title} ${
-          event.state === 3 ? styles.refuse_text : ''
+          event?.state === 3 ? styles.refuse_text : ''
         }`}
       >
         <em>
           {new Moment(event.startTime).getTimeType()}{' '}
           {new Moment(event.startTime).getSimpleTime()}
         </em>
-        <em> {event?.name || '(제목 없음)'}</em>
+        <em> {event?.name || eventBar?.name || '(제목 없음)'} </em>
       </div>
     </div>
   );
@@ -40,6 +40,7 @@ const Index = ({ event, color, clickEventBar }) => {
 
 Index.propTypes = {
   event: PropTypes.object,
+  eventBar: PropTypes.object,
   color: PropTypes.string,
   clickEventBar: PropTypes.func,
 };

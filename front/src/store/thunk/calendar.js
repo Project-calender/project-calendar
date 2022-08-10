@@ -27,6 +27,7 @@ export const updateCalendar = createAsyncThunk(
       newCalendarName,
       newCalendarColor,
     });
+
     return { ...data.changeCalendar, id: calendarId };
   },
 );
