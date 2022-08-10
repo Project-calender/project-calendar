@@ -6,6 +6,9 @@ import axios from '../../../utils/token';
 import styles from './style.module.css';
 import Moment from '../../../utils/moment.js';
 import EventTimeBar from '../EventTimeBar';
+import { useSelector } from 'react-redux';
+import { checkedCalendarSelector } from '../../../store/selectors/user';
+import { selectAllCalendar } from '../../../store/selectors/calendars';
 
 const Index = ({
   event,
@@ -18,15 +21,22 @@ const Index = ({
   const { setModalData: setEventDetailModalData } = useContext(
     EventDetailModalContext,
   );
+  const calendars = useSelector(selectAllCalendar);
+  const checkedCalendar = useSelector(checkedCalendarSelector);
+  const baseCalendar =
+    calendars.find(calendar => checkedCalendar.includes(calendar.id)) ||
+    calendars[0];
 
-  const eventBarColor = event?.color || calendar?.color || 'red';
+  const calendarColor =
+    calendar?.color || eventBar?.calendarColor || baseCalendar.color;
+  const eventBarColor = event?.color || eventBar?.eventColor || calendarColor;
   const eventBarStyle = {
     container: {
       width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
     },
     calendar: {
-      background: calendar?.color,
-      border: `1px solid ${calendar?.color}`,
+      background: calendarColor,
+      border: `1px solid ${calendarColor}`,
     },
     main: {
       background:
@@ -38,8 +48,8 @@ const Index = ({
           ? 'white'
           : eventBarColor,
     },
-    left: { borderRightColor: calendar?.color },
-    right: { borderLeftColor: event?.color },
+    left: { borderRightColor: calendarColor },
+    right: { borderLeftColor: eventBarColor },
   };
 
   async function clickEventBar(e) {
@@ -88,7 +98,7 @@ const Index = ({
     >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
-      {calendar?.color && (
+      {calendarColor && (
         <div
           className={`${styles.event_bar_calendar} ${
             left ? styles.none_left_border : ''
@@ -105,7 +115,7 @@ const Index = ({
         name="event_bar"
       >
         <em className={`${event?.state === 3 ? styles.refuse_text : ''}`}>
-          {event?.name || eventBar.name || '(제목 없음)'}
+          {event?.name || eventBar.eventName || '(제목 없음)'}
         </em>
       </div>
 

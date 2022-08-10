@@ -37,6 +37,7 @@ const Index = ({ eventMembers }) => {
     .filter(text => text)
     .join(', ');
 
+  if (!eventMembers.length) return;
   return (
     <>
       <div>

@@ -2,9 +2,9 @@
 .event_container { display: flex; align-items: flex-start; height: 1.35rem; max-height: 28px; margin-bottom: 4px; position: relative; } 
 .event_container:hover > * { filter: brightness(0.9); } 
 
-.event_bar_calendar { flex-shrink: 0; z-index: 4; width: 4px !important; height: 100%; border-top-left-radius: 3px; border-bottom-left-radius: 3px; } 
-.event_bar { position: relative; left: -3px; width: 100%; height: 100%; display: flex; padding-left: 8px; border-radius: 3px; align-items: center; cursor: pointer; z-index: 3; word-break: break-all; } 
-.event_bar > em { width: 90%; font-size: 0.72rem; vertical-align: middle; text-align: left; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
+.event_bar_calendar { position: absolute; flex-shrink: 0; z-index: 4; width: 4px !important; height: 100%; border-top-left-radius: 3px; border-bottom-left-radius: 3px; } 
+.event_bar { position: relative;  width: 100%; height: 100%; display: flex; padding-left: 8px; border-radius: 3px; align-items: center; cursor: pointer; z-index: 3; word-break: break-all; } 
+.event_bar > em { width: 90%; font-size: 0.75rem; vertical-align: middle; text-align: left; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
 .refuse_text { text-decoration: line-through; } 
 
 .none_left_border { border-top-left-radius : 0px; border-bottom-left-radius : 0px; } 
@@ -24,7 +24,7 @@
 .time_event > * { overflow: hidden; }
 .time_event:hover { filter: brightness(0.9); } 
 
-.time_event_calendar { background: red; margin: 0px 5px 0px 10px; border-radius: 100%; width: 8px; height: 8px; flex-shrink: 0; flex-wrap: nowrap;} 
+.time_event_calendar {  margin: 0px 5px 0px 10px; border-radius: 100%; width: 8px; height: 8px; flex-shrink: 0; flex-wrap: nowrap;} 
 .time_event_title {width: 100%; overflow: hidden; }
 
 

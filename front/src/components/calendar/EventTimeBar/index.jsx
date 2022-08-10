@@ -10,7 +10,7 @@ const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
       border: `1px solid ${color}`,
     },
   };
-  console.log(eventBar);
+
   return (
     <div
       className={`${styles.time_event} event_bar_div`}
@@ -32,7 +32,7 @@ const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
           {new Moment(event.startTime).getTimeType()}{' '}
           {new Moment(event.startTime).getSimpleTime()}
         </em>
-        <em> {event?.name || eventBar?.name || '(제목 없음)'} </em>
+        <em> {event?.name || eventBar?.eventName || '(제목 없음)'} </em>
       </div>
     </div>
   );

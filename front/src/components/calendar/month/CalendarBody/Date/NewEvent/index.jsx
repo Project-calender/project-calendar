@@ -45,7 +45,7 @@ const Index = ({ dateTime }) => {
             allDay: false,
           }}
           eventBar={eventBar}
-          color={'red'}
+          color={eventBar.eventColor || eventBar.calendarColor}
         />
       ) : (
         <EventBar eventBar={eventBar} />

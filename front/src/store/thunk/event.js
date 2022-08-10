@@ -32,7 +32,7 @@ export const getAllCalendarAndEvent = createAsyncThunk(
       privateCalendar,
       ...groupCalendars.map(([info, authority]) => ({ ...info, ...authority })),
     ].map(calendar => {
-      delete calendar.GroupEvents, delete calendar.privateEvents;
+      delete calendar.GroupEvents, delete calendar.PrivateEvents;
 
       if (calendar.UserId) return { ...calendar, authority: 3 };
       return calendar;

@@ -27,10 +27,11 @@ const Index = ({ event, hideModal }) => {
       $button.classList.toggle(styles.button_active, $button.value === state);
     });
 
-    await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
+    const res = await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
       invitedEventId: -event.id,
       state,
     });
+    console.log(res);
     dispatch(updateEvent({ ...event, state }));
     hideModal();
   }

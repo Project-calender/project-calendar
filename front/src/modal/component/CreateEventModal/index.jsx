@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
@@ -38,6 +38,8 @@ import {
   setNewEventBars,
   updateNewEventBarProperty,
 } from '../../../store/events';
+import { useCallback } from 'react';
+import { checkedCalendarSelector } from '../../../store/selectors/user';
 
 const Index = ({ children: ModalList }) => {
   const dispatch = useDispatch();
@@ -45,16 +47,21 @@ const Index = ({ children: ModalList }) => {
   const { hideModal: hideCreateEventModal, modalData } = useContext(
     CreateEventModalContext,
   );
-  const { showModal: showEventInfoListModal } = useContext(
-    EventInfoListModalContext,
-  );
+  const {
+    showModal: showEventInfoListModal,
+    hideModal: hideEventInfoListModal,
+  } = useContext(EventInfoListModalContext);
+
   function initCreateEventModal() {
     dispatch(setNewEventBars([]));
     hideCreateEventModal(true);
   }
 
   function handleEventTitle(e) {
-    dispatch(updateNewEventBarProperty({ key: 'name', value: e.target.value }));
+    setEventInfo(info => ({ ...info, eventName: e.target.value }));
+    dispatch(
+      updateNewEventBarProperty({ key: 'eventName', value: e.target.value }),
+    );
   }
 
   const { standardDateTime, endDateTime } = selectedDateRange;
@@ -63,6 +70,85 @@ const Index = ({ children: ModalList }) => {
     .map(time => new Moment(time));
 
   const calendars = useSelector(selectAllCalendar);
+  const checkedCalendar = useSelector(checkedCalendarSelector);
+  let baseCalendarIndex = calendars.findIndex(calendar =>
+    checkedCalendar.includes(calendar.id),
+  );
+  if (baseCalendarIndex === -1) baseCalendarIndex = 0;
+
+  const [eventInfo, setEventInfo] = useState({
+    calendarId: baseCalendarIndex,
+    eventName: '',
+    color: calendars[baseCalendarIndex].color,
+    memo: '',
+    startTime: startDate.time,
+    endTime: endDate.time,
+    busy: 1,
+    permission: 1,
+    allDay: true,
+  });
+
+  useEffect(() => {
+    dispatch(
+      updateNewEventBarProperty({
+        key: 'calendarColor',
+        value: calendars[baseCalendarIndex].color,
+      }),
+    );
+  }, []);
+
+  const eventInfoList = {
+    busy: ['바쁨', '한가함'],
+    repeat: [
+      '반복 안함',
+      '매일',
+      `매주 ${startDate.weekDay}요일`,
+      `매월 마지막 ${startDate.weekDay}요일`,
+      `매년 ${startDate.month}월 ${startDate.date}일`,
+      '주중 매일(월-금)',
+      '맞춤...',
+    ],
+    permission: ['기본 공개 설정', '전체 공개', '비공개'],
+  };
+
+  const changeColor = useCallback(color => {
+    setEventInfo(info => ({ ...info, color }));
+    dispatch(updateNewEventBarProperty({ key: 'eventColor', value: color }));
+  }, []);
+
+  const [EventColorModal, EventInfoListModal] = ModalList;
+  function onClickListModalItem(e) {
+    const [name, value] = [
+      e.target.getAttribute('name'),
+      +e.target.getAttribute('value'),
+    ];
+
+    if (name === 'calendarId') {
+      dispatch(
+        updateNewEventBarProperty({
+          key: 'calendarColor',
+          value: calendars[value].color,
+        }),
+      );
+      dispatch(
+        updateNewEventBarProperty({
+          key: 'eventColor',
+          value: null,
+        }),
+      );
+      setEventInfo(info => ({
+        ...info,
+        [name]: value,
+        color: calendars[value].color,
+      }));
+    } else {
+      setEventInfo(info => ({ ...info, [name]: value }));
+    }
+
+    hideEventInfoListModal();
+    e.stopPropagation();
+  }
+
   return (
     <Modal
       hideModal={initCreateEventModal}
@@ -73,7 +159,11 @@ const Index = ({ children: ModalList }) => {
         boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)',
       }}
     >
-      {ModalList}
+      {EventColorModal}
+      {EventInfoListModal &&
+        React.cloneElement(EventInfoListModal, {
+          onClickItem: onClickListModalItem,
+        })}
       <div className={styles.modal_container}>
         <div className={styles.modal_header}>
           <FontAwesomeIcon icon={faGripLines} />
@@ -115,7 +205,12 @@ const Index = ({ children: ModalList }) => {
           <div>
             <div />
             <div>
-              <CheckBox onClick={() => {}}>
+              <CheckBox
+                checked={eventInfo.allDay}
+                onChange={e =>
+                  setEventInfo(info => ({ ...info, allDay: e.target.checked }))
+                }
+              >
                 <h3>종일</h3>
               </CheckBox>
             </div>
@@ -127,15 +222,7 @@ const Index = ({ children: ModalList }) => {
               <h3
                 className={styles.list_modal}
                 onClick={e =>
-                  showEventInfoListModal(e, [
-                    '반복 안함',
-                    '매일',
-                    `매주 ${startDate.weekDay}요일`,
-                    `매월 마지막 ${startDate.weekDay}요일`,
-                    `매년 ${startDate.month}월 ${startDate.date}일`,
-                    '주중 매일(월-금)',
-                    '맞춤...',
-                  ])
+                  showEventInfoListModal(e, eventInfoList['repeat'], 'repeat')
                 }
               >
                 반복 안함
@@ -195,18 +282,27 @@ const Index = ({ children: ModalList }) => {
                   showEventInfoListModal(
                     e,
                     calendars.map(calendar => calendar.name),
+                    'calendarId',
                   )
                 }
               >
-                내 캘린더
+                {calendars[eventInfo.calendarId].name}
                 <FontAwesomeIcon
                   className={styles.caret_down}
                   icon={faCaretDown}
                 />
               </h3>
               <EventColorOption
-                colors={EVENT_COLOR}
-                color={calendars[0]?.color}
+                colors={{
+                  ...EVENT_COLOR,
+                  ...(!Object.values(EVENT_COLOR).includes(
+                    calendars[eventInfo.calendarId].color,
+                  ) && {
+                    '캘린더 색상': calendars[eventInfo.calendarId].color,
+                  }),
+                }}
+                color={eventInfo?.color}
+                changedColor={changeColor}
               />
             </div>
           </div>
@@ -214,9 +310,13 @@ const Index = ({ children: ModalList }) => {
           <div>
             <FontAwesomeIcon icon={faBriefcase} />
 
-            <div onClick={e => showEventInfoListModal(e, ['바쁨', '한가함'])}>
+            <div
+              onClick={e =>
+                showEventInfoListModal(e, eventInfoList['busy'], 'busy')
+              }
+            >
               <h3 className={styles.list_modal}>
-                한가함
+                {eventInfoList['busy'][eventInfo.busy]}
                 <FontAwesomeIcon
                   className={styles.caret_down}
                   icon={faCaretDown}
@@ -231,14 +331,14 @@ const Index = ({ children: ModalList }) => {
               <h3
                 className={styles.list_modal}
                 onClick={e =>
-                  showEventInfoListModal(e, [
-                    '기본 공개 설정',
-                    '전체 공개',
-                    '비공개',
-                  ])
+                  showEventInfoListModal(
+                    e,
+                    eventInfoList['permission'],
+                    'permission',
+                  )
                 }
               >
-                기본 공개 설정
+                {eventInfoList['permission'][eventInfo.permission]}
                 <FontAwesomeIcon
                   className={styles.caret_down}
                   icon={faCaretDown}
@@ -261,14 +361,14 @@ const Index = ({ children: ModalList }) => {
             onClick={() => {
               axios
                 .post('event/createGroupEvent', {
-                  groupCalendarId: 1,
-                  eventName: '이벤트2',
-                  color: '#ff602b',
-                  priority: 1,
-                  memo: '메모입니다.',
-                  startTime: '2022-08-01T00:00:00',
-                  endTime: '2022-08-02T00:00:00',
-                  allDay: true,
+                  ...eventInfo,
+                  calendarId: calendars[eventInfo.calendarId].id,
+                  startTime: new Date(eventInfo.startTime).toUTCString(),
+                  endTime: new Date(eventInfo.endTime).toUTCString(),
+                  color:
+                    calendars[eventInfo.calendarId].color === eventInfo.color
+                      ? null
+                      : eventInfo.color,
                 })
                 .then(res => console.log(res))
                 .catch(e => console.log(e));

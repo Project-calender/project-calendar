@@ -12,8 +12,8 @@ const Index = () => {
   );
   const { style, colors } = modalData;
 
-  function onClickColor(e, calendarColor) {
-    setModalData(data => ({ ...data, calendarColor }));
+  function onClickColor(e, color) {
+    setModalData(data => ({ ...data, color }));
     hideModal(false);
     e.stopPropagation();
   }

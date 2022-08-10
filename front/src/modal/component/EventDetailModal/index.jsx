@@ -17,6 +17,7 @@ import {
 import Modal from '../../../components/common/Modal';
 import Tooltip from '../../../components/common/Tooltip';
 import Moment from '../../../utils/moment';
+import PropTypes from 'prop-types';
 
 import { useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
@@ -26,8 +27,12 @@ import EventAttendanceButtons from './EventAttendanceButtons';
 import { useContext } from 'react';
 import { EventDetailModalContext } from '../../../context/EventModalContext';
 
-const Index = () => {
-  const { modalData, hideModal } = useContext(EventDetailModalContext);
+const Index = ({ modalData, hideModal }) => {
+  const { modalData: contextModalData, hideModal: contextHideModal } =
+    useContext(EventDetailModalContext);
+  if (contextModalData) modalData = contextModalData;
+  if (contextHideModal) hideModal = contextHideModal;
+
   const { style, event } = modalData || {};
 
   const $modal = useRef();
@@ -134,7 +139,7 @@ const Index = () => {
           <div>
             <FontAwesomeIcon icon={faBriefcase} />
             <div>
-              <h3>한가함</h3>
+              <h3>{['바쁨', '한가함'][event.busy]}</h3>
             </div>
           </div>
         </div>
@@ -178,4 +183,8 @@ function initTimeDateTitle(event) {
   return `${startDate.toNormalDateString()} ⋅ ${startDate.toTimeString()} ~ ${endDate.toTimeString()}`;
 }
 
+Index.propTypes = {
+  modalData: PropTypes.object,
+  hideModal: PropTypes.func,
+};
 export default Index;
