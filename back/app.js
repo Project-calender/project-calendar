@@ -53,6 +53,16 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, { explorer: true }) //검색 허용가능
 );
+
+const { restartAll } = require("./realTimeAlerts");
+restartAll()
+  .then(() => {
+    console.log("restart All alerts completely!");
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
 app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);

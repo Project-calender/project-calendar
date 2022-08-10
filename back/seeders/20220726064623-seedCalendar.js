@@ -10,16 +10,13 @@ module.exports = {
         id: i + 1,
         name: `calendar no.${i + 1}`,
         color: "#" + Math.round(Math.random() * 0xffffff).toString(16),
-        createdAt: new Date(),
-        updatedAt: new Date(),
         OwnerId: 1,
       };
       dummyCalendars.push(calendar);
 
       var Owner = {
         authority: 3,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+
         UserId: 1,
         CalendarId: i + 1,
       };

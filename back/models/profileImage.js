@@ -15,6 +15,7 @@ module.exports = class ProfileImage extends Model {
         tableName: "ProfileImages",
         paranoid: true,
         charset: "utf8",
+        timestamps: false,
         sequelize,
       }
     );

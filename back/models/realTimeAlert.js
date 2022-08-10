@@ -13,6 +13,10 @@ module.exports = class RealTimeAlert extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
+        CalendarId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
         content: {
           type: DataTypes.STRING(200),
           allowNull: false,

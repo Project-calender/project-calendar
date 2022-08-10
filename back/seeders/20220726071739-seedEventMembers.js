@@ -9,8 +9,6 @@ module.exports = {
       for (var j = 0; j < 20; j++) {
         var calendarMember = {
           state: i === 0 ? 1 : dummyStates[Math.floor(Math.random() * 12)],
-          createdAt: new Date(),
-          updatedAt: new Date(),
           UserId: i + 1,
           EventId: j + 1,
         };
