@@ -51,10 +51,20 @@ export const getAllCalendarAndEvent = createAsyncThunk(
 export const createEvent = createAsyncThunk(
   EVENT_URL.CREATE_GROUP_EVENT,
   async eventInfo => {
-    const { data } = await axios.post(EVENT_URL.CREATE_GROUP_EVENT, {
+    const url =
+      eventInfo.id > 0
+        ? EVENT_URL.CREATE_GROUP_EVENT
+        : EVENT_URL.CREATE_PRIVATE_EVENT;
+    const { data } = await axios.post(url, {
       ...eventInfo,
     });
-    return data;
+
+    if (eventInfo.calendarId > 0) return data;
+    return {
+      ...data,
+      id: -data.id,
+      PrivateCalendarId: -data.PrivateCalendarId,
+    };
   },
 );
 
