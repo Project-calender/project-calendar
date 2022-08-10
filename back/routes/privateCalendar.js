@@ -18,7 +18,7 @@ router.post("/editPrivateCalendar", authJWT, async (req, res, next) => {
       });
     }
     if (req.myId != changeCalendar.UserId) {
-      return res.status(400).send({
+      return res.status(402).send({
         message: "수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다",
       });
     }

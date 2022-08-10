@@ -11,6 +11,8 @@ info:
 tags:
   - name: user
     description: API about user
+  - name: privateCalendar
+    description: API about privateCalendar
   - name: privateEvent
     description: API about privateEvent
   - name: calendar
@@ -19,12 +21,76 @@ tags:
     description: API about event
   - name: alert
     description: API about alert
-  - name: privateCalendar
-    description: API about privateCalendar
 
 paths:
   $ref: "./userAPI.yaml"
 
+returnCalendar:
+  description: 성공
+  schema:
+    properties:
+      id:
+        type: string
+        example: true
+      name:
+        type: string
+        example: true
+      color:
+        type: string
+        example: true
+      OwnerId:
+        type: string
+        example: true
+returnEvent:
+  description: 성공
+  schema:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      busy:
+        type: integer
+      permission:
+        type: integer
+      memo:
+        type: string
+      startTime:
+        type: string
+      endTime:
+        type: string
+      allDay:
+        type: boolean
+        example: true
+      EventHostId:
+        type: integer
+      CalendarId:
+        type: integer
+returnPrivateEvent:
+  description: 성공
+  schema:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      busy:
+        type: integer
+      memo:
+        type: string
+      startTime:
+        type: string
+      endTime:
+        type: string
+      groupEventId:
+        type: integer
+      state:
+        type: integer
+      allDay:
+        type: boolean
+        example: true
+      privateCalendarId:
+        type: integer
 success:
   description: 성공
   schema:

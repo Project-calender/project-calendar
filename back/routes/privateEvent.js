@@ -22,7 +22,6 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
           name: req.body.eventName,
           color: req.body.color,
           busy: req.body.busy,
-          permission: req.body.permission,
           memo: req.body.memo,
           allDay: req.body.allDay,
           startTime: req.body.startTime,
@@ -31,7 +30,7 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
         { transaction: t }
       );
 
-      return res.status(200).json(privateEvent);
+      return res.status(200).send(privateEvent);
     });
   } catch (error) {
     console.error(error);
@@ -48,7 +47,7 @@ router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
 
     if (!myEvent) {
       res
-        .status(401)
+        .status(400)
         .json({ message: "수정할 개인이벤트의 조회 결과가 없습니다" });
     }
 
@@ -81,6 +80,7 @@ router.post("/deletePrivateEvent", authJWT, async (req, res, next) => {
     await sequelize.transaction(async (t) => {
       await PrivateEvent.destroy({
         where: { id: req.body.eventId },
+        transaction: t,
         force: true,
       });
     });
@@ -92,6 +92,4 @@ router.post("/deletePrivateEvent", authJWT, async (req, res, next) => {
   }
 });
 
-// 그룹이벤트를 개인이벤트에서만 수정하는 기능추가
-// 연도에서 날짜로 이벤트 가져오기
 module.exports = router;
