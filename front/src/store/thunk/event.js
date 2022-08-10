@@ -47,3 +47,24 @@ export const getAllCalendarAndEvent = createAsyncThunk(
     return { calendars, events };
   },
 );
+
+export const createEvent = createAsyncThunk(
+  EVENT_URL.CREATE_GROUP_EVENT,
+  async eventInfo => {
+    const { data } = await axios.post(EVENT_URL.CREATE_GROUP_EVENT, {
+      ...eventInfo,
+    });
+    return data;
+  },
+);
+
+export const updateEventInviteState = createAsyncThunk(
+  EVENT_URL.UPDATE_EVENT_INVITE_STATE,
+  async ({ event, state }) => {
+    await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
+      invitedEventId: -event.id,
+      state,
+    });
+    return { event, state };
+  },
+);

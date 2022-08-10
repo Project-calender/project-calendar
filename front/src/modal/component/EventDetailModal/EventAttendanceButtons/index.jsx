@@ -1,11 +1,9 @@
 import React, { useRef } from 'react';
-import axios from '../../../../utils/token';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
-import { EVENT_URL } from '../../../../constants/api';
 import { useDispatch } from 'react-redux';
-import { updateEvent } from '../../../../store/events';
+import { updateEventInviteState } from '../../../../store/thunk/event';
 
 const Index = ({ event, hideModal }) => {
   const $groupButton = useRef();
@@ -26,13 +24,7 @@ const Index = ({ event, hideModal }) => {
     [...e.currentTarget.children].forEach($button => {
       $button.classList.toggle(styles.button_active, $button.value === state);
     });
-
-    const res = await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
-      invitedEventId: -event.id,
-      state,
-    });
-    console.log(res);
-    dispatch(updateEvent({ ...event, state }));
+    dispatch(updateEventInviteState({ event, state }));
     hideModal();
   }
 

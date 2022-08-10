@@ -18,7 +18,6 @@ import {
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 
-import axios from '../../../utils/token';
 import Moment from '../../../utils/moment';
 import Input from '../../../components/common/Input';
 import CheckBox from '../../../components/common/CheckBox';
@@ -41,6 +40,7 @@ import {
 } from '../../../store/events';
 import { useCallback } from 'react';
 import { checkedCalendarSelector } from '../../../store/selectors/user';
+import { createEvent } from '../../../store/thunk/event';
 
 const Index = ({ children: ModalList }) => {
   const dispatch = useDispatch();
@@ -158,6 +158,21 @@ const Index = ({ children: ModalList }) => {
     e.stopPropagation();
   }
 
+  function saveEvent() {
+    dispatch(
+      createEvent({
+        ...eventInfo,
+        calendarId: calendars[eventInfo.calendarId].id,
+        startTime: new Date(eventInfo.startTime).toUTCString(),
+        endTime: new Date(eventInfo.endTime).toUTCString(),
+        color:
+          calendars[eventInfo.calendarId].color === eventInfo.color
+            ? null
+            : eventInfo.color,
+      }),
+    );
+    initCreateEventModal();
+  }
   return (
     <Modal
       hideModal={initCreateEventModal}
@@ -371,25 +386,7 @@ const Index = ({ children: ModalList }) => {
         <div className={styles.modal_line} />
         <div className={styles.modal_footer}>
           <button>옵션 더보기</button>
-          <button
-            onClick={() => {
-              axios
-                .post('event/createGroupEvent', {
-                  ...eventInfo,
-                  calendarId: calendars[eventInfo.calendarId].id,
-                  startTime: new Date(eventInfo.startTime).toUTCString(),
-                  endTime: new Date(eventInfo.endTime).toUTCString(),
-                  color:
-                    calendars[eventInfo.calendarId].color === eventInfo.color
-                      ? null
-                      : eventInfo.color,
-                })
-                .then(res => console.log(res))
-                .catch(e => console.log(e));
-            }}
-          >
-            저장
-          </button>
+          <button onClick={saveEvent}>저장</button>
         </div>
       </div>
     </Modal>
