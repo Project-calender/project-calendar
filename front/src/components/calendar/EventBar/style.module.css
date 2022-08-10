@@ -1,19 +1,23 @@
 
 .event_container { display: flex; align-items: flex-start; height: 1.35rem; max-height: 28px; margin-bottom: 4px; position: relative; } 
-.event_container:hover > * { filter: brightness(0.9); } 
+.event_container:hover .event_bar_main { filter: brightness(0.9); } 
+.event_container:hover .event_bar_calendar { filter: brightness(0.9); } 
+.event_container:hover .event_left { filter: brightness(0.9); } 
+.event_container:hover .event_right { filter: brightness(0.9); } 
 
+.event_bar { width: 100%; height: 100%; }
 .event_bar_calendar { position: absolute; flex-shrink: 0; z-index: 4; width: 4px !important; height: 100%; border-top-left-radius: 3px; border-bottom-left-radius: 3px; } 
-.event_bar { position: relative;  width: 100%; height: 100%; display: flex; padding-left: 8px; border-radius: 3px; align-items: center; cursor: pointer; z-index: 3; word-break: break-all; } 
-.event_bar > em { width: 90%; font-size: 0.75rem; vertical-align: middle; text-align: left; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
+.event_bar_main { position: relative;  width: 100%; height: 100%; display: flex;  border-radius: 3px; align-items: center; cursor: pointer; z-index: 3; word-break: break-all; } 
+.event_bar_main > em { width: 90%; font-size: 0.75rem; padding-left: 8px; vertical-align: middle; text-align: left; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
 .refuse_text { text-decoration: line-through; } 
 
 .none_left_border { border-top-left-radius : 0px; border-bottom-left-radius : 0px; } 
 .none_right_border { border-top-right-radius : 0px; border-bottom-right-radius : 0px; } 
 
 .event_left { position: relative; border: 11px solid transparent; border-left: 0px; border-right: 9px solid red; left: 0px; z-index: 5; } 
-.event_right { position: absolute; right: -6px !important; top: 0px; border: 11px solid transparent; border-right: 0px; border-left: 9px solid red; right: -5px; z-index: 5; } 
-.event_right_line { border-left-color: white !important; right: -5.5px !important; } 
-.event_right_temp { right: -6px !important; } 
+.event_right { position: absolute; right: -11px !important; top: 0px; border: 11px solid transparent; border-right: 0px; border-left: 9px solid red; right: -5px; z-index: 5; } 
+.event_right_line { border-left-color: white !important; right: -10.5px !important; } 
+.event_right_temp { right: -11px !important; } 
 
 .empty_event_bar { height: 1.35rem; max-height: 28px; margin-bottom: 4px; position: relative; width: 1px; } 
 
@@ -26,6 +30,11 @@
 
 .time_event_calendar {  margin: 0px 5px 0px 10px; border-radius: 100%; width: 8px; height: 8px; flex-shrink: 0; flex-wrap: nowrap;} 
 .time_event_title {width: 100%; overflow: hidden; }
+
+.event_bar_active { z-index: 20; } 
+.event_bar_active .event_bar { 
+   box-shadow: 0px 2px 15px -3px rgb(0, 0, 0, 0.9); 
+ } 
 
 
 @media (max-height: 500px){

@@ -15,7 +15,7 @@ import {
 } from '../../../context/EventModalContext';
 import { CALENDAR_COLOR } from '../../../styles/color';
 import { useRef } from 'react';
-import { addCalendar } from '../../../store/thunk/calendar';
+import { createCalendar } from '../../../store/thunk/calendar';
 
 const Index = ({ children: ModalList }) => {
   const { hideModal, modalData } = useContext(CreateCalendarModalContext);
@@ -34,7 +34,7 @@ const Index = ({ children: ModalList }) => {
     }
 
     dispatch(
-      addCalendar({
+      createCalendar({
         calendarName: $calendarName.current.value,
         calendarColor: color,
       }),

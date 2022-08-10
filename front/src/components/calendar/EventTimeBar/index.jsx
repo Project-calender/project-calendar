@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Moment from '../../../utils/moment';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
+import { EventDetailModalContext } from '../../../context/EventModalContext';
 
 const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
   const eventBarStyle = {
@@ -10,10 +11,16 @@ const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
       border: `1px solid ${color}`,
     },
   };
+  const { modalData: eventDetailModalData } = useContext(
+    EventDetailModalContext,
+  );
+  const isSelected = eventDetailModalData.event?.id === event?.id;
 
   return (
     <div
-      className={`${styles.time_event} event_bar_div`}
+      className={`${styles.time_event} ${
+        isSelected ? styles.event_bar_active : ''
+      }`}
       onClick={clickEventBar}
       name="event_bar"
     >

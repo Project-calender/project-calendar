@@ -24,15 +24,8 @@ import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { useEffect } from 'react';
 import EventMemberList from './EventMemberList';
 import EventAttendanceButtons from './EventAttendanceButtons';
-import { useContext } from 'react';
-import { EventDetailModalContext } from '../../../context/EventModalContext';
 
 const Index = ({ modalData, hideModal }) => {
-  const { modalData: contextModalData, hideModal: contextHideModal } =
-    useContext(EventDetailModalContext);
-  if (contextModalData) modalData = contextModalData;
-  if (contextHideModal) hideModal = contextHideModal;
-
   const { style, event } = modalData || {};
 
   const $modal = useRef();
@@ -62,7 +55,7 @@ const Index = ({ modalData, hideModal }) => {
       style={{
         ...style,
         ...position,
-        boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)',
+        boxShadow: '7px 15px 25px 8px rgb(0, 0, 0, 0.3)',
         zIndex: 501,
       }}
       isCloseButtom
@@ -87,7 +80,7 @@ const Index = ({ modalData, hideModal }) => {
           <div>
             <div
               className={styles.event_color}
-              style={{ background: event.color }}
+              style={{ background: event.color || calendar.color }}
             />
             <div>
               <h1>{event.name || '(제목 없음)'}</h1>

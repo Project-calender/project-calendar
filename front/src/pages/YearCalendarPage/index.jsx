@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import styles from './style.module.css';
 import MonthCalendar from '../../components/calendar/year/MonthCalendar';
 import EventListModalLayout from '../../modal/layout/EventListModalLayout';
-import EventDetailMaodalLayout from '../../modal/layout/EventDetailMaodalLayout';
+import EventDetailModalLayout from '../../modal/layout/EventDetailModalLayout';
 
 import { selectedDateSelector } from '../../store/selectors/date';
 
@@ -12,7 +12,7 @@ const Index = () => {
 
   const months = [...Array(12)].map((_, i) => i + 1);
   return (
-    <EventDetailMaodalLayout>
+    <EventDetailModalLayout>
       <EventListModalLayout>
         <div className={styles.year_calendar}>
           {months.map(month => (
@@ -20,7 +20,7 @@ const Index = () => {
           ))}
         </div>
       </EventListModalLayout>
-    </EventDetailMaodalLayout>
+    </EventDetailModalLayout>
   );
 };
 

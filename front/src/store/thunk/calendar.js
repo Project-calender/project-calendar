@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { CALENDAR_URL } from '../../constants/api';
 import axios from '../../utils/token';
 
-export const addCalendar = createAsyncThunk(
+export const createCalendar = createAsyncThunk(
   CALENDAR_URL.CREATE_CALENDAR,
   async ({ calendarName, calendarColor }) => {
     const { data } = await axios.post(CALENDAR_URL.CREATE_CALENDAR, {

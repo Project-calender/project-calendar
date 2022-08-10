@@ -18,9 +18,11 @@ const Index = ({
   right = false,
   handleEventDetailMadal = () => {},
 }) => {
-  const { setModalData: setEventDetailModalData } = useContext(
-    EventDetailModalContext,
-  );
+  const {
+    setModalData: setEventDetailModalData,
+    modalData: eventDetailModalData,
+  } = useContext(EventDetailModalContext);
+
   const calendars = useSelector(selectAllCalendar);
   const checkedCalendar = useSelector(checkedCalendarSelector);
   const baseCalendar =
@@ -32,7 +34,7 @@ const Index = ({
   const eventBarColor = event?.color || eventBar?.eventColor || calendarColor;
   const eventBarStyle = {
     container: {
-      width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 5px)`,
+      width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 8px)`,
     },
     calendar: {
       background: calendarColor,
@@ -71,11 +73,11 @@ const Index = ({
       },
     }));
   }
-
   if (!eventBar || !eventBar.scale) {
     return <div className={styles.empty_event_bar} />;
   }
 
+  const isSelected = eventDetailModalData.event?.id === event?.id;
   if (
     event &&
     !event?.allDay &&
@@ -92,31 +94,32 @@ const Index = ({
 
   return (
     <div
-      className={`${styles.event_container} event_bar_div`}
+      className={`${styles.event_container} ${
+        isSelected ? styles.event_bar_active : ''
+      }`}
       style={eventBarStyle.container}
       onClick={clickEventBar}
     >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
-      {calendarColor && (
+      <div className={`${styles.event_bar}`}>
         <div
           className={`${styles.event_bar_calendar} ${
             left ? styles.none_left_border : ''
           }`}
           style={eventBarStyle.calendar}
         />
-      )}
-
-      <div
-        className={`${styles.event_bar} ${
-          event?.state === 2 ? styles.event_bar_slash : ''
-        } ${right ? styles.none_right_border : ''}`}
-        style={eventBarStyle.main}
-        name="event_bar"
-      >
-        <em className={`${event?.state === 3 ? styles.refuse_text : ''}`}>
-          {event?.name || eventBar.eventName || '(제목 없음)'}
-        </em>
+        <div
+          className={`${styles.event_bar_main} ${
+            event?.state === 2 ? styles.event_bar_slash : ''
+          } ${right ? styles.none_right_border : ''}`}
+          style={eventBarStyle.main}
+          name="event_bar"
+        >
+          <em className={`${event?.state === 3 ? styles.refuse_text : ''}`}>
+            {event?.name || eventBar.eventName || '(제목 없음)'}
+          </em>
+        </div>
       </div>
 
       {right && (

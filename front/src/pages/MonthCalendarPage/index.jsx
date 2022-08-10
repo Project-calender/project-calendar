@@ -6,7 +6,7 @@ import styles from './style.module.css';
 import WeekDayHeader from '../../components/calendar/month/WeekDayHeader';
 import CalendarBody from '../../components/calendar/month/CalendarBody';
 import EventListModalLayout from '../../modal/layout/EventListModalLayout';
-import EventDetailMaodalLayout from '../../modal/layout/EventDetailMaodalLayout';
+import EventDetailModalLayout from '../../modal/layout/EventDetailModalLayout';
 import CreateEventMaodalLayout from '../../modal/layout/CreateEventModalLayout';
 
 import { EventBarContext } from '../../context/EventBarContext';
@@ -50,7 +50,7 @@ const Index = () => {
     <div className={styles.calendar} onWheel={changeMonth}>
       <EventBarContext.Provider value={dragContextData}>
         <CreateEventMaodalLayout>
-          <EventDetailMaodalLayout>
+          <EventDetailModalLayout>
             <EventListModalLayout>
               <table
                 className={styles.calendar_table}
@@ -66,7 +66,7 @@ const Index = () => {
                 </tbody>
               </table>
             </EventListModalLayout>
-          </EventDetailMaodalLayout>
+          </EventDetailModalLayout>
         </CreateEventMaodalLayout>
       </EventBarContext.Provider>
     </div>
