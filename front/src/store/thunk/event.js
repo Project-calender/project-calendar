@@ -62,7 +62,7 @@ export const updateEventInviteState = createAsyncThunk(
   EVENT_URL.UPDATE_EVENT_INVITE_STATE,
   async ({ event, state }) => {
     await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
-      invitedEventId: -event.id,
+      eventId: -event.id,
       state,
     });
     return { event, state };

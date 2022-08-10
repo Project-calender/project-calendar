@@ -9,14 +9,13 @@ export const createCalendar = createAsyncThunk(
       calendarName,
       calendarColor,
     });
-    const { id, name, color, OwnerId, authority = 3 } = data.newGroupCalendar;
-    return { id, name, color, OwnerId, authority };
+    return { ...data, authority: 3 };
   },
 );
 
 export const updateCalendar = createAsyncThunk(
   CALENDAR_URL.UPDATE_GROUP_CALENDAR,
-  async ({ calendarId, newCalendarName, newCalendarColor }) => {
+  async ({ calendarId, calendarName, calendarColor }) => {
     const url =
       calendarId > 0
         ? CALENDAR_URL.UPDATE_GROUP_CALENDAR
@@ -24,11 +23,11 @@ export const updateCalendar = createAsyncThunk(
 
     const { data } = await axios.post(url, {
       calendarId: Math.abs(calendarId),
-      newCalendarName,
-      newCalendarColor,
+      calendarName,
+      calendarColor,
     });
 
-    return data;
+    return { ...data, id: calendarId };
   },
 );
 

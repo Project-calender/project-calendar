@@ -19,8 +19,8 @@ const Index = () => {
     dispatch(
       updateCalendar({
         calendarId: calendar.id,
-        newCalendarName: calendar.name,
-        newCalendarColor: color,
+        calendarName: calendar.name,
+        calendarColor: color,
       }),
     );
     hideModal();
