@@ -9,8 +9,8 @@ const { Alert } = require("../models");
 const router = express.Router();
 const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
+const { deleteAlertsByCalendarId } = require("../realTimeAlerts");
 
-//캘린더 만들엇을때 checkedCalendar에 체크해주기
 router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
   try {
     await sequelize.transaction(async (t) => {
@@ -55,47 +55,45 @@ router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
 });
 
 router.post("/editGroupCalendar", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
   try {
     const changeCalendar = await Calendar.findOne({
       where: { id: req.body.calendarId },
     });
 
-    if (changeCalendar.OwnerId !== req.myId) {
-      await t.rollback();
-      return res
-        .status(400)
-        .send({ message: "캘린더의 오너만 캘린더를 수정할 수 있습니다!" });
-    }
-
-    await changeCalendar.update(
-      {
-        name: req.body.newCalendarName,
-        color: req.body.newCalendarColor,
-      },
-      {
-        transaction: t,
+    await sequelize.transaction(async (t) => {
+      if (changeCalendar.OwnerId !== req.myId) {
+        return res
+          .status(400)
+          .send({ message: "캘린더의 오너만 캘린더를 수정할 수 있습니다!" });
       }
-    );
 
-    const members = await changeCalendar.getCalendarMembers();
-    await Promise.all(
-      members.map((member) =>
-        Alert.create(
-          {
-            UserId: member.id,
-            type: "calenderChanged",
-            content: `${changeCalendar.name}캘린더가 수정되었습니다. 확인해주세요!`,
-          },
-          { transaction: t }
+      await changeCalendar.update(
+        {
+          name: req.body.newCalendarName,
+          color: req.body.newCalendarColor,
+        },
+        {
+          transaction: t,
+        }
+      );
+
+      const members = await changeCalendar.getCalendarMembers();
+      await Promise.all(
+        members.map((member) =>
+          Alert.create(
+            {
+              UserId: member.id,
+              type: "calenderChanged",
+              content: `${changeCalendar.name}캘린더가 수정되었습니다. 확인해주세요!`,
+            },
+            { transaction: t }
+          )
         )
-      )
-    );
-    await t.commit();
-    return res.status(200).send({ changeCalendar });
+      );
+      return res.status(200).send(changeCalendar);
+    });
   } catch (error) {
     console.error(error);
-    await t.rollback();
     next(error);
   }
 });
@@ -120,6 +118,9 @@ router.post("/deleteGroupCalendar", authJWT, async (req, res, next) => {
           "삭제하려는 유저가 캘린더의 주인이 아닙니다 본인의 캘린더인지 다시 확인해주세요",
       });
     }
+
+    await deleteAlertsByCalendarId(req.body.calendarId);
+
     await Calendar.destroy({
       where: {
         id: req.body.calendarId,
@@ -148,7 +149,7 @@ router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
         [Op.and]: {
           state: 0,
           CalendarGuestId: guest.id,
-          HostCalendarId: req.body.groupCalendarId,
+          HostCalendarId: req.body.calendarId,
         },
       },
     });
@@ -160,7 +161,7 @@ router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
 
     const alreadyCalendarMember = await CalendarMember.findOne({
       where: {
-        [Op.and]: { UserId: guest.id, CalendarId: req.body.groupCalendarId },
+        [Op.and]: { UserId: guest.id, CalendarId: req.body.calendarId },
       },
     });
     if (alreadyCalendarMember) {
@@ -172,13 +173,13 @@ router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
         {
           CalendarHostId: req.myId,
           CalendarGuestId: guest.id,
-          HostCalendarId: req.body.groupCalendarId,
+          HostCalendarId: req.body.calendarId,
         },
         { transaction: t }
       );
 
       const InviteCalendar = await Calendar.findOne({
-        where: { id: req.body.groupCalendarId },
+        where: { id: req.body.calendarId },
       });
 
       await Alert.create(
@@ -199,7 +200,6 @@ router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
 });
 
 router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
   try {
     const me = await User.findOne({ where: { id: req.myId } });
 
@@ -209,7 +209,6 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
       },
     });
     if (!groupCalendar) {
-      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 캘린더입니다!" });
     }
 
@@ -238,44 +237,44 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
       return res.status(400).send({ message: "존재하지 않는 초대장입니다!" });
     }
 
-    await Invite.destroy({
-      where: {
-        [Op.and]: {
-          CalendarGuestId: req.myId,
-          CalendarHostId: req.body.hostId,
-          HostCalendarId: req.body.hostCalendarId,
-        },
-      },
-      force: true,
-    });
-
-    await groupCalendar.addCalendarMembers(me, { transaction: t });
-
-    const members = await groupCalendar.getCalendarMembers();
-    await Promise.all(
-      members.map((member) =>
-        Alert.create(
-          {
-            UserId: member.id,
-            type: "calenderNewMember",
-            content: `${me.nickname}님이 ${groupCalendar.name}캘린더에 참여했어요!`,
+    await sequelize.transaction(async (t) => {
+      await Invite.destroy({
+        where: {
+          [Op.and]: {
+            CalendarGuestId: req.myId,
+            CalendarHostId: req.body.hostId,
+            HostCalendarId: req.body.hostCalendarId,
           },
-          { transaction: t }
+        },
+        transaction: t,
+        force: true,
+      });
+
+      await groupCalendar.addCalendarMembers(me, { transaction: t });
+
+      const members = await groupCalendar.getCalendarMembers();
+      await Promise.all(
+        members.map((member) =>
+          Alert.create(
+            {
+              UserId: member.id,
+              type: "calenderNewMember",
+              content: `${me.nickname}님이 ${groupCalendar.name}캘린더에 참여했어요!`,
+            },
+            { transaction: t }
+          )
         )
-      )
-    );
-    await t.commit();
+      );
+    });
 
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
-    await t.rollback();
     next(error);
   }
 });
 
 router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
   try {
     const me = await User.findOne({ where: { id: req.myId } });
 
@@ -285,7 +284,6 @@ router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
       },
     });
     if (!groupCalendar) {
-      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 캘린더입니다!" });
     }
 
@@ -314,44 +312,42 @@ router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
       return res.status(400).send({ message: "존재하지 않는 초대장입니다!" });
     }
 
-    await Invite.destroy({
-      where: {
-        [Op.and]: {
-          CalendarGuestId: req.myId,
-          CalendarHostId: req.body.hostId,
-          HostCalendarId: req.body.hostCalendarId,
+    await sequelize.transaction(async (t) => {
+      await Invite.destroy({
+        where: {
+          [Op.and]: {
+            CalendarGuestId: req.myId,
+            CalendarHostId: req.body.hostId,
+            HostCalendarId: req.body.hostCalendarId,
+          },
         },
-      },
-      force: true,
+        transaction: t,
+        force: true,
+      });
+
+      await Alert.create(
+        {
+          UserId: req.body.hostId,
+          type: "calendarInviteReject",
+          content: `${me.nickname}님이 ${groupCalendar.name} 캘린더의 초대를 거부하셨습니다.`,
+        },
+        { transaction: t }
+      );
     });
-
-    await Alert.create(
-      {
-        UserId: req.body.hostId,
-        type: "calendarInviteReject",
-        content: `${me.nickname}님이 ${groupCalendar.name} 캘린더의 초대를 거부하셨습니다.`,
-      },
-      { transaction: t }
-    );
-
-    await t.commit();
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
-    await t.rollback();
     next(error);
   }
 });
 
 router.post("/giveAuthority", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
   try {
     const groupCalendar = await Calendar.findOne({
-      where: { id: req.body.groupCalendarId },
+      where: { id: req.body.calendarId },
     });
 
     if (req.myId != groupCalendar.OwnerId) {
-      await t.rollback();
       return res
         .status(400)
         .send({ message: "권한 부여는 달력의 오너만 가능합니다!" });
@@ -361,49 +357,48 @@ router.post("/giveAuthority", authJWT, async (req, res, next) => {
       where: { email: req.body.memberEmail },
     });
     if (!member) {
-      await t.rollback();
       return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
     }
 
     const isGroupMember = await CalendarMember.findOne({
       where: {
-        [Op.and]: { UserId: member.id, CalendarId: req.body.groupCalendarId },
+        [Op.and]: { UserId: member.id, CalendarId: req.body.calendarId },
       },
     });
 
     if (!isGroupMember) {
-      await t.rollback();
       return res
         .status(400)
         .send({ message: "그룹 캘린더에 존재하지 초대되지 않은 유저입니다!" });
     }
 
     if (req.body.newAuthority > 2) {
-      await t.rollback();
       return res
         .status(400)
         .send({ message: "달력 오너보다 낮은 권한만 부여할 수 있습니다!" });
     }
-    await isGroupMember.update(
-      {
-        authority: req.body.newAuthority,
-      },
-      { transaction: t }
-    );
 
-    await Alert.create(
-      {
-        UserId: member.id,
-        type: "authorityChange",
-        content: `유저님의 ${groupCalendar.name}캘린더 권한이 변경되었습니다!`,
-      },
-      { transaction: t }
-    );
-    await t.commit();
+    await sequelize.transaction(async (t) => {
+      await isGroupMember.update(
+        {
+          authority: req.body.newAuthority,
+        },
+        { transaction: t }
+      );
+
+      await Alert.create(
+        {
+          UserId: member.id,
+          type: "authorityChange",
+          content: `유저님의 ${groupCalendar.name}캘린더 권한이 변경되었습니다!`,
+        },
+        { transaction: t }
+      );
+    });
+
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
-    await t.rollback();
     next(error);
   }
 });

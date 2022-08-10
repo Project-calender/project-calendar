@@ -31,24 +31,22 @@ router.post("/getAlerts", authJWT, async (req, res, next) => {
 });
 
 router.post("/read", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
   try {
     const alert = await Alert.find({
       where: { id: req.body.alertId },
     });
 
-    await alert.update(
-      {
-        checked: true,
-      },
-      { transaction: t }
-    );
-
-    await t.commit();
+    await sequelize.transaction(async (t) => {
+      await alert.update(
+        {
+          checked: true,
+        },
+        { transaction: t }
+      );
+    });
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
-    await t.rollback();
     next(error);
   }
 });

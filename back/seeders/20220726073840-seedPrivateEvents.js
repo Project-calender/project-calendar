@@ -23,8 +23,6 @@ module.exports = {
         startTime: startTime,
         endTime: endDate,
         allDay: allDays[Math.floor(Math.random() * 6)],
-        createdAt: new Date(),
-        updatedAt: new Date(),
         PrivateCalendarId: 1,
       };
       dummyPrivateEvents.push(privateEvent);

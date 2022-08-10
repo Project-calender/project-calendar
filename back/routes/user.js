@@ -58,8 +58,14 @@ router.post("/checkedCalendar", authJWT, async (req, res, next) => {
     });
 
     checkedList = req.body.checkedList.join(",");
-    await me.update({
-      checkedCalendar: checkedList,
+
+    await sequelize.transaction(async (t) => {
+      await me.update(
+        {
+          checkedCalendar: checkedList,
+        },
+        { transaction: t }
+      );
     });
 
     return res.status(200).send({ success: true });
@@ -96,12 +102,12 @@ router.post("/signin", async (req, res, next) => {
       {
         model: ProfileImage,
         attributes: {
-          exclude: ["createdAt", "updatedAt", "deletedAt", "id", "UserId"],
+          exclude: ["deletedAt", "id", "UserId"],
         },
       },
     ],
     attributes: {
-      exclude: ["password", "createdAt", "updatedAt", "deletedAt"],
+      exclude: ["password", "deletedAt"],
     },
   });
   return res.status(200).send({
