@@ -14,41 +14,24 @@
           type: object
           properties:
             calendarId:
+              type: integer
+            calendarName:
               type: string
-              required: true
-              example: 2
-            newCalendarName:
+            calendarColor:
               type: string
-              example: dasda4124sd
-            newCalendarColor:
-              type: string
-              example: rqeeqww
     responses:
       200:
         description: 성공
         schema:
           properties:
-            exPrivateCalendar:
-              type: object
-              properties: 
-                id:
-                  type: number
-                  example: 2
-                name:
-                  type: string
-                  example: stri312ng
-                color:
-                  type: string
-                  example: stri312ng12
-                updatedAt:
-                  type: string
-                  example: 2022-08-05T08:10:47.000Z
-                createdAt:
-                  type: string
-                  example: 2022-08-05T08:11:52.687Z
-                OwnerId:
-                  type: number
-                  example: 21
+            id:
+              type: integer
+            name:
+              type: string
+            color:
+              type: string
+            UserId:
+              type: integer
       400:
         description: 개인 캘린더 조회 결과가 없는 경우
         schema:
@@ -57,7 +40,7 @@
             message:
               type: string
               example: 개인 캘린더 조회 결과가 없습니다 입력값을 다시 확인해주세요
-      401:
+      402:
         description: 수정 시도한 유저가 개인 캘린더 주인이 아닐 경우
         schema:
           type: object
@@ -67,4 +50,4 @@
               example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
       500:
         $ref: "./openapi.yaml#/serverError"
-
+$ref: "./privateEventAPI.yaml"

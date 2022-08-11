@@ -30,6 +30,8 @@ const Index = ({
   setUserClassAdd,
   userActive,
   setUserActive,
+  searchActive,
+  setSearchActive,
 }) => {
   let navigate = useNavigate();
   let [changeDate, setChangeDate] = useState(`일`);
@@ -101,9 +103,11 @@ const Index = ({
       setUserActive(false);
       setUserClassAdd(``);
     }
-    if (!dateList.current.contains(event.target)) {
-      setDateActive(false);
-      setActiveClass(``);
+    if (searchActive == false) {
+      if (!dateList.current.contains(event.target)) {
+        setDateActive(false);
+        setActiveClass(``);
+      }
     }
   }
 
@@ -143,107 +147,116 @@ const Index = ({
   return (
     <div>
       <div className={styles.right_menu}>
-        <div className={styles.menu_icon}>
-          <ul>
-            <li>
-              <FontAwesomeIcon icon={faSearch} className={styles.icon} />
-              <em>검색</em>
-            </li>
-            <li>
-              <FontAwesomeIcon
-                icon={faQuestionCircle}
-                className={styles.icon}
-              />
-              <em>지원</em>
-            </li>
-            <li>
-              <FontAwesomeIcon icon={faCog} className={styles.icon} />
-              <em>설정메뉴</em>
-            </li>
-          </ul>
-        </div>
-        <div className={`${styles.date_list} ${activeClass}`} ref={dateList}>
-          <div
-            className={styles.date_btt}
-            onClick={() => {
-              dateChange();
-            }}
-          >
-            <strong>{changeDate}</strong>
-            <FontAwesomeIcon icon={faCaretDown} className={styles.icon} />
-          </div>
-          <div className={styles.option_list}>
+        {searchActive == false ? (
+          <div className={styles.menu_icon}>
             <ul>
               <li
-                onClick={e => {
-                  navigate(CALENDAR_PATH.DAY);
-                  onDateChange(e);
+                onClick={() => {
+                  setSearchActive(true);
                 }}
               >
-                <strong>일</strong>
-                <em>D</em>
+                <FontAwesomeIcon icon={faSearch} className={styles.icon} />
+                <em>검색</em>
               </li>
-              <li
-                onClick={e => {
-                  navigate(`${CALENDAR_PATH.WEEK}`);
-                  onDateChange(e);
-                }}
-              >
-                <strong>주</strong>
-                <em>W</em>
+              <li>
+                <FontAwesomeIcon
+                  icon={faQuestionCircle}
+                  className={styles.icon}
+                />
+                <em>지원</em>
               </li>
-              <li
-                onClick={e => {
-                  navigate(CALENDAR_PATH.MONTH);
-                  onDateChange(e);
-                }}
-              >
-                <strong>월</strong>
-                <em>M</em>
-              </li>
-              <li
-                onClick={e => {
-                  navigate(CALENDAR_PATH.YEAR);
-                  onDateChange(e);
-                }}
-              >
-                <strong>연도</strong>
-                <em>Y</em>
-              </li>
-              <li
-                onClick={e => {
-                  navigate(CALENDAR_PATH.AGENDA);
-                  onDateChange(e);
-                }}
-              >
-                <strong>일정</strong>
-                <em>A</em>
-              </li>
-              <li
-                onClick={e => {
-                  navigate(CALENDAR_PATH.CUSTOMDAY);
-                  onDateChange(e);
-                }}
-              >
-                <strong>4일</strong>
-                <em>X</em>
+              <li>
+                <FontAwesomeIcon icon={faCog} className={styles.icon} />
+                <em>설정메뉴</em>
               </li>
             </ul>
-            <span className={styles.line}></span>
-            <div className={styles.option_check}>
+          </div>
+        ) : null}
+        {searchActive == false ? (
+          <div className={`${styles.date_list} ${activeClass}`} ref={dateList}>
+            <div
+              className={styles.date_btt}
+              onClick={() => {
+                dateChange();
+              }}
+            >
+              <strong>{changeDate}</strong>
+              <FontAwesomeIcon icon={faCaretDown} className={styles.icon} />
+            </div>
+            <div className={styles.option_list}>
               <ul>
-                <li>
-                  <FontAwesomeIcon icon={faCheck} className={styles.icon} />
-                  <em>주말 표시</em>
+                <li
+                  onClick={e => {
+                    navigate(CALENDAR_PATH.DAY);
+                    onDateChange(e);
+                  }}
+                >
+                  <strong>일</strong>
+                  <em>D</em>
                 </li>
-                <li>
-                  <FontAwesomeIcon icon={faCheck} className={styles.icon} />
-                  <em>거절한 일정 표시</em>
+                <li
+                  onClick={e => {
+                    navigate(`${CALENDAR_PATH.WEEK}`);
+                    onDateChange(e);
+                  }}
+                >
+                  <strong>주</strong>
+                  <em>W</em>
+                </li>
+                <li
+                  onClick={e => {
+                    navigate(CALENDAR_PATH.MONTH);
+                    onDateChange(e);
+                  }}
+                >
+                  <strong>월</strong>
+                  <em>M</em>
+                </li>
+                <li
+                  onClick={e => {
+                    navigate(CALENDAR_PATH.YEAR);
+                    onDateChange(e);
+                  }}
+                >
+                  <strong>연도</strong>
+                  <em>Y</em>
+                </li>
+                <li
+                  onClick={e => {
+                    navigate(CALENDAR_PATH.AGENDA);
+                    onDateChange(e);
+                  }}
+                >
+                  <strong>일정</strong>
+                  <em>A</em>
+                </li>
+                <li
+                  onClick={e => {
+                    navigate(CALENDAR_PATH.CUSTOMDAY);
+                    onDateChange(e);
+                  }}
+                >
+                  <strong>4일</strong>
+                  <em>X</em>
                 </li>
               </ul>
+              <span className={styles.line}></span>
+              <div className={styles.option_check}>
+                <ul>
+                  <li>
+                    <FontAwesomeIcon icon={faCheck} className={styles.icon} />
+                    <em>주말 표시</em>
+                  </li>
+                  <li>
+                    <FontAwesomeIcon icon={faCheck} className={styles.icon} />
+                    <em>거절한 일정 표시</em>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
+        ) : null}
+
         <div className={styles.more}>
           <Tooltip title="Google 앱">
             <FontAwesomeIcon icon={faList} className={styles.icon} />
@@ -336,6 +349,8 @@ Index.propTypes = {
   setUserClassAdd: PropTypes.func,
   userActive: PropTypes.bool,
   setUserActive: PropTypes.func,
+  searchActive: PropTypes.bool,
+  setSearchActive: PropTypes.func,
 };
 
 export default Index;

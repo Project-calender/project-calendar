@@ -11,7 +11,6 @@ module.exports = class Event extends Model {
         },
         color: {
           type: DataTypes.STRING(20),
-          allowNull: false,
         },
         busy: {
           type: DataTypes.INTEGER,
@@ -31,7 +30,7 @@ module.exports = class Event extends Model {
           type: DataTypes.DATE,
         },
         allDay: {
-          type: DataTypes.BOOLEAN,
+          type: DataTypes.INTEGER,
         },
       },
       {
@@ -40,6 +39,7 @@ module.exports = class Event extends Model {
         paranoid: true,
         charset: "utf8",
         collate: "utf8_general_ci",
+        timestamps: false,
         sequelize,
       }
     );

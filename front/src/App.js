@@ -10,6 +10,7 @@ import YearCalendarPage from './pages/YearCalendarPage';
 import MonthCalendarPage from './pages/MonthCalendarPage';
 import DayCalendarPage from './pages/DayCalendarPage';
 import AlertPage from './pages/AlertPage';
+import Search from './components/searchDetall';
 import { CALENDAR_PATH, USER_PATH } from './constants/path';
 
 function App() {
@@ -32,6 +33,10 @@ function App() {
           <Route
             path={CALENDAR_PATH.CUSTOMDAY}
             element={<div>4일</div>}
+          ></Route>
+          <Route
+            path={CALENDAR_PATH.SEARCH}
+            element={<Search></Search>}
           ></Route>
           <Route path={CALENDAR_PATH.ALERT} element={<AlertPage />}></Route>
         </Route>

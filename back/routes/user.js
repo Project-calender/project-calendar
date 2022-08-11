@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 const { createClient } = require("redis");
-
+const path = require("path");
 const router = express.Router();
 const refresh = require("../utils/refresh");
 const jwt = require("../utils/jwt-util");
@@ -58,8 +58,14 @@ router.post("/checkedCalendar", authJWT, async (req, res, next) => {
     });
 
     checkedList = req.body.checkedList.join(",");
-    await me.update({
-      checkedCalendar: checkedList,
+
+    await sequelize.transaction(async (t) => {
+      await me.update(
+        {
+          checkedCalendar: checkedList,
+        },
+        { transaction: t }
+      );
     });
 
     return res.status(200).send({ success: true });
@@ -96,12 +102,12 @@ router.post("/signin", async (req, res, next) => {
       {
         model: ProfileImage,
         attributes: {
-          exclude: ["createdAt", "updatedAt", "deletedAt", "id", "UserId"],
+          exclude: ["id", "UserId"],
         },
       },
     ],
     attributes: {
-      exclude: ["password", "createdAt", "updatedAt", "deletedAt"],
+      exclude: ["password"],
     },
   });
   return res.status(200).send({

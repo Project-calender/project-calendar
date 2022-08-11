@@ -16,6 +16,7 @@ module.exports = class EventMember extends Model {
         paranoid: true,
         charset: "utf8",
         collate: "utf8_general_ci",
+        timestamps: false,
         sequelize,
       }
     );
