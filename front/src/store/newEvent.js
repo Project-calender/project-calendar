@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { EVENT } from './events';
 
 const initialState = {
   bars: [],
@@ -11,7 +12,7 @@ const initialState = {
   endTime: 0,
   busy: 1,
   permission: 1,
-  allDay: true,
+  allDay: EVENT.allDay.true,
 };
 
 const newEvent = createSlice({

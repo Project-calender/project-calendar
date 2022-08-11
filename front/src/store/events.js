@@ -23,6 +23,16 @@ export const EVENT = {
     '맞춤...',
   ],
   permission: ['기본 공개 설정', '전체 공개', '비공개'],
+  state: {
+    default: 0,
+    accept: 1,
+    toBeDetermined: 2,
+    refuse: 3,
+  },
+  allDay: {
+    true: 1,
+    false: 0,
+  },
 };
 
 export const eventsAdapter = createEntityAdapter({

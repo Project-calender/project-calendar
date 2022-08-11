@@ -11,6 +11,7 @@ import {
 } from '../../../store/newEvent';
 import { createEventBar } from '../../../hooks/useCreateEventBar';
 import { selectedDateSelector } from '../../../store/selectors/date';
+import { EVENT } from '../../../store/events';
 
 const Index = ({ hideModal, modalData }) => {
   const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const Index = ({ hideModal, modalData }) => {
           bars: newEventBar,
           startTime: startDate.getTime(),
           endTime: endDate.getTime(),
-          allDay: 0,
+          allDay: EVENT.allDay.false,
         }),
       );
       hideModal();

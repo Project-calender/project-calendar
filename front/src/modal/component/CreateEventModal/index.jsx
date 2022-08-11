@@ -102,7 +102,7 @@ const Index = ({ children: ModalList }) => {
       updateNewEventBarProperties({
         startTime: startDate.getTime(),
         endTime: endDate.getTime(),
-        allDay: e.target.checked ? 1 : 0,
+        allDay: e.target.checked ? EVENT.allDay.true : EVENT.allDay.false,
       }),
     );
   }

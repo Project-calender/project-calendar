@@ -8,6 +8,7 @@ import EventTimeBar from '../EventTimeBar';
 import { useSelector } from 'react-redux';
 import { checkedCalendarSelector } from '../../../store/selectors/user';
 import { selectAllCalendar } from '../../../store/selectors/calendars';
+import { EVENT } from '../../../store/events';
 
 const Index = ({
   event = {},
@@ -41,11 +42,20 @@ const Index = ({
     },
     main: {
       background:
-        event?.state === 0 || event?.state === 3 ? 'white' : eventBarColor,
-      color: event?.state === 0 || event?.state === 3 ? eventBarColor : 'white',
+        event?.state === EVENT.state.default ||
+        event?.state === EVENT.state.refuse
+          ? 'white'
+          : eventBarColor,
+      color:
+        event?.state === EVENT.state.default ||
+        event?.state === EVENT.state.refuse
+          ? eventBarColor
+          : 'white',
       border: `1px solid ${eventBarColor}`,
       borderRightColor:
-        right && (event?.state === 0 || event?.state === 3)
+        right &&
+        (event?.state === EVENT.state.default ||
+          event?.state === EVENT.state.refuse)
           ? 'white'
           : eventBarColor,
     },
@@ -76,7 +86,11 @@ const Index = ({
     return <div className={styles.empty_event_bar} />;
   }
   const isSelected = eventDetailModalData.event?.id === event?.id;
-  if ((event.allDay === 0 || eventBar.allDay === 0) && eventBar.scale === 1)
+  if (
+    (event.allDay === EVENT.allDay.false ||
+      eventBar.allDay === EVENT.allDay.false) &&
+    eventBar.scale === 1
+  )
     return (
       <EventTimeBar
         event={event}
@@ -105,12 +119,18 @@ const Index = ({
         />
         <div
           className={`${styles.event_bar_main} ${
-            event?.state === 2 ? styles.event_bar_slash : ''
+            event?.state === EVENT.state.toBeDetermined
+              ? styles.event_bar_slash
+              : ''
           } ${right ? styles.none_right_border : ''}`}
           style={eventBarStyle.main}
           name="event_bar"
         >
-          <em className={`${event?.state === 3 ? styles.refuse_text : ''}`}>
+          <em
+            className={`${
+              event?.state === EVENT.state.refuse ? styles.refuse_text : ''
+            }`}
+          >
             {event?.name || eventBar.eventName || '(제목 없음)'}
           </em>
         </div>
@@ -119,7 +139,8 @@ const Index = ({
       {right && (
         <>
           <div className={styles.event_right} style={eventBarStyle.right} />
-          {(event?.state === 0 || event?.state === 3) && (
+          {(event?.state === EVENT.state.default ||
+            event?.state === EVENT.state.refuse) && (
             <>
               <div
                 className={`${styles.event_right} ${styles.event_right_temp}`}

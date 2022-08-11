@@ -3,11 +3,16 @@ import Moment from '../../../utils/moment';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { EventDetailModalContext } from '../../../context/EventModalContext';
+import { EVENT } from '../../../store/events';
 
 const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
   const eventBarStyle = {
     calendar: {
-      background: event?.state === 0 || event?.state === 3 ? 'white' : color,
+      background:
+        event?.state === EVENT.state.default ||
+        event?.state === EVENT.state.refuse
+          ? 'white'
+          : color,
       border: `1px solid ${color}`,
     },
   };
@@ -26,13 +31,15 @@ const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
     >
       <div
         className={`${styles.time_event_calendar} ${
-          event?.state === 2 ? styles.event_bar_slash : ''
+          event?.state === EVENT.state.toBeDetermined
+            ? styles.event_bar_slash
+            : ''
         }`}
         style={eventBarStyle.calendar}
       />
       <div
         className={`${styles.time_event_title} ${
-          event?.state === 3 ? styles.refuse_text : ''
+          event?.state === EVENT.state.refuse ? styles.refuse_text : ''
         }`}
       >
         <em>
