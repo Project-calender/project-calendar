@@ -1,7 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { eventsAdapter } from '../events';
 
-export const newEventBarsSelector = state => state.events.newEventBars;
 export const { selectById: selectEventById, selectAll: allEventSelector } =
   eventsAdapter.getSelectors(state => state.events);
 

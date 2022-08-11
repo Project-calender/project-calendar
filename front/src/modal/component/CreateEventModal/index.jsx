@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
@@ -22,7 +22,6 @@ import Moment from '../../../utils/moment';
 import Input from '../../../components/common/Input';
 import CheckBox from '../../../components/common/CheckBox';
 import Modal from '../../../components/common/Modal';
-import { EventBarContext } from '../../../context/EventBarContext';
 import {
   CreateEventModalContext,
   EventInfoListModalContext,
@@ -34,83 +33,29 @@ import { selectAllCalendar } from '../../../store/selectors/calendars';
 import EventColorOption from '../../../components/calendar/EventColorOption';
 import { EVENT_COLOR } from '../../../styles/color';
 import {
-  setNewEventBars,
-  updateNewEventBarProperty,
+  calculateCurrentTimeRange,
+  resetNewEventState,
   updateNewEventBarProperties,
-} from '../../../store/events';
+} from '../../../store/newEvent';
 import { useCallback } from 'react';
 import { checkedCalendarSelector } from '../../../store/selectors/user';
 import { createEvent } from '../../../store/thunk/event';
-import { newEventBarsSelector } from '../../../store/selectors/events';
+import { newEventSelector } from '../../../store/selectors/newEvent';
 
 const Index = ({ children: ModalList }) => {
   const dispatch = useDispatch();
-  const { selectedDateRange } = useContext(EventBarContext);
   const { hideModal: hideCreateEventModal, modalData: createEventModalData } =
     useContext(CreateEventModalContext);
   const {
     showModal: showEventInfoListModal,
     hideModal: hideEventInfoListModal,
   } = useContext(EventInfoListModalContext);
+  const newEvent = useSelector(newEventSelector);
 
-  function initCreateEventModal() {
-    dispatch(setNewEventBars([]));
-    hideCreateEventModal(true);
-  }
-
-  function handleEventTitle(e) {
-    setEventInfo(info => ({ ...info, eventName: e.target.value }));
-    dispatch(
-      updateNewEventBarProperty({ key: 'eventName', value: e.target.value }),
-    );
-  }
-
-  function handleEventMemo(e) {
-    setEventInfo(info => ({ ...info, memo: e.target.value }));
-  }
-
-  const { standardDateTime, endDateTime } = selectedDateRange;
-  const [startDate, endDate] = [standardDateTime, endDateTime]
-    .sort((a, b) => a - b)
-    .map(time => new Moment(time));
-
-  const calendars = useSelector(selectAllCalendar);
-  const checkedCalendar = useSelector(checkedCalendarSelector);
-  const newEventBars = useSelector(newEventBarsSelector);
-
-  let baseCalendarIndex = calendars.findIndex(calendar =>
-    checkedCalendar.includes(calendar.id),
+  const [startDate, endDate] = [newEvent.startTime, newEvent.endTime].map(
+    time => new Moment(time),
   );
-  if (baseCalendarIndex === -1) baseCalendarIndex = 0;
-
-  const [eventInfo, setEventInfo] = useState({
-    calendarId: baseCalendarIndex,
-    eventName: '',
-    color: calendars[baseCalendarIndex].color,
-    memo: '',
-    startTime: startDate.time,
-    endTime: endDate.time,
-    busy: 1,
-    permission: 1,
-    allDay: newEventBars[0].allDay === false ? false : true,
-  });
-
-  useEffect(() => {
-    dispatch(
-      updateNewEventBarProperties([
-        {
-          key: 'calendarColor',
-          value: eventInfo.color,
-        },
-        {
-          key: 'allDay',
-          value: eventInfo.allDay,
-        },
-      ]),
-    );
-  }, [dispatch, baseCalendarIndex, calendars]);
-
-  const eventInfoList = {
+  const EVENT = {
     busy: ['바쁨', '한가함'],
     repeat: [
       '반복 안함',
@@ -124,15 +69,56 @@ const Index = ({ children: ModalList }) => {
     permission: ['기본 공개 설정', '전체 공개', '비공개'],
   };
 
+  const calendars = useSelector(selectAllCalendar);
+  const checkedCalendar = useSelector(checkedCalendarSelector);
+  let baseCalendarIndex = calendars.findIndex(calendar =>
+    checkedCalendar.includes(calendar.id),
+  );
+  if (baseCalendarIndex === -1) baseCalendarIndex = 0;
+  useEffect(() => {
+    dispatch(
+      updateNewEventBarProperties({
+        calendarId: baseCalendarIndex,
+        calendarColor: calendars[baseCalendarIndex].color,
+      }),
+    );
+  }, [dispatch, calendars, baseCalendarIndex]);
+
   const changeColor = useCallback(
     color => {
-      setEventInfo(info => ({ ...info, color }));
-      dispatch(updateNewEventBarProperty({ key: 'eventColor', value: color }));
+      dispatch(updateNewEventBarProperties({ eventColor: color }));
     },
     [dispatch],
   );
 
-  const [EventColorModal, EventInfoListModal] = ModalList;
+  function initCreateEventModal() {
+    dispatch(resetNewEventState());
+    hideCreateEventModal(true);
+  }
+
+  function handleEventTitle(e) {
+    dispatch(updateNewEventBarProperties({ eventName: e.target.value }));
+  }
+
+  function handleEventMemo(e) {
+    dispatch(updateNewEventBarProperties({ memo: e.target.value }));
+  }
+
+  function handleAllDay(e) {
+    const [startDate, endDate] = calculateCurrentTimeRange(
+      newEvent.startTime,
+      newEvent.endTime,
+    );
+
+    dispatch(
+      updateNewEventBarProperties({
+        startTime: startDate.getTime(),
+        endTime: endDate.getTime(),
+        allDay: e.target.checked,
+      }),
+    );
+  }
+
   function onClickListModalItem(e) {
     const [name, value] = [
       e.target.getAttribute('name'),
@@ -141,25 +127,14 @@ const Index = ({ children: ModalList }) => {
 
     if (name === 'calendarId') {
       dispatch(
-        updateNewEventBarProperties([
-          {
-            key: 'calendarColor',
-            value: calendars[value].color,
-          },
-          {
-            key: 'eventColor',
-            value: null,
-          },
-        ]),
+        updateNewEventBarProperties({
+          calendarId: value,
+          calendarColor: calendars[value].color,
+          eventColor: null,
+        }),
       );
-
-      setEventInfo(info => ({
-        ...info,
-        [name]: value,
-        color: calendars[value].color,
-      }));
     } else {
-      setEventInfo(info => ({ ...info, [name]: value }));
+      dispatch(updateNewEventBarProperties({ [name]: value }));
     }
 
     hideEventInfoListModal();
@@ -169,18 +144,20 @@ const Index = ({ children: ModalList }) => {
   function saveEvent() {
     dispatch(
       createEvent({
-        ...eventInfo,
-        calendarId: calendars[eventInfo.calendarId].id,
-        startTime: new Date(eventInfo.startTime).toISOString(),
-        endTime: new Date(eventInfo.endTime).toISOString(),
+        ...newEvent,
+        calendarId: calendars[newEvent.calendarId].id,
+        startTime: new Date(newEvent.startTime).toISOString(),
+        endTime: new Date(newEvent.endTime).toISOString(),
         color:
-          calendars[eventInfo.calendarId].color === eventInfo.color
+          newEvent.calendarColor === newEvent.eventColor
             ? null
-            : eventInfo.color,
+            : newEvent.eventColor,
       }),
     );
     initCreateEventModal();
   }
+
+  const [EventColorModal, EventInfoListModal] = ModalList;
   return (
     <Modal
       hideModal={initCreateEventModal}
@@ -237,18 +214,7 @@ const Index = ({ children: ModalList }) => {
           <div>
             <div />
             <div>
-              <CheckBox
-                checked={eventInfo.allDay}
-                onChange={e => {
-                  setEventInfo(info => ({ ...info, allDay: e.target.checked }));
-                  dispatch(
-                    updateNewEventBarProperty({
-                      key: 'allDay',
-                      value: e.target.checked,
-                    }),
-                  );
-                }}
-              >
+              <CheckBox checked={newEvent.allDay} onChange={handleAllDay}>
                 <h3>종일</h3>
               </CheckBox>
             </div>
@@ -259,9 +225,7 @@ const Index = ({ children: ModalList }) => {
             <div>
               <h3
                 className={styles.list_modal}
-                onClick={e =>
-                  showEventInfoListModal(e, eventInfoList['repeat'], 'repeat')
-                }
+                onClick={e => showEventInfoListModal(e, EVENT.repeat, 'repeat')}
               >
                 반복 안함
                 <FontAwesomeIcon
@@ -329,7 +293,7 @@ const Index = ({ children: ModalList }) => {
                   )
                 }
               >
-                {calendars[eventInfo.calendarId].name}
+                {calendars[newEvent.calendarId].name}
                 <FontAwesomeIcon
                   className={styles.caret_down}
                   icon={faCaretDown}
@@ -339,12 +303,12 @@ const Index = ({ children: ModalList }) => {
                 colors={{
                   ...EVENT_COLOR,
                   ...(!Object.values(EVENT_COLOR).includes(
-                    calendars[eventInfo.calendarId].color,
+                    newEvent.calendarColor,
                   ) && {
-                    '캘린더 색상': calendars[eventInfo.calendarId].color,
+                    '캘린더 색상': newEvent.calendarColor,
                   }),
                 }}
-                color={eventInfo?.color}
+                color={newEvent.eventColor || newEvent.calendarColor}
                 changedColor={changeColor}
               />
             </div>
@@ -354,12 +318,10 @@ const Index = ({ children: ModalList }) => {
             <FontAwesomeIcon icon={faBriefcase} />
 
             <div
-              onClick={e =>
-                showEventInfoListModal(e, eventInfoList['busy'], 'busy')
-              }
+              onClick={e => showEventInfoListModal(e, EVENT['busy'], 'busy')}
             >
               <h3 className={styles.list_modal}>
-                {eventInfoList['busy'][eventInfo.busy]}
+                {EVENT.busy[newEvent.busy]}
                 <FontAwesomeIcon
                   className={styles.caret_down}
                   icon={faCaretDown}
@@ -374,14 +336,10 @@ const Index = ({ children: ModalList }) => {
               <h3
                 className={styles.list_modal}
                 onClick={e =>
-                  showEventInfoListModal(
-                    e,
-                    eventInfoList['permission'],
-                    'permission',
-                  )
+                  showEventInfoListModal(e, EVENT.permission, 'permission')
                 }
               >
-                {eventInfoList['permission'][eventInfo.permission]}
+                {EVENT.permission[newEvent.permission]}
                 <FontAwesomeIcon
                   className={styles.caret_down}
                   icon={faCaretDown}

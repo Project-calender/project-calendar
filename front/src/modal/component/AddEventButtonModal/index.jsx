@@ -3,9 +3,12 @@ import styles from './style.module.css';
 import ListModal from '../ListModal';
 import PropTypes from 'prop-types';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { setNewEventBars } from '../../../store/events';
 import Moment from '../../../utils/moment';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  calculateCurrentTimeRange,
+  updateNewEventBarProperties,
+} from '../../../store/newEvent';
 import { createEventBar } from '../../../hooks/useCreateEventBar';
 import { selectedDateSelector } from '../../../store/selectors/date';
 
@@ -28,10 +31,18 @@ const Index = ({ hideModal, modalData }) => {
       endDateTime: newEventTime,
     });
     if (e.target.innerText === '이벤트') {
+      const [startDate, endDate] = calculateCurrentTimeRange(
+        new Moment(new Date()).resetTime().time,
+        new Moment(new Date()).resetTime().time,
+      );
+
       dispatch(
-        setNewEventBars(
-          newEventBar.map(event => ({ ...event, allDay: false })),
-        ),
+        updateNewEventBarProperties({
+          bars: newEventBar.map(event => ({ ...event, allDay: false })),
+          startTime: startDate.getTime(),
+          endTime: endDate.getTime(),
+          allDay: false,
+        }),
       );
       hideModal();
     }

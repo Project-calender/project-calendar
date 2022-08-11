@@ -17,7 +17,8 @@ import useAddMonthByWheel from '../../hooks/useAddMonthByWheel';
 
 import { getAllCalendarAndEvent } from '../../store/thunk/event';
 import { useEffect } from 'react';
-import { setNewEventBars } from '../../store/events';
+import { updateNewEventBarProperties } from '../../store/newEvent';
+import Moment from '../../utils/moment';
 
 const Index = () => {
   const dispatch = useDispatch();
@@ -33,8 +34,21 @@ const Index = () => {
   const { newEventBars } = useCreateEventBar(selectedDateRange);
   const month = useSelector(monthSelector);
   useEffect(() => {
-    if (newEventBars.length) dispatch(setNewEventBars(newEventBars));
-  }, [dispatch, newEventBars]);
+    if (newEventBars.length) {
+      const { standardDateTime, endDateTime } = selectedDateRange;
+      const [startDate, endDate] = [standardDateTime, endDateTime]
+        .sort((a, b) => a - b)
+        .map(time => new Moment(time));
+
+      dispatch(
+        updateNewEventBarProperties({
+          bars: newEventBars,
+          startTime: startDate.time,
+          endTime: endDate.time,
+        }),
+      );
+    }
+  }, [dispatch, newEventBars, selectedDateRange]);
 
   useEffect(() => {
     dispatch(

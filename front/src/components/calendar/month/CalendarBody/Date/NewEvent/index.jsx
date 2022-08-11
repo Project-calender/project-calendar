@@ -5,13 +5,10 @@ import { EventBarContext } from '../../../../../../context/EventBarContext';
 import EventBar from '../../../../EventBar';
 import { CreateEventModalContext } from '../../../../../../context/EventModalContext';
 import { useSelector } from 'react-redux';
-import { newEventBarsSelector } from '../../../../../../store/selectors/events';
+import { newEventSelector } from '../../../../../../store/selectors/newEvent';
 
-const Index = ({ dateTime }) => {
+const Index = ({ eventBar }) => {
   const { isMouseDown } = useContext(EventBarContext);
-  const newEventBars = useSelector(newEventBarsSelector);
-  const eventBar = newEventBars?.find(({ time }) => dateTime === time);
-
   const { showModal: showCreateEventModal } = useContext(
     CreateEventModalContext,
   );
@@ -28,21 +25,16 @@ const Index = ({ dateTime }) => {
         left: minLeft > left ? minLeft - left : left - 480,
       },
     });
-  }, [newEventBars, eventBar, isMouseDown, showCreateEventModal]);
+  }, [eventBar, isMouseDown, showCreateEventModal]);
 
-  if (!eventBar) return;
-  const date = new Date(dateTime);
-  date.setHours(new Date().getHours());
-  date.setMinutes(Math.floor(new Date().getMinutes() / 15) * 15);
-
+  const newEvent = useSelector(newEventSelector);
   return (
     <div className={styles.new_event_bar} ref={$eventBarParent}>
       <EventBar
         eventBar={{
-          startTime: date.getTime(),
-          endTime: date.getTime(),
           state: 1,
           ...eventBar,
+          ...newEvent,
         }}
       />
     </div>
@@ -50,7 +42,7 @@ const Index = ({ dateTime }) => {
 };
 
 Index.propTypes = {
-  dateTime: PropTypes.number,
+  eventBar: PropTypes.object,
 };
 
 export default Index;
