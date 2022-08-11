@@ -284,7 +284,7 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
       const newGroupEvent = await Event.create(
         {
           name: req.body.eventName,
-          color: req.body.color,
+          color: req.body.color ? req.body.color : null,
           busy: req.body.busy,
           permission: req.body.permission,
           memo: req.body.memo,
@@ -298,16 +298,15 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
       );
 
       if (req.body.alerts) {
-        if (req.body.allDay === true) {
+        if (req.body.allDay === 1) {
           await Promise.all(
             req.body.alerts.map(async (alert) => {
               if (alert.type === "day") {
                 const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`;
                 const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - parseInt(alert.time));
-                date.setHours(parseInt(alert.hour));
-                date.setMinutes(parseInt(alert.minute));
-
+                date.setDate(date.getDate() - alert.time);
+                date.setHours(alert.hour);
+                date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
                 await addAlert(
                   req.myId,
                   newGroupEvent.id,
@@ -318,10 +317,9 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
               } else if (alert.type === "week") {
                 const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
                 const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - parseInt(alert.time) * 7);
-                date.setHours(parseInt(alert.hour));
-                date.setMinutes(parseInt(alert.minute));
-
+                date.setDate(date.getDate() - alert.time * 7);
+                date.setHours(alert.hour);
+                date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
                 await addAlert(
                   req.myId,
                   newGroupEvent.id,
@@ -597,7 +595,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
       await groupEvent.update(
         {
           name: req.body.eventName,
-          color: req.body.color,
+          color: req.body.color ? req.body.color : null,
           busy: req.body.busy,
           permission: req.body.permission,
           memo: req.body.memo,
@@ -611,7 +609,38 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
       await deleteAlerts(req.myId, req.body.eventId);
 
       if (req.body.alerts) {
-        if (req.body.allDay === true) {
+        if (req.body.allDay === 1) {
+          await Promise.all(
+            req.body.alerts.map(async (alert) => {
+              if (alert.type === "day") {
+                const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`;
+                const date = new Date(req.body.startTime);
+                date.setDate(date.getDate() - alert.time);
+                date.setHours(alert.hour);
+                date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
+                await addAlert(
+                  req.myId,
+                  newGroupEvent.id,
+                  req.body.calendarId,
+                  content,
+                  date
+                );
+              } else if (alert.type === "week") {
+                const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
+                const date = new Date(req.body.startTime);
+                date.setDate(date.getDate() - alert.time * 7);
+                date.setHours(alert.hour);
+                date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
+                await addAlert(
+                  req.myId,
+                  newGroupEvent.id,
+                  req.body.calendarId,
+                  content,
+                  date
+                );
+              }
+            })
+          );
         } else {
           await Promise.all(
             req.body.alerts.map(async (alert) => {

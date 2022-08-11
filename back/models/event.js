@@ -30,7 +30,7 @@ module.exports = class Event extends Model {
           type: DataTypes.DATE,
         },
         allDay: {
-          type: DataTypes.BOOLEAN,
+          type: DataTypes.INTEGER,
         },
       },
       {
