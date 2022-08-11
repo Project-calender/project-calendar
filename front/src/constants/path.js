@@ -8,6 +8,7 @@ export const CALENDAR_PATH = {
   YEAR: '/year',
   AGENDA: '/agenda',
   CUSTOMDAY: '/customday',
+  SEARCH: '/search',
   ALERT: '/alert/:page',
 };
 

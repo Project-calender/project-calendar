@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './style.module.css';
 import LeftMenu from './LeftMenu';
 import RightMenu from './RightMenu';
+import Search from './Search';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
@@ -10,11 +11,17 @@ const Index = ({ toggleSideBar }) => {
   let [dateActive, setDateActive] = useState(false); //일정 리스트 true ,false 확인
   let [userClassAdd, setUserClassAdd] = useState(); //사용자 팝업창에 class 추가
   let [userActive, setUserActive] = useState(false); //사용자 팝업창 true ,false 확인
+  let [searchActive, setSearchActive] = useState(false);
+
   return (
     <div>
       <nav className={styles.nav}>
         <div className={styles.menu_wrap}>
-          <LeftMenu toggleSideBar={toggleSideBar}></LeftMenu>
+          {searchActive == false ? (
+            <LeftMenu toggleSideBar={toggleSideBar}></LeftMenu>
+          ) : (
+            <Search setSearchActive={setSearchActive}></Search>
+          )}
           <RightMenu
             activeClass={activeClass}
             setActiveClass={setActiveClass}
@@ -24,6 +31,8 @@ const Index = ({ toggleSideBar }) => {
             setUserClassAdd={setUserClassAdd}
             userActive={userActive}
             setUserActive={setUserActive}
+            searchActive={searchActive}
+            setSearchActive={setSearchActive}
           ></RightMenu>
         </div>
       </nav>

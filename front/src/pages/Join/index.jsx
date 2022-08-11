@@ -72,7 +72,11 @@ const Index = () => {
       })
       .catch(error => {
         console.log('실패', error);
-        alert(`에러코드 ${error}`);
+        if (error.response.status == 401) {
+          alert(`이미 사용중인 이메일 입니다.`);
+        } else if (error.response.status == 402) {
+          alert(`이미 사용중인 닉네임 입니다.`);
+        }
       });
   }
 
