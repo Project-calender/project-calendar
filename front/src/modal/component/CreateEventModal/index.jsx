@@ -41,13 +41,13 @@ import {
 import { useCallback } from 'react';
 import { checkedCalendarSelector } from '../../../store/selectors/user';
 import { createEvent } from '../../../store/thunk/event';
+import { newEventBarsSelector } from '../../../store/selectors/events';
 
 const Index = ({ children: ModalList }) => {
   const dispatch = useDispatch();
   const { selectedDateRange } = useContext(EventBarContext);
-  const { hideModal: hideCreateEventModal, modalData } = useContext(
-    CreateEventModalContext,
-  );
+  const { hideModal: hideCreateEventModal, modalData: createEventModalData } =
+    useContext(CreateEventModalContext);
   const {
     showModal: showEventInfoListModal,
     hideModal: hideEventInfoListModal,
@@ -76,6 +76,8 @@ const Index = ({ children: ModalList }) => {
 
   const calendars = useSelector(selectAllCalendar);
   const checkedCalendar = useSelector(checkedCalendarSelector);
+  const newEventBars = useSelector(newEventBarsSelector);
+
   let baseCalendarIndex = calendars.findIndex(calendar =>
     checkedCalendar.includes(calendar.id),
   );
@@ -90,15 +92,21 @@ const Index = ({ children: ModalList }) => {
     endTime: endDate.time,
     busy: 1,
     permission: 1,
-    allDay: true,
+    allDay: newEventBars[0].allDay === false ? false : true,
   });
 
   useEffect(() => {
     dispatch(
-      updateNewEventBarProperty({
-        key: 'calendarColor',
-        value: calendars[baseCalendarIndex].color,
-      }),
+      updateNewEventBarProperties([
+        {
+          key: 'calendarColor',
+          value: eventInfo.color,
+        },
+        {
+          key: 'allDay',
+          value: eventInfo.allDay,
+        },
+      ]),
     );
   }, [dispatch, baseCalendarIndex, calendars]);
 
@@ -179,7 +187,7 @@ const Index = ({ children: ModalList }) => {
       isCloseButtom
       isBackground
       style={{
-        ...modalData?.style,
+        ...createEventModalData?.style,
         boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)',
       }}
     >
@@ -231,9 +239,15 @@ const Index = ({ children: ModalList }) => {
             <div>
               <CheckBox
                 checked={eventInfo.allDay}
-                onChange={e =>
-                  setEventInfo(info => ({ ...info, allDay: e.target.checked }))
-                }
+                onChange={e => {
+                  setEventInfo(info => ({ ...info, allDay: e.target.checked }));
+                  dispatch(
+                    updateNewEventBarProperty({
+                      key: 'allDay',
+                      value: e.target.checked,
+                    }),
+                  );
+                }}
               >
                 <h3>종일</h3>
               </CheckBox>

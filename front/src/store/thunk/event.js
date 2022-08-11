@@ -58,7 +58,6 @@ export const createEvent = createAsyncThunk(
     const { data } = await axios.post(url, {
       ...eventInfo,
     });
-
     if (eventInfo.calendarId > 0) return data;
     return {
       ...data,

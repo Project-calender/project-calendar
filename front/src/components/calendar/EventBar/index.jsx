@@ -4,16 +4,15 @@ import { EVENT_URL } from '../../../constants/api';
 import { EventDetailModalContext } from '../../../context/EventModalContext';
 import axios from '../../../utils/token';
 import styles from './style.module.css';
-import Moment from '../../../utils/moment.js';
 import EventTimeBar from '../EventTimeBar';
 import { useSelector } from 'react-redux';
 import { checkedCalendarSelector } from '../../../store/selectors/user';
 import { selectAllCalendar } from '../../../store/selectors/calendars';
 
 const Index = ({
-  event,
+  event = {},
   calendar,
-  eventBar,
+  eventBar = {},
   left = false,
   right = false,
   handleEventDetailMadal = () => {},
@@ -76,17 +75,15 @@ const Index = ({
   if (!eventBar || !eventBar.scale) {
     return <div className={styles.empty_event_bar} />;
   }
-
   const isSelected = eventDetailModalData.event?.id === event?.id;
   if (
-    event &&
-    !event?.allDay &&
-    new Moment(event.startTime).toSimpleDateString() ===
-      new Moment(event.endTime).toSimpleDateString()
+    (event.allDay === false || eventBar.allDay === false) &&
+    eventBar.scale === 1
   )
     return (
       <EventTimeBar
         event={event}
+        eventBar={eventBar}
         color={eventBarColor}
         clickEventBar={clickEventBar}
       />

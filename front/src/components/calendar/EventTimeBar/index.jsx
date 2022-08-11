@@ -36,8 +36,8 @@ const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
         }`}
       >
         <em>
-          {new Moment(event.startTime).getTimeType()}{' '}
-          {new Moment(event.startTime).getSimpleTime()}
+          {new Moment(event.startTime || eventBar.startTime).getTimeType()}{' '}
+          {new Moment(event.startTime || eventBar.startTime).getSimpleTime()}
         </em>
         <em> {event?.name || eventBar?.eventName || '(제목 없음)'} </em>
       </div>
