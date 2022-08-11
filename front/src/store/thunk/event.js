@@ -52,7 +52,7 @@ export const createEvent = createAsyncThunk(
   EVENT_URL.CREATE_GROUP_EVENT,
   async eventInfo => {
     const url =
-      eventInfo.id > 0
+      eventInfo.calendarId > 0
         ? EVENT_URL.CREATE_GROUP_EVENT
         : EVENT_URL.CREATE_PRIVATE_EVENT;
     const { data } = await axios.post(url, {
