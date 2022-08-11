@@ -76,10 +76,7 @@ const Index = ({
     return <div className={styles.empty_event_bar} />;
   }
   const isSelected = eventDetailModalData.event?.id === event?.id;
-  if (
-    (event.allDay === false || eventBar.allDay === false) &&
-    eventBar.scale === 1
-  )
+  if ((event.allDay === 0 || eventBar.allDay === 0) && eventBar.scale === 1)
     return (
       <EventTimeBar
         event={event}

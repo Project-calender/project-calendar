@@ -72,7 +72,7 @@ const Index = () => {
                     }}
                   >
                     <div className={styles.all_day}>
-                      {item.allDay == false ||
+                      {item.allDay == 0 ||
                       item.endTime.substr(5, 5).replace('-', '') -
                         item.startTime.substr(5, 5).replace('-', '') >
                         1 ? (

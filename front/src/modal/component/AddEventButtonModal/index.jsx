@@ -38,10 +38,10 @@ const Index = ({ hideModal, modalData }) => {
 
       dispatch(
         updateNewEventBarProperties({
-          bars: newEventBar.map(event => ({ ...event, allDay: false })),
+          bars: newEventBar,
           startTime: startDate.getTime(),
           endTime: endDate.getTime(),
-          allDay: false,
+          allDay: 0,
         }),
       );
       hideModal();

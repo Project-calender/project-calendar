@@ -114,7 +114,7 @@ const Index = ({ children: ModalList }) => {
       updateNewEventBarProperties({
         startTime: startDate.getTime(),
         endTime: endDate.getTime(),
-        allDay: e.target.checked,
+        allDay: e.target.checked ? 1 : 0,
       }),
     );
   }
@@ -214,7 +214,10 @@ const Index = ({ children: ModalList }) => {
           <div>
             <div />
             <div>
-              <CheckBox checked={newEvent.allDay} onChange={handleAllDay}>
+              <CheckBox
+                checked={newEvent.allDay ? true : false}
+                onChange={handleAllDay}
+              >
                 <h3>종일</h3>
               </CheckBox>
             </div>
