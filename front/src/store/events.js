@@ -4,6 +4,7 @@ import Moment from '../utils/moment';
 import { deleteCalendar } from './thunk/calendar';
 import {
   createEvent,
+  deleteEvent,
   getAllCalendarAndEvent,
   updateEventInviteState,
 } from './thunk/event';
@@ -54,6 +55,10 @@ const events = createSlice({
           startTime: new Date(event.startTime).getTime(),
           endTime: new Date(event.endTime).getTime(),
         });
+        state.byDate = classifyEventsByDate(selectAll(state));
+      })
+      .addCase(deleteEvent.fulfilled, (state, { payload: eventId }) => {
+        eventsAdapter.removeOne(state, eventId);
         state.byDate = classifyEventsByDate(selectAll(state));
       })
       .addCase(updateEventInviteState.fulfilled, (state, { payload }) => {

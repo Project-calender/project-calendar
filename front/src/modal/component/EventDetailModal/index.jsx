@@ -19,15 +19,16 @@ import Tooltip from '../../../components/common/Tooltip';
 import Moment from '../../../utils/moment';
 import PropTypes from 'prop-types';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { useEffect } from 'react';
 import EventMemberList from './EventMemberList';
 import EventAttendanceButtons from './EventAttendanceButtons';
+import { deleteEvent } from '../../../store/thunk/event';
 
 const Index = ({ modalData, hideModal }) => {
   const { style, event } = modalData || {};
-
+  const dispatch = useDispatch();
   const $modal = useRef();
   const [position, setPosition] = useState();
   const calendar = useSelector(state =>
@@ -66,7 +67,13 @@ const Index = ({ modalData, hideModal }) => {
             <FontAwesomeIcon icon={faPen} />
           </Tooltip>
           <Tooltip title="일정 삭제">
-            <FontAwesomeIcon icon={faTrashCan} />
+            <FontAwesomeIcon
+              icon={faTrashCan}
+              onClick={() => {
+                dispatch(deleteEvent(event));
+                hideModal();
+              }}
+            />
           </Tooltip>
           <Tooltip title="일부 세부정보 이메일로 전송">
             <FontAwesomeIcon icon={faEnvelope} />

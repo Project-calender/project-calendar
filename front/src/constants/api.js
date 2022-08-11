@@ -19,6 +19,8 @@ export const EVENT_URL = {
   GET_EVENT_DETAIL: '/event/getGroupEvent',
   UPDATE_EVENT_INVITE_STATE: '/event/changeEventInviteState',
   CREATE_GROUP_EVENT: '/event/createGroupEvent',
+  DELETE_GROUP_EVENT: '/event/deleteGroupEvent',
   CREATE_PRIVATE_EVENT: '/privateEvent/createPrivateEvent',
+  DELETE_PRIVATE_EVENT: '/privateEvent/deletePrivateEvent',
   SEARCH_EVENT: '/event/searchEvent',
 };

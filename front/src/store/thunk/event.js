@@ -55,6 +55,7 @@ export const createEvent = createAsyncThunk(
       eventInfo.calendarId > 0
         ? EVENT_URL.CREATE_GROUP_EVENT
         : EVENT_URL.CREATE_PRIVATE_EVENT;
+
     const { data } = await axios.post(url, {
       ...eventInfo,
     });
@@ -64,6 +65,22 @@ export const createEvent = createAsyncThunk(
       id: -data.id,
       PrivateCalendarId: -data.PrivateCalendarId,
     };
+  },
+);
+
+export const deleteEvent = createAsyncThunk(
+  EVENT_URL.DELETE_GROUP_EVENT,
+  async event => {
+    const url =
+      event.id > 0
+        ? EVENT_URL.DELETE_GROUP_EVENT
+        : EVENT_URL.DELETE_PRIVATE_EVENT;
+
+    await axios.post(url, {
+      eventId: Math.abs(event.id),
+      calendarId: -event.PrivateCalendarId || event.CalendarId,
+    });
+    return event.id;
   },
 );
 
