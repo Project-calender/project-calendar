@@ -300,9 +300,9 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
       if (req.body.alerts) {
         if (req.body.allDay === true) {
           await Promise.all(
-            req.body.alerts.map((alert) => {
+            req.body.alerts.map(async (alert) => {
               if (alert.type === "day") {
-                const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`
+                const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`;
                 const date = new Date(req.body.startTime);
                 date.setDate(date.getDate() - parseInt(alert.time));
                 date.setHours(parseInt(alert.hour));
@@ -316,7 +316,7 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
                   date
                 );
               } else if (alert.type === "week") {
-                const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`
+                const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
                 const date = new Date(req.body.startTime);
                 date.setDate(date.getDate() - parseInt(alert.time) * 7);
                 date.setHours(parseInt(alert.hour));
