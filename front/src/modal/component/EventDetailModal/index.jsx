@@ -25,6 +25,7 @@ import { useEffect } from 'react';
 import EventMemberList from './EventMemberList';
 import EventAttendanceButtons from './EventAttendanceButtons';
 import { deleteEvent } from '../../../store/thunk/event';
+import { EVENT } from '../../../store/events';
 
 const Index = ({ modalData, hideModal }) => {
   const { style, event } = modalData || {};
@@ -63,18 +64,22 @@ const Index = ({ modalData, hideModal }) => {
     >
       <div className={styles.modal_container} ref={$modal}>
         <div className={styles.modal_header}>
-          <Tooltip title="일정 수정">
-            <FontAwesomeIcon icon={faPen} />
-          </Tooltip>
-          <Tooltip title="일정 삭제">
-            <FontAwesomeIcon
-              icon={faTrashCan}
-              onClick={() => {
-                dispatch(deleteEvent(event));
-                hideModal();
-              }}
-            />
-          </Tooltip>
+          {calendar.authority >= 2 && (
+            <>
+              <Tooltip title="일정 수정">
+                <FontAwesomeIcon icon={faPen} />
+              </Tooltip>
+              <Tooltip title="일정 삭제">
+                <FontAwesomeIcon
+                  icon={faTrashCan}
+                  onClick={() => {
+                    dispatch(deleteEvent(event));
+                    hideModal();
+                  }}
+                />
+              </Tooltip>
+            </>
+          )}
           <Tooltip title="일부 세부정보 이메일로 전송">
             <FontAwesomeIcon icon={faEnvelope} />
           </Tooltip>
@@ -139,7 +144,7 @@ const Index = ({ modalData, hideModal }) => {
           <div>
             <FontAwesomeIcon icon={faBriefcase} />
             <div>
-              <h3>{['바쁨', '한가함'][event.busy]}</h3>
+              <h3>{EVENT.busy[event.busy]}</h3>
             </div>
           </div>
         </div>

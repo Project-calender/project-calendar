@@ -41,6 +41,7 @@ import { useCallback } from 'react';
 import { checkedCalendarSelector } from '../../../store/selectors/user';
 import { createEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
+import { EVENT } from '../../../store/events';
 
 const Index = ({ children: ModalList }) => {
   const dispatch = useDispatch();
@@ -55,19 +56,6 @@ const Index = ({ children: ModalList }) => {
   const [startDate, endDate] = [newEvent.startTime, newEvent.endTime].map(
     time => new Moment(time),
   );
-  const EVENT = {
-    busy: ['바쁨', '한가함'],
-    repeat: [
-      '반복 안함',
-      '매일',
-      `매주 ${startDate.weekDay}요일`,
-      `매월 마지막 ${startDate.weekDay}요일`,
-      `매년 ${startDate.month}월 ${startDate.date}일`,
-      '주중 매일(월-금)',
-      '맞춤...',
-    ],
-    permission: ['기본 공개 설정', '전체 공개', '비공개'],
-  };
 
   const calendars = useSelector(selectAllCalendar);
   const checkedCalendar = useSelector(checkedCalendarSelector);
@@ -228,7 +216,9 @@ const Index = ({ children: ModalList }) => {
             <div>
               <h3
                 className={styles.list_modal}
-                onClick={e => showEventInfoListModal(e, EVENT.repeat, 'repeat')}
+                onClick={e =>
+                  showEventInfoListModal(e, EVENT.repeat(startDate), 'repeat')
+                }
               >
                 반복 안함
                 <FontAwesomeIcon

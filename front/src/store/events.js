@@ -11,6 +11,20 @@ import {
 import { updateCheckedCalendar } from './thunk/user';
 import { isCheckedCalander } from './user';
 
+export const EVENT = {
+  busy: ['바쁨', '한가함'],
+  repeat: startDate => [
+    '반복 안함',
+    '매일',
+    `매주 ${startDate.weekDay}요일`,
+    `매월 마지막 ${startDate.weekDay}요일`,
+    `매년 ${startDate.month}월 ${startDate.date}일`,
+    '주중 매일(월-금)',
+    '맞춤...',
+  ],
+  permission: ['기본 공개 설정', '전체 공개', '비공개'],
+};
+
 export const eventsAdapter = createEntityAdapter({
   selectId: state => state.id,
   sortComparer: eventSort,
