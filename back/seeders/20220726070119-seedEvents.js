@@ -25,8 +25,6 @@ module.exports = {
         startTime: startTime,
         endTime: endDate,
         allDay: allDays[Math.floor(Math.random() * 6)],
-        createdAt: new Date(),
-        updatedAt: new Date(),
         EventHostId: 1,
         CalendarId: Math.floor(Math.random() * 5) + 1,
       };
@@ -41,8 +39,6 @@ module.exports = {
         startTime: dummyEvent.startTime,
         endTime: dummyEvent.endTime,
         allDay: dummyEvent.allDay,
-        createdAt: dummyEvent.createdAt,
-        updatedAt: dummyEvent.updatedAt,
         groupEventId: dummyEvent.id,
         state: 1,
         PrivateCalendarId: 1,

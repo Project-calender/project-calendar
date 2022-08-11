@@ -5,11 +5,15 @@ module.exports = class RealTimeAlert extends Model {
   static init(sequelize) {
     return super.init(
       {
-        userId: {
+        UserId: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        eventId: {
+        EventId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        CalendarId: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
@@ -33,6 +37,7 @@ module.exports = class RealTimeAlert extends Model {
     );
   }
   static associate(db) {
-    db.RealTimeAlert.belongsTo(db.User);
+    // db.RealTimeAlert.belongsTo(db.User, { onDelete: "CASCADE" });
+    // db.RealTimeAlert.belongsTo(db.Event, { onDelete: "CASCADE" });
   }
 };

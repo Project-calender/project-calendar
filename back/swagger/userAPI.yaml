@@ -256,4 +256,4 @@
               type: string
               example: Access token is not expired!
 
-$ref: "./privateEventAPI.yaml"
+$ref: "./privateCalendarAPI.yaml"

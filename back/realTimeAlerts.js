@@ -3,74 +3,121 @@ const { RealTimeAlert, sequelize } = require("./models");
 const { Op } = require("sequelize");
 
 let alertsObject = {};
-const addAlert = async (userId, eventId, content, date, next) => {
-  try {
-    await sequelize.transaction(async (t) => {
-      const newAlert = await RealTimeAlert.create(
-        {
-          userId: userId,
-          eventId: eventId,
-          content: content,
-          date: date,
-        },
-        {
-          transaction: t,
-        }
-      );
 
-      console.log(date);
-      if (newAlert) {
-        alertsObject[newAlert.id] = new CronJob(
-          date,
+const restartAll = async () => {
+  await RealTimeAlert.findAll().then(async (realTimeAlerts) => {
+    await Promise.all(
+      realTimeAlerts.map(async (realTimeAlert) => {
+        alertsObject[realTimeAlert.id] = new CronJob(
+          realTimeAlert.date,
           async function () {
-            console.log(`${content}`);
+            console.log(`${realTimeAlert.content}`);
 
             await RealTimeAlert.destroy({
-              where: { id: newAlert.id },
+              where: { id: realTimeAlert.id },
               force: true,
             });
           },
           null,
           true
         );
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
+      })
+    );
+  });
 };
 
-const deleteAlerts = async (userId, eventId, next) => {
-  try {
-    await RealTimeAlert.findAll({
-      where: {
-        [Op.and]: {
-          userId: userId,
-          eventId: eventId,
-        },
+const addAlert = async (userId, eventId, calendarId, content, date) => {
+  await sequelize.transaction(async (t) => {
+    await RealTimeAlert.create(
+      {
+        UserId: userId,
+        EventId: eventId,
+        CalendarId: calendarId,
+        content: content,
+        date: date,
       },
-    }).then(async (alerts) => {
-      if (alerts.length === 0) return;
+      { transaction: t }
+    ).then((newAlert) => {
+      alertsObject[newAlert.id] = new CronJob(
+        date,
+        async function () {
+          console.log(`${content}`);
 
-      console.log("can");
-
-      var alertIds = [];
-      await Promise.all(
-        alerts.map((alert) => {
-          alertIds.push(alert.id);
-          alertsObject[alert.id].stop();
-        })
-      ).then(async () => {
-        await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
-      });
+          await RealTimeAlert.destroy({
+            where: { id: newAlert.id },
+            force: true,
+          });
+        },
+        null,
+        true
+      );
     });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
+  });
 };
 
-module.exports = { addAlert, deleteAlerts };
+const deleteAlerts = async (userId, eventId) => {
+  await RealTimeAlert.findAll({
+    where: {
+      [Op.and]: {
+        UserId: userId,
+        EventId: eventId,
+      },
+    },
+  }).then(async (alerts) => {
+    if (alerts.length === 0) return;
 
-// crtl + s로 새로고침을 했을때는 한번만 실행된다 겹치는거 아님
+    var alertIds = [];
+    await Promise.all(
+      alerts.map((alert) => {
+        alertIds.push(alert.id);
+        alertsObject[alert.id].stop();
+      })
+    ).then(async () => {
+      await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
+    });
+  });
+};
+
+const deleteAlertsByEventId = async (eventId) => {
+  await RealTimeAlert.findAll({
+    where: { EventId: eventId },
+  }).then(async (alerts) => {
+    if (alerts.length === 0) return;
+
+    var alertIds = [];
+    await Promise.all(
+      alerts.map((alert) => {
+        alertIds.push(alert.id);
+        alertsObject[alert.id].stop();
+      })
+    ).then(async () => {
+      await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
+    });
+  });
+};
+
+const deleteAlertsByCalendarId = async (calendarId) => {
+  await RealTimeAlert.findAll({
+    where: { CalendarId: calendarId },
+  }).then(async (alerts) => {
+    if (alerts.length === 0) return;
+
+    var alertIds = [];
+    await Promise.all(
+      alerts.map((alert) => {
+        alertIds.push(alert.id);
+        alertsObject[alert.id].stop();
+      })
+    ).then(async () => {
+      await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
+    });
+  });
+};
+
+module.exports = {
+  addAlert,
+  deleteAlerts,
+  restartAll,
+  deleteAlertsByEventId,
+  deleteAlertsByCalendarId,
+};

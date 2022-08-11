@@ -8,8 +8,6 @@ module.exports = {
       for (var j = 0; j < 5; j++) {
         var calendarMember = {
           authority: Math.floor(Math.random() * 3),
-          createdAt: new Date(),
-          updatedAt: new Date(),
           UserId: i + 1,
           CalendarId: j + 1,
         };

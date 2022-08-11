@@ -51,5 +51,3 @@
         $ref: "./openapi.yaml#/success"
       500:
         $ref: "./openapi.yaml#/serverError"
-
-$ref: "./privateCalendarAPI.yaml"
