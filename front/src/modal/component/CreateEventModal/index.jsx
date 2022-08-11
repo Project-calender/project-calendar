@@ -28,7 +28,10 @@ import {
 } from '../../../context/EventModalContext';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAllCalendar } from '../../../store/selectors/calendars';
+import {
+  baseCalendarIndexSelector,
+  selectAllCalendar,
+} from '../../../store/selectors/calendars';
 
 import EventColorOption from '../../../components/calendar/EventColorOption';
 import { EVENT_COLOR } from '../../../styles/color';
@@ -38,7 +41,6 @@ import {
   updateNewEventBarProperties,
 } from '../../../store/newEvent';
 import { useCallback } from 'react';
-import { checkedCalendarSelector } from '../../../store/selectors/user';
 import { createEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
@@ -56,13 +58,8 @@ const Index = ({ children: ModalList }) => {
   const [startDate, endDate] = [newEvent.startTime, newEvent.endTime].map(
     time => new Moment(time),
   );
-
   const calendars = useSelector(selectAllCalendar);
-  const checkedCalendar = useSelector(checkedCalendarSelector);
-  let baseCalendarIndex = calendars.findIndex(calendar =>
-    checkedCalendar.includes(calendar.id),
-  );
-  if (baseCalendarIndex === -1) baseCalendarIndex = 0;
+  const baseCalendarIndex = useSelector(baseCalendarIndexSelector);
   useEffect(() => {
     dispatch(
       updateNewEventBarProperties({

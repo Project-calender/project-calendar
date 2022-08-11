@@ -1,11 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Moment from '../../../utils/moment';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import { EventDetailModalContext } from '../../../context/EventModalContext';
 import { EVENT } from '../../../store/events';
 
-const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
+const Index = ({
+  event,
+  color,
+  eventBar,
+  clickEventBar = () => {},
+  isSelected,
+}) => {
   const eventBarStyle = {
     calendar: {
       background:
@@ -16,10 +21,6 @@ const Index = ({ event, color, eventBar, clickEventBar = () => {} }) => {
       border: `1px solid ${color}`,
     },
   };
-  const { modalData: eventDetailModalData } = useContext(
-    EventDetailModalContext,
-  );
-  const isSelected = eventDetailModalData.event?.id === event?.id;
 
   return (
     <div
@@ -57,6 +58,7 @@ Index.propTypes = {
   eventBar: PropTypes.object,
   color: PropTypes.string,
   clickEventBar: PropTypes.func,
+  isSelected: PropTypes.bool,
 };
 
 export default Index;

@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { EVENT_URL } from '../../../constants/api';
 import { EventDetailModalContext } from '../../../context/EventModalContext';
-import axios from '../../../utils/token';
 import styles from './style.module.css';
 import EventTimeBar from '../EventTimeBar';
+import EventFillBar from '../EventFillBar';
 import { useSelector } from 'react-redux';
-import { checkedCalendarSelector } from '../../../store/selectors/user';
-import { selectAllCalendar } from '../../../store/selectors/calendars';
+import { baseCalendarSelector } from '../../../store/selectors/calendars';
 import { EVENT } from '../../../store/events';
+import Moment from '../../../utils/moment';
+import { getEventDetail } from '../../../store/thunk/event';
 
 const Index = ({
   event = {},
@@ -23,53 +23,11 @@ const Index = ({
     modalData: eventDetailModalData,
   } = useContext(EventDetailModalContext);
 
-  const calendars = useSelector(selectAllCalendar);
-  const checkedCalendar = useSelector(checkedCalendarSelector);
-  const baseCalendar =
-    calendars.find(calendar => checkedCalendar.includes(calendar.id)) ||
-    calendars[0];
-
-  const calendarColor =
-    calendar?.color || eventBar?.calendarColor || baseCalendar.color;
-  const eventBarColor = event?.color || eventBar?.eventColor || calendarColor;
-  const eventBarStyle = {
-    container: {
-      width: `calc(100% * ${eventBar?.scale} + ${eventBar?.scale}px - 8px)`,
-    },
-    calendar: {
-      background: calendarColor,
-      border: `1px solid ${calendarColor}`,
-    },
-    main: {
-      background:
-        event?.state === EVENT.state.default ||
-        event?.state === EVENT.state.refuse
-          ? 'white'
-          : eventBarColor,
-      color:
-        event?.state === EVENT.state.default ||
-        event?.state === EVENT.state.refuse
-          ? eventBarColor
-          : 'white',
-      border: `1px solid ${eventBarColor}`,
-      borderRightColor:
-        right &&
-        (event?.state === EVENT.state.default ||
-          event?.state === EVENT.state.refuse)
-          ? 'white'
-          : eventBarColor,
-    },
-    left: { borderRightColor: calendarColor },
-    right: { borderLeftColor: eventBarColor },
-  };
-
   async function clickEventBar(e) {
     const { offsetTop = 0, offsetLeft = 0 } = handleEventDetailMadal(e);
     const { top, left } = e.currentTarget.getBoundingClientRect();
 
-    const { data } = await axios.post(EVENT_URL.GET_EVENT_DETAIL, {
-      eventId: event.PrivateCalendarId ? event.groupEventId : event.id,
-    });
+    const { data } = await getEventDetail(event);
     const { EventMembers, EventHost } = data;
     setEventDetailModalData(data => ({
       ...data,
@@ -82,81 +40,50 @@ const Index = ({
       },
     }));
   }
+
+  const baseCalendar = useSelector(baseCalendarSelector);
+  const calendarColor =
+    calendar?.color || eventBar?.calendarColor || baseCalendar.color;
+  const eventBarColor = event?.color || eventBar?.eventColor || calendarColor;
+  const isSelected = eventDetailModalData.event?.id === event?.id;
+
   if (!eventBar || !eventBar.scale) {
     return <div className={styles.empty_event_bar} />;
   }
-  const isSelected = eventDetailModalData.event?.id === event?.id;
-  if (
-    (event.allDay === EVENT.allDay.false ||
-      eventBar.allDay === EVENT.allDay.false) &&
-    eventBar.scale === 1
-  )
+
+  if (isNotAllDayEvent(event, eventBar)) {
     return (
       <EventTimeBar
         event={event}
         eventBar={eventBar}
-        color={eventBarColor}
         clickEventBar={clickEventBar}
+        color={eventBarColor}
+        isSelected={isSelected}
       />
     );
+  }
 
   return (
-    <div
-      className={`${styles.event_container} ${
-        isSelected ? styles.event_bar_active : ''
-      }`}
-      style={eventBarStyle.container}
-      onClick={clickEventBar}
-    >
-      {left && <div className={styles.event_left} style={eventBarStyle.left} />}
-
-      <div className={`${styles.event_bar}`}>
-        <div
-          className={`${styles.event_bar_calendar} ${
-            left ? styles.none_left_border : ''
-          }`}
-          style={eventBarStyle.calendar}
-        />
-        <div
-          className={`${styles.event_bar_main} ${
-            event?.state === EVENT.state.toBeDetermined
-              ? styles.event_bar_slash
-              : ''
-          } ${right ? styles.none_right_border : ''}`}
-          style={eventBarStyle.main}
-          name="event_bar"
-        >
-          <em
-            className={`${
-              event?.state === EVENT.state.refuse ? styles.refuse_text : ''
-            }`}
-          >
-            {event?.name || eventBar.eventName || '(제목 없음)'}
-          </em>
-        </div>
-      </div>
-
-      {right && (
-        <>
-          <div className={styles.event_right} style={eventBarStyle.right} />
-          {(event?.state === EVENT.state.default ||
-            event?.state === EVENT.state.refuse) && (
-            <>
-              <div
-                className={`${styles.event_right} ${styles.event_right_temp}`}
-                style={eventBarStyle.right}
-              />
-              <div
-                className={`${styles.event_right} ${styles.event_right_line}`}
-                style={eventBarStyle.right}
-              />
-            </>
-          )}
-        </>
-      )}
-    </div>
+    <EventFillBar
+      event={event}
+      eventBar={eventBar}
+      clickEventBar={clickEventBar}
+      color={{ eventBarColor, calendarColor }}
+      left={left}
+      right={right}
+      isSelected={isSelected}
+    />
   );
 };
+
+function isNotAllDayEvent(event, eventBar) {
+  return (
+    (event.allDay === EVENT.allDay.false ||
+      eventBar.allDay === EVENT.allDay.false) &&
+    new Moment(event.startTime || eventBar.startTime).toSimpleDateString() ===
+      new Moment(event.endTime || eventBar.endTime).toSimpleDateString()
+  );
+}
 
 Index.propTypes = {
   event: PropTypes.object,

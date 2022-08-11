@@ -94,3 +94,9 @@ export const updateEventInviteState = createAsyncThunk(
     return { event, state };
   },
 );
+
+export const getEventDetail = event => {
+  return axios.post(EVENT_URL.GET_EVENT_DETAIL, {
+    eventId: event.PrivateCalendarId ? event.groupEventId : event.id,
+  });
+};
