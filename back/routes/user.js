@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 const { createClient } = require("redis");
-
+const path = require("path");
 const router = express.Router();
 const refresh = require("../utils/refresh");
 const jwt = require("../utils/jwt-util");

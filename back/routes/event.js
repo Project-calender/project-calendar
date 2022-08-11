@@ -299,7 +299,39 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
 
       if (req.body.alerts) {
         if (req.body.allDay === true) {
-          await Promise.alerts.map(async (alert) => {});
+          await Promise.all(
+            req.body.alerts.map((alert) => {
+              if (alert.type === "day") {
+                const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`
+                const date = new Date(req.body.startTime);
+                date.setDate(date.getDate() - parseInt(alert.time));
+                date.setHours(parseInt(alert.hour));
+                date.setMinutes(parseInt(alert.minute));
+
+                await addAlert(
+                  req.myId,
+                  newGroupEvent.id,
+                  req.body.calendarId,
+                  content,
+                  date
+                );
+              } else if (alert.type === "week") {
+                const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`
+                const date = new Date(req.body.startTime);
+                date.setDate(date.getDate() - parseInt(alert.time) * 7);
+                date.setHours(parseInt(alert.hour));
+                date.setMinutes(parseInt(alert.minute));
+
+                await addAlert(
+                  req.myId,
+                  newGroupEvent.id,
+                  req.body.calendarId,
+                  content,
+                  date
+                );
+              }
+            })
+          );
         } else {
           await Promise.all(
             req.body.alerts.map(async (alert) => {
@@ -317,7 +349,7 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
               } else if (alert.type === "hour") {
                 const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
                 const date = new Date(req.body.startTime);
-                date.setHours(date.getHours() - alert.time);
+                date.setHours(date.getHours() - parseInt(alert.time));
                 await addAlert(
                   req.myId,
                   newGroupEvent.id,
@@ -328,7 +360,7 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
               } else if (alert.type === "day") {
                 const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
                 const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - alert.time);
+                date.setDate(date.getDate() - parseInt(alert.time));
                 await addAlert(
                   req.myId,
                   newGroupEvent.id,
@@ -339,7 +371,7 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
               } else if (alert.type === "week") {
                 const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
                 const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - alert.time * 7);
+                date.setDate(date.getDate() - parseInt(alert.time) * 7);
                 await addAlert(
                   req.myId,
                   newGroupEvent.id,
