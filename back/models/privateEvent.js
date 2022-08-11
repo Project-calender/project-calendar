@@ -11,7 +11,6 @@ module.exports = class PrivateEvent extends Model {
         },
         color: {
           type: DataTypes.STRING(20),
-          allowNull: false,
         },
         busy: {
           type: DataTypes.INTEGER,
@@ -36,7 +35,7 @@ module.exports = class PrivateEvent extends Model {
           default: 0,
         },
         allDay: {
-          type: DataTypes.BOOLEAN,
+          type: DataTypes.INTEGER,
         },
       },
       {
