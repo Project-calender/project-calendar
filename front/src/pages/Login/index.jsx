@@ -40,7 +40,9 @@ const Index = () => {
       .catch(error => {
         console.log('실패', error);
         if (error.response.status == 401) {
-          alert(`아이디와 비밀번호를 확인해주세요.`);
+          alert(`존재하지 않는 유저 입니다. 아이디를 확인해주세요.`);
+        } else if (error.response.status == 402) {
+          alert(` 비밀번호가 일치하지 않습니다. 비밀번호를 확인해주세요.`);
         }
       });
   }

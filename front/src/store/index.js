@@ -3,6 +3,7 @@ import user from './user';
 import date from './date';
 import calendars from './calendars';
 import events from './events';
+import search from './search';
 
 export default configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export default configureStore({
     date,
     calendars,
     events,
+    search,
   },
 });
