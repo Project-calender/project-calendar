@@ -301,16 +301,64 @@ paths:
           description: 성공
           schema:
             properties:
-              type: object
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
-                color:
-                  type: string
-                OwnerId:
-                  type: integer
+              id:
+                type: integer
+              name:
+                type: string
+              color:
+                type: string
+              UserId:
+                type: integer
+        '400':
+          description: 개인 캘린더 조회 결과가 없는 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 개인 캘린더 조회 결과가 없습니다 입력값을 다시 확인해주세요
+        '402':
+          description: 수정 시도한 유저가 개인 캘린더 주인이 아닐 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
+        '500':
+          $ref: '#/serverError'
+  /api/privateCalendar/editPrivateCalendarColor:
+    post:
+      tags:
+        - privateCalendar
+      summary: 개인 캘린더 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              calendarId:
+                type: integer
+              calendarColor:
+                type: string
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              color:
+                type: string
+              UserId:
+                type: integer
         '400':
           description: 개인 캘린더 조회 결과가 없는 경우
           schema:
@@ -472,6 +520,37 @@ paths:
                 type: integer
               calendarName:
                 type: string
+              calendarColor:
+                type: string
+      responses:
+        '200':
+          $ref: '#/returnCalendar'
+        '400':
+          description: 캘린더를 수정 시도한 유저가 캘린더 오너가 아닐 경우
+          schema:
+            properties:
+              message:
+                type: string
+                example: 캘린더의 오너만 캘린더를 수정할 수 있습니다!
+        '500':
+          $ref: '#/serverError'
+  /api/calendar/editGroupCalendarColor:
+    post:
+      tags:
+        - calendar
+      summary: 그룹캘린더 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              calendarId:
+                type: integer
               calendarColor:
                 type: string
       responses:
@@ -1075,11 +1154,11 @@ paths:
                 example: 그룹원의 멤버만 이벤트를 생성할 수 있습니다.
         '500':
           $ref: '#/serverError'
-  /api/event/inviteGroupEvent:
+  /api/event/inviteCheck:
     post:
       tags:
         - event
-      summary: 그룹 이벤트에 그룹원 초대하기
+      summary: 그룹 이벤트에 초대 가능한지 확인하기
       parameters:
         - name: Authorization
           in: header
@@ -1098,7 +1177,26 @@ paths:
                 type: integer
       responses:
         '200':
-          $ref: '#/success'
+          description: 성공
+          schema:
+            properties:
+              guest:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                  nickname:
+                    type: string
+                  ProfileImages:
+                    type: object
+                    properties:
+                      src:
+                        type: string
+              canInvite:
+                type: boolean
+                example: true
         '400':
           description: 존재하지 않는 유저
           schema:
@@ -1106,6 +1204,9 @@ paths:
               message:
                 type: string
                 example: 존재하지 않는 유저입니다!
+              canInvite:
+                type: boolean
+                example: false
         '402':
           description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
           schema:
@@ -1113,6 +1214,9 @@ paths:
               message:
                 type: string
                 example: 그룹 캘린더에 존재하지 않는 유저입니다!
+              canInvite:
+                type: boolean
+                example: false
         '403':
           description: 이미 그룹이벤트의 이벤트에 멤버일대
           schema:
@@ -1120,6 +1224,9 @@ paths:
               message:
                 type: string
                 example: 이미 그룹 이벤트의 멤버입니다!
+              canInvite:
+                type: boolean
+                example: false
         '405':
           description: 자신 포함 그룹원 내의 누군가가 이미 초대를 보낸 상태일때
           schema:
@@ -1127,6 +1234,34 @@ paths:
               message:
                 type: string
                 example: 이미 초대를 보낸 사람입니다!
+              canInvite:
+                type: boolean
+                example: false
+        '500':
+          $ref: '#/serverError'
+  /api/event/inviteGroupEvent:
+    post:
+      tags:
+        - event
+      summary: 그룹 이벤트에 그룹원 초대하기
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              guests:
+                type: array
+                items:
+                  type: string
+                  example: minwoo1@naver.com
+      responses:
+        '200':
+          $ref: '#/success'
         '500':
           $ref: '#/serverError'
   /api/event/changeEventInviteState:

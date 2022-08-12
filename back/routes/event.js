@@ -391,13 +391,25 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
   }
 });
 
-router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
+router.post("/inviteCheck", authJWT, async (req, res, next) => {
   try {
     const guest = await User.findOne({
       where: { email: req.body.guestEmail },
+      attributes: ["id", "email", "nickname"],
+      include: [
+        {
+          model: ProfileImage,
+          attributes: {
+            exclude: ["id", "UserId"],
+          },
+        },
+      ],
     });
+
     if (!guest) {
-      return res.status(400).send({ message: "존재하지 않는 유저입니다!" });
+      return res
+        .status(400)
+        .send({ message: "존재하지 않는 유저입니다!", canInvite: false });
     }
 
     const isGroupMember = await CalendarMember.findOne({
@@ -406,9 +418,10 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
       },
     });
     if (!isGroupMember) {
-      return res
-        .status(402)
-        .send({ message: "그룹 캘린더에 존재하지 않는 유저입니다!" });
+      return res.status(402).send({
+        message: "그룹 캘린더에 존재하지 않는 유저입니다!",
+        canInvite: false,
+      });
     }
 
     const groupEvent = await Event.findOne({
@@ -423,7 +436,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
     if (alreadyEventMember) {
       return res
         .status(403)
-        .send({ message: "이미 그룹 이벤트의 멤버입니다!" });
+        .send({ message: "이미 그룹 이벤트의 멤버입니다!", canInvite: false });
     }
 
     const alreadyInvite = await EventMember.findOne({
@@ -432,41 +445,64 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
       },
     });
     if (alreadyInvite) {
-      return res.status(405).send({ message: "이미 초대를 보낸 사람입니다!" });
+      return res
+        .status(405)
+        .send({ message: "이미 초대를 보낸 사람입니다!", canInvite: false });
     }
 
+    return res.status(200).send({ guest, canInvite: true });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
+  try {
+    const groupEvent = await Event.findOne({
+      where: { id: req.body.eventId },
+    });
+
     await sequelize.transaction(async (t) => {
-      const privateCalendar = await guest.getPrivateCalendar();
-      await privateCalendar.createPrivateEvent(
-        {
-          name: groupEvent.name,
-          color: groupEvent.color,
-          busy: req.body.busy,
-          permission: req.body.permission,
-          memo: groupEvent.memo,
-          startTime: groupEvent.startTime,
-          endTime: groupEvent.endTime,
-          groupEventId: groupEvent.id,
-          state: 0,
-        },
-        { transaction: t }
-      );
+      await Promise.all(
+        req.body.guests.map(async (guestEmail) => {
+          const guest = await User.findOne({
+            where: { email: guestEmail },
+          });
 
-      await groupEvent.addEventMembers(guest, { transaction: t });
+          await groupEvent.addEventMembers(guest, { transaction: t });
 
-      await Alert.create(
-        {
-          UserId: guest.id,
-          type: "event",
-          eventCalendarId: req.body.calendarId,
-          eventDate: groupEvent.startTime,
-          content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
-        },
-        { transaction: t }
+          const privateCalendar = await guest.getPrivateCalendar();
+          await privateCalendar.createPrivateEvent(
+            {
+              name: groupEvent.name,
+              color: groupEvent.color,
+              busy: groupEvent.busy,
+              memo: groupEvent.memo,
+              allDay: groupEvent.allDay,
+              startTime: groupEvent.startTime,
+              endTime: groupEvent.endTime,
+              groupEventId: groupEvent.id,
+              state: 0,
+            },
+            { transaction: t }
+          );
+
+          await Alert.create(
+            {
+              UserId: guest.id,
+              type: "event",
+              eventCalendarId: req.body.calendarId,
+              eventDate: groupEvent.startTime,
+              content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
+            },
+            { transaction: t }
+          );
+        })
       );
     });
 
-    return res.status(200).send(guest);
+    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
     next(error);

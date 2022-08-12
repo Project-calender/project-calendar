@@ -20,8 +20,8 @@
             busy:
               type: integer
             allDay:
-              type: boolean
-              example: true
+              type: integer
+              example: 1
             memo:
               type: string
             startTime:
@@ -55,8 +55,8 @@
             busy:
               type: integer
             allDay:
-              type: boolean
-              example: true
+              type: integer
+              example: 1
             memo:
               type: string
             startTime:
