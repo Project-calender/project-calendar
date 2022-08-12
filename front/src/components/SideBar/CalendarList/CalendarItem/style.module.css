@@ -2,5 +2,6 @@
 .calendar_item * { cursor: pointer;}
 .calendar_item:hover { background-color: #f8f8f8; } 
 
+.calendar_item label { width: 100%; }
 .calendar_item label p { width: 120px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; } 
 .calendar_item:hover svg { visibility: visible; opacity: 1; } 

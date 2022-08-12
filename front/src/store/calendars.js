@@ -1,5 +1,9 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { addCalendar, deleteCalendar, updateCalendar } from './thunk/calendar';
+import {
+  createCalendar,
+  deleteCalendar,
+  updateCalendar,
+} from './thunk/calendar';
 import { getAllCalendarAndEvent } from './thunk/event';
 
 export const calendarsAdapter = createEntityAdapter();
@@ -14,7 +18,7 @@ const calendars = createSlice({
       .addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) =>
         calendarsAdapter.setAll(state, payload.calendars),
       )
-      .addCase(addCalendar.fulfilled, (state, { payload }) =>
+      .addCase(createCalendar.fulfilled, (state, { payload }) =>
         calendarsAdapter.addOne(state, payload),
       )
       .addCase(updateCalendar.fulfilled, (state, { payload }) => {

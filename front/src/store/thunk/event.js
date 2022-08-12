@@ -32,7 +32,7 @@ export const getAllCalendarAndEvent = createAsyncThunk(
       privateCalendar,
       ...groupCalendars.map(([info, authority]) => ({ ...info, ...authority })),
     ].map(calendar => {
-      delete calendar.GroupEvents, delete calendar.privateEvents;
+      delete calendar.GroupEvents, delete calendar.PrivateEvents;
 
       if (calendar.UserId) return { ...calendar, authority: 3 };
       return calendar;
@@ -47,3 +47,56 @@ export const getAllCalendarAndEvent = createAsyncThunk(
     return { calendars, events };
   },
 );
+
+export const createEvent = createAsyncThunk(
+  EVENT_URL.CREATE_GROUP_EVENT,
+  async eventInfo => {
+    const url =
+      eventInfo.calendarId > 0
+        ? EVENT_URL.CREATE_GROUP_EVENT
+        : EVENT_URL.CREATE_PRIVATE_EVENT;
+
+    const { data } = await axios.post(url, {
+      ...eventInfo,
+    });
+    if (eventInfo.calendarId > 0) return data;
+    return {
+      ...data,
+      id: -data.id,
+      PrivateCalendarId: -data.PrivateCalendarId,
+    };
+  },
+);
+
+export const deleteEvent = createAsyncThunk(
+  EVENT_URL.DELETE_GROUP_EVENT,
+  async event => {
+    const url =
+      event.id > 0
+        ? EVENT_URL.DELETE_GROUP_EVENT
+        : EVENT_URL.DELETE_PRIVATE_EVENT;
+
+    await axios.post(url, {
+      eventId: Math.abs(event.id),
+      calendarId: -event.PrivateCalendarId || event.CalendarId,
+    });
+    return event.id;
+  },
+);
+
+export const updateEventInviteState = createAsyncThunk(
+  EVENT_URL.UPDATE_EVENT_INVITE_STATE,
+  async ({ event, state }) => {
+    await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
+      eventId: -event.id,
+      state,
+    });
+    return { event, state };
+  },
+);
+
+export const getEventDetail = event => {
+  return axios.post(EVENT_URL.GET_EVENT_DETAIL, {
+    eventId: event.PrivateCalendarId ? event.groupEventId : event.id,
+  });
+};

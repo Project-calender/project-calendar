@@ -2,38 +2,57 @@ import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { createEventBar } from '../hooks/useCreateEventBar';
 import Moment from '../utils/moment';
 import { deleteCalendar } from './thunk/calendar';
-import { getAllCalendarAndEvent } from './thunk/event';
+import {
+  createEvent,
+  deleteEvent,
+  getAllCalendarAndEvent,
+  updateEventInviteState,
+} from './thunk/event';
 import { updateCheckedCalendar } from './thunk/user';
 import { isCheckedCalander } from './user';
 
+export const EVENT = {
+  busy: ['바쁨', '한가함'],
+  repeat: startDate => [
+    '반복 안함',
+    '매일',
+    `매주 ${startDate.weekDay}요일`,
+    `매월 마지막 ${startDate.weekDay}요일`,
+    `매년 ${startDate.month}월 ${startDate.date}일`,
+    '주중 매일(월-금)',
+    '맞춤...',
+  ],
+  permission: ['기본 공개 설정', '전체 공개', '비공개'],
+  state: {
+    default: 0,
+    accept: 1,
+    toBeDetermined: 2,
+    refuse: 3,
+  },
+  allDay: {
+    true: 1,
+    false: 0,
+  },
+};
+
 export const eventsAdapter = createEntityAdapter({
   selectId: state => state.id,
+  sortComparer: eventSort,
 });
+const { selectAll } = eventsAdapter.getSelectors();
 
 const initialState = {
   ...eventsAdapter.getInitialState(),
   byDate: {},
-  newEventBars: [],
 };
 
 const events = createSlice({
   name: 'events',
   initialState: initialState,
   reducers: {
-    updateEvent: eventsAdapter.upsertOne,
     updateEventBar(state) {
       const { selectAll } = eventsAdapter.getSelectors();
       state.byDate = classifyEventsByDate(selectAll(state));
-    },
-    setNewEventBars(state, { payload }) {
-      state.newEventBars = payload;
-    },
-    updateNewEventBarProperty(state, { payload }) {
-      const { key, value } = payload;
-      state.newEventBars = state.newEventBars.map(eventBar => ({
-        ...eventBar,
-        [key]: value,
-      }));
     },
   },
 
@@ -45,26 +64,35 @@ const events = createSlice({
         state.byDate = classifyEventsByDate(events);
       })
       .addCase(updateCheckedCalendar.fulfilled, state => {
-        const { selectAll } = eventsAdapter.getSelectors();
         state.byDate = classifyEventsByDate(selectAll(state));
       })
       .addCase(deleteCalendar.fulfilled, (state, { payload: calendarId }) => {
-        const { selectAll } = eventsAdapter.getSelectors();
         const events = selectAll(state).filter(
           event => event.PrivateCalendarId || event.CalendarId !== calendarId,
         );
         eventsAdapter.setAll(state, events);
         state.byDate = classifyEventsByDate(events);
+      })
+      .addCase(createEvent.fulfilled, (state, { payload: event }) => {
+        eventsAdapter.addOne(state, {
+          ...event,
+          startTime: new Date(event.startTime).getTime(),
+          endTime: new Date(event.endTime).getTime(),
+        });
+        state.byDate = classifyEventsByDate(selectAll(state));
+      })
+      .addCase(deleteEvent.fulfilled, (state, { payload: eventId }) => {
+        eventsAdapter.removeOne(state, eventId);
+        state.byDate = classifyEventsByDate(selectAll(state));
+      })
+      .addCase(updateEventInviteState.fulfilled, (state, { payload }) => {
+        const { event, state: inviteState } = payload;
+        eventsAdapter.upsertOne(state, { ...event, state: inviteState });
       });
   },
 });
 
-export const {
-  updateEvent,
-  updateEventBar,
-  setNewEventBars,
-  updateNewEventBarProperty,
-} = events.actions;
+export const { updateEventBar } = events.actions;
 export default events.reducer;
 
 function classifyEventsByDate(events) {
@@ -96,7 +124,7 @@ function classifyEventsByDate(events) {
   }, {});
 }
 
-const eventSort = (event, other) => {
+function eventSort(event, other) {
   const eventDate = new Moment(new Date(event.startTime)).resetTime();
   const otherDate = new Moment(new Date(other.startTime)).resetTime();
 
@@ -110,7 +138,7 @@ const eventSort = (event, other) => {
   }
 
   return eventDate.time - otherDate.time;
-};
+}
 
 function findEventBarIndex(date) {
   const index = date.findIndex(event => !event);

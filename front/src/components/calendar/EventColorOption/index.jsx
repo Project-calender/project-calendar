@@ -4,9 +4,17 @@ import React, { useContext } from 'react';
 import { EventColorModalContext } from '../../../context/EventModalContext';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 
-const Index = ({ colors, color }) => {
-  const { showModal: showEventColorModal } = useContext(EventColorModalContext);
+const Index = ({ colors, color, changedColor }) => {
+  const { showModal: showEventColorModal, modalData } = useContext(
+    EventColorModalContext,
+  );
+
+  useEffect(() => {
+    if (modalData?.color && modalData?.color !== color)
+      changedColor(modalData.color);
+  }, [modalData?.color, color, changedColor]);
 
   return (
     <div
@@ -25,6 +33,7 @@ const Index = ({ colors, color }) => {
 Index.propTypes = {
   colors: PropTypes.object,
   color: PropTypes.string,
+  changedColor: PropTypes.func,
 };
 
 export default Index;

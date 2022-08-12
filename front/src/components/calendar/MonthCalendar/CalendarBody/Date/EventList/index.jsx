@@ -52,7 +52,7 @@ const Index = ({ date, maxHeight }) => {
     hideEventListModal();
     e.stopPropagation();
 
-    return { offsetTop: 23 };
+    return { offsetTop: 25 };
   }
 
   return (
