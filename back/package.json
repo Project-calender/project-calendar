@@ -39,6 +39,7 @@
     "redis": "^3.1.2",
     "sequelize": "^6.21.0",
     "sequelize-cli": "^6.4.1",
+    "socket.io": "^4.5.1",
     "swagger-cli": "^4.0.4",
     "swagger-ui-express": "^4.5.0",
     "yamljs": "^0.3.0"

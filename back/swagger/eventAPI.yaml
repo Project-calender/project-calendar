@@ -179,12 +179,6 @@
                     properties:
                       state:
                         type: integer
-                      createdAt:
-                        type: string
-                      updatedAt:
-                        type: string
-                      deletedAt:
-                        type: string
                       UserId:
                         type: integer
                       EventId:
@@ -246,7 +240,8 @@
                       state:
                         type: integer
                       allDay:
-                        type: boolean
+                        type: integer
+                        example: 1
                       privateCalendarId:
                         type: integer
             groupEvents:
@@ -328,8 +323,8 @@
               type: string
               example: "2022-06-02T00:00:00"
             allDay:
-              type: boolean
-              example: true
+              type: integer
+              example: 1
             alerts:
               type: array
               items:
@@ -353,11 +348,11 @@
       500:
         $ref: "./openapi.yaml#/serverError"
 
-/api/event/inviteGroupEvent:
+/api/event/inviteCheck:
   post:
     tags:
       - event
-    summary: 그룹 이벤트에 그룹원 초대하기
+    summary: 그룹 이벤트에 초대 가능한지 확인하기
     parameters:
       - name: Authorization
         in: header
@@ -376,7 +371,26 @@
               type: integer
     responses:
       200:
-        $ref: "./openapi.yaml#/success"
+        description: 성공
+        schema:
+          properties:
+            guest:
+              type: object
+              properties:
+                id:
+                  type: integer
+                email:
+                  type: string
+                nickname:
+                  type: string
+                ProfileImages:
+                  type: object
+                  properties:
+                    src:
+                      type: string
+            canInvite:
+              type: boolean
+              example: true
       400:
         description: 존재하지 않는 유저
         schema:
@@ -384,6 +398,9 @@
             message:
               type: string
               example: 존재하지 않는 유저입니다!
+            canInvite:
+              type: boolean
+              example: false
       402:
         description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
         schema:
@@ -391,6 +408,9 @@
             message:
               type: string
               example: 그룹 캘린더에 존재하지 않는 유저입니다!
+            canInvite:
+              type: boolean
+              example: false
       403:
         description: 이미 그룹이벤트의 이벤트에 멤버일대
         schema:
@@ -398,6 +418,9 @@
             message:
               type: string
               example: 이미 그룹 이벤트의 멤버입니다!
+            canInvite:
+              type: boolean
+              example: false
       405:
         description: 자신 포함 그룹원 내의 누군가가 이미 초대를 보낸 상태일때
         schema:
@@ -405,6 +428,36 @@
             message:
               type: string
               example: 이미 초대를 보낸 사람입니다!
+            canInvite:
+              type: boolean
+              example: false
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/event/inviteGroupEvent:
+  post:
+    tags:
+      - event
+    summary: 그룹 이벤트에 그룹원 초대하기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            guests:
+              type: array
+              items:
+                type: string
+                example: "minwoo1@naver.com"
+
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
       500:
         $ref: "./openapi.yaml#/serverError"
 
@@ -481,8 +534,8 @@
               type: string
               example: "2022-06-02T00:00:00"
             allDay:
-              type: boolean
-              example: true
+              type: integer
+              example: 1
             alerts:
               type: array
               items:

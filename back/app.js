@@ -19,6 +19,8 @@ const userRouter = require("./routes/user");
 const privateEventRouter = require("./routes/privateEvent");
 const alertRouter = require("./routes/alert");
 const privateCalendar = require("./routes/privateCalendar");
+const { restartAll } = require("./realTimeAlerts");
+const useSocket = require("./useSocket");
 
 //swagger
 const swaggerUi = require("swagger-ui-express");
@@ -54,7 +56,6 @@ app.use(
   swaggerUi.setup(swaggerSpec, { explorer: true }) //검색 허용가능
 );
 
-const { restartAll } = require("./realTimeAlerts");
 restartAll()
   .then(() => {
     console.log("restart All alerts completely!");
@@ -77,6 +78,8 @@ app.use(function (error, req, res, next) {
 app.get("/", (req, res) => {
   res.send("jenkins why");
 });
+
+useSocket(httpServer, app);
 
 //포트 설정
 httpServer.listen(80);

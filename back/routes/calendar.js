@@ -88,6 +88,36 @@ router.post("/editGroupCalendar", authJWT, async (req, res, next) => {
   }
 });
 
+router.post("/editGroupCalendarColor", authJWT, async (req, res, next) => {
+  try {
+    const changeCalendar = await Calendar.findOne({
+      where: { id: req.body.calendarId },
+    });
+
+    await sequelize.transaction(async (t) => {
+      if (changeCalendar.OwnerId !== req.myId) {
+        return res
+          .status(400)
+          .send({ message: "캘린더의 오너만 캘린더를 수정할 수 있습니다!" });
+      }
+
+      await changeCalendar.update(
+        {
+          color: req.body.calendarColor,
+        },
+        {
+          transaction: t,
+        }
+      );
+
+      return res.status(200).send(changeCalendar);
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/deleteGroupCalendar", authJWT, async (req, res, next) => {
   try {
     const exCalendar = await Calendar.findOne({
