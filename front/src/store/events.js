@@ -50,6 +50,7 @@ const events = createSlice({
   name: 'events',
   initialState: initialState,
   reducers: {
+    resetEventState: () => ({}),
     updateEventBar(state) {
       const { selectAll } = eventsAdapter.getSelectors();
       state.byDate = classifyEventsByDate(selectAll(state));
@@ -92,7 +93,7 @@ const events = createSlice({
   },
 });
 
-export const { updateEventBar } = events.actions;
+export const { resetEventState, updateEventBar } = events.actions;
 export default events.reducer;
 
 function classifyEventsByDate(events) {
