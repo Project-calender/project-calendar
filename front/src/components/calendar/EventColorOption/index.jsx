@@ -6,7 +6,7 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 
-const Index = ({ colors, color, changedColor }) => {
+const Index = ({ colors, color, changedColor = '' }) => {
   const { showModal: showEventColorModal, modalData } = useContext(
     EventColorModalContext,
   );
@@ -19,7 +19,7 @@ const Index = ({ colors, color, changedColor }) => {
   return (
     <div
       className={styles.calendar_info}
-      onClick={e => showEventColorModal(e, colors)}
+      onClick={e => showEventColorModal(e, { colors, selectedColor: color })}
     >
       <div
         className={styles.calendar_info_colors}

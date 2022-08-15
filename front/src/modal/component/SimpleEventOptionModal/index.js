@@ -6,15 +6,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import EventColor from '../../../components/calendar/EventColor';
 import { EVENT_COLOR } from '../../../styles/color';
-import { useDispatch } from 'react-redux';
-import { deleteEvent } from '../../../store/thunk/event';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteEvent, updateEventColor } from '../../../store/thunk/event';
+import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 const Index = ({ hideModal, modalData }) => {
   const { event } = modalData;
+  const calendar = useSelector(state =>
+    calendarByEventIdSelector(state, event),
+  );
+
   const dispatch = useDispatch();
   function handleDeleteEvent() {
     dispatch(deleteEvent(event));
     hideModal();
   }
+
+  function onClickColor(e, color) {
+    dispatch(updateEventColor({ eventId: event.id, color }));
+    hideModal();
+  }
+
   return (
     <Modal
       hideModal={hideModal}
@@ -29,7 +40,15 @@ const Index = ({ hideModal, modalData }) => {
         </ul>
         <hr />
         <div className={styles.event_color}>
-          <EventColor colors={EVENT_COLOR} />
+          <EventColor
+            colors={
+              Object.values(EVENT_COLOR).includes(event.color || calendar.color)
+                ? EVENT_COLOR
+                : { ...EVENT_COLOR, ['캘린더 색상']: calendar.color }
+            }
+            selectedColor={event.color || calendar.color}
+            onClickColor={onClickColor}
+          />
         </div>
       </div>
     </Modal>
