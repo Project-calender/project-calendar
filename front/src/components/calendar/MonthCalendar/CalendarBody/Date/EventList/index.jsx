@@ -12,6 +12,7 @@ import {
 import {
   EventDetailModalContext,
   EventListModalContext,
+  SimpleEventOptionModalContext,
 } from '../../../../../../context/EventModalContext';
 import { calendarByEventIdsSelector } from '../../../../../../store/selectors/calendars';
 
@@ -21,6 +22,10 @@ const Index = ({ date, maxHeight }) => {
   const { showModal: showEventDetailModal, hideModal: hideEventDetailModal } =
     useContext(EventDetailModalContext);
   const $eventList = useRef();
+  const {
+    showModal: showSimpleEventOptionModal,
+    hideModal: hideSimpleEventOptionModal,
+  } = useContext(SimpleEventOptionModalContext);
 
   const eventBars = useSelector(state => eventsByDateSelector(state, date));
   const calendars = useSelector(state =>
@@ -50,9 +55,17 @@ const Index = ({ date, maxHeight }) => {
   function handleEventDetailMadal(e) {
     showEventDetailModal();
     hideEventListModal();
+    hideSimpleEventOptionModal();
     e.stopPropagation();
 
     return { offsetTop: 25 };
+  }
+
+  function handleSimpleEventOptionModal(e) {
+    const { pageX, pageY } = e;
+    showSimpleEventOptionModal({ style: { top: pageY, left: pageX } });
+    hideEventDetailModal();
+    e.preventDefault();
   }
 
   return (
@@ -60,6 +73,7 @@ const Index = ({ date, maxHeight }) => {
       className={styles.event_list}
       ref={$eventList}
       data-drag-date={date.time}
+      onContextMenu={handleSimpleEventOptionModal}
     >
       {previewEvent.slice(0, countEventBar).map((eventBar, index) => (
         <EventBar

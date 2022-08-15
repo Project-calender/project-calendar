@@ -7,7 +7,9 @@ const Index = ({ Modal, Context = ModalContext, children }) => {
   const modal = useEventModal();
   return (
     <Context.Provider value={modal}>
-      {modal.isModalShown && <Modal />}
+      {modal.isModalShown && (
+        <Modal hideModal={modal.hideModal} modalData={modal.modalData} />
+      )}
       {children}
     </Context.Provider>
   );
