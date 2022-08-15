@@ -22,7 +22,12 @@ const Index = ({ hideModal, modalData }) => {
   }
 
   function onClickColor(e, color) {
-    dispatch(updateEventColor({ eventId: event.id, color }));
+    dispatch(
+      updateEventColor({
+        eventId: event.id,
+        color: calendar.color === color ? null : color,
+      }),
+    );
     hideModal();
   }
 

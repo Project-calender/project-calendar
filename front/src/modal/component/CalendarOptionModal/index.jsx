@@ -46,7 +46,11 @@ const Index = () => {
         <hr />
         <div className={styles.color_list}>
           <EventColor
-            colors={CALENDAR_COLOR}
+            colors={
+              Object.values(CALENDAR_COLOR).includes(calendar.color)
+                ? CALENDAR_COLOR
+                : { ...CALENDAR_COLOR, '캘린더 색상': calendar.color }
+            }
             onClickColor={onClickColor}
             selectedColor={calendar.color}
           />
