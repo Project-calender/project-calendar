@@ -14,10 +14,11 @@ const Index = ({ colors, onClickColor, selectedColor = '' }) => {
             className={styles.color_list_item}
             style={{ background: color }}
             onClick={e => onClickColor(e, color)}
-          />
-          {selectedColor === color && (
-            <FontAwesomeIcon icon={faCheck} className={styles.icon_check} />
-          )}
+          >
+            {selectedColor === color && (
+              <FontAwesomeIcon icon={faCheck} className={styles.icon_check} />
+            )}
+          </div>
         </Tooltip>
       ))}
     </>
