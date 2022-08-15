@@ -6,6 +6,7 @@ import {
   createEvent,
   deleteEvent,
   getAllCalendarAndEvent,
+  updateEventColor,
   updateEventInviteState,
 } from './thunk/event';
 import { updateCheckedCalendar } from './thunk/user';
@@ -87,8 +88,12 @@ const events = createSlice({
         state.byDate = classifyEventsByDate(selectAll(state));
       })
       .addCase(updateEventInviteState.fulfilled, (state, { payload }) => {
-        const { event, state: inviteState } = payload;
-        eventsAdapter.upsertOne(state, { ...event, state: inviteState });
+        const { id, state: inviteState } = payload;
+        eventsAdapter.updateOne(state, { id, changes: { state: inviteState } });
+      })
+      .addCase(updateEventColor.fulfilled, (state, { payload }) => {
+        const { id, color } = payload;
+        eventsAdapter.updateOne(state, { id, changes: { color } });
       });
   },
 });
