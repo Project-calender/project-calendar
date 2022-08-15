@@ -6,7 +6,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import EventColor from '../../../components/calendar/EventColor';
 import { EVENT_COLOR } from '../../../styles/color';
+import { useDispatch } from 'react-redux';
+import { deleteEvent } from '../../../store/thunk/event';
 const Index = ({ hideModal, modalData }) => {
+  const { event } = modalData;
+  const dispatch = useDispatch();
+  function handleDeleteEvent() {
+    dispatch(deleteEvent(event));
+    hideModal();
+  }
   return (
     <Modal
       hideModal={hideModal}
@@ -14,7 +22,7 @@ const Index = ({ hideModal, modalData }) => {
     >
       <div className={styles.modal_container}>
         <ul>
-          <li className={styles.delete_event}>
+          <li className={styles.delete_event} onClick={handleDeleteEvent}>
             <FontAwesomeIcon icon={faTrashCan} />
             <em>삭제</em>
           </li>

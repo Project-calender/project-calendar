@@ -17,6 +17,7 @@ const Index = ({
   left = false,
   right = false,
   handleEventDetailMadal = () => {},
+  onContextMenu = () => {},
 }) => {
   const {
     setModalData: setEventDetailModalData,
@@ -57,6 +58,7 @@ const Index = ({
         event={event}
         eventBar={eventBar}
         clickEventBar={clickEventBar}
+        onContextMenu={onContextMenu}
         color={eventBarColor}
         isSelected={isSelected}
       />
@@ -68,6 +70,7 @@ const Index = ({
       event={event}
       eventBar={eventBar}
       clickEventBar={clickEventBar}
+      onContextMenu={onContextMenu}
       color={{ eventBarColor, calendarColor }}
       left={left}
       right={right}
@@ -92,6 +95,7 @@ Index.propTypes = {
   left: PropTypes.bool,
   right: PropTypes.bool,
   handleEventDetailMadal: PropTypes.func,
+  onContextMenu: PropTypes.func,
 };
 
 export default Index;

@@ -39,7 +39,7 @@ const Index = ({ date, maxHeight }) => {
 
   const countEventBar = Math.floor(maxHeight / 30);
   const previewEvent = countEventBar ? eventBars.slice(0, countEventBar) : [];
-  const restEvent = eventBars.slice(countEventBar);
+  const restEvent = eventBars.slice(countEventBar).filter(event => event);
 
   function clickReadMore(e) {
     const { top, left } = $eventList.current.getBoundingClientRect();
@@ -61,19 +61,17 @@ const Index = ({ date, maxHeight }) => {
     return { offsetTop: 25 };
   }
 
-  function handleSimpleEventOptionModal(e) {
+  function handleSimpleEventOptionModal(e, event) {
     const { pageX, pageY } = e;
-    showSimpleEventOptionModal({ style: { top: pageY, left: pageX } });
+    showSimpleEventOptionModal({ style: { top: pageY, left: pageX }, event });
     hideEventDetailModal();
     e.preventDefault();
   }
-
   return (
     <div
       className={styles.event_list}
       ref={$eventList}
       data-drag-date={date.time}
-      onContextMenu={handleSimpleEventOptionModal}
     >
       {previewEvent.slice(0, countEventBar).map((eventBar, index) => (
         <EventBar
@@ -82,9 +80,12 @@ const Index = ({ date, maxHeight }) => {
           calendar={calendars[index]}
           eventBar={eventBar}
           handleEventDetailMadal={handleEventDetailMadal}
+          onContextMenu={handleSimpleEventOptionModal}
         />
       ))}
-      <ReadMoreTitle events={restEvent} clickReadMore={clickReadMore} />
+      {restEvent.length > 0 && (
+        <ReadMoreTitle events={restEvent} clickReadMore={clickReadMore} />
+      )}
     </div>
   );
 };
