@@ -45,7 +45,11 @@ const Index = () => {
         </ul>
         <hr />
         <div className={styles.color_list}>
-          <EventColor colors={CALENDAR_COLOR} onClickColor={onClickColor} />
+          <EventColor
+            colors={CALENDAR_COLOR}
+            onClickColor={onClickColor}
+            selectedColor={calendar.color}
+          />
         </div>
       </div>
     </Modal>
