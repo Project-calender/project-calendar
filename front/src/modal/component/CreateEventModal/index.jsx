@@ -205,8 +205,8 @@ const Index = ({ children: ModalList }) => {
           <div>
             <FontAwesomeIcon icon={faClock} />
             <div
-              className={`${styles.time_title} ${
-                !isAddTime ? styles.time_title_active : ''
+              className={`${styles.date_title} ${
+                !isAddTime ? styles.date_title_active : ''
               }`}
               onClick={e => {
                 setAddTime(true);
@@ -217,10 +217,20 @@ const Index = ({ children: ModalList }) => {
                 {startDate.month}월 {startDate.date}일 ({startDate.weekDay}
                 요일)
               </h3>
-              <h3>-</h3>
-              <h3>
-                {endDate.month}월 {endDate.date}일 ({endDate.weekDay}요일)
+              <h3 className={styles.date_title_start}>
+                {!newEvent.allDay && startDate.toTimeString()}
               </h3>
+              <h3 className={styles.date_title_space}>-</h3>
+              <h3 className={styles.date_title_end}>
+                {!newEvent.allDay && endDate.toTimeString()}
+              </h3>
+              {(newEvent.allDay ||
+                startDate.toSimpleDateString() !==
+                  endDate.toSimpleDateString()) && (
+                <h3>
+                  {endDate.month}월 {endDate.date}일 ({endDate.weekDay}요일)
+                </h3>
+              )}
               {!isAddTime && <h5>반복 안함</h5>}
             </div>
             {!isAddTime && (
@@ -393,9 +403,9 @@ const Index = ({ children: ModalList }) => {
                     className={styles.calendar_color}
                     style={{ background: newEvent.calendarColor }}
                   />
-                  <p>{`${EVENT.busy[newEvent.busy]} · ${
+                  <h5>{`${EVENT.busy[newEvent.busy]} · ${
                     EVENT.permission[newEvent.permission]
-                  } · 알리지 않음`}</p>
+                  } · 알리지 않음`}</h5>
                 </div>
               ) : (
                 <>
