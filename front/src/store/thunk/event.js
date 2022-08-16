@@ -113,3 +113,11 @@ export const getEventDetail = event => {
     eventId: event.PrivateCalendarId ? event.groupEventId : event.id,
   });
 };
+
+export const checkEventInvite = async ({ guestEmail, calendarId }) => {
+  const { data } = axios.post(EVENT_URL.CHECK_EVENT_INVITE, {
+    guestEmail,
+    calendarId,
+  });
+  return data;
+};

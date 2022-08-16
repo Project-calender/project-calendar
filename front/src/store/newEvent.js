@@ -12,7 +12,9 @@ const initialState = {
   endTime: 0,
   busy: 1,
   permission: 1,
+  repeat: 0,
   allDay: EVENT.allDay.true,
+  inviteMembers: [],
 };
 
 const newEvent = createSlice({
