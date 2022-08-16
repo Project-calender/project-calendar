@@ -11,3 +11,4 @@ export const DeleteCalendarContext = createContext({});
 export const ModalContext = createContext({});
 
 export const EventInfoListModalContext = createContext({});
+export const SimpleEventOptionModalContext = createContext({});

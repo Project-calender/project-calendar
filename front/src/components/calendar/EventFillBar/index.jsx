@@ -7,6 +7,7 @@ const Index = ({
   event,
   eventBar,
   clickEventBar,
+  onContextMenu,
   color,
   left,
   right,
@@ -19,6 +20,7 @@ const Index = ({
       className={eventBarClass.container}
       style={eventBarStyle.container}
       onClick={clickEventBar}
+      onContextMenu={e => onContextMenu(e, event)}
     >
       {left && <div className={styles.event_left} style={eventBarStyle.left} />}
 
@@ -113,6 +115,7 @@ Index.propTypes = {
   eventBar: PropTypes.object,
   color: PropTypes.object,
   clickEventBar: PropTypes.func,
+  onContextMenu: PropTypes.func,
   left: PropTypes.bool,
   right: PropTypes.bool,
   isSelected: PropTypes.bool,

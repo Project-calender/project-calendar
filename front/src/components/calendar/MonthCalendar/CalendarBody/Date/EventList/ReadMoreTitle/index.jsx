@@ -3,9 +3,6 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
 const Index = ({ events, clickReadMore }) => {
-  events = events.filter(event => event);
-  if (!events.length) return;
-
   return (
     <div className={styles.title}>
       <em onClick={clickReadMore}>{events.length}개 더보기</em>

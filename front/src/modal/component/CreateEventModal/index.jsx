@@ -290,14 +290,11 @@ const Index = ({ children: ModalList }) => {
                 />
               </h3>
               <EventColorOption
-                colors={{
-                  ...EVENT_COLOR,
-                  ...(!Object.values(EVENT_COLOR).includes(
-                    newEvent.calendarColor,
-                  ) && {
-                    '캘린더 색상': newEvent.calendarColor,
-                  }),
-                }}
+                colors={
+                  Object.values(EVENT_COLOR).includes(newEvent.calendarColor)
+                    ? EVENT_COLOR
+                    : { ...EVENT_COLOR, '캘린더 색상': newEvent.calendarColor }
+                }
                 color={newEvent.eventColor || newEvent.calendarColor}
                 changedColor={changeColor}
               />

@@ -91,7 +91,20 @@ export const updateEventInviteState = createAsyncThunk(
       eventId: -event.id,
       state,
     });
-    return { event, state };
+    return { id: event.id, state };
+  },
+);
+
+export const updateEventColor = createAsyncThunk(
+  EVENT_URL.UPDATE_GROUP_EVENT_COLOR,
+  async ({ eventId, color }) => {
+    // const url =
+    //   eventId > 0
+    //     ? EVENT_URL.UPDATE_GROUP_EVENT_COLOR
+    //     : EVENT_URL.UPDATE_PRIVATE_EVENT_COLOR;
+
+    // await axios.post(url, { eventId, color });
+    return { id: eventId, color };
   },
 );
 
