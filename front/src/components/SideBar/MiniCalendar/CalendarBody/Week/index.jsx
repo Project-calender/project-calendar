@@ -1,14 +1,11 @@
 import React, { useContext } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { selectDate } from '../../../../../store/date';
 import Moment from '../../../../../utils/moment';
 import { miniCalendarContext } from '../../../../../context/EventModalContext';
 
 const Index = ({ week, month }) => {
-  const selectedDate = useContext(miniCalendarContext);
-  const dispatch = useDispatch();
+  const { selectedDate, onClickDate } = useContext(miniCalendarContext);
 
   return (
     <tr className={styles.calendar_tr}>
@@ -16,7 +13,7 @@ const Index = ({ week, month }) => {
         <td
           key={index}
           className={`${initDateClassName(date, month, selectedDate)}`}
-          onClick={() => dispatch(selectDate(date))}
+          onClick={e => onClickDate(e, date)}
         >
           <em>{date.date}</em>
         </td>

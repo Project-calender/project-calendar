@@ -9,7 +9,7 @@ import { miniCalendarContext } from '../../../../context/EventModalContext';
 
 const Index = () => {
   const dispatch = useDispatch();
-  const selectedDate = useContext(miniCalendarContext);
+  const { selectedDate } = useContext(miniCalendarContext);
   const [year, month] = [selectedDate.year, selectedDate.month];
 
   return (

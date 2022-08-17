@@ -46,9 +46,15 @@ export default newEvent.reducer;
 export function calculateCurrentTimeRange(startTime, endTime) {
   const [startDate, endDate] = [new Date(startTime), new Date(endTime)];
 
-  startDate.setHours(new Date().getHours());
-  startDate.setMinutes(Math.floor(new Date().getMinutes() / 15) * 15);
-  endDate.setHours(new Date().getHours() + 1);
-  endDate.setMinutes(Math.floor(new Date().getMinutes() / 15) * 15);
+  const today = new Date();
+  startDate.setHours(today.getHours());
+  startDate.setMinutes(Math.floor(today.getMinutes() / 15) * 15);
+  endDate.setHours(today.getHours() + 1);
+  endDate.setMinutes(Math.floor(today.getMinutes() / 15) * 15);
+  if (today.getMinutes() !== startDate.getMinutes()) {
+    startDate.setMinutes(startDate.getMinutes() + 15);
+    endDate.setMinutes(endDate.getMinutes() + 15);
+  }
+
   return [startDate, endDate];
 }

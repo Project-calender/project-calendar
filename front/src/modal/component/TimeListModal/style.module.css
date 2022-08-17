@@ -1,0 +1,13 @@
+.modal_container > div{
+    width: 180px !important; 
+    padding: 0px !important;
+}
+.modal_container { position: absolute;}
+
+.modal_container > div > div{
+    height: 200px;
+}
+
+.modal_container > div > div > div{
+    padding: 10px 15px;
+}

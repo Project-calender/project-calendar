@@ -12,7 +12,7 @@
 .modal_context { padding-top: 35px; } 
 .modal_context > div { display: flex; align-items: center; margin: 8px 0px; } 
 
-.modal_context > div >:nth-child(1) { width: 14%; } 
+.modal_context > div > :nth-child(1) { width: 14%; } 
 .modal_context svg { width: 16px; height: 16px; color: #848484; position:relative; left: -4px; } 
 
 .event_title > div {  width: 83%; margin-bottom: 5px;} 
@@ -62,4 +62,5 @@
 .modal_footer button:nth-child(2) { background: #1a73e8; color: white; } 
 .modal_footer button:nth-child(2):hover { filter: brightness(110%); } 
 
+.caret_down { margin: 0px 10px; } 
 

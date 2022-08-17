@@ -15,6 +15,8 @@ import {
 
 import useEventModal from '../../../../hooks/useEventModal';
 import MiniCalendarModal from '../../MiniCalendarModal';
+import TimeListModal from '../../TimeListModal';
+
 const Index = ({ showEventInfoListModal }) => {
   const [isDetail, setDetail] = useState(false);
   const newEvent = useSelector(newEventSelector);
@@ -45,6 +47,32 @@ const Index = ({ showEventInfoListModal }) => {
     hideModal: hideMiniCalendarModal,
     modalData: miniCalendarModalData,
   } = useEventModal();
+
+  const {
+    isModalShown: isTimeListModalShown,
+    showModal: showTimeListModal,
+    hideModal: hideTimeListModal,
+    modalData: timeListModalData,
+  } = useEventModal();
+
+  function handleMiniCalendar(e, selectedDate) {
+    hideTimeListModal();
+    const { top, left } = e.target.getBoundingClientRect();
+    showMiniCalendarModal({
+      selectedDate,
+      style: { top: top + 20, left },
+    });
+    e.stopPropagation();
+  }
+
+  function handleTimeList(e) {
+    hideMiniCalendarModal();
+    const { top, left } = e.target.getBoundingClientRect();
+    showTimeListModal({
+      style: { top: top + 30, left },
+    });
+    e.stopPropagation();
+  }
 
   if (!isDetail) {
     return (
@@ -89,6 +117,13 @@ const Index = ({ showEventInfoListModal }) => {
           modalData={miniCalendarModalData}
         />
       )}
+
+      {isTimeListModalShown && (
+        <TimeListModal
+          hideModal={hideTimeListModal}
+          modalData={timeListModalData}
+        />
+      )}
       <div>
         <FontAwesomeIcon icon={faClock} />
         <div
@@ -98,43 +133,25 @@ const Index = ({ showEventInfoListModal }) => {
             e.stopPropagation();
           }}
         >
-          <h3
-            onClick={e => {
-              const { top, left } = e.target.getBoundingClientRect();
-              showMiniCalendarModal({
-                selectedDate: startDate,
-                style: { top: top + 20, left },
-              });
-              e.stopPropagation();
-            }}
-          >
+          <h3 onClick={e => handleMiniCalendar(e, { startDate })}>
             {startDate.month}월 {startDate.date}일 ({startDate.weekDay}
             요일)
           </h3>
           {!newEvent.allDay && (
-            <h3 className={styles.date_title_start}>
+            <h3 className={styles.date_title_start} onClick={handleTimeList}>
               {startDate.toTimeString()}
             </h3>
           )}
           <h3 className={styles.date_title_space}>-</h3>
           {!newEvent.allDay && (
-            <h3 className={styles.date_title_end}>
+            <h3 className={styles.date_title_end} onClick={handleTimeList}>
               {!newEvent.allDay && endDate.toTimeString()}
             </h3>
           )}
           {(newEvent.allDay ||
             startDate.toSimpleDateString() !==
               endDate.toSimpleDateString()) && (
-            <h3
-              onClick={e => {
-                const { top, left } = e.target.getBoundingClientRect();
-                showMiniCalendarModal({
-                  selectedDate: endDate,
-                  style: { top: top + 20, left },
-                });
-                e.stopPropagation();
-              }}
-            >
+            <h3 onClick={e => handleMiniCalendar(e, { endDate })}>
               {endDate.month}월 {endDate.date}일 ({endDate.weekDay}요일)
             </h3>
           )}

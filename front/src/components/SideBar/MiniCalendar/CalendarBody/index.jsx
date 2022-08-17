@@ -7,7 +7,7 @@ import { calculateMonth } from '../../../../utils/moment';
 import { miniCalendarContext } from '../../../../context/EventModalContext';
 
 const Index = () => {
-  const selectedDate = useContext(miniCalendarContext);
+  const { selectedDate } = useContext(miniCalendarContext);
   const [year, month] = [selectedDate.year, selectedDate.month];
   const weeks = calculateMonth(year, month);
 
