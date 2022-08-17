@@ -14,8 +14,12 @@ import {
 } from '../../context/EventModalContext';
 import CalendarOptionModal from '../../modal/component/CalendarOptionModal';
 import DeleteCalendarModal from '../../modal/component/DeleteCalendarModal';
+import { useSelector } from 'react-redux';
+import { selectedDateSelector } from '../../store/selectors/date';
 
 const Index = ({ isSideBarOn }) => {
+  const selectedDate = useSelector(selectedDateSelector);
+
   return (
     <ModalLayout Modal={DeleteCalendarModal} Context={DeleteCalendarContext}>
       <ModalLayout Modal={CalendarOptionModal} Context={CalendarOptionContext}>
@@ -26,7 +30,7 @@ const Index = ({ isSideBarOn }) => {
             <AddEventButton />
           </div>
           <div className={styles.sidebar_calender}>
-            <MiniCalendar />
+            <MiniCalendar selectedDate={selectedDate} />
             <UserSearch />
             <MyCalendarList />
             <OtherCalendarList />

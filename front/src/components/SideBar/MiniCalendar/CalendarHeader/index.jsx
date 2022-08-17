@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../../../common/Tooltip';
-import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { addMonth } from '../../../../store/date';
+import { miniCalendarContext } from '../../../../context/EventModalContext';
 
-const Index = ({ year, month }) => {
+const Index = () => {
   const dispatch = useDispatch();
+  const selectedDate = useContext(miniCalendarContext);
+  const [year, month] = [selectedDate.year, selectedDate.month];
 
   return (
     <div className={styles.year}>
@@ -30,11 +32,6 @@ const Index = ({ year, month }) => {
       </div>
     </div>
   );
-};
-
-Index.propTypes = {
-  year: PropTypes.number,
-  month: PropTypes.number,
 };
 
 export default Index;

@@ -10,7 +10,6 @@ import {
   faCalendarDay,
   faCaretDown,
   faCircleQuestion,
-  faClock,
   faGripLines,
   faLocationDot,
   faLock,
@@ -18,14 +17,13 @@ import {
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 
-import Moment from '../../../utils/moment';
 import Input from '../../../components/common/Input';
-import CheckBox from '../../../components/common/CheckBox';
 import Modal from '../../../components/common/Modal';
 import {
   CreateEventModalContext,
   EventInfoListModalContext,
 } from '../../../context/EventModalContext';
+import DateTitle from './DateTitle';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -36,7 +34,6 @@ import {
 import EventColorOption from '../../../components/calendar/EventColorOption';
 import { EVENT_COLOR } from '../../../styles/color';
 import {
-  calculateCurrentTimeRange,
   resetNewEventState,
   updateNewEventBarProperties,
 } from '../../../store/newEvent';
@@ -56,9 +53,6 @@ const Index = ({ children: ModalList }) => {
   } = useContext(EventInfoListModalContext);
   const newEvent = useSelector(newEventSelector);
 
-  const [startDate, endDate] = [newEvent.startTime, newEvent.endTime].map(
-    time => new Moment(time),
-  );
   const calendars = useSelector(selectAllCalendar);
   const baseCalendarIndex = useSelector(baseCalendarIndexSelector);
   useEffect(() => {
@@ -88,22 +82,6 @@ const Index = ({ children: ModalList }) => {
 
   function handleEventMemo(e) {
     dispatch(updateNewEventBarProperties({ memo: e.target.value }));
-  }
-
-  function handleAllDay(e, checked) {
-    const [startDate, endDate] = calculateCurrentTimeRange(
-      newEvent.startTime,
-      newEvent.endTime,
-    );
-
-    dispatch(
-      updateNewEventBarProperties({
-        startTime: startDate.getTime(),
-        endTime: endDate.getTime(),
-        allDay:
-          e.target?.checked || checked ? EVENT.allDay.true : EVENT.allDay.false,
-      }),
-    );
   }
 
   function handleInviteInput(e) {
@@ -159,7 +137,6 @@ const Index = ({ children: ModalList }) => {
     initCreateEventModal();
   }
 
-  const [isAddTime, setAddTime] = useState(false);
   const [isAddInviteMember, setAddInviteMember] = useState(false);
   const [isAddLocation, setAddLocation] = useState(false);
   const [isAddMemo, setAddMemo] = useState(false);
@@ -202,87 +179,7 @@ const Index = ({ children: ModalList }) => {
               <button>할 일</button>
             </div>
           </div>
-          <div>
-            <FontAwesomeIcon icon={faClock} />
-            <div
-              className={`${styles.date_title} ${
-                !isAddTime ? styles.date_title_active : ''
-              }`}
-              onClick={e => {
-                setAddTime(true);
-                e.stopPropagation();
-              }}
-            >
-              <h3>
-                {startDate.month}월 {startDate.date}일 ({startDate.weekDay}
-                요일)
-              </h3>
-              <h3 className={styles.date_title_start}>
-                {!newEvent.allDay && startDate.toTimeString()}
-              </h3>
-              <h3 className={styles.date_title_space}>-</h3>
-              <h3 className={styles.date_title_end}>
-                {!newEvent.allDay && endDate.toTimeString()}
-              </h3>
-              {(newEvent.allDay ||
-                startDate.toSimpleDateString() !==
-                  endDate.toSimpleDateString()) && (
-                <h3>
-                  {endDate.month}월 {endDate.date}일 ({endDate.weekDay}요일)
-                </h3>
-              )}
-              {!isAddTime && <h5>반복 안함</h5>}
-            </div>
-            {!isAddTime && (
-              <button
-                className={styles.time_add_button}
-                onClick={e => {
-                  setAddTime(true);
-                  handleAllDay(e, false);
-                  e.stopPropagation();
-                }}
-              >
-                시간 추가
-              </button>
-            )}
-          </div>
-          {isAddTime && (
-            <>
-              <div>
-                <div />
-                <div>
-                  <CheckBox
-                    checked={newEvent.allDay ? true : false}
-                    onChange={handleAllDay}
-                  >
-                    <h3>종일</h3>
-                  </CheckBox>
-                </div>
-              </div>
-
-              <div>
-                <div />
-                <div>
-                  <h3
-                    className={styles.list_modal}
-                    onClick={e =>
-                      showEventInfoListModal(
-                        e,
-                        EVENT.repeat(startDate),
-                        'repeat',
-                      )
-                    }
-                  >
-                    {EVENT.repeat(startDate)[newEvent.repeat]}
-                    <FontAwesomeIcon
-                      className={styles.caret_down}
-                      icon={faCaretDown}
-                    />
-                  </h3>
-                </div>
-              </div>
-            </>
-          )}
+          <DateTitle showEventInfoListModal={showEventInfoListModal} />
           <div className={styles.time_find}>
             <div />
             <button className={styles.time_find_button}>시간 찾기</button>

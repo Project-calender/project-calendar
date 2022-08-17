@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectedDateSelector } from '../../../../../store/selectors/date';
+import { useDispatch } from 'react-redux';
 import { selectDate } from '../../../../../store/date';
 import Moment from '../../../../../utils/moment';
+import { miniCalendarContext } from '../../../../../context/EventModalContext';
 
 const Index = ({ week, month }) => {
-  const selectedDate = useSelector(selectedDateSelector);
+  const selectedDate = useContext(miniCalendarContext);
   const dispatch = useDispatch();
 
   return (

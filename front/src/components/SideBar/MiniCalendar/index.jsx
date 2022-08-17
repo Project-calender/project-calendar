@@ -1,26 +1,23 @@
 import React from 'react';
 import styles from './style.module.css';
+import PropTypes from 'prop-types';
 
 import CalendarHeader from './CalendarHeader';
 import CalendarBody from './CalendarBody';
-import { shallowEqual, useSelector } from 'react-redux';
-import { selectedDateSelector } from '../../../store/selectors/date';
+import { miniCalendarContext } from '../../../context/EventModalContext';
 
-const Index = () => {
-  const { year, month } = useSelector(
-    state => ({
-      year: selectedDateSelector(state).year,
-      month: selectedDateSelector(state).month,
-    }),
-    shallowEqual,
-  );
-
+const Index = ({ selectedDate }) => {
   return (
-    <div className={styles.calendar_wrap}>
-      <CalendarHeader year={year} month={month} />
-      <CalendarBody year={year} month={month} />
-    </div>
+    <miniCalendarContext.Provider value={selectedDate}>
+      <div className={styles.calendar_wrap}>
+        <CalendarHeader />
+        <CalendarBody />
+      </div>
+    </miniCalendarContext.Provider>
   );
 };
 
+Index.propTypes = {
+  selectedDate: PropTypes.number,
+};
 export default Index;
