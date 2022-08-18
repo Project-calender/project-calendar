@@ -139,6 +139,7 @@ const Index = ({ children: ModalList }) => {
       style={{
         ...createEventModalData?.style,
         boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)',
+        padding: '10px 0px',
       }}
     >
       {EventColorModal}
@@ -359,10 +360,10 @@ const Index = ({ children: ModalList }) => {
           )}
         </div>
         {isAddCalendar && <div className={styles.modal_line} />}
-        <div className={styles.modal_footer}>
-          <button>옵션 더보기</button>
-          <button onClick={saveEvent}>저장</button>
-        </div>
+      </div>
+      <div className={styles.modal_footer}>
+        <button>옵션 더보기</button>
+        <button onClick={saveEvent}>저장</button>
       </div>
     </Modal>
   );

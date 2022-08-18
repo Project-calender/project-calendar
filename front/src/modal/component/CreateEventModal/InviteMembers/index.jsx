@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,6 +6,8 @@ import { faQuestionCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../../../../components/common/Tooltip';
 import { useDispatch } from 'react-redux';
 import { removeInviteMember } from '../../../../store/newEvent';
+import { useRef } from 'react';
+import { useEffect } from 'react';
 const Index = ({ members }) => {
   const dispatch = useDispatch();
   function clickRemove(member) {
@@ -15,6 +17,16 @@ const Index = ({ members }) => {
   const isExistCanNotInviteMember = Object.values(members).find(
     member => !member.canInvite,
   );
+
+  const helpRef = useRef();
+  const [helfModalPosition, setHelfModalPosition] = useState({});
+  useEffect(() => {
+    if (helpRef.current) {
+      const { top, left } = helpRef.current.getBoundingClientRect();
+      setHelfModalPosition({ top, left: left + 158 });
+    }
+  }, [members]);
+
   return (
     <div>
       <div />
@@ -49,12 +61,12 @@ const Index = ({ members }) => {
         ))}
         {isExistCanNotInviteMember && (
           <div className={styles.help_container}>
-            <em>* 캘린더를 표시할 수 없습니다.</em>
+            <em ref={helpRef}>* 캘린더를 표시할 수 없습니다.</em>
             <FontAwesomeIcon
               icon={faQuestionCircle}
               className={styles.icon_help}
             />
-            <div className={styles.help_modal}>
+            <div className={styles.help_modal} style={helfModalPosition}>
               <p>
                 Google Calendar에서 다음 이유 중 하나로 인해 표시된 참석자를
                 확인할 수 없습니다.
