@@ -21,6 +21,9 @@ module.exports = class Alert extends Model {
         eventCalendarId: {
           type: DataTypes.INTEGER,
         },
+        hostId: {
+          type: DataTypes.INTEGER,
+        },
         eventDate: {
           type: DataTypes.DATE,
         },

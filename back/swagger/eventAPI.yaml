@@ -337,7 +337,7 @@
                     type: integer
     responses:
       200:
-        $ref: "./openapi.yaml#/success"
+        $ref: "./openapi.yaml#/returnEvent"
       400:
         description: 그룹원이 아닌 사람이 이벤트를 생성하려 할때
         schema:
@@ -347,7 +347,70 @@
               example: 그룹원의 멤버만 이벤트를 생성할 수 있습니다.
       500:
         $ref: "./openapi.yaml#/serverError"
-
+/api/event/createGroupEventWithInvite:
+  post:
+    tags:
+      - event
+    summary: 그룹 이벤트 생성하기 permission 1 or 2 / busy 0 or 1
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            calendarId:
+              type: integer
+            eventName:
+              type: string
+            color:
+              type: integer
+              example: "#0e0e03"
+            permission:
+              type: integer
+            busy:
+              type: integer
+            memo:
+              type: string
+            startTime:
+              type: string
+              example: "2022-06-01T00:00:00"
+            endTime:
+              type: string
+              example: "2022-06-02T00:00:00"
+            allDay:
+              type: integer
+              example: 1
+            alerts:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "minute / hour / day / week"
+                  time:
+                    type: integer
+            guests:
+              type: array
+              items:
+                type: string
+                example: "minwoo1@naver.com"
+    responses:
+      200:
+        $ref: "./openapi.yaml#/returnEvent"
+      400:
+        description: 그룹원이 아닌 사람이 이벤트를 생성하려 할때
+        schema:
+          properties:
+            message:
+              type: string
+              example: 그룹원의 멤버만 이벤트를 생성할 수 있습니다.
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/event/inviteCheck:
   post:
     tags:
@@ -433,7 +496,71 @@
               example: false
       500:
         $ref: "./openapi.yaml#/serverError"
-
+/api/event/inviteCheckBeforeCreateEvent:
+  post:
+    tags:
+      - event
+    summary: 그룹 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전)
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            guestEmail:
+              type: string
+            calendarId:
+              type: integer
+            eventId:
+              type: integer
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            guest:
+              type: object
+              properties:
+                id:
+                  type: integer
+                email:
+                  type: string
+                nickname:
+                  type: string
+                ProfileImages:
+                  type: object
+                  properties:
+                    src:
+                      type: string
+            canInvite:
+              type: boolean
+              example: true
+      400:
+        description: 존재하지 않는 유저
+        schema:
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 유저입니다!
+            canInvite:
+              type: boolean
+              example: false
+      402:
+        description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
+        schema:
+          properties:
+            message:
+              type: string
+              example: 그룹 캘린더에 존재하지 않는 유저입니다!
+            canInvite:
+              type: boolean
+              example: false
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/event/inviteGroupEvent:
   post:
     tags:
@@ -454,7 +581,6 @@
               items:
                 type: string
                 example: "minwoo1@naver.com"
-
     responses:
       200:
         $ref: "./openapi.yaml#/success"
@@ -548,7 +674,7 @@
                     type: integer
     responses:
       200:
-        $ref: "./openapi.yaml#/success"
+        $ref: "./openapi.yaml#/returnEvent"
       400:
         description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
         schema:
@@ -566,6 +692,45 @@
       500:
         $ref: "./openapi.yaml#/serverError"
 
+/api/event/editGroupEventColor:
+  post:
+    tags:
+      - event
+    summary: 그룹 이벤트 색상 변경하기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            eventId:
+              type: integer
+              example: 1
+            color:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/returnEvent"
+      400:
+        description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
+        schema:
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 이벤트 입니다!
+      402:
+        description: 수정 권한이 없는 경우 ( 권한 2 미만 )
+        schema:
+          properties:
+            message:
+              type: string
+              example: 수정 권한이 없습니다!
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/event/deleteGroupEvent:
   post:
     tags:

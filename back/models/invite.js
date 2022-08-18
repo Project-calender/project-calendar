@@ -9,6 +9,10 @@ module.exports = class Invite extends Model {
           type: DataTypes.INTEGER,
           defaultValue: 0,
         },
+        authority: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
+        },
       },
       {
         modelName: "Invite",
