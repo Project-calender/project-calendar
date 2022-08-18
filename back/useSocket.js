@@ -1,7 +1,6 @@
 const socketIo = require("socket.io");
 
 const onlineUsers = {};
-
 module.exports = (server, app) => {
   const io = socketIo(server, {
     cors: {
@@ -13,6 +12,15 @@ module.exports = (server, app) => {
   app.set("onlineMap", onlineUsers);
 
   io.on("connection", (socket) => {
+    socket.on("login", async (id) => {
+      onlineUsers[socket.id] = id;
+    });
+
     console.log(socket.id);
+    socket.on("disconnect", async () => {
+      delete onlineUsers[socket.id];
+    });
   });
 };
+
+//socket

@@ -13,21 +13,37 @@
         schema:
           type: object
           properties:
+            eventId:
+              type: integer
+              example: 1
             eventName:
               type: string
             color:
-              type: string
+              type: integer
+              example: "#0e0e0e"
             busy:
               type: integer
-            allDay:
-              type: integer
-              example: 1
             memo:
               type: string
             startTime:
               type: string
+              example: "2022-06-02T00:00:00"
             endTime:
               type: string
+              example: "2022-06-02T00:00:00"
+            allDay:
+              type: integer
+              example: 1
+            alerts:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "minute / hour / day / week"
+                  time:
+                    type: integer
     responses:
       200:
         $ref: "./openapi.yaml#/returnPrivateEvent"
@@ -48,20 +64,68 @@
         schema:
           type: object
           properties:
+            eventId:
+              type: integer
+              example: 1
             eventName:
               type: string
             color:
-              type: string
+              type: integer
+              example: "#0e0e0e"
             busy:
               type: integer
-            allDay:
-              type: integer
-              example: 1
             memo:
               type: string
             startTime:
               type: string
+              example: "2022-06-02T00:00:00"
             endTime:
+              type: string
+              example: "2022-06-02T00:00:00"
+            allDay:
+              type: integer
+              example: 1
+            alerts:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "minute / hour / day / week"
+                  time:
+                    type: integer
+    responses:
+      200:
+        $ref: "./openapi.yaml#/returnPrivateEvent"
+      400:
+        description: 수정할 개인 이벤트 조회 결과가 없을 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 수정할 개인이벤트의 조회 결과가 없습니다
+      500:
+        $ref: "./openapi.yaml#/serverError"
+/api/privateEvent/editPrivateEventColor:
+  post:
+    tags:
+      - privateEvent
+    summary: 개인 이벤트 색상 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            eventId:
+              type: integer
+            color:
               type: string
     responses:
       200:
@@ -92,7 +156,7 @@
           type: object
           properties:
             eventId:
-              type: string
+              type: integer
     responses:
       200:
         $ref: "./openapi.yaml#/success"

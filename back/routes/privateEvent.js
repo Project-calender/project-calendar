@@ -176,6 +176,34 @@ router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
   }
 });
 
+router.post("/editPrivateEventColor", authJWT, async (req, res, next) => {
+  try {
+    const myEvent = await PrivateEvent.findOne({
+      id: req.body.eventId,
+    });
+
+    if (!myEvent) {
+      res
+        .status(400)
+        .json({ message: "수정할 개인이벤트의 조회 결과가 없습니다" });
+    }
+
+    await sequelize.transaction(async (t) => {
+      await myEvent.update(
+        {
+          color: req.body.color ? req.body.color : null,
+        },
+        { transaction: t }
+      );
+    });
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 //개인 이벤트 삭제
 router.post("/deletePrivateEvent", authJWT, async (req, res, next) => {
   try {

@@ -1,3 +1,57 @@
+/api/calendar/getMyCalendars:
+  post:
+    tags:
+      - calendar
+    summary: 내 캘린더들 모두 가져오기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            privateCalendar:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                color:
+                  type: string
+                UserId:
+                  type: string
+            groupCalendars:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                color:
+                  type: string
+                OwnerId:
+                  type: string
+                CalendarMembers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      nickname:
+                        type: string
+                      userAuthority:
+                        type: object
+                        properties:
+                          authority:
+                            type: integer
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/calendar/createGroupCalendar:
   post:
     tags:
@@ -47,12 +101,13 @@
       200:
         $ref: "./openapi.yaml#/returnCalendar"
       400:
-        description: 캘린더를 수정 시도한 유저가 캘린더 오너가 아닐 경우
+        description: 권한을 부여하는 유저가 권한이 3 미만인 경우
         schema:
+          type: object
           properties:
             message:
               type: string
-              example: 캘린더의 오너만 캘린더를 수정할 수 있습니다!
+              example: 권한이 없습니다!
       500:
         $ref: "./openapi.yaml#/serverError"
 /api/calendar/editGroupCalendarColor:
@@ -107,19 +162,20 @@
       200:
         $ref: "./openapi.yaml#/success"
       400:
-        description: 삭제할 캘린더의 조회 결과가 없을 경우
+        description: 권한을 부여하는 유저가 권한이 3 미만인 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 권한이 없습니다!
+      402:
+        description: 삭제하려는 캘린더가 존재하지 않는 경우
         schema:
           properties:
             message:
               type: string
               example: 삭제하려는 캘린더를 찾을 수 없습니다 입력값을 다시 확인해주세요
-      401:
-        description: 캘린더 삭제를 시도하는 유저가 캘린더의 주인이 아닐 경우
-        schema:
-          properties:
-            message:
-              type: string
-              example: 삭제하려는 유저가 캘린더의 주인이 아닙니다 본인의 캘린더인지 다시 확인해주세요
       500:
         $ref: "./openapi.yaml#/serverError"
 /api/calendar/inviteGroupCalendar:
@@ -141,10 +197,20 @@
               type: string
             calendarId:
               type: integer
+            authority:
+              type: integer
     responses:
       200:
         $ref: "./openapi.yaml#/success"
       400:
+        description: 권한을 부여하는 유저가 권한이 3 미만인 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 권한이 없습니다!
+      402:
         description: 게스트 조회 결과가 없을 경우
         schema:
           type: object
@@ -187,8 +253,6 @@
           properties:
             calendarId:
               type: integer
-            hostId:
-              type: string
     responses:
       200:
         $ref: "./openapi.yaml#/returnCalendar"
@@ -200,7 +264,7 @@
             message:
               type: string
               example: 존재하지 않는 캘린더입니다!
-      401:
+      402:
         description: 초대받은 사람이 이미 맴버인 경우
         schema:
           type: object
@@ -208,7 +272,7 @@
             message:
               type: string
               example: 이미 캘린더의 그룹원 입니다!
-      402:
+      403:
         description: 존재하지 않은 초대장을 받을 경우
         schema:
           type: object
@@ -240,8 +304,8 @@
     responses:
       200:
         $ref: "./openapi.yaml#/success"
-      401:
-        description: 존재하지 않는 달력
+      400:
+        description: 캘린더 조회 결과가 없는 경우
         schema:
           type: object
           properties:
@@ -249,7 +313,7 @@
               type: string
               example: 존재하지 않는 캘린더입니다!
       402:
-        description: 이미 캘린더의 긃원
+        description: 초대받은 사람이 이미 맴버인 경우
         schema:
           type: object
           properties:
@@ -257,13 +321,93 @@
               type: string
               example: 이미 캘린더의 그룹원 입니다!
       403:
-        description: 초대장 만료
+        description: 존재하지 않은 초대장을 받을 경우
         schema:
           type: object
           properties:
             message:
               type: string
-              example: 존재하지 않는 초대장입니다!
+              example: 존재하지 않는 초대장입니다
+      500:
+        $ref: "./openapi.yaml#/serverError"
+/api/calendar/resignCalendar:
+  post:
+    tags:
+      - calendar
+    summary: 캘린더 탈퇴하기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            calendarId:
+              type: integer
+            userEmail:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      400:
+        description: 존재하지 않는 캘린더일때
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 캘린더 입니다!
+      500:
+        $ref: "./openapi.yaml#/serverError"
+/api/calendar/sendOutUser:
+  post:
+    tags:
+      - calendar
+    summary: 캘린더 멤버 강퇴하기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            calendarId:
+              type: integer
+            userEmail:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      400:
+        description: 권한을 부여하는 유저가 권한이 3 미만인 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 권한 부여는 달력의 오너만 가능합니다!
+      402:
+        description: 유저 조회 결과가 없는 경우
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 유저입니다!
+      403:
+        description: 그룹 캘린더에 존재하지 않는 유저일때
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 그룹 캘린더에 존재하지 않는 유저입니다!
       500:
         $ref: "./openapi.yaml#/serverError"
 /api/calendar/giveAuthority:
@@ -283,13 +427,15 @@
           properties:
             calendarId:
               type: integer
+            userEmail:
+              type: string
             newAuthority:
               type: integer
     responses:
       200:
         $ref: "./openapi.yaml#/success"
-      401:
-        description: 로그인된 사람이 달력의 오너가 아닌 경우
+      400:
+        description: 권한을 부여하는 유저가 권한이 3 미만인 경우
         schema:
           type: object
           properties:
@@ -305,6 +451,14 @@
               type: string
               example: 존재하지 않는 유저입니다!
       403:
+        description: 존재하지 않는 캘린더일때
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 캘린더입니다!
+      405:
         description: 권한 조정을 받은 유저가 그룹 맴버가 아닌 경우
         schema:
           type: object
@@ -312,14 +466,6 @@
             message:
               type: string
               example: 그룹 캘린더에 존재하지 초대되지 않은 유저입니다!
-      405:
-        description: 달력의 오너보다 높은 권한을 부여하는 경우
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 달력 오너보다 낮은 권한만 부여할 수 있습니다!
       500:
         $ref: "./openapi.yaml#/serverError"
 $ref: "./eventAPI.yaml"
