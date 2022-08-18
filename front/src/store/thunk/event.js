@@ -115,11 +115,16 @@ export const getEventDetail = event => {
 };
 
 export const checkEventInvite = async ({ guestEmail, calendarId }) => {
-  console.log(guestEmail, calendarId);
-  const { data } = axios.post(EVENT_URL.CHECK_CREATE_EVENT_INVITE, {
+  const { data } = await axios.post(EVENT_URL.CHECK_CREATE_EVENT_INVITE, {
     guestEmail,
     calendarId,
   });
-  console.log(data);
-  return data;
+  const { id, email, nickname, ProfileImages } = data.guest;
+  return {
+    id,
+    email,
+    nickname,
+    profileImage: ProfileImages[0].src,
+    canInvite: data.canInvite,
+  };
 };

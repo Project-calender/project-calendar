@@ -14,7 +14,6 @@ import {
   faLocationDot,
   faLock,
   faPaperclip,
-  faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Input from '../../../components/common/Input';
@@ -24,6 +23,7 @@ import {
   EventInfoListModalContext,
 } from '../../../context/EventModalContext';
 import DateTitle from './DateTitle';
+import InviteInput from './InviteInput';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -38,7 +38,7 @@ import {
   updateNewEventBarProperties,
 } from '../../../store/newEvent';
 import { useCallback } from 'react';
-import { checkEventInvite, createEvent } from '../../../store/thunk/event';
+import { createEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
 import { useState } from 'react';
@@ -84,21 +84,6 @@ const Index = ({ children: ModalList }) => {
     dispatch(updateNewEventBarProperties({ memo: e.target.value }));
   }
 
-  function handleInviteInput(e) {
-    if (e.code !== 'Enter') return;
-    const guestEmail = e.target.value;
-    const member = checkEventInvite({
-      guestEmail,
-      calendarId: calendars[newEvent.calendarId].id,
-    });
-    console.log(member);
-    dispatch(
-      updateNewEventBarProperties({
-        inviteMembers: newEvent.inviteMembers.concat(member),
-      }),
-    );
-  }
-
   function onClickListModalItem(e) {
     const [name, value] = [
       e.target.getAttribute('name'),
@@ -137,7 +122,6 @@ const Index = ({ children: ModalList }) => {
     initCreateEventModal();
   }
 
-  const [isAddInviteMember, setAddInviteMember] = useState(false);
   const [isAddLocation, setAddLocation] = useState(false);
   const [isAddMemo, setAddMemo] = useState(false);
   const [isAddCalendar, setAddCalendar] = useState(false);
@@ -184,31 +168,7 @@ const Index = ({ children: ModalList }) => {
             <div />
             <button className={styles.time_find_button}>시간 찾기</button>
           </div>
-          <div className={styles.event_info_input}>
-            <FontAwesomeIcon icon={faUserGroup} />
-
-            {!isAddInviteMember ? (
-              <div
-                className={styles.invite_title}
-                onClick={e => {
-                  setAddInviteMember(true);
-                  e.stopPropagation();
-                }}
-              >
-                <h4>참석자 추가</h4>
-              </div>
-            ) : (
-              <Input
-                type="text"
-                placeholder="참석자 추가"
-                onKeyDown={handleInviteInput}
-                autoFocus={isAddInviteMember}
-                onBlur={e => {
-                  if (!e.target.value) setAddInviteMember(false);
-                }}
-              />
-            )}
-          </div>
+          <InviteInput />
           <div className={styles.google_meet}>
             <img
               className={styles.google_meet_img}

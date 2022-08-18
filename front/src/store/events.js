@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { createEventBar } from '../hooks/useCreateEventBar';
 import Moment from '../utils/moment';
-import { deleteCalendar } from './thunk/calendar';
+import { deleteCalendar, resignCalendar } from './thunk/calendar';
 import {
   createEvent,
   deleteEvent,
@@ -71,6 +71,13 @@ const events = createSlice({
       .addCase(deleteCalendar.fulfilled, (state, { payload: calendarId }) => {
         const events = selectAll(state).filter(
           event => event.PrivateCalendarId || event.CalendarId !== calendarId,
+        );
+        eventsAdapter.setAll(state, events);
+        state.byDate = classifyEventsByDate(events);
+      })
+      .addCase(resignCalendar.fulfilled, (state, { payload: calendarId }) => {
+        const events = selectAll(state).filter(
+          event => event.CalendarId !== calendarId,
         );
         eventsAdapter.setAll(state, events);
         state.byDate = classifyEventsByDate(events);

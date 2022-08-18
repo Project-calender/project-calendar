@@ -9,11 +9,11 @@ import MiniCalendar from './MiniCalendar';
 
 import ModalLayout from '../../modal/layout/ModalLayout';
 import {
-  DeleteCalendarContext,
+  ResignCalendarContext,
   CalendarOptionContext,
 } from '../../context/EventModalContext';
 import CalendarOptionModal from '../../modal/component/CalendarOptionModal';
-import DeleteCalendarModal from '../../modal/component/DeleteCalendarModal';
+import ResignCalendarModal from '../../modal/component/ResignCalendarModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedDateSelector } from '../../store/selectors/date';
 import { selectDate } from '../../store/date';
@@ -26,7 +26,7 @@ const Index = ({ isSideBarOn }) => {
     dispatch(selectDate(date));
   }
   return (
-    <ModalLayout Modal={DeleteCalendarModal} Context={DeleteCalendarContext}>
+    <ModalLayout Modal={ResignCalendarModal} Context={ResignCalendarContext}>
       <ModalLayout Modal={CalendarOptionModal} Context={CalendarOptionContext}>
         <aside
           className={`${styles.sidebar} ${!isSideBarOn ? styles.close : null}`}

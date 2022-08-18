@@ -12,6 +12,9 @@ export const CALENDAR_URL = {
   UPDATE_GROUP_CALENDAR: '/calendar/editGroupCalendar',
   UPDATE_PRIVATE_CALENDAR: '/privateCalendar/editPrivateCalendar',
   DELETE_GROUP_CALENDAR: '/calendar/deleteGroupCalendar',
+  RESIGN_GROUP_CALENDAR: '/calendar/resignCalendar',
+  ACCEPT_CALENDAR_INVITE: '/calendar/acceptCalendarInvite',
+  REJECT_CALENDAR_INVITE: '/calendar/rejectCalendarInvite',
 };
 
 export const EVENT_URL = {
@@ -27,4 +30,8 @@ export const EVENT_URL = {
   SEARCH_EVENT: '/event/searchEvent',
   CHECK_EVENT_INVITE: '/event/inviteCheck',
   CHECK_CREATE_EVENT_INVITE: '/event/inviteCheckBeforeCreateEvent',
+};
+
+export const ALERT_URL = {
+  GET_ALL_ALERT: '/alert/getAlerts',
 };
