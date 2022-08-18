@@ -450,7 +450,7 @@ router.post("/createGroupEventWithInvite", authJWT, async (req, res, next) => {
             {
               UserId: guest.id,
               type: "event",
-              eventCalendarId: req.body.calendarId,
+              calendarId: req.body.calendarId,
               eventDate: groupEvent.startTime,
               content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
             },
@@ -698,7 +698,7 @@ router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
             {
               UserId: guest.id,
               type: "event",
-              eventCalendarId: req.body.calendarId,
+              calendarId: req.body.calendarId,
               eventDate: groupEvent.startTime,
               content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
             },
@@ -774,7 +774,7 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
                 {
                   UserId: member.id,
                   type: "event",
-                  eventCalendarId: invitedEvent.CalendarId,
+                  calendarId: invitedEvent.CalendarId,
                   eventDate: invitedEvent.startTime,
                   content: `${me.nickname}님이 ${invitedEvent.name}이벤트에 참여했어요!`,
                 },
@@ -791,7 +791,7 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
                 {
                   UserId: member.id,
                   type: "event",
-                  eventCalendarId: invitedEvent.CalendarId,
+                  calendarId: invitedEvent.CalendarId,
                   eventDate: invitedEvent.startTime,
                   content: `${me.nickname}님이 ${invitedEvent.name}이벤트에서 탈퇴했어요!!`,
                 },

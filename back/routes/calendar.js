@@ -28,7 +28,7 @@ router.get("/getMyCalendars", authJWT, async (req, res, next) => {
           through: { as: "userAuthority", attributes: ["authority"] },
         },
       ],
-      joinTableAttributes: [],
+      joinTableAttributes: ["authority"],
     });
 
     return res.status(200).send({
@@ -112,36 +112,6 @@ router.post("/editGroupCalendar", authJWT, async (req, res, next) => {
           )
         )
       );
-      return res.status(200).send(changeCalendar);
-    });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-router.post("/editGroupCalendarColor", authJWT, async (req, res, next) => {
-  try {
-    const changeCalendar = await Calendar.findOne({
-      where: { id: req.body.calendarId },
-    });
-
-    await sequelize.transaction(async (t) => {
-      if (changeCalendar.OwnerId !== req.myId) {
-        return res
-          .status(400)
-          .send({ message: "캘린더의 오너만 캘린더를 수정할 수 있습니다!" });
-      }
-
-      await changeCalendar.update(
-        {
-          color: req.body.calendarColor,
-        },
-        {
-          transaction: t,
-        }
-      );
-
       return res.status(200).send(changeCalendar);
     });
   } catch (error) {
@@ -250,6 +220,7 @@ router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
         {
           UserId: guest.id,
           type: "calendarInvite",
+          calendarId: InviteCalendar.id,
           content: `${InviteCalendar.name} 캘린더에서 초대장을 보냈어요!`,
         },
         { transaction: t }
