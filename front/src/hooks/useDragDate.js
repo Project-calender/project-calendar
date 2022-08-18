@@ -10,7 +10,7 @@ export default function useDragDate() {
 
   function handleMouseDown(e) {
     const dateId = eventTarget(e);
-    if (!dateId) return;
+    if (!dateId || e.button === 2) return;
 
     changeDateRange({ standardDateTime: dateId, endDateTime: dateId });
     toggleMouseDown(true);

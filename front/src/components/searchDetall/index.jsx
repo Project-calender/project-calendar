@@ -5,6 +5,7 @@ import EventDetailModal from '../../modal/component/EventDetailModal';
 import useEventModal from '../../hooks/useEventModal';
 import axios from '../../utils/token';
 import { EVENT_URL } from '../../constants/api';
+import { EVENT } from '../../store/events';
 
 const Index = () => {
   let { isModalShown, showModal, hideModal, modalData } = useEventModal();
@@ -72,7 +73,7 @@ const Index = () => {
                     }}
                   >
                     <div className={styles.all_day}>
-                      {item.allDay == false ||
+                      {item.allDay == EVENT.allDay.false ||
                       item.endTime.substr(5, 5).replace('-', '') -
                         item.startTime.substr(5, 5).replace('-', '') >
                         1 ? (

@@ -122,7 +122,7 @@ const Index = ({
         console.log('로그아웃 성공', res);
         localStorage.clear();
         sessionStorage.clear();
-        navigate(`${USER_URL.LOGIN}`);
+        location.reload();
       })
       .catch(error => {
         console.log('로그아웃 실패', error);

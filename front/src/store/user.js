@@ -1,20 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { updateCheckedCalendar } from './thunk/user';
 
-export const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+export const getUserInfo = () =>
+  JSON.parse(localStorage.getItem('userInfo')) || {};
 export const getCheckedCalendar = () =>
   (localStorage.getItem('checkedCalendar') || '').split(',').map(Number);
 
+const initialState = () => ({
+  ...getUserInfo(),
+  checkedCalendar: getCheckedCalendar(),
+});
 const user = createSlice({
   name: 'user',
-  initialState: {
-    ...userInfo,
-    checkedCalendar: getCheckedCalendar(),
-  },
+  initialState: initialState(),
   reducers: {
-    updateUser(state, { payload }) {
-      state = payload;
-    },
+    resetUser: () => initialState(),
   },
   extraReducers: builder => {
     builder.addCase(updateCheckedCalendar.fulfilled, (state, { payload }) => {
@@ -30,5 +30,5 @@ export function isCheckedCalander(event) {
   );
 }
 
-export const { updateUser } = user.actions;
+export const { resetUser } = user.actions;
 export default user.reducer;

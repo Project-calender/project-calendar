@@ -10,10 +10,10 @@ const Index = () => {
   const { hideModal, modalData, setModalData } = useContext(
     EventColorModalContext,
   );
-  const { style, colors } = modalData;
+  const { style, colors, selectedColor } = modalData;
 
-  function onClickColor(e, calendarColor) {
-    setModalData(data => ({ ...data, calendarColor }));
+  function onClickColor(e, color) {
+    setModalData(data => ({ ...data, color }));
     hideModal(false);
     e.stopPropagation();
   }
@@ -29,7 +29,11 @@ const Index = () => {
       }}
     >
       <div className={styles.color_list} style={{ width: style.width || 55 }}>
-        <EventColor colors={colors} onClickColor={onClickColor} />
+        <EventColor
+          colors={colors}
+          selectedColor={selectedColor}
+          onClickColor={onClickColor}
+        />
       </div>
     </Modal>
   );

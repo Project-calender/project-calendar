@@ -19,8 +19,8 @@ const Index = () => {
     dispatch(
       updateCalendar({
         calendarId: calendar.id,
-        newCalendarName: calendar.name,
-        newCalendarColor: color,
+        calendarName: calendar.name,
+        calendarColor: color,
       }),
     );
     hideModal();
@@ -45,7 +45,15 @@ const Index = () => {
         </ul>
         <hr />
         <div className={styles.color_list}>
-          <EventColor colors={CALENDAR_COLOR} onClickColor={onClickColor} />
+          <EventColor
+            colors={
+              Object.values(CALENDAR_COLOR).includes(calendar.color)
+                ? CALENDAR_COLOR
+                : { ...CALENDAR_COLOR, '캘린더 색상': calendar.color }
+            }
+            onClickColor={onClickColor}
+            selectedColor={calendar.color}
+          />
         </div>
       </div>
     </Modal>

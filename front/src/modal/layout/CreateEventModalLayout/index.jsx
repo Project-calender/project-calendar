@@ -22,21 +22,22 @@ const Index = ({ children }) => {
     eventInfoModal.hideModal();
   }
 
-  function showEventColorModal(e, colors) {
+  function showEventColorModal(e, colorData) {
     const { top, left } = e.currentTarget.getBoundingClientRect();
     eventInfoModal.hideModal();
     eventColorModal.showModal({
-      colors,
+      ...colorData,
       style: { top, left },
     });
     e.stopPropagation();
   }
 
-  function showEventInfoModal(e, data) {
+  function showEventInfoModal(e, data, name) {
     const { top, left } = e.currentTarget.getBoundingClientRect();
     eventColorModal.hideModal();
     eventInfoModal.showModal({
       data,
+      name,
       style: { top, left },
     });
     e.stopPropagation();

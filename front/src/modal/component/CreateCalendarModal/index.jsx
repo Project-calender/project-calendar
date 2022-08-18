@@ -15,12 +15,12 @@ import {
 } from '../../../context/EventModalContext';
 import { CALENDAR_COLOR } from '../../../styles/color';
 import { useRef } from 'react';
-import { addCalendar } from '../../../store/thunk/calendar';
+import { createCalendar } from '../../../store/thunk/calendar';
 
 const Index = ({ children: ModalList }) => {
   const { hideModal, modalData } = useContext(CreateCalendarModalContext);
   const { modalData: eventColorModaldata } = useContext(EventColorModalContext);
-  const { calendarColor = CALENDAR_COLOR['토마토'] } = eventColorModaldata;
+  const { color = CALENDAR_COLOR['토마토'] } = eventColorModaldata;
 
   const userEmail = useSelector(userEmailSelector);
   const $calendarName = useRef();
@@ -34,7 +34,10 @@ const Index = ({ children: ModalList }) => {
     }
 
     dispatch(
-      addCalendar({ calendarName: $calendarName.current.value, calendarColor }),
+      createCalendar({
+        calendarName: $calendarName.current.value,
+        calendarColor: color,
+      }),
     );
     hideModal();
   }
@@ -54,7 +57,7 @@ const Index = ({ children: ModalList }) => {
         <h1>새 캘린더 만들기</h1>
         <div className={styles.calendar_info}>
           <TextField label={'캘린더 이름'} autoFocus ref={$calendarName} />
-          <EventColorOption colors={CALENDAR_COLOR} color={calendarColor} />
+          <EventColorOption colors={CALENDAR_COLOR} color={color} />
         </div>
         <div className={styles.calendar_owner}>
           <em>소유자</em>

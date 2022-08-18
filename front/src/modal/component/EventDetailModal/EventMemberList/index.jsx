@@ -9,9 +9,10 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { EVENT } from '../../../../store/events';
 
 const Index = ({ eventMembers }) => {
-  const EVENT_STATE_KEY = ['default', 'accept', 'toBeDetermined', 'refuse'];
+  const EVENT_STATE_KEY = Object.keys(EVENT.state);
   const EVENT_STATE = {
     accept: { message: '초대 수락', icon: faCheck },
     refuse: { message: '초대 거절', icon: faXmark },
@@ -37,6 +38,7 @@ const Index = ({ eventMembers }) => {
     .filter(text => text)
     .join(', ');
 
+  if (!eventMembers.length) return;
   return (
     <>
       <div>

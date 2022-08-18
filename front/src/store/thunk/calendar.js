@@ -2,21 +2,20 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { CALENDAR_URL } from '../../constants/api';
 import axios from '../../utils/token';
 
-export const addCalendar = createAsyncThunk(
+export const createCalendar = createAsyncThunk(
   CALENDAR_URL.CREATE_CALENDAR,
   async ({ calendarName, calendarColor }) => {
     const { data } = await axios.post(CALENDAR_URL.CREATE_CALENDAR, {
       calendarName,
       calendarColor,
     });
-    const { id, name, color, OwnerId, authority = 3 } = data.newGroupCalendar;
-    return { id, name, color, OwnerId, authority };
+    return { ...data, authority: 3 };
   },
 );
 
 export const updateCalendar = createAsyncThunk(
   CALENDAR_URL.UPDATE_GROUP_CALENDAR,
-  async ({ calendarId, newCalendarName, newCalendarColor }) => {
+  async ({ calendarId, calendarName, calendarColor }) => {
     const url =
       calendarId > 0
         ? CALENDAR_URL.UPDATE_GROUP_CALENDAR
@@ -24,18 +23,20 @@ export const updateCalendar = createAsyncThunk(
 
     const { data } = await axios.post(url, {
       calendarId: Math.abs(calendarId),
-      newCalendarName,
-      newCalendarColor,
+      calendarName,
+      calendarColor,
     });
 
-    return { ...data.changeCalendar, id: calendarId };
+    return { ...data, id: calendarId };
   },
 );
 
 export const deleteCalendar = createAsyncThunk(
   CALENDAR_URL.DELETE_GROUP_CALENDAR,
   async calendarId => {
-    await axios.post(CALENDAR_URL.DELETE_GROUP_CALENDAR, { calendarId });
+    await axios.post(CALENDAR_URL.DELETE_GROUP_CALENDAR, {
+      calendarId,
+    });
     return calendarId;
   },
 );

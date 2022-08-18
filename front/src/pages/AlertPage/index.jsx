@@ -1,54 +1,58 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { BASE_URL } from '../../constants/api';
+import axios from '../../utils/token';
 import styles from './style.module.css';
 // import { BASE_URL } from '../../constants/api';
 // import axios from '../../utils/token';
 
-var alerts = [
-  {
-    id: 1,
-    content: '어서와 달력에 초대되었어요',
-    type: 'CalendarInvite',
-  },
-  {
-    id: 1,
-    content: '어서와 달력에 초대되었어요',
-    type: 'CalendarInvite',
-  },
-  {
-    id: 1,
-    content: '어서와 달력에 초대되었어요',
-    type: 'CalendarInvite',
-  },
-  {
-    id: 1,
-    content: '어서와 이벤트에 초대되었어요',
-    type: 'event',
-    eventCalendarId: 1,
-    eventDate: '2022-02-20',
-  },
-  {
-    id: 1,
-    content: '어서와 이벤트가 삭제되었어요',
-    type: 'eventRemoved',
-    createdAt: '2022-02-20',
-  },
-];
+// var alerts = [
+//   {
+//     id: 1,
+//     content: '어서와 달력에 초대되었어요',
+//     type: 'CalendarInvite',
+//   },
+//   {
+//     id: 1,
+//     content: '어서와 달력에 초대되었어요',
+//     type: 'CalendarInvite',
+//   },
+//   {
+//     id: 1,
+//     content: '어서와 달력에 초대되었어요',
+//     type: 'CalendarInvite',
+//   },
+//   {
+//     id: 1,
+//     content: '어서와 이벤트에 초대되었어요',
+//     type: 'event',
+//     eventCalendarId: 1,
+//     eventDate: '2022-02-20',
+//   },
+//   {
+//     id: 1,
+//     content: '어서와 이벤트가 삭제되었어요',
+//     type: 'eventRemoved',
+//     createdAt: '2022-02-20',
+//   },
+// ];
 
 const Index = () => {
+  const [alerts, setAlerts] = useState([]);
   useEffect(() => {
-    // axios
-    //   .post(`${BASE_URL}/alert/getAlerts`, {
-    //     page: 1,
-    //   }) //aws 사용시 http://localhost:80/api 삭제
-    //   .then(res => {
-    //     console.log('성공', res);
-    //   })
-    //   .catch(error => {
-    //     console.log('실패', error);
-    //     if (error.response.status == 401) {
-    //       alert(`아이디와 비밀번호를 확인해주세요.`);
-    //     }
-    //   });
+    axios
+      .post(`${BASE_URL}/alert/getAlerts`, {
+        page: 1,
+      }) //aws 사용시 http://localhost:80/api 삭제
+      .then(res => {
+        console.log('성공', res);
+        setAlerts(res.data);
+      })
+      .catch(error => {
+        console.log('실패', error);
+        if (error.response.status == 401) {
+          alert(`아이디와 비밀번호를 확인해주세요.`);
+        }
+      });
   }, []);
 
   return (
@@ -61,7 +65,7 @@ const Index = () => {
               <div className={styles.content}>{v.content}</div>
             </div>
 
-            {v.type === 'CalendarInvite' && (
+            {v.type === 'calendarInvite' && (
               <div className={styles.inviteBtns}>
                 <div className={styles.acceptInvite}>수락</div>
                 <div className={styles.rejectInvite}>거절</div>

@@ -12,6 +12,7 @@ import {
 import {
   EventDetailModalContext,
   EventListModalContext,
+  SimpleEventOptionModalContext,
 } from '../../../../../../context/EventModalContext';
 import { calendarByEventIdsSelector } from '../../../../../../store/selectors/calendars';
 
@@ -21,6 +22,10 @@ const Index = ({ date, maxHeight }) => {
   const { showModal: showEventDetailModal, hideModal: hideEventDetailModal } =
     useContext(EventDetailModalContext);
   const $eventList = useRef();
+  const {
+    showModal: showSimpleEventOptionModal,
+    hideModal: hideSimpleEventOptionModal,
+  } = useContext(SimpleEventOptionModalContext);
 
   const eventBars = useSelector(state => eventsByDateSelector(state, date));
   const calendars = useSelector(state =>
@@ -34,7 +39,7 @@ const Index = ({ date, maxHeight }) => {
 
   const countEventBar = Math.floor(maxHeight / 30);
   const previewEvent = countEventBar ? eventBars.slice(0, countEventBar) : [];
-  const restEvent = eventBars.slice(countEventBar);
+  const restEvent = eventBars.slice(countEventBar).filter(event => event);
 
   function clickReadMore(e) {
     const { top, left } = $eventList.current.getBoundingClientRect();
@@ -50,11 +55,18 @@ const Index = ({ date, maxHeight }) => {
   function handleEventDetailMadal(e) {
     showEventDetailModal();
     hideEventListModal();
+    hideSimpleEventOptionModal();
     e.stopPropagation();
 
-    return { offsetTop: 23 };
+    return { offsetTop: 25 };
   }
 
+  function handleSimpleEventOptionModal(e, event) {
+    const { pageX, pageY } = e;
+    showSimpleEventOptionModal({ style: { top: pageY, left: pageX }, event });
+    hideEventDetailModal();
+    e.preventDefault();
+  }
   return (
     <div
       className={styles.event_list}
@@ -68,9 +80,12 @@ const Index = ({ date, maxHeight }) => {
           calendar={calendars[index]}
           eventBar={eventBar}
           handleEventDetailMadal={handleEventDetailMadal}
+          onContextMenu={handleSimpleEventOptionModal}
         />
       ))}
-      <ReadMoreTitle events={restEvent} clickReadMore={clickReadMore} />
+      {restEvent.length > 0 && (
+        <ReadMoreTitle events={restEvent} clickReadMore={clickReadMore} />
+      )}
     </div>
   );
 };

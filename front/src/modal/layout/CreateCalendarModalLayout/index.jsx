@@ -24,11 +24,11 @@ const Index = ({ children }) => {
     e.stopPropagation();
   }
 
-  function showEventColorModal(e, colors) {
+  function showEventColorModal(e, colorData) {
     const { top, left } = e.currentTarget.getBoundingClientRect();
     eventColorModal.showModal(data => ({
       ...data,
-      colors,
+      ...colorData,
       style: { top, left: left, width: 80 },
     }));
     e.stopPropagation();

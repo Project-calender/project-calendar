@@ -1,26 +1,15 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import styles from './style.module.css';
-import MonthCalendar from '../../components/calendar/year/MonthCalendar';
+import YearConlendar from '../../components/calendar/YearConlendar';
 import EventListModalLayout from '../../modal/layout/EventListModalLayout';
-import EventDetailMaodalLayout from '../../modal/layout/EventDetailMaodalLayout';
-
-import { selectedDateSelector } from '../../store/selectors/date';
+import EventDetailModalLayout from '../../modal/layout/EventDetailModalLayout';
 
 const Index = () => {
-  const year = useSelector(state => selectedDateSelector(state).year);
-
-  const months = [...Array(12)].map((_, i) => i + 1);
   return (
-    <EventDetailMaodalLayout>
+    <EventDetailModalLayout>
       <EventListModalLayout>
-        <div className={styles.year_calendar}>
-          {months.map(month => (
-            <MonthCalendar key={month} year={year} month={month} />
-          ))}
-        </div>
+        <YearConlendar />
       </EventListModalLayout>
-    </EventDetailMaodalLayout>
+    </EventDetailModalLayout>
   );
 };
 

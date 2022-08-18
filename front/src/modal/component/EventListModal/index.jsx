@@ -20,10 +20,6 @@ const Index = () => {
   );
 
   useEffect(() => {
-    [...document.getElementsByClassName('event_bar_div')].forEach($eventBar => {
-      $eventBar.classList.remove(styles.event_bar_active);
-    });
-
     let { top = 0, left = 0 } = style || {};
     if (top + $modal.current?.offsetHeight + 30 > window.innerHeight) {
       top = window.innerHeight - $modal.current?.offsetHeight - 35;
@@ -36,28 +32,13 @@ const Index = () => {
     setPosition({ top, left });
   }, [style, events]);
 
-  function handleEventBarStyle(e) {
-    [...document.getElementsByClassName('event_bar_div')].forEach($eventBar => {
-      if (e.nativeEvent.path.includes($eventBar)) {
-        $eventBar.classList.add(styles.event_bar_active);
-      } else {
-        $eventBar.classList.remove(styles.event_bar_active);
-      }
-    });
-    e.stopPropagation();
-  }
-
   return (
     <Modal
       hideModal={hideModal}
       style={{ ...style, ...position }}
       isCloseButtom
     >
-      <div
-        className={styles.modal_container}
-        ref={$modal}
-        onClick={handleEventBarStyle}
-      >
+      <div className={styles.modal_container} ref={$modal}>
         <strong>{date.weekDay}</strong>
         <h1>{date.date}</h1>
         {events.length ? (

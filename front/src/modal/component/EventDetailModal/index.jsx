@@ -19,22 +19,17 @@ import Tooltip from '../../../components/common/Tooltip';
 import Moment from '../../../utils/moment';
 import PropTypes from 'prop-types';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { useEffect } from 'react';
 import EventMemberList from './EventMemberList';
 import EventAttendanceButtons from './EventAttendanceButtons';
-import { useContext } from 'react';
-import { EventDetailModalContext } from '../../../context/EventModalContext';
+import { deleteEvent } from '../../../store/thunk/event';
+import { EVENT } from '../../../store/events';
 
 const Index = ({ modalData, hideModal }) => {
-  const { modalData: contextModalData, hideModal: contextHideModal } =
-    useContext(EventDetailModalContext);
-  if (contextModalData) modalData = contextModalData;
-  if (contextHideModal) hideModal = contextHideModal;
-
   const { style, event } = modalData || {};
-
+  const dispatch = useDispatch();
   const $modal = useRef();
   const [position, setPosition] = useState();
   const calendar = useSelector(state =>
@@ -62,19 +57,29 @@ const Index = ({ modalData, hideModal }) => {
       style={{
         ...style,
         ...position,
-        boxShadow: '7px 7px 28px 12px rgb(0, 0, 0, 0.3)',
+        boxShadow: '7px 15px 25px 8px rgb(0, 0, 0, 0.3)',
         zIndex: 501,
       }}
       isCloseButtom
     >
       <div className={styles.modal_container} ref={$modal}>
         <div className={styles.modal_header}>
-          <Tooltip title="일정 수정">
-            <FontAwesomeIcon icon={faPen} />
-          </Tooltip>
-          <Tooltip title="일정 삭제">
-            <FontAwesomeIcon icon={faTrashCan} />
-          </Tooltip>
+          {calendar.authority >= 2 && (
+            <>
+              <Tooltip title="일정 수정">
+                <FontAwesomeIcon icon={faPen} />
+              </Tooltip>
+              <Tooltip title="일정 삭제">
+                <FontAwesomeIcon
+                  icon={faTrashCan}
+                  onClick={() => {
+                    dispatch(deleteEvent(event));
+                    hideModal();
+                  }}
+                />
+              </Tooltip>
+            </>
+          )}
           <Tooltip title="일부 세부정보 이메일로 전송">
             <FontAwesomeIcon icon={faEnvelope} />
           </Tooltip>
@@ -87,7 +92,7 @@ const Index = ({ modalData, hideModal }) => {
           <div>
             <div
               className={styles.event_color}
-              style={{ background: event.color }}
+              style={{ background: event.color || calendar.color }}
             />
             <div>
               <h1>{event.name || '(제목 없음)'}</h1>
@@ -139,7 +144,7 @@ const Index = ({ modalData, hideModal }) => {
           <div>
             <FontAwesomeIcon icon={faBriefcase} />
             <div>
-              <h3>한가함</h3>
+              <h3>{EVENT.busy[event.busy]}</h3>
             </div>
           </div>
         </div>
