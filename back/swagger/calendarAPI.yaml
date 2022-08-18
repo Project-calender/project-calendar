@@ -323,8 +323,6 @@
           properties:
             calendarId:
               type: integer
-            userEmail:
-              type: string
     responses:
       200:
         $ref: "./openapi.yaml#/success"

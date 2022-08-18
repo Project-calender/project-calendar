@@ -14,7 +14,7 @@ router.post("/getAlerts", authJWT, async (req, res, next) => {
         "type",
         "content",
         "checked",
-        "eventCalendarId",
+        "calendarId",
         "eventDate",
         "createdAt",
       ],

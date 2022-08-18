@@ -1,5 +1,5 @@
 /api/alert/getAlerts:
-  get:
+  post:
     tags:
       - alert
     summary: 알림 가져오기
@@ -23,7 +23,7 @@
                 type: string
               checked:
                 type: boolean
-              eventCalendarId:
+              calendarId:
                 type: integer
               eventDate:
                 type: string
