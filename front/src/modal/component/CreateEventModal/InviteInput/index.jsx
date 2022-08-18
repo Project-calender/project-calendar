@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
@@ -10,7 +10,7 @@ import { checkEventInvite } from '../../../../store/thunk/event';
 import { useDispatch, useSelector } from 'react-redux';
 import { newEventSelector } from '../../../../store/selectors/newEvent';
 import { selectAllCalendar } from '../../../../store/selectors/calendars';
-import { updateNewEventBarProperties } from '../../../../store/newEvent';
+import { addInviteMember } from '../../../../store/newEvent';
 
 const Index = () => {
   const [isDetail, setDetail] = useState(false);
@@ -19,6 +19,10 @@ const Index = () => {
   const newEvent = useSelector(newEventSelector);
   const calendars = useSelector(selectAllCalendar);
 
+  useEffect(() => {
+    if (!Object.keys(newEvent.inviteMembers).length) setDetail(false);
+  }, [newEvent.inviteMembers]);
+
   async function handleInviteInput(e) {
     if (e.code !== 'Enter') return;
     const guestEmail = e.target.value;
@@ -26,13 +30,9 @@ const Index = () => {
       guestEmail,
       calendarId: calendars[newEvent.calendarId].id,
     });
-    if (member.canInvite) {
-      dispatch(
-        updateNewEventBarProperties({
-          inviteMembers: newEvent.inviteMembers.push(member),
-        }),
-      );
-    }
+
+    dispatch(addInviteMember(member));
+    e.target.value = '';
   }
 
   if (!isDetail) {
@@ -61,8 +61,8 @@ const Index = () => {
         placeholder="참석자 추가"
         onKeyDown={handleInviteInput}
         autoFocus={isDetail}
-        onBlur={e => {
-          if (!e.target.value) setDetail(false);
+        onBlur={() => {
+          if (!Object.keys(newEvent.inviteMembers).length) setDetail(false);
         }}
       />
     </div>

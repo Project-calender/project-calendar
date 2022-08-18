@@ -1,0 +1,13 @@
+.invite_members img { width: 28px; height: 28px; border-radius: 100%; margin-right: 10px; box-shadow: 0px 0px 2.5px 0.5px rgba(0, 0, 0, 0.7); border: 2px solid #fff; image-rendering: auto; } 
+.invite_members { width: 82%; } 
+
+.invite_members > div { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 5px 5px; border-radius: 5px; } 
+.invite_members > div:hover { background: #f4f4f4; } 
+
+.invite_member { display: flex; align-items: center; } 
+
+.icon_delete { visibility: hidden; position: static !important; width: 18px !important; height: 18px !important; cursor: pointer; border-radius: 100%; padding: 5px } 
+.icon_delete:hover { background: #e1e1e1;}
+
+.invite_members > div:hover .icon_delete{ visibility: visible; } 
+.member_info em { font-size: 12px; color: #ababab; } 

@@ -98,12 +98,13 @@ export const updateEventInviteState = createAsyncThunk(
 export const updateEventColor = createAsyncThunk(
   EVENT_URL.UPDATE_GROUP_EVENT_COLOR,
   async ({ eventId, color }) => {
-    // const url =
-    //   eventId > 0
-    //     ? EVENT_URL.UPDATE_GROUP_EVENT_COLOR
-    //     : EVENT_URL.UPDATE_PRIVATE_EVENT_COLOR;
+    const url =
+      eventId > 0
+        ? EVENT_URL.UPDATE_GROUP_EVENT_COLOR
+        : EVENT_URL.UPDATE_PRIVATE_EVENT_COLOR;
 
-    // await axios.post(url, { eventId, color });
+    const res = await axios.post(url, { eventId: Math.abs(eventId), color });
+    console.log(res);
     return { id: eventId, color };
   },
 );
@@ -115,16 +116,20 @@ export const getEventDetail = event => {
 };
 
 export const checkEventInvite = async ({ guestEmail, calendarId }) => {
-  const { data } = await axios.post(EVENT_URL.CHECK_CREATE_EVENT_INVITE, {
-    guestEmail,
-    calendarId,
-  });
-  const { id, email, nickname, ProfileImages } = data.guest;
-  return {
-    id,
-    email,
-    nickname,
-    profileImage: ProfileImages[0].src,
-    canInvite: data.canInvite,
-  };
+  try {
+    const { data } = await axios.post(EVENT_URL.CHECK_CREATE_EVENT_INVITE, {
+      guestEmail,
+      calendarId,
+    });
+    const { id, email, nickname, ProfileImages } = data.guest;
+    return {
+      id,
+      email,
+      nickname,
+      profileImage: ProfileImages[0].src,
+      canInvite: data.canInvite,
+    };
+  } catch (error) {
+    return { canInvite: false, id: guestEmail, email: guestEmail };
+  }
 };

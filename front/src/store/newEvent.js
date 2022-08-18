@@ -16,7 +16,7 @@ const initialState = {
   permission: 1,
   repeat: 0,
   allDay: EVENT.allDay.true,
-  inviteMembers: [],
+  inviteMembers: {},
 };
 
 const newEvent = createSlice({
@@ -41,6 +41,12 @@ const newEvent = createSlice({
     updateNewEventBarProperties(state, { payload }) {
       Object.assign(state, payload);
     },
+    addInviteMember(state, { payload: member }) {
+      state.inviteMembers[member.id] = member;
+    },
+    removeInviteMember(state, { payload: member }) {
+      delete state.inviteMembers[member.id];
+    },
   },
 });
 
@@ -49,6 +55,8 @@ export const {
   resetNewEventState,
   updateNewEventBarProperty,
   updateNewEventBarProperties,
+  addInviteMember,
+  removeInviteMember,
 } = newEvent.actions;
 
 export default newEvent.reducer;

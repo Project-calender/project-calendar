@@ -24,6 +24,7 @@ import {
 } from '../../../context/EventModalContext';
 import DateTitle from './DateTitle';
 import InviteInput from './InviteInput';
+import InviteMembers from './InviteMembers';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -96,6 +97,7 @@ const Index = ({ children: ModalList }) => {
           calendarId: value,
           calendarColor: calendars[value].color,
           eventColor: null,
+          inviteMembers: {},
         }),
       );
     } else {
@@ -169,6 +171,7 @@ const Index = ({ children: ModalList }) => {
             <button className={styles.time_find_button}>시간 찾기</button>
           </div>
           <InviteInput />
+          <InviteMembers members={newEvent.inviteMembers} />
           <div className={styles.google_meet}>
             <img
               className={styles.google_meet_img}
