@@ -21,7 +21,7 @@ module.exports = {
         id: i + 1,
         type: randomType[Math.floor(Math.random() * 4)],
         content: `알림 no.${i + 1}`,
-        eventCalendarId: 1,
+        calendarId: 1,
         hostId: 1,
         eventDate: dummyEventDate,
         createdAt: new Date(),
