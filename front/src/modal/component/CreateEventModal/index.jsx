@@ -43,6 +43,7 @@ import { createEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
 import { useState } from 'react';
+import { useRef } from 'react';
 
 const Index = ({ children: ModalList }) => {
   const dispatch = useDispatch();
@@ -129,6 +130,7 @@ const Index = ({ children: ModalList }) => {
   const [isAddCalendar, setAddCalendar] = useState(false);
 
   const [EventColorModal, EventInfoListModal] = ModalList;
+  const modalRef = useRef();
   return (
     <Modal
       hideModal={initCreateEventModal}
@@ -144,7 +146,7 @@ const Index = ({ children: ModalList }) => {
         React.cloneElement(EventInfoListModal, {
           onClickItem: onClickListModalItem,
         })}
-      <div className={styles.modal_container}>
+      <div className={styles.modal_container} ref={modalRef}>
         <div className={styles.modal_header}>
           <FontAwesomeIcon icon={faGripLines} />
         </div>
@@ -170,8 +172,15 @@ const Index = ({ children: ModalList }) => {
             <div />
             <button className={styles.time_find_button}>시간 찾기</button>
           </div>
+
+          {Object.keys(newEvent.inviteMembers).length > 0 && (
+            <div className={styles.modal_line} />
+          )}
           <InviteInput />
           <InviteMembers members={newEvent.inviteMembers} />
+          {Object.keys(newEvent.inviteMembers).length > 0 && (
+            <div className={styles.modal_line} />
+          )}
           <div className={styles.google_meet}>
             <img
               className={styles.google_meet_img}

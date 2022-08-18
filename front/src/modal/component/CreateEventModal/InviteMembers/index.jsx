@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faQuestionCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../../../../components/common/Tooltip';
 import { useDispatch } from 'react-redux';
 import { removeInviteMember } from '../../../../store/newEvent';
@@ -11,12 +11,16 @@ const Index = ({ members }) => {
   function clickRemove(member) {
     dispatch(removeInviteMember(member));
   }
+
+  const isExistCanNotInviteMember = Object.values(members).find(
+    member => !member.canInvite,
+  );
   return (
     <div>
       <div />
       <div className={styles.invite_members}>
         {Object.values(members).map(member => (
-          <div key={member.id}>
+          <div key={member.id} className={styles.invite_member_container}>
             <div className={styles.invite_member}>
               <img
                 src={
@@ -43,6 +47,28 @@ const Index = ({ members }) => {
             </Tooltip>
           </div>
         ))}
+        {isExistCanNotInviteMember && (
+          <div className={styles.help_container}>
+            <em>* 캘린더를 표시할 수 없습니다.</em>
+            <FontAwesomeIcon
+              icon={faQuestionCircle}
+              className={styles.icon_help}
+            />
+            <div className={styles.help_modal}>
+              <p>
+                Google Calendar에서 다음 이유 중 하나로 인해 표시된 참석자를
+                확인할 수 없습니다.
+              </p>
+              <ul>
+                <li>참석자가 Google Calendar를 사용하지 않을 수 있습니다.</li>
+                <li>표시된 캘린더에 엑세스할 권한이 없을 수도 있습니다.</li>
+                <li>
+                  200명 이상의 참석자가 포함된 그룹을 초대했을 수 있습니다.
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
