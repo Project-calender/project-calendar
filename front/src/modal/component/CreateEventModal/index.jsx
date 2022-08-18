@@ -89,7 +89,7 @@ const Index = ({ children: ModalList }) => {
     const guestEmail = e.target.value;
     const member = checkEventInvite({
       guestEmail,
-      calendarId: newEvent.calendarId,
+      calendarId: calendars[newEvent.calendarId].id,
     });
     console.log(member);
     dispatch(

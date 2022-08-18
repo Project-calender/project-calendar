@@ -26,4 +26,5 @@ export const EVENT_URL = {
   UPDATE_PRIVATE_EVENT_COLOR: '/privateEvent/editPrivateEventColor',
   SEARCH_EVENT: '/event/searchEvent',
   CHECK_EVENT_INVITE: '/event/inviteCheck',
+  CHECK_CREATE_EVENT_INVITE: '/event/inviteCheckBeforeCreateEvent',
 };

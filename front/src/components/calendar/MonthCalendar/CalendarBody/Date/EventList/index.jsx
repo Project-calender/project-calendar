@@ -15,6 +15,7 @@ import {
   SimpleEventOptionModalContext,
 } from '../../../../../../context/EventModalContext';
 import { calendarByEventIdsSelector } from '../../../../../../store/selectors/calendars';
+import { newEventEmptyBarByTimeSelector } from '../../../../../../store/selectors/newEvent';
 
 const Index = ({ date, maxHeight }) => {
   const { showModal: showEventListModal, hideModal: hideEventListModal } =
@@ -35,9 +36,13 @@ const Index = ({ date, maxHeight }) => {
     eventsByEventIdsSelector(state, eventBars || []),
   );
 
+  const newEventEmptyBar = useSelector(state =>
+    newEventEmptyBarByTimeSelector(state, date.time),
+  );
+
   if (!eventBars) return;
 
-  const countEventBar = Math.floor(maxHeight / 30);
+  const countEventBar = Math.floor(maxHeight / 30) - (newEventEmptyBar ? 1 : 0);
   const previewEvent = countEventBar ? eventBars.slice(0, countEventBar) : [];
   const restEvent = eventBars.slice(countEventBar).filter(event => event);
 
@@ -73,6 +78,7 @@ const Index = ({ date, maxHeight }) => {
       ref={$eventList}
       data-drag-date={date.time}
     >
+      {newEventEmptyBar && <EventBar />}
       {previewEvent.slice(0, countEventBar).map((eventBar, index) => (
         <EventBar
           key={index}

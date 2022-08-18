@@ -16,6 +16,7 @@ import { createEventBar } from '../../../hooks/useCreateEventBar';
 
 const Index = ({ hideModal, modalData }) => {
   const { selectedDate, style } = modalData;
+
   const dispatch = useDispatch();
   const newEvent = useSelector(newEventSelector);
   function onClickDate(e, date) {
@@ -32,6 +33,7 @@ const Index = ({ hideModal, modalData }) => {
       newDate.endTime = new Moment(newEvent.endTime).addDate(diffDate).time;
       dispatch(selectDate(date));
     }
+
     if (selectedDate.endDate) {
       newDate.endTime = date.time;
     }
@@ -40,8 +42,8 @@ const Index = ({ hideModal, modalData }) => {
       standardDateTime: newDate.startTime,
       endDateTime: newDate.endTime,
     });
-    dispatch(updateNewEventBarProperties(newDate));
     dispatch(setNewEventBars(eventBars));
+    dispatch(updateNewEventBarProperties(newDate));
     hideModal();
     e.stopPropagation();
   }

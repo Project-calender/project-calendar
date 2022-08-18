@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
+import Moment from '../utils/moment';
 import { EVENT } from './events';
 
 const initialState = {
   bars: [],
+  emptyBars: [],
   calendarId: 0,
   eventName: '',
   eventColor: null,
@@ -24,6 +26,14 @@ const newEvent = createSlice({
     resetNewEventState: () => initialState,
     setNewEventBars(state, { payload }) {
       state.bars = payload;
+      state.emptyBars = payload.reduce((emptyBars, bar) => {
+        let date = new Moment(bar.time);
+        date = date.addDate(-date.day);
+        for (let i = 0; i < 7; i++) {
+          emptyBars.push(date.addDate(i).time);
+        }
+        return emptyBars;
+      }, []);
     },
     updateNewEventBarProperty(state, { payload: [key, value] }) {
       state[key] = value;

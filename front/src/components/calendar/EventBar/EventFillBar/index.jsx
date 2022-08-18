@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import { EVENT } from '../../../store/events';
+import { EVENT } from '../../../../store/events';
 
 const Index = ({
   event,

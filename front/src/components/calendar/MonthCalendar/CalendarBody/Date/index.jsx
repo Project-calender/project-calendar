@@ -6,6 +6,7 @@ import useNavigateDayCalendar from '../../../../../hooks/useNavigateDayCalendar'
 
 import NewEvent from './NewEvent';
 import EventList from './EventList';
+
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { newEventBarByTimeSelector } from '../../../../../store/selectors/newEvent';
@@ -14,6 +15,10 @@ const Index = ({ date }) => {
   const { moveDayCalendar } = useNavigateDayCalendar();
   const containerDiv = useRef();
   const [maxHeight, setMaxHight] = useState(0);
+
+  const newEventBar = useSelector(state =>
+    newEventBarByTimeSelector(state, date.time),
+  );
 
   const handleResize = useCallback(() => {
     const height = containerDiv.current?.clientHeight;
@@ -26,9 +31,6 @@ const Index = ({ date }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize, date]);
 
-  const eventBar = useSelector(state =>
-    newEventBarByTimeSelector(state, date.time),
-  );
   return (
     <td className={initClassName(date)}>
       <em onClick={() => moveDayCalendar(date)}>{getTitleDate(date)}</em>
@@ -37,7 +39,7 @@ const Index = ({ date }) => {
         data-drag-date={date.time}
         ref={containerDiv}
       >
-        {eventBar && <NewEvent eventBar={eventBar} setMaxHight={setMaxHight} />}
+        {newEventBar && <NewEvent eventBar={newEventBar} />}
         <EventList date={date} maxHeight={maxHeight} />
         <div className={styles.event_list}></div>
       </div>

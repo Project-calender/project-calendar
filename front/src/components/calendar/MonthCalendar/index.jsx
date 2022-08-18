@@ -11,7 +11,10 @@ import { SimpleEventOptionModalContext } from '../../../context/EventModalContex
 import { useDispatch } from 'react-redux';
 import useDragDate from '../../../hooks/useDragDate';
 import useCreateEventBar from '../../../hooks/useCreateEventBar';
-import { updateNewEventBarProperties } from '../../../store/newEvent';
+import {
+  setNewEventBars,
+  updateNewEventBarProperties,
+} from '../../../store/newEvent';
 import { EventBarContext } from '../../../context/EventBarContext';
 
 const Index = ({ month }) => {
@@ -42,6 +45,11 @@ const Index = ({ month }) => {
       );
     }
   }, [dispatch, newEventBars, selectedDateRange]);
+
+  useEffect(() => {
+    if (isMouseDown || !newEventBars.length) return;
+    dispatch(setNewEventBars(newEventBars));
+  }, [dispatch, newEventBars, isMouseDown]);
 
   return (
     <ModalLayout

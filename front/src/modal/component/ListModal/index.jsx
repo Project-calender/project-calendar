@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 
 const Index = ({ hideModal, modalData, onClickItem }) => {
   const { data, name, style } = modalData || {};
-  console.log(data);
   return (
     <Modal
       hideModal={hideModal}
