@@ -21,7 +21,7 @@ export const EVENT_URL = {
   GET_ALL_CALENDAR_AND_EVENT: '/event/getAllEvent',
   GET_EVENT_DETAIL: '/event/getGroupEvent',
   UPDATE_EVENT_INVITE_STATE: '/event/changeEventInviteState',
-  CREATE_GROUP_EVENT: '/event/createGroupEvent',
+  CREATE_GROUP_EVENT: '/event/createGroupEventWithInvite',
   DELETE_GROUP_EVENT: '/event/deleteGroupEvent',
   UPDATE_GROUP_EVENT_COLOR: '/event/editGroupEventColor',
   CREATE_PRIVATE_EVENT: '/privateEvent/createPrivateEvent',

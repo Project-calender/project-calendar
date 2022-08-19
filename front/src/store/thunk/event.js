@@ -55,7 +55,7 @@ export const createEvent = createAsyncThunk(
       eventInfo.calendarId > 0
         ? EVENT_URL.CREATE_GROUP_EVENT
         : EVENT_URL.CREATE_PRIVATE_EVENT;
-
+    console.log(eventInfo);
     const { data } = await axios.post(url, {
       ...eventInfo,
     });
@@ -87,24 +87,30 @@ export const deleteEvent = createAsyncThunk(
 export const updateEventInviteState = createAsyncThunk(
   EVENT_URL.UPDATE_EVENT_INVITE_STATE,
   async ({ event, state }) => {
-    await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
-      eventId: -event.id,
-      state,
-    });
+    await axios
+      .post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
+        eventId: event.groupEventId,
+        state,
+      })
+      .catch(err => console.log(err));
     return { id: event.id, state };
   },
 );
 
 export const updateEventColor = createAsyncThunk(
   EVENT_URL.UPDATE_GROUP_EVENT_COLOR,
-  async ({ eventId, color }) => {
+  async ({ calendarId, eventId, color }) => {
     const url =
       eventId > 0
         ? EVENT_URL.UPDATE_GROUP_EVENT_COLOR
         : EVENT_URL.UPDATE_PRIVATE_EVENT_COLOR;
 
-    const res = await axios.post(url, { eventId: Math.abs(eventId), color });
-    console.log(res);
+    await axios.post(url, {
+      calendarId,
+      eventId: Math.abs(eventId),
+      color,
+    });
+
     return { id: eventId, color };
   },
 );
@@ -117,20 +123,21 @@ export const getEventDetail = event => {
 
 export const checkEventInvite = async ({ guestEmail, calendarId }) => {
   try {
-    const { data } = await axios.post(EVENT_URL.CHECK_CREATE_EVENT_INVITE, {
+    const res = await axios.post(EVENT_URL.CHECK_CREATE_EVENT_INVITE, {
       guestEmail,
       calendarId,
     });
-    const { id, email, nickname, ProfileImages } = data.guest;
+    const { id, email, nickname, ProfileImages } = res.data.guest;
     return {
       id,
       email,
       nickname,
       profileImage: ProfileImages[0].src,
-      canInvite: data.canInvite,
+      canInvite: res.data.canInvite,
     };
   } catch (error) {
-    return { canInvite: false, id: guestEmail, email: guestEmail };
+    const { canInvite, message } = error.response.data || {};
+    return { canInvite, id: guestEmail, email: guestEmail, message };
   }
 };
 

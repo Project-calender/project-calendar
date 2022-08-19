@@ -29,7 +29,7 @@ import InviteMembers from './InviteMembers';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   baseCalendarIndexSelector,
-  selectAllCalendar,
+  calendarsByWriteAuthoritySelector,
 } from '../../../store/selectors/calendars';
 
 import EventColorOption from '../../../components/calendar/EventColorOption';
@@ -39,7 +39,7 @@ import {
   updateNewEventBarProperties,
 } from '../../../store/newEvent';
 import { useCallback } from 'react';
-import { createEvent, inviteGroupEvent } from '../../../store/thunk/event';
+import { createEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
 import { useState } from 'react';
@@ -55,7 +55,7 @@ const Index = ({ children: ModalList }) => {
   } = useContext(EventInfoListModalContext);
   const newEvent = useSelector(newEventSelector);
 
-  const calendars = useSelector(selectAllCalendar);
+  const calendars = useSelector(calendarsByWriteAuthoritySelector);
   const baseCalendarIndex = useSelector(baseCalendarIndexSelector);
   useEffect(() => {
     dispatch(
@@ -113,9 +113,7 @@ const Index = ({ children: ModalList }) => {
     const inviteMembers = Object.values(newEvent.inviteMembers).filter(
       member => member.canInvite,
     );
-    if (inviteMembers.length) {
-      inviteGroupEvent({ guests: inviteMembers.map(member => member.email) });
-    }
+
     dispatch(
       createEvent({
         ...newEvent,
@@ -126,6 +124,7 @@ const Index = ({ children: ModalList }) => {
           newEvent.calendarColor === newEvent.eventColor
             ? null
             : newEvent.eventColor,
+        guests: inviteMembers.map(member => member.email),
       }),
     );
     initCreateEventModal();

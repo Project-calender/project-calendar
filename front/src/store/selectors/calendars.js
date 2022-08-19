@@ -5,6 +5,11 @@ import { checkedCalendarSelector } from './user';
 export const { selectAll: selectAllCalendar, selectById: selectCalendarById } =
   calendarsAdapter.getSelectors(state => state.calendars);
 
+export const calendarsByWriteAuthoritySelector = createSelector(
+  [selectAllCalendar],
+  calendars => calendars.filter(calendar => calendar.authority > 1),
+);
+
 export const myCalendarSelector = createSelector(
   [selectAllCalendar],
   calendars => calendars.filter(calendar => calendar.authority > 2),

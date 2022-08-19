@@ -24,6 +24,7 @@ const Index = ({ hideModal, modalData }) => {
   function onClickColor(e, color) {
     dispatch(
       updateEventColor({
+        calendarId: event.PrivateCalendarId || event.CalendarId,
         eventId: event.id,
         color: calendar.color === color ? null : color,
       }),
