@@ -39,7 +39,7 @@ import {
   updateNewEventBarProperties,
 } from '../../../store/newEvent';
 import { useCallback } from 'react';
-import { createEvent } from '../../../store/thunk/event';
+import { createEvent, inviteGroupEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
 import { useState } from 'react';
@@ -110,6 +110,12 @@ const Index = ({ children: ModalList }) => {
   }
 
   function saveEvent() {
+    const inviteMembers = Object.values(newEvent.inviteMembers).filter(
+      member => member.canInvite,
+    );
+    if (inviteMembers.length) {
+      inviteGroupEvent({ guests: inviteMembers.map(member => member.email) });
+    }
     dispatch(
       createEvent({
         ...newEvent,
