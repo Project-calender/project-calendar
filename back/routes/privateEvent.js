@@ -179,7 +179,7 @@ router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
 router.post("/editPrivateEventColor", authJWT, async (req, res, next) => {
   try {
     const myEvent = await PrivateEvent.findOne({
-      id: req.body.eventId,
+      where: { id: req.body.eventId },
     });
 
     if (!myEvent) {
@@ -191,13 +191,13 @@ router.post("/editPrivateEventColor", authJWT, async (req, res, next) => {
     await sequelize.transaction(async (t) => {
       await myEvent.update(
         {
-          color: req.body.color ? req.body.color : null,
+          color: req.body.color,
         },
         { transaction: t }
       );
     });
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json(myEvent);
   } catch (error) {
     console.error(error);
     next(error);
