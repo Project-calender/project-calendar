@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import AddEventButton from './AddEventButton';
@@ -16,10 +16,19 @@ import CalendarOptionModal from '../../modal/component/CalendarOptionModal';
 import ResignCalendarModal from '../../modal/component/ResignCalendarModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedDateSelector } from '../../store/selectors/date';
-import { selectDate } from '../../store/date';
+import { addMonth, selectDate } from '../../store/date';
+import { useState } from 'react';
+import Moment from '../../utils/moment';
 
 const Index = ({ isSideBarOn }) => {
   const selectedDate = useSelector(selectedDateSelector);
+  const [miniCalendarDate, setMiniCalendarDate] = useState(
+    new Moment(selectedDate.time),
+  );
+
+  useEffect(() => {
+    setMiniCalendarDate(new Moment(selectedDate.time));
+  }, [selectedDate]);
 
   const dispatch = useDispatch();
   function onClickDate(e, date) {
@@ -37,7 +46,11 @@ const Index = ({ isSideBarOn }) => {
           <div className={styles.sidebar_calender}>
             <MiniCalendar
               selectedDate={selectedDate}
+              calendarDate={miniCalendarDate}
+              setCalendarDate={setMiniCalendarDate}
               onClickDate={onClickDate}
+              onClickPreviousMonth={() => dispatch(addMonth(-1))}
+              onClickNextMonth={() => dispatch(addMonth(1))}
             />
             <UserSearch />
             <MyCalendarList />

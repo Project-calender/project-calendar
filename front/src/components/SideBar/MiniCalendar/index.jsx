@@ -6,8 +6,23 @@ import CalendarHeader from './CalendarHeader';
 import CalendarBody from './CalendarBody';
 import { miniCalendarContext } from '../../../context/EventModalContext';
 
-const Index = ({ selectedDate, onClickDate }) => {
-  const miniCalendarContextData = { selectedDate, onClickDate };
+const Index = ({
+  selectedDate,
+  calendarDate,
+  setCalendarDate,
+  onClickDate,
+  onClickNextMonth = () => {},
+  onClickPreviousMonth = () => {},
+}) => {
+  const miniCalendarContextData = {
+    selectedDate,
+    calendarDate,
+    setCalendarDate,
+    onClickDate,
+    onClickNextMonth,
+    onClickPreviousMonth,
+  };
+
   return (
     <miniCalendarContext.Provider value={miniCalendarContextData}>
       <div className={styles.calendar_wrap}>
@@ -20,6 +35,10 @@ const Index = ({ selectedDate, onClickDate }) => {
 
 Index.propTypes = {
   selectedDate: PropTypes.object,
+  calendarDate: PropTypes.object,
+  setCalendarDate: PropTypes.func,
   onClickDate: PropTypes.func,
+  onClickNextMonth: PropTypes.func,
+  onClickPreviousMonth: PropTypes.func,
 };
 export default Index;

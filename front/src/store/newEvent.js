@@ -74,5 +74,5 @@ export function calculateCurrentTimeRange(startTime, endTime) {
     endDate.setMinutes(endDate.getMinutes() + 15);
   }
 
-  return [startDate, endDate];
+  return [startDate, endDate].map(date => date.getTime());
 }

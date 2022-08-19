@@ -26,15 +26,17 @@ const Index = ({ showEventInfoListModal }) => {
 
   const dispatch = useDispatch();
   function handleAllDay(e, checked) {
-    const [startDate, endDate] = calculateCurrentTimeRange(
-      newEvent.startTime,
-      newEvent.endTime,
-    );
+    const [startTime, endTime] =
+      e.target?.checked || checked
+        ? [newEvent.startTime, newEvent.endTime].map(
+            time => new Moment(time).resetTime().time,
+          )
+        : calculateCurrentTimeRange(newEvent.startTime, newEvent.endTime);
 
     dispatch(
       updateNewEventBarProperties({
-        startTime: startDate.getTime(),
-        endTime: endDate.getTime(),
+        startTime,
+        endTime,
         allDay:
           e.target?.checked || checked ? EVENT.allDay.true : EVENT.allDay.false,
       }),

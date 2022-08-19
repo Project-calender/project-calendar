@@ -3,14 +3,16 @@ import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../../../common/Tooltip';
-import { useDispatch } from 'react-redux';
-import { addMonth } from '../../../../store/date';
 import { miniCalendarContext } from '../../../../context/EventModalContext';
 
 const Index = () => {
-  const dispatch = useDispatch();
-  const { selectedDate } = useContext(miniCalendarContext);
-  const [year, month] = [selectedDate.year, selectedDate.month];
+  const {
+    calendarDate,
+    setCalendarDate,
+    onClickNextMonth,
+    onClickPreviousMonth,
+  } = useContext(miniCalendarContext);
+  const [year, month] = [calendarDate.year, calendarDate.month];
 
   return (
     <div className={styles.year}>
@@ -20,12 +22,22 @@ const Index = () => {
       </div>
       <div className={styles.year_btt}>
         <Tooltip title="이전 달">
-          <button onClick={() => dispatch(addMonth(-1))}>
+          <button
+            onClick={e => {
+              onClickPreviousMonth(e);
+              setCalendarDate(calendarDate.addMonth(-1));
+            }}
+          >
             <FontAwesomeIcon icon={faAngleLeft} />
           </button>
         </Tooltip>
         <Tooltip title="다음 달">
-          <button onClick={() => dispatch(addMonth(1))}>
+          <button
+            onClick={e => {
+              onClickNextMonth(e);
+              setCalendarDate(calendarDate.addMonth(1));
+            }}
+          >
             <FontAwesomeIcon icon={faAngleRight} />
           </button>
         </Tooltip>
