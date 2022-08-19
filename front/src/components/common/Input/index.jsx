@@ -3,7 +3,13 @@ import { useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
-const Index = ({ type, autoFocus = false, placeholder, onBlur = () => {} }) => {
+const Index = ({
+  type,
+  autoFocus = false,
+  placeholder,
+  onBlur = () => {},
+  onKeyDown = () => {},
+}) => {
   const [isInputFocus, setInputFocus] = useState(false);
 
   function handleBlurEvent(e) {
@@ -18,6 +24,7 @@ const Index = ({ type, autoFocus = false, placeholder, onBlur = () => {} }) => {
         placeholder={placeholder}
         onFocus={() => setInputFocus(true)}
         onBlur={handleBlurEvent}
+        onKeyDown={onKeyDown}
       />
       <hr className={`${styles.input_line} ${styles.line_active}`} />
       <hr
@@ -34,6 +41,7 @@ Index.propTypes = {
   autoFocus: PropTypes.bool,
   placeholder: PropTypes.string,
   onBlur: PropTypes.func,
+  onKeyDown: PropTypes.func,
 };
 
 export default Index;

@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styles from './style.module.css';
 
 import WeekDaysHeader from './WeekDaysHeader';
 import Week from './Week';
-import PropTypes from 'prop-types';
 import { calculateMonth } from '../../../../utils/moment';
+import { miniCalendarContext } from '../../../../context/EventModalContext';
 
-const Index = ({ year, month }) => {
+const Index = () => {
+  const { calendarDate } = useContext(miniCalendarContext);
+  const [year, month] = [calendarDate.year, calendarDate.month];
   const weeks = calculateMonth(year, month);
 
   return (
@@ -21,11 +23,6 @@ const Index = ({ year, month }) => {
       </tbody>
     </table>
   );
-};
-
-Index.propTypes = {
-  year: PropTypes.number,
-  month: PropTypes.number,
 };
 
 export default Index;

@@ -1,17 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
 import WeekDayHeader from './WeekDayHeader';
 import CalendarBody from './CalendarBody';
-import SimpleEventOptionModal from '../../../modal/component/SimpleEventOptionModal';
-import ModalLayout from '../../../modal/layout/ModalLayout';
-import { SimpleEventOptionModalContext } from '../../../context/EventModalContext';
+import { CreateEventModalContext } from '../../../context/EventModalContext';
 
 import { useDispatch } from 'react-redux';
 import useDragDate from '../../../hooks/useDragDate';
 import useCreateEventBar from '../../../hooks/useCreateEventBar';
-import { updateNewEventBarProperties } from '../../../store/newEvent';
+import {
+  setNewEventBars,
+  updateNewEventBarProperties,
+} from '../../../store/newEvent';
 import { EventBarContext } from '../../../context/EventBarContext';
 
 const Index = ({ month }) => {
@@ -43,27 +44,49 @@ const Index = ({ month }) => {
     }
   }, [dispatch, newEventBars, selectedDateRange]);
 
+  const { showModal: showCreateEventModal } = useContext(
+    CreateEventModalContext,
+  );
+  useEffect(() => {
+    if (isMouseDown || !newEventBars.length) return;
+    dispatch(setNewEventBars(newEventBars));
+
+    // 위치 조정 필요 (임시)
+    const dom = document.getElementsByName('new_event')[0];
+    const { top, left, width } = dom.getBoundingClientRect();
+    const position = { top, left: left - 470 };
+    if (position.left < 0) {
+      position.left = left;
+      position.top = position.top + 30;
+    }
+    if (position.top + 550 > window.innerHeight) {
+      position.top = window.innerHeight - 580;
+      position.left = left + width;
+      if (position.left + 470 > window.innerWidth) {
+        position.left = left - 470;
+      }
+    }
+    showCreateEventModal({
+      style: { ...position },
+    });
+  }, [dispatch, newEventBars, isMouseDown, showCreateEventModal]);
+
   return (
-    <ModalLayout
-      Modal={SimpleEventOptionModal}
-      Context={SimpleEventOptionModalContext}
-    >
-      <EventBarContext.Provider value={dragContextData}>
-        <table
-          className={styles.calendar_table}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseMove={isMouseDown ? handleDrag : null}
-        >
-          <thead>
-            <WeekDayHeader />
-          </thead>
-          <tbody>
-            <CalendarBody month={month} />
-          </tbody>
-        </table>
-      </EventBarContext.Provider>
-    </ModalLayout>
+    <EventBarContext.Provider value={dragContextData}>
+      <table
+        className={styles.calendar_table}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={isMouseDown ? handleDrag : null}
+      >
+        <thead>
+          <WeekDayHeader />
+        </thead>
+        <tbody>
+          <CalendarBody month={month} />
+        </tbody>
+      </table>
+    </EventBarContext.Provider>
   );
 };
 

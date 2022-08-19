@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import AddEventButton from './AddEventButton';
@@ -9,15 +9,33 @@ import MiniCalendar from './MiniCalendar';
 
 import ModalLayout from '../../modal/layout/ModalLayout';
 import {
-  DeleteCalendarContext,
+  ResignCalendarContext,
   CalendarOptionContext,
 } from '../../context/EventModalContext';
 import CalendarOptionModal from '../../modal/component/CalendarOptionModal';
-import DeleteCalendarModal from '../../modal/component/DeleteCalendarModal';
+import ResignCalendarModal from '../../modal/component/ResignCalendarModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectedDateSelector } from '../../store/selectors/date';
+import { addMonth, selectDate } from '../../store/date';
+import { useState } from 'react';
+import Moment from '../../utils/moment';
 
 const Index = ({ isSideBarOn }) => {
+  const selectedDate = useSelector(selectedDateSelector);
+  const [miniCalendarDate, setMiniCalendarDate] = useState(
+    new Moment(selectedDate.time),
+  );
+
+  useEffect(() => {
+    setMiniCalendarDate(new Moment(selectedDate.time));
+  }, [selectedDate]);
+
+  const dispatch = useDispatch();
+  function onClickDate(e, date) {
+    dispatch(selectDate(date));
+  }
   return (
-    <ModalLayout Modal={DeleteCalendarModal} Context={DeleteCalendarContext}>
+    <ModalLayout Modal={ResignCalendarModal} Context={ResignCalendarContext}>
       <ModalLayout Modal={CalendarOptionModal} Context={CalendarOptionContext}>
         <aside
           className={`${styles.sidebar} ${!isSideBarOn ? styles.close : null}`}
@@ -26,7 +44,14 @@ const Index = ({ isSideBarOn }) => {
             <AddEventButton />
           </div>
           <div className={styles.sidebar_calender}>
-            <MiniCalendar />
+            <MiniCalendar
+              selectedDate={selectedDate}
+              calendarDate={miniCalendarDate}
+              setCalendarDate={setMiniCalendarDate}
+              onClickDate={onClickDate}
+              onClickPreviousMonth={() => dispatch(addMonth(-1))}
+              onClickNextMonth={() => dispatch(addMonth(1))}
+            />
             <UserSearch />
             <MyCalendarList />
             <OtherCalendarList />

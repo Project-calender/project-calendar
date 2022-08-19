@@ -1,8 +1,9 @@
 import React from 'react';
-import Moment from '../../../utils/moment';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import { EVENT } from '../../../store/events';
+
+import { EVENT } from '../../../../store/events';
+import Moment from '../../../../utils/moment';
 
 const Index = ({
   event,

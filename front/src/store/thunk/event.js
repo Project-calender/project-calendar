@@ -55,7 +55,7 @@ export const createEvent = createAsyncThunk(
       eventInfo.calendarId > 0
         ? EVENT_URL.CREATE_GROUP_EVENT
         : EVENT_URL.CREATE_PRIVATE_EVENT;
-
+    console.log(eventInfo);
     const { data } = await axios.post(url, {
       ...eventInfo,
     });
@@ -87,23 +87,30 @@ export const deleteEvent = createAsyncThunk(
 export const updateEventInviteState = createAsyncThunk(
   EVENT_URL.UPDATE_EVENT_INVITE_STATE,
   async ({ event, state }) => {
-    await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
-      eventId: -event.id,
-      state,
-    });
+    await axios
+      .post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
+        eventId: event.groupEventId,
+        state,
+      })
+      .catch(err => console.log(err));
     return { id: event.id, state };
   },
 );
 
 export const updateEventColor = createAsyncThunk(
   EVENT_URL.UPDATE_GROUP_EVENT_COLOR,
-  async ({ eventId, color }) => {
-    // const url =
-    //   eventId > 0
-    //     ? EVENT_URL.UPDATE_GROUP_EVENT_COLOR
-    //     : EVENT_URL.UPDATE_PRIVATE_EVENT_COLOR;
+  async ({ calendarId, eventId, color }) => {
+    const url =
+      eventId > 0
+        ? EVENT_URL.UPDATE_GROUP_EVENT_COLOR
+        : EVENT_URL.UPDATE_PRIVATE_EVENT_COLOR;
 
-    // await axios.post(url, { eventId, color });
+    await axios.post(url, {
+      calendarId,
+      eventId: Math.abs(eventId),
+      color,
+    });
+
     return { id: eventId, color };
   },
 );
@@ -112,4 +119,29 @@ export const getEventDetail = event => {
   return axios.post(EVENT_URL.GET_EVENT_DETAIL, {
     eventId: event.PrivateCalendarId ? event.groupEventId : event.id,
   });
+};
+
+export const checkEventInvite = async ({ guestEmail, calendarId }) => {
+  try {
+    const res = await axios.post(EVENT_URL.CHECK_CREATE_EVENT_INVITE, {
+      guestEmail,
+      calendarId,
+    });
+    const { id, email, nickname, ProfileImages } = res.data.guest;
+    return {
+      id,
+      email,
+      nickname,
+      profileImage: ProfileImages[0].src,
+      canInvite: res.data.canInvite,
+    };
+  } catch (error) {
+    const { canInvite, message } = error.response.data || {};
+    return { canInvite, id: guestEmail, email: guestEmail, message };
+  }
+};
+
+export const inviteGroupEvent = async ({ guests }) => {
+  const res = await axios.post(EVENT_URL.INVITE_GROUP_EVENT, { guests });
+  console.log(res, guests);
 };

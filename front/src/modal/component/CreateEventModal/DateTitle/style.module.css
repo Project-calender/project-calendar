@@ -1,0 +1,15 @@
+.date_title { position: relative; left: -10px;  padding: 5px 10px; cursor: pointer; border-radius: 4px; } 
+.date_title_active:hover { background: #f7f7f7; } 
+.date_title > h3 { display: inline-block; border-bottom: 1px solid transparent; } 
+.date_title > h3:hover { border-bottom: 1px solid #afafb0; } 
+.date_title_space { margin: 0px 5px; font-size: 16px; } 
+.date_title_start {margin-left: 5px;}
+.date_title_end {margin-right: 5px;}
+
+.time_add_button { background: white; border: 1px solid gainsboro; width: 80px; height: 30px; margin-left: 55px; } 
+
+.list_modal {display: flex; align-items: center; position: relative; left: -10px; padding: 5px 10px 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 0px !important; }
+.list_modal svg { margin-right: 0px; }
+.list_modal:hover {background: #f7f7f7;}
+
+.caret_down { margin: 0px 10px; } 

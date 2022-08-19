@@ -1,13 +1,14 @@
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { EventDetailModalContext } from '../../../context/EventModalContext';
 import styles from './style.module.css';
-import EventTimeBar from '../EventTimeBar';
-import EventFillBar from '../EventFillBar';
+import PropTypes from 'prop-types';
+import EventTimeBar from './EventTimeBar';
+import EventFillBar from './EventFillBar';
+import Moment from '../../../utils/moment';
+
+import { EventDetailModalContext } from '../../../context/EventModalContext';
 import { useSelector } from 'react-redux';
 import { baseCalendarSelector } from '../../../store/selectors/calendars';
 import { EVENT } from '../../../store/events';
-import Moment from '../../../utils/moment';
 import { getEventDetail } from '../../../store/thunk/event';
 
 const Index = ({

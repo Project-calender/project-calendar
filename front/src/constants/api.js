@@ -12,17 +12,27 @@ export const CALENDAR_URL = {
   UPDATE_GROUP_CALENDAR: '/calendar/editGroupCalendar',
   UPDATE_PRIVATE_CALENDAR: '/privateCalendar/editPrivateCalendar',
   DELETE_GROUP_CALENDAR: '/calendar/deleteGroupCalendar',
+  RESIGN_GROUP_CALENDAR: '/calendar/resignCalendar',
+  ACCEPT_CALENDAR_INVITE: '/calendar/acceptCalendarInvite',
+  REJECT_CALENDAR_INVITE: '/calendar/rejectCalendarInvite',
 };
 
 export const EVENT_URL = {
   GET_ALL_CALENDAR_AND_EVENT: '/event/getAllEvent',
   GET_EVENT_DETAIL: '/event/getGroupEvent',
   UPDATE_EVENT_INVITE_STATE: '/event/changeEventInviteState',
-  CREATE_GROUP_EVENT: '/event/createGroupEvent',
+  CREATE_GROUP_EVENT: '/event/createGroupEventWithInvite',
   DELETE_GROUP_EVENT: '/event/deleteGroupEvent',
   UPDATE_GROUP_EVENT_COLOR: '/event/editGroupEventColor',
   CREATE_PRIVATE_EVENT: '/privateEvent/createPrivateEvent',
   DELETE_PRIVATE_EVENT: '/privateEvent/deletePrivateEvent',
   UPDATE_PRIVATE_EVENT_COLOR: '/privateEvent/editPrivateEventColor',
   SEARCH_EVENT: '/event/searchEvent',
+  CHECK_EVENT_INVITE: '/event/inviteCheck',
+  CHECK_CREATE_EVENT_INVITE: '/event/inviteCheckBeforeCreateEvent',
+  INVITE_GROUP_EVENT: '/event/inviteGroupEvent',
+};
+
+export const ALERT_URL = {
+  GET_ALL_ALERT: '/alert/getAlerts',
 };

@@ -40,6 +40,16 @@ class Moment {
     return new Moment(date);
   }
 
+  addMinute(number) {
+    const date = new Date(this.time);
+    date.setMinutes(date.getMinutes() + number);
+    return new Moment(date);
+  }
+
+  calculateDateDiff(time) {
+    return -((this.time - time) / (1000 * 60 * 60 * 24));
+  }
+
   resetTime() {
     return new Moment(new Date(new Date(this.time).toDateString()));
   }

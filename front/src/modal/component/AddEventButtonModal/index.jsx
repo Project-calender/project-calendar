@@ -32,7 +32,7 @@ const Index = ({ hideModal, modalData }) => {
       endDateTime: newEventTime,
     });
     if (e.target.innerText === '이벤트') {
-      const [startDate, endDate] = calculateCurrentTimeRange(
+      const [startTime, endTime] = calculateCurrentTimeRange(
         new Moment(new Date()).resetTime().time,
         new Moment(new Date()).resetTime().time,
       );
@@ -40,8 +40,8 @@ const Index = ({ hideModal, modalData }) => {
       dispatch(
         updateNewEventBarProperties({
           bars: newEventBar,
-          startTime: startDate.getTime(),
-          endTime: endDate.getTime(),
+          startTime,
+          endTime,
           allDay: EVENT.allDay.false,
         }),
       );
