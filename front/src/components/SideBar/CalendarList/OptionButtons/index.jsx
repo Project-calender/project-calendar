@@ -41,7 +41,7 @@ const Index = ({ calendar }) => {
     const maxTop = window.innerHeight - 260;
     showCalendarOptionModal({
       calendar,
-      style: { top: top + 5 > maxTop ? maxTop : top + 5, left: left },
+      style: { top: top > maxTop ? maxTop : top, left: left },
     });
     e.stopPropagation();
   }

@@ -86,7 +86,9 @@ const Index = ({ date, maxHeight }) => {
           calendar={calendars[index]}
           eventBar={eventBar}
           handleEventDetailMadal={handleEventDetailMadal}
-          onContextMenu={handleSimpleEventOptionModal}
+          onContextMenu={
+            calendars[index]?.authority >= 2 && handleSimpleEventOptionModal
+          }
         />
       ))}
       {restEvent.length > 0 && (
