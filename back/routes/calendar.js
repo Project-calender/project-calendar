@@ -77,8 +77,12 @@ router.post("/createGroupCalendar", authJWT, async (req, res, next) => {
 router.post("/editGroupCalendar", authJWT, async (req, res, next) => {
   try {
     const myAuthority = await CalendarMember.findOne({
-      UserId: req.myId,
-      CalendarId: req.body.calendarId,
+      where: {
+        [Op.and]: {
+          UserId: req.myId,
+          CalendarId: req.body.calendarId,
+        },
+      },
     });
 
     if (myAuthority.authority < 3) {
@@ -123,8 +127,12 @@ router.post("/editGroupCalendar", authJWT, async (req, res, next) => {
 router.post("/deleteGroupCalendar", authJWT, async (req, res, next) => {
   try {
     const myAuthority = await CalendarMember.findOne({
-      UserId: req.myId,
-      CalendarId: req.body.calendarId,
+      where: {
+        [Op.and]: {
+          UserId: req.myId,
+          CalendarId: req.body.calendarId,
+        },
+      },
     });
 
     if (myAuthority.authority < 3) {
@@ -162,10 +170,13 @@ router.post("/deleteGroupCalendar", authJWT, async (req, res, next) => {
 router.post("/inviteGroupCalendar", authJWT, async (req, res, next) => {
   try {
     const myAuthority = await CalendarMember.findOne({
-      UserId: req.myId,
-      CalendarId: req.body.calendarId,
+      where: {
+        [Op.and]: {
+          UserId: req.myId,
+          CalendarId: req.body.calendarId,
+        },
+      },
     });
-
     if (myAuthority.authority < 3) {
       return res.status(400).send({ message: "권한이 없습니다!" });
     }
@@ -268,8 +279,12 @@ router.post("/resignCalendar", authJWT, async (req, res, next) => {
 router.post("/sendOutUser", authJWT, async (req, res, next) => {
   try {
     const myAuthority = await CalendarMember.findOne({
-      UserId: req.myId,
-      CalendarId: req.body.calendarId,
+      where: {
+        [Op.and]: {
+          UserId: req.myId,
+          CalendarId: req.body.calendarId,
+        },
+      },
     });
 
     if (myAuthority.authority < 3) {
@@ -465,8 +480,12 @@ router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
 router.post("/giveAuthority", authJWT, async (req, res, next) => {
   try {
     const myAuthority = await CalendarMember.findOne({
-      UserId: req.myId,
-      CalendarId: req.body.calendarId,
+      where: {
+        [Op.and]: {
+          UserId: req.myId,
+          CalendarId: req.body.calendarId,
+        },
+      },
     });
 
     if (myAuthority.authority < 3) {
@@ -496,7 +515,7 @@ router.post("/giveAuthority", authJWT, async (req, res, next) => {
 
     if (!isGroupMember) {
       return res
-        .status(40)
+        .status(405)
         .send({ message: "그룹 캘린더에 존재하지 않는 유저입니다!" });
     }
 
