@@ -25,7 +25,16 @@ const restartAll = async () => {
   });
 };
 
-const addAlert = async (userId, eventId, calendarId, content, date) => {
+const addAlert = async (
+  userId,
+  eventId,
+  calendarId,
+  content,
+  date,
+  myId,
+  socket,
+  onlineUsers
+) => {
   await sequelize.transaction(async (t) => {
     await RealTimeAlert.create(
       {
@@ -40,8 +49,10 @@ const addAlert = async (userId, eventId, calendarId, content, date) => {
       alertsObject[newAlert.id] = new CronJob(
         date,
         async function () {
+          // 이제 함수에 인자로 req.myId 넣어서 onlineUsers에 찾아서 있다면 알림보내기
           console.log(`${content}`);
 
+          socket.emit("alertTest", { message: "test" });
           await RealTimeAlert.destroy({
             where: { id: newAlert.id },
             force: true,
