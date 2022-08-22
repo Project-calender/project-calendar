@@ -49,16 +49,19 @@ const newEvent = createSlice({
       delete state.inviteMembers[member.id];
     },
 
-    addNewEventAllDayAlert(state, { payload: { type, number, time } }) {
-      state.alerts.allDay.push({ type, number, time });
+    addNewEventAllDayAlert(state, { payload: { type, time, hour, minute } }) {
+      state.alerts.allDay.push({ type, time, hour, minute });
     },
-    addNewEventNotAllDayAlert(state, { payload: { type, number } }) {
-      state.alerts.notAllDay.push({ type, number });
+
+    addNewEventNotAllDayAlert(state, { payload: { type, time } }) {
+      state.alerts.notAllDay.push({ type, time });
     },
+
     updateNewEventAllDayAlert(state, { payload }) {
-      const { index, type, number, time } = payload;
-      state.alerts.allDay[index] = { type, number, time };
+      const { index, type, time, hour, minute } = payload;
+      state.alerts.allDay[index] = { type, time, hour, minute };
     },
+
     updateNewEventNotAllDayAlert(state, { payload }) {
       const { index, type, number } = payload;
       state.alerts.notAllDay[index] = { type, number };

@@ -3,7 +3,6 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { EVENT } from '../../../../store/events';
-import Moment from '../../../../utils/moment';
 import { useSelector } from 'react-redux';
 import { newEventSelector } from '../../../../store/selectors/newEvent';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
@@ -30,8 +29,7 @@ const Index = ({ showEventInfoListModal }) => {
           onClick={e => showEventInfoListModal(e, message, `alert ${index}`)}
         >
           {newEvent.allDay === EVENT.allDay.true && allDayTitle(alert)}
-          {newEvent.allDay === EVENT.allDay.false &&
-            `${alert.number}${alert.type} 전`}
+          {newEvent.allDay === EVENT.allDay.false && notAllDayTitle(alert)}
 
           <FontAwesomeIcon className={styles.caret_down} icon={faCaretDown} />
         </h3>
@@ -42,19 +40,23 @@ const Index = ({ showEventInfoListModal }) => {
 
 function allDayTitle(alert) {
   const date =
-    alert.number === 0
+    alert.time === 0
       ? '당일'
-      : alert.type === '일' && alert.number === 1
+      : alert.type === '일' && alert.time === 1
       ? '전날'
-      : `${alert.number}${alert.type} 전`;
+      : `${alert.time}${alert.type} 전`;
 
-  const moment = new Moment(alert.time);
+  const type = alert.hour < 12 ? '오전' : '오후';
   const time =
-    moment.minute === 0
-      ? `${moment.getTimeType()} ${moment.hour}시`
-      : moment.toTimeString();
+    alert.minute === 0
+      ? `${type} ${alert.hour}시`
+      : `${type} ${alert.hour}:${alert.minute}`;
 
   return `${date} ${time}`;
+}
+
+function notAllDayTitle(alert) {
+  return `${alert.time}${alert.type} 전`;
 }
 
 Index.propTypes = {

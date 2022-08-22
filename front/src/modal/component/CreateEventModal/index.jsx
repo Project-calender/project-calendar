@@ -49,7 +49,6 @@ import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
 import { useState } from 'react';
 import { useRef } from 'react';
-import Moment from '../../../utils/moment';
 
 const Index = ({ children: ModalList }) => {
   const dispatch = useDispatch();
@@ -139,19 +138,10 @@ const Index = ({ children: ModalList }) => {
   function clickAddAlert(e) {
     if (newEvent.allDay === EVENT.allDay.true) {
       dispatch(
-        addNewEventAllDayAlert({
-          type: '일',
-          number: 1,
-          time: new Moment().setHour(9).time,
-        }),
+        addNewEventAllDayAlert({ type: '일', time: 1, hour: 9, minute: 0 }),
       );
     } else {
-      dispatch(
-        addNewEventNotAllDayAlert({
-          type: '분',
-          number: 30,
-        }),
-      );
+      dispatch(addNewEventNotAllDayAlert({ type: '분', time: 30 }));
     }
     e.stopPropagation();
   }
@@ -172,6 +162,10 @@ const Index = ({ children: ModalList }) => {
         startTime: new Date(newEvent.startTime).toISOString(),
         endTime: new Date(newEvent.endTime).toISOString(),
         guests: inviteMembers.map(member => member.email),
+        alerts:
+          newEvent.allDay === EVENT.allDay.true
+            ? newEvent.alerts.allDay
+            : newEvent.alerts.notAllDay,
       }),
     );
     initCreateEventModal();
