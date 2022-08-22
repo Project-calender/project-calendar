@@ -24,13 +24,7 @@ const Index = ({ calendar }) => {
   );
 
   function onClickCancel(e) {
-    showResignCalendarModal({
-      calendar,
-      style: {
-        top: window.innerHeight / 2 - 100,
-        left: window.innerWidth / 2 - 150,
-      },
-    });
+    showResignCalendarModal({ calendar });
     e.stopPropagation();
   }
 

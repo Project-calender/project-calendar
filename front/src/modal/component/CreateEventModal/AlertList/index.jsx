@@ -47,10 +47,11 @@ function allDayTitle(alert) {
       : `${alert.time}${alert.type} 전`;
 
   const type = alert.hour < 12 ? '오전' : '오후';
+  const hour = (alert.hour > 12 ? alert.hour % 12 : alert.hour) || 12;
   const time =
     alert.minute === 0
-      ? `${type} ${alert.hour}시`
-      : `${type} ${alert.hour}:${alert.minute}`;
+      ? `${type} ${hour}시`
+      : `${type} ${hour}:${alert.minute}`;
 
   return `${date} ${time}`;
 }

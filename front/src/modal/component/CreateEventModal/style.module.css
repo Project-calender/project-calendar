@@ -64,5 +64,5 @@
 .modal_footer button:nth-child(2) { background: #1a73e8; color: white; margin-right: 15px; } 
 .modal_footer button:nth-child(2):hover { filter: brightness(110%); } 
 .modal_footer button:nth-child(1):hover { filter: brightness(98%); } 
-
+.modal_footer_line { position: relative; background: #e8e8e8; height: 1px !important; width: 100%;  z-index: 2; margin-bottom: 10px; } 
 .caret_down { margin: 0px 10px; } 

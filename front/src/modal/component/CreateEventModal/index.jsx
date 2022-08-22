@@ -20,6 +20,7 @@ import Input from '../../../components/common/Input';
 import Modal from '../../../components/common/Modal';
 import {
   CreateEventModalContext,
+  EventCustomAlertModalContext,
   EventInfoListModalContext,
 } from '../../../context/EventModalContext';
 import DateTitle from './DateTitle';
@@ -58,6 +59,9 @@ const Index = ({ children: ModalList }) => {
     showModal: showEventInfoListModal,
     hideModal: hideEventInfoListModal,
   } = useContext(EventInfoListModalContext);
+  const { showModal: showEventCustomAlertModal } = useContext(
+    EventCustomAlertModalContext,
+  );
   const newEvent = useSelector(newEventSelector);
 
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
@@ -111,7 +115,15 @@ const Index = ({ children: ModalList }) => {
         newEvent.allDay === EVENT.allDay.true
           ? EVENT.alerts.allDay.values
           : EVENT.alerts.notAllDay.values;
-      if (newEvent.allDay === EVENT.allDay.true && value !== values.length) {
+
+      if (value === values.length) {
+        showEventCustomAlertModal();
+        hideEventInfoListModal();
+        e.stopPropagation();
+        return;
+      }
+
+      if (newEvent.allDay === EVENT.allDay.true) {
         dispatch(
           updateNewEventAllDayAlert({
             index: +name[name.length - 1],
@@ -119,7 +131,8 @@ const Index = ({ children: ModalList }) => {
           }),
         );
       }
-      if (newEvent.allDay === EVENT.allDay.false && value !== values.length) {
+
+      if (newEvent.allDay === EVENT.allDay.false) {
         dispatch(
           updateNewEventNotAllDayAlert({
             index: +name[name.length - 1],
@@ -130,7 +143,6 @@ const Index = ({ children: ModalList }) => {
     } else {
       dispatch(updateNewEventBarProperties({ [name]: value }));
     }
-
     hideEventInfoListModal();
     e.stopPropagation();
   }
@@ -175,7 +187,8 @@ const Index = ({ children: ModalList }) => {
   const [isAddMemo, setAddMemo] = useState(false);
   const [isAddCalendar, setAddCalendar] = useState(false);
 
-  const [EventColorModal, EventInfoListModal] = ModalList;
+  const [EventColorModal, EventInfoListModal, EventCustomAlertModal] =
+    ModalList;
   const modalRef = useRef();
   return (
     <Modal
@@ -193,6 +206,7 @@ const Index = ({ children: ModalList }) => {
         React.cloneElement(EventInfoListModal, {
           onClickItem: onClickListModalItem,
         })}
+      {EventCustomAlertModal}
       <div className={styles.modal_container} ref={modalRef}>
         <div className={styles.modal_header}>
           <FontAwesomeIcon icon={faGripLines} />
@@ -414,8 +428,8 @@ const Index = ({ children: ModalList }) => {
             </>
           )}
         </div>
-        {isAddCalendar && <div className={styles.modal_line} />}
       </div>
+      {isAddCalendar && <div className={styles.modal_footer_line} />}
       <div className={styles.modal_footer}>
         <button>옵션 더보기</button>
         <button onClick={saveEvent}>저장</button>

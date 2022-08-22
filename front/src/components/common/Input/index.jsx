@@ -5,10 +5,12 @@ import PropTypes from 'prop-types';
 
 const Index = ({
   type,
+  defaultValue = '',
   autoFocus = false,
   placeholder,
   onBlur = () => {},
   onKeyDown = () => {},
+  className = '',
 }) => {
   const [isInputFocus, setInputFocus] = useState(false);
 
@@ -17,7 +19,7 @@ const Index = ({
     setInputFocus(false);
   }
   return (
-    <div className={styles.input_container}>
+    <div className={`${styles.input_container} ${className}`}>
       <input
         type={type}
         autoFocus={autoFocus}
@@ -25,6 +27,7 @@ const Index = ({
         onFocus={() => setInputFocus(true)}
         onBlur={handleBlurEvent}
         onKeyDown={onKeyDown}
+        defaultValue={defaultValue}
       />
       <hr className={`${styles.input_line} ${styles.line_active}`} />
       <hr
@@ -38,10 +41,12 @@ const Index = ({
 
 Index.propTypes = {
   type: PropTypes.string,
+  defaultValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   autoFocus: PropTypes.bool,
   placeholder: PropTypes.string,
   onBlur: PropTypes.func,
   onKeyDown: PropTypes.func,
+  className: PropTypes.string,
 };
 
 export default Index;
