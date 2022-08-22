@@ -1013,12 +1013,12 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
 
       await deleteAlerts(req.myId, groupEvent.id);
 
-      const privateCalendar = await me.getPrivateCalendar();
+      // const privateCalendar = await me.getPrivateCalendar();
       await PrivateEvent.destroy({
         where: {
           [Op.and]: {
             groupEventId: req.body.eventId,
-            PrivateCalendarId: privateCalendar.id,
+            // PrivateCalendarId: privateCalendar.id,
           },
         },
         force: true,
