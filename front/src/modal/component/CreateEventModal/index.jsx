@@ -37,9 +37,11 @@ import EventColorOption from '../../../components/calendar/EventColorOption';
 import { EVENT_COLOR } from '../../../styles/color';
 import {
   addNewEventAllDayAlert,
+  addNewEventNotAllDayAlert,
   resetNewEventState,
   updateNewEventAllDayAlert,
   updateNewEventBarProperties,
+  updateNewEventNotAllDayAlert,
 } from '../../../store/newEvent';
 import { useCallback } from 'react';
 import { createEvent } from '../../../store/thunk/event';
@@ -110,12 +112,22 @@ const Index = ({ children: ModalList }) => {
         newEvent.allDay === EVENT.allDay.true
           ? EVENT.alerts.allDay.values
           : EVENT.alerts.notAllDay.values;
-      dispatch(
-        updateNewEventAllDayAlert({
-          index: +name[name.length - 1],
-          ...values[value],
-        }),
-      );
+      if (newEvent.allDay === EVENT.allDay.true && value !== values.length) {
+        dispatch(
+          updateNewEventAllDayAlert({
+            index: +name[name.length - 1],
+            ...values[value],
+          }),
+        );
+      }
+      if (newEvent.allDay === EVENT.allDay.false && value !== values.length) {
+        dispatch(
+          updateNewEventNotAllDayAlert({
+            index: +name[name.length - 1],
+            ...values[value],
+          }),
+        );
+      }
     } else {
       dispatch(updateNewEventBarProperties({ [name]: value }));
     }
@@ -131,6 +143,13 @@ const Index = ({ children: ModalList }) => {
           type: '일',
           number: 1,
           time: new Moment().setHour(9).time,
+        }),
+      );
+    } else {
+      dispatch(
+        addNewEventNotAllDayAlert({
+          type: '분',
+          number: 30,
         }),
       );
     }

@@ -62,6 +62,14 @@ export const EVENT = {
         '1일 전',
         '맞춤...',
       ],
+      values: [
+        { type: '분', number: 5 },
+        { type: '분', number: 10 },
+        { type: '분', number: 15 },
+        { type: '분', number: 30 },
+        { type: '시간', number: 1 },
+        { type: '일', number: 1 },
+      ],
     },
   },
 };
