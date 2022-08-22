@@ -12,17 +12,11 @@ const Index = () => {
         <h3>알림</h3>
         <FontAwesomeIcon icon={faCaretDown} />
       </div>
-      <Input
-        type="number"
-        defaultValue={1}
-        className={styles.alert_input_number}
-      />
+      <Input type="number" defaultValue={1} className={styles.alert_input} />
       <div className={styles.list_container}>
         <h3>일</h3>
         <FontAwesomeIcon icon={faCaretDown} />
       </div>
-      <h3>전</h3>
-      <Input defaultValue="오전 9:00" className={styles.alert_input} />
     </div>
   );
 };

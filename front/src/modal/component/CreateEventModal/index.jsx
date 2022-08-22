@@ -190,6 +190,7 @@ const Index = ({ children: ModalList }) => {
   const [EventColorModal, EventInfoListModal, EventCustomAlertModal] =
     ModalList;
   const modalRef = useRef();
+
   return (
     <Modal
       hideModal={initCreateEventModal}

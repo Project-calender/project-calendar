@@ -60,7 +60,7 @@ const Index = ({ month }) => {
       position.top = position.top + 30;
     }
     if (position.top + 550 > window.innerHeight) {
-      position.top = window.innerHeight - 580;
+      position.top = window.innerHeight - 630;
       position.left = left + width;
       if (position.left + 470 > window.innerWidth) {
         position.left = left - 470;

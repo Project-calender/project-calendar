@@ -1,14 +1,17 @@
 import React from 'react';
 import styles from './style.module.css';
-
 import Modal from '../../../components/common/Modal';
 import PropTypes from 'prop-types';
-
 import CustomAlertOfAllDay from '../../../components/alert/CustomAlertOfAllDay';
+import CustomAlertOfNotAllDay from '../../../components/alert/CustomAlertOfNotAllDay';
+
+import { useSelector } from 'react-redux';
+import { newEventAllDaySelector } from '../../../store/selectors/newEvent';
+import { EVENT } from '../../../store/events';
 
 const Index = ({ hideModal, modalData }) => {
   const { style } = modalData || {};
-
+  const allDay = useSelector(newEventAllDaySelector);
   return (
     <Modal
       hideModal={hideModal}
@@ -22,7 +25,11 @@ const Index = ({ hideModal, modalData }) => {
     >
       <div className={styles.modal_context}>
         <h1>맞춤 알림</h1>
-        <CustomAlertOfAllDay />
+        {allDay === EVENT.allDay.true ? (
+          <CustomAlertOfAllDay />
+        ) : (
+          <CustomAlertOfNotAllDay />
+        )}
         <div className={styles.modal_footer}>
           <button>취소</button>
           <button>완료</button>

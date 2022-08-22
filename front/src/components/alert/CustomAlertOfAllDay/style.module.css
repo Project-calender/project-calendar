@@ -6,8 +6,12 @@
 
 
 .list_container { cursor: pointer; } 
-
+.alert_input { width: 60px; }
 .alert_input input { background: #f1f3f4; font-size: 14px; } 
-.alert_input input[type="number"]::-webkit-outer-spin-button, 
-.alert_input input[type="number"]::-webkit-inner-spin-button { padding: 10px 0px; height: 5px !important; } 
 .alert_input hr {background: transparent;}
+
+.alert_input_number { width: 50px; }
+.alert_input_number input { background: #f1f3f4; font-size: 14px; } 
+.alert_input_number input::-webkit-outer-spin-button, 
+.alert_input_number input::-webkit-inner-spin-button { padding: 10px 0px; height: 5px !important; } 
+.alert_input_number hr {background: transparent;}
