@@ -37,7 +37,6 @@ router.get("/getMyCalendars", authJWT, async (req, res, next) => {
             exclude: ["password", "checkedCalendar"],
           },
           through: { as: "userAuthority", attributes: ["authority"] },
-
           include: [{ model: ProfileImage, attributes: ["src"] }],
         },
       ],

@@ -491,7 +491,7 @@ paths:
     post:
       tags:
         - privateEvent
-      summary: 개인 이벤트 수정
+      summary: 개인 이벤트 색상 수정
       parameters:
         - name: Authorization
           in: header
@@ -567,32 +567,39 @@ paths:
                   UserId:
                     type: string
               groupCalendars:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  color:
-                    type: string
-                  OwnerId:
-                    type: string
-                  CalendarMembers:
-                    type: array
-                    items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    color:
+                      type: string
+                    OwnerId:
+                      type: string
+                    CalendarMember:
                       type: object
                       properties:
-                        id:
+                        authority:
                           type: integer
-                        email:
-                          type: string
-                        nickname:
-                          type: string
-                        userAuthority:
-                          type: object
-                          properties:
-                            authority:
-                              type: integer
+                    CalendarMembers:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          email:
+                            type: string
+                          nickname:
+                            type: string
+                          userAuthority:
+                            type: object
+                            properties:
+                              authority:
+                                type: integer
         '500':
           $ref: '#/serverError'
   /api/calendar/createGroupCalendar:
@@ -859,8 +866,6 @@ paths:
             properties:
               calendarId:
                 type: integer
-              userEmail:
-                type: string
       responses:
         '200':
           $ref: '#/success'
@@ -1307,79 +1312,27 @@ paths:
                 type: integer
                 example: 1
               alerts:
+                summary: ㅇㅇㅇ
                 type: array
                 items:
                   type: object
                   properties:
                     type:
                       type: string
-                      example: minute / hour / day / week
+                      example: 'minute,hour,day,week / day,week (allDay)'
                     time:
                       type: integer
-      responses:
-        '200':
-          $ref: '#/returnEvent'
-        '400':
-          description: 그룹원이 아닌 사람이 이벤트를 생성하려 할때
-          schema:
-            properties:
-              message:
-                type: string
-                example: 그룹원의 멤버만 이벤트를 생성할 수 있습니다.
-        '500':
-          $ref: '#/serverError'
-  /api/event/createGroupEventWithInvite:
-    post:
-      tags:
-        - event
-      summary: 그룹 이벤트 생성하기 permission 1 or 2 / busy 0 or 1
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              calendarId:
-                type: integer
-              eventName:
-                type: string
-              color:
-                type: integer
-                example: '#0e0e03'
-              permission:
-                type: integer
-              busy:
-                type: integer
-              memo:
-                type: string
-              startTime:
-                type: string
-                example: '2022-06-01T00:00:00'
-              endTime:
-                type: string
-                example: '2022-06-02T00:00:00'
-              allDay:
-                type: integer
-                example: 1
-              alerts:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type:
-                      type: string
-                      example: minute / hour / day / week
-                    time:
+                    hour:
                       type: integer
+                      example: 0-23시 중 써주세요 알림 받고자 하는 시각 (allDay 전용)
+                    minute:
+                      type: integer
+                      example: '알람 받고자 하는 분 ex) 오후 3시 15분에 받고 싶다면 hour에 15, minute에 15 (allDay 전용)'
               guests:
                 type: array
                 items:
-                  type: string
-                  example: minwoo1@naver.com
+                  type: object
+                  example: minwoo@naver.com
       responses:
         '200':
           $ref: '#/returnEvent'
@@ -1396,7 +1349,7 @@ paths:
     post:
       tags:
         - event
-      summary: 그룹 이벤트에 초대 가능한지 확인하기
+      summary: 그룹 이벤트에 초대 가능한지 확인하기 ( 이미 존재하는 이벤트에 초대 체크 inviteCheck -> inviteGroupEvent )
       parameters:
         - name: Authorization
           in: header
@@ -1481,7 +1434,7 @@ paths:
     post:
       tags:
         - event
-      summary: 그룹 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전)
+      summary: 그룹 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전 inviteCheckBeforeCreateEvent -> createGroupEvent )
       parameters:
         - name: Authorization
           in: header
@@ -1495,8 +1448,6 @@ paths:
               guestEmail:
                 type: string
               calendarId:
-                type: integer
-              eventId:
                 type: integer
       responses:
         '200':
@@ -1546,7 +1497,7 @@ paths:
     post:
       tags:
         - event
-      summary: 그룹 이벤트에 그룹원 초대하기
+      summary: 그룹 이벤트에 그룹원 초대하기 ( 이벤트 생성 후 inviteCheck -> inviteGroupEvent )
       parameters:
         - name: Authorization
           in: header
@@ -1789,7 +1740,7 @@ paths:
         '500':
           $ref: '#/serverError'
   /api/alert/getAlerts:
-    get:
+    post:
       tags:
         - alert
       summary: 알림 가져오기
@@ -1813,7 +1764,7 @@ paths:
                   type: string
                 checked:
                   type: boolean
-                eventCalendarId:
+                calendarId:
                   type: integer
                 eventDate:
                   type: string
