@@ -24,7 +24,8 @@ import {
 } from '../../../context/EventModalContext';
 import DateTitle from './DateTitle';
 import InviteInput from './InviteInput';
-import InviteMembers from './InviteMembers';
+import InviteMemberList from './InviteMemberList';
+import AlertList from './AlertList';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -35,7 +36,9 @@ import {
 import EventColorOption from '../../../components/calendar/EventColorOption';
 import { EVENT_COLOR } from '../../../styles/color';
 import {
+  addNewEventAllDayAlert,
   resetNewEventState,
+  updateNewEventAllDayAlert,
   updateNewEventBarProperties,
 } from '../../../store/newEvent';
 import { useCallback } from 'react';
@@ -44,6 +47,7 @@ import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
 import { useState } from 'react';
 import { useRef } from 'react';
+import Moment from '../../../utils/moment';
 
 const Index = ({ children: ModalList }) => {
   const dispatch = useDispatch();
@@ -101,11 +105,35 @@ const Index = ({ children: ModalList }) => {
           inviteMembers: {},
         }),
       );
+    } else if (name.startsWith('alert')) {
+      const values =
+        newEvent.allDay === EVENT.allDay.true
+          ? EVENT.alerts.allDay.values
+          : EVENT.alerts.notAllDay.values;
+      dispatch(
+        updateNewEventAllDayAlert({
+          index: +name[name.length - 1],
+          ...values[value],
+        }),
+      );
     } else {
       dispatch(updateNewEventBarProperties({ [name]: value }));
     }
 
     hideEventInfoListModal();
+    e.stopPropagation();
+  }
+
+  function clickAddAlert(e) {
+    if (newEvent.allDay === EVENT.allDay.true) {
+      dispatch(
+        addNewEventAllDayAlert({
+          type: '일',
+          number: 1,
+          time: new Moment().setHour(9).time,
+        }),
+      );
+    }
     e.stopPropagation();
   }
 
@@ -118,12 +146,12 @@ const Index = ({ children: ModalList }) => {
       createEvent({
         ...newEvent,
         calendarId: calendars[newEvent.calendarId].id,
-        startTime: new Date(newEvent.startTime).toISOString(),
-        endTime: new Date(newEvent.endTime).toISOString(),
         color:
           newEvent.calendarColor === newEvent.eventColor
             ? null
             : newEvent.eventColor,
+        startTime: new Date(newEvent.startTime).toISOString(),
+        endTime: new Date(newEvent.endTime).toISOString(),
         guests: inviteMembers.map(member => member.email),
       }),
     );
@@ -183,10 +211,11 @@ const Index = ({ children: ModalList }) => {
             <div className={styles.modal_line} />
           )}
           <InviteInput />
-          <InviteMembers members={newEvent.inviteMembers} />
+          <InviteMemberList members={newEvent.inviteMembers} />
           {Object.keys(newEvent.inviteMembers).length > 0 && (
             <div className={styles.modal_line} />
           )}
+
           <div className={styles.google_meet}>
             <img
               className={styles.google_meet_img}
@@ -355,10 +384,18 @@ const Index = ({ children: ModalList }) => {
                   <FontAwesomeIcon icon={faCircleQuestion} />
                 </div>
               </div>
-              <div>
+              <div className={styles.alert}>
                 <FontAwesomeIcon icon={faBell} />
                 <div>
-                  <h4 className={styles.list_modal}>알림 추가</h4>
+                  <AlertList showEventInfoListModal={showEventInfoListModal} />
+                  {(newEvent.allDay === EVENT.allDay.true
+                    ? newEvent.alerts.allDay
+                    : newEvent.alerts.notAllDay
+                  ).length < 5 && (
+                    <h4 className={styles.list_modal} onClick={clickAddAlert}>
+                      알림 추가
+                    </h4>
+                  )}
                 </div>
               </div>
             </>

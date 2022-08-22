@@ -34,6 +34,36 @@ export const EVENT = {
     true: 1,
     false: 0,
   },
+  alerts: {
+    allDay: {
+      type: ['일', '주'],
+      message: [
+        '당일 오전 9시',
+        '전날 오전 9시',
+        '2일 전 오전 9시',
+        '1주 전 오전 9시',
+        '맞춤...',
+      ],
+      values: [
+        { type: '일', number: 0, time: new Moment().setHour(9).time },
+        { type: '일', number: 1, time: new Moment().setHour(9).time },
+        { type: '일', number: 2, time: new Moment().setHour(9).time },
+        { type: '주', number: 1, time: new Moment().setHour(9).time },
+      ],
+    },
+    notAllDay: {
+      type: ['분', '시간', '일', '주'],
+      message: [
+        '5분 전',
+        '10분 전',
+        '15분 전',
+        '30분 전',
+        '1시간 전',
+        '1일 전',
+        '맞춤...',
+      ],
+    },
+  },
 };
 
 export const eventsAdapter = createEntityAdapter({

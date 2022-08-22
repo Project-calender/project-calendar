@@ -16,6 +16,11 @@ import {
 import useEventModal from '../../../../hooks/useEventModal';
 import MiniCalendarModal from '../../MiniCalendarModal';
 import TimeListModal from '../../TimeListModal';
+import { useContext } from 'react';
+import {
+  EventColorModalContext,
+  EventInfoListModalContext,
+} from '../../../../context/EventModalContext';
 
 const Index = ({ showEventInfoListModal }) => {
   const [isDetail, setDetail] = useState(false);
@@ -76,6 +81,18 @@ const Index = ({ showEventInfoListModal }) => {
     e.stopPropagation();
   }
 
+  const { hideModal: hideEventInfoListModal } = useContext(
+    EventInfoListModalContext,
+  );
+  const { hideModal: hideEventColorModal } = useContext(EventColorModalContext);
+  function clickAddTime(e) {
+    setDetail(true);
+    handleAllDay(e, false);
+    hideEventInfoListModal();
+    hideEventColorModal();
+    e.stopPropagation();
+  }
+
   if (!isDetail) {
     return (
       <div>
@@ -97,14 +114,7 @@ const Index = ({ showEventInfoListModal }) => {
           </h3>
         </div>
 
-        <button
-          className={styles.time_add_button}
-          onClick={e => {
-            setDetail(true);
-            handleAllDay(e, false);
-            e.stopPropagation();
-          }}
-        >
+        <button className={styles.time_add_button} onClick={clickAddTime}>
           시간 추가
         </button>
       </div>
