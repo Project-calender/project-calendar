@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { sequelize } = require("../models");
+const { sequelize, ProfileImage } = require("../models");
 const { User } = require("../models");
 const { Calendar } = require("../models");
 const { CalendarMember } = require("../models");
@@ -18,7 +18,18 @@ router.get("/getMyCalendars", authJWT, async (req, res, next) => {
     const privateCalendar = await me.getPrivateCalendar();
 
     const groupCalendars = await me.getGroupCalendars({
+      attributes: {
+        exclude: ["OwnerId"],
+      },
       include: [
+        {
+          model: User,
+          as: "Owner",
+          attributes: {
+            exclude: ["password", "checkedCalendar"],
+          },
+          include: [{ model: ProfileImage, attributes: ["src"] }],
+        },
         {
           model: User,
           as: "CalendarMembers",
@@ -26,6 +37,8 @@ router.get("/getMyCalendars", authJWT, async (req, res, next) => {
             exclude: ["password", "checkedCalendar"],
           },
           through: { as: "userAuthority", attributes: ["authority"] },
+
+          include: [{ model: ProfileImage, attributes: ["src"] }],
         },
       ],
       joinTableAttributes: ["authority"],
@@ -488,6 +501,7 @@ router.post("/giveAuthority", authJWT, async (req, res, next) => {
       },
     });
 
+    console.log(myAuthority.authority);
     if (myAuthority.authority < 3) {
       return res.status(400).send({ message: "권한이 없습니다!" });
     }
