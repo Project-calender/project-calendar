@@ -65,7 +65,10 @@ export const createEvent = createAsyncThunk(
       allDay: eventInfo.allDay,
       startTime: eventInfo.startTime,
       endTime: eventInfo.endTime,
-      alerts: eventInfo.alerts,
+      alerts: eventInfo.alerts.map(alert => {
+        const type = { 분: 'minute', 시간: 'hour', 일: 'day', 주: 'week' };
+        return { ...alert, type: type[alert.type] };
+      }),
       guests: eventInfo.guests,
     });
 
