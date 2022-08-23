@@ -9,7 +9,7 @@ import { faCaretDown, faClose } from '@fortawesome/free-solid-svg-icons';
 import { removeNewEvetnAlert } from '../../../../store/newEvent';
 import Tooltip from '../../../../components/common/Tooltip';
 
-const Index = ({ showEventInfoListModal }) => {
+const Index = ({ showListModal }) => {
   const newEvent = useSelector(newEventSelector);
 
   const alerts =
@@ -39,7 +39,7 @@ const Index = ({ showEventInfoListModal }) => {
         <div key={index} className={styles.alerts_container}>
           <h3
             className={styles.alert_item}
-            onClick={e => showEventInfoListModal(e, message, `alert ${index}`)}
+            onClick={e => showListModal(e, message, `alert ${index}`)}
           >
             {newEvent.allDay === EVENT.allDay.true &&
               EVENT.alerts.getAllDayTitle(alert)}
@@ -65,7 +65,7 @@ const Index = ({ showEventInfoListModal }) => {
 };
 
 Index.propTypes = {
-  showEventInfoListModal: PropTypes.func,
+  showListModal: PropTypes.func,
 };
 
 export default Index;

@@ -68,9 +68,7 @@
 .modal_footer_line { position: relative; background: #e8e8e8; height: 1px !important; width: 100%; z-index: 2; margin-bottom: 10px; } 
 .caret_down { margin: 0px 10px; } 
 
-.alert_button { cursor: pointer; width: fit-content; position: relative;  left: -10px; padding: 5px 10px; border-radius: 5px; } 
-.alert_button:hover { background: #f1f3f4; } 
- 
+
 @media (max-height: 800px){
  .modal_container { max-height: 50vh; } 
  }

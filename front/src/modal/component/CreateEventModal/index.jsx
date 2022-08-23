@@ -26,7 +26,7 @@ import {
 import DateTitle from './DateTitle';
 import InviteInput from './InviteInput';
 import InviteMemberList from './InviteMemberList';
-import AlertList from './AlertList';
+import AlertContainer from './AlertContainer';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -37,8 +37,6 @@ import {
 import EventColorOption from '../../../components/calendar/EventColorOption';
 import { EVENT_COLOR } from '../../../styles/color';
 import {
-  addNewEventAllDayAlert,
-  addNewEventNotAllDayAlert,
   resetNewEventState,
   updateNewEventAllDayAlert,
   updateNewEventBarProperties,
@@ -145,17 +143,6 @@ const Index = ({ children: ModalList }) => {
       dispatch(updateNewEventBarProperties({ [name]: value }));
     }
     hideEventInfoListModal();
-    e.stopPropagation();
-  }
-
-  function clickAddAlert(e) {
-    if (newEvent.allDay === EVENT.allDay.true) {
-      dispatch(
-        addNewEventAllDayAlert({ type: '일', time: 1, hour: 9, minute: 0 }),
-      );
-    } else {
-      dispatch(addNewEventNotAllDayAlert({ type: '분', time: 30 }));
-    }
     e.stopPropagation();
   }
 
@@ -424,17 +411,7 @@ const Index = ({ children: ModalList }) => {
               </div>
               <div className={styles.alert}>
                 <FontAwesomeIcon icon={faBell} />
-                <div>
-                  <AlertList showEventInfoListModal={showEventInfoListModal} />
-                  {(newEvent.allDay === EVENT.allDay.true
-                    ? newEvent.alerts.allDay
-                    : newEvent.alerts.notAllDay
-                  ).length < 5 && (
-                    <h4 className={styles.alert_button} onClick={clickAddAlert}>
-                      알림 추가
-                    </h4>
-                  )}
-                </div>
+                <AlertContainer showListModal={showEventInfoListModal} />
               </div>
             </>
           )}
