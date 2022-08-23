@@ -21,7 +21,6 @@ module.exports = class User extends Model {
         },
         checkedCalendar: {
           type: DataTypes.STRING(200),
-          defaultValue: "p",
         },
       },
       {
