@@ -14,7 +14,7 @@ const restartAll = async () => {
 
             await RealTimeAlert.destroy({
               where: { id: realTimeAlert.id },
-              force: true,
+              // force: true,
             });
           },
           null,
@@ -25,13 +25,32 @@ const restartAll = async () => {
   });
 };
 
-const addAlert = async (userId, eventId, calendarId, content, date) => {
+const addAlert = async (
+  userId,
+  eventId,
+  calendarId,
+  allDay,
+  type,
+  time,
+  hour,
+  minute,
+  content,
+  date,
+  myId,
+  socket,
+  onlineUsers
+) => {
   await sequelize.transaction(async (t) => {
     await RealTimeAlert.create(
       {
         UserId: userId,
         EventId: eventId,
         CalendarId: calendarId,
+        allDay: allDay,
+        type: type,
+        time: time,
+        hour: hour,
+        minute: minute,
         content: content,
         date: date,
       },
@@ -40,7 +59,13 @@ const addAlert = async (userId, eventId, calendarId, content, date) => {
       alertsObject[newAlert.id] = new CronJob(
         date,
         async function () {
-          console.log(`${content}`);
+          var socketId = Object.keys(onlineUsers).find(
+            (key) => onlineUsers[key] === myId
+          );
+
+          if (socketId) {
+            socket.to(socketId).emit("alertTest", { alert: content });
+          }
 
           await RealTimeAlert.destroy({
             where: { id: newAlert.id },

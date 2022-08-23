@@ -22,6 +22,7 @@ const {
 const router = express.Router();
 const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
+const { findAll } = require("../models/profileImage");
 
 router.post("/getAllEvent", authJWT, async (req, res, next) => {
   try {
@@ -129,6 +130,7 @@ router.post("/getGroupEvent", authJWT, async (req, res, next) => {
         "id",
         "name",
         "color",
+        "allDay",
         "permission",
         "busy",
         "memo",
@@ -158,7 +160,22 @@ router.post("/getGroupEvent", authJWT, async (req, res, next) => {
         },
       ],
     });
-    return res.status(200).send(events);
+
+    const realTimeAlert = await RealTimeAlert.findAll({
+      where: {
+        [Op.and]: {
+          UserId: req.myId,
+          EventId: req.body.eventId,
+        },
+      },
+      attributes:
+        events.allDay === 1
+          ? ["EventId", "type", "time", "hour", "minute"]
+          : ["EventId", "type", "time"],
+    });
+    return res
+      .status(200)
+      .send({ event: events, realTimeAlert: realTimeAlert });
   } catch (error) {
     console.error(error);
     next(error);
@@ -281,131 +298,6 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
     }
 
     await sequelize.transaction(async (t) => {
-      const newGroupEvent = await Event.create(
-        {
-          name: req.body.eventName,
-          color: req.body.color ? req.body.color : null,
-          busy: req.body.busy,
-          permission: req.body.permission,
-          memo: req.body.memo,
-          startTime: req.body.startTime,
-          endTime: req.body.endTime,
-          allDay: req.body.allDay,
-          EventHostId: req.myId,
-          CalendarId: req.body.calendarId,
-        },
-        { transaction: t }
-      );
-
-      if (req.body.alerts) {
-        if (req.body.allDay === 1) {
-          await Promise.all(
-            req.body.alerts.map(async (alert) => {
-              if (alert.type === "day") {
-                const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`;
-                const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - alert.time);
-                date.setHours(alert.hour);
-                date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-                await addAlert(
-                  req.myId,
-                  newGroupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
-              } else if (alert.type === "week") {
-                const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
-                const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - alert.time * 7);
-                date.setHours(alert.hour);
-                date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-                await addAlert(
-                  req.myId,
-                  newGroupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
-              }
-            })
-          );
-        } else {
-          await Promise.all(
-            req.body.alerts.map(async (alert) => {
-              if (alert.type === "minute") {
-                const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
-                const date = new Date(req.body.startTime);
-                date.setMinutes(date.getMinutes() - parseInt(alert.time));
-                await addAlert(
-                  req.myId,
-                  newGroupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
-              } else if (alert.type === "hour") {
-                const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
-                const date = new Date(req.body.startTime);
-                date.setHours(date.getHours() - parseInt(alert.time));
-                await addAlert(
-                  req.myId,
-                  newGroupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
-              } else if (alert.type === "day") {
-                const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
-                const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - parseInt(alert.time));
-                await addAlert(
-                  req.myId,
-                  newGroupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
-              } else if (alert.type === "week") {
-                const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
-                const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - parseInt(alert.time) * 7);
-                await addAlert(
-                  req.myId,
-                  newGroupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
-              }
-            })
-          );
-        }
-      }
-
-      return res.status(200).send(newGroupEvent);
-    });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-router.post("/createGroupEventWithInvite", authJWT, async (req, res, next) => {
-  try {
-    const isGroupMember = await CalendarMember.findOne({
-      where: {
-        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
-      },
-    });
-
-    if (!isGroupMember) {
-      return res
-        .status(400)
-        .send({ message: "그룹원의 멤버만 이벤트를 생성할 수 있습니다." });
-    }
-
-    await sequelize.transaction(async (t) => {
       const groupEvent = await Event.create(
         {
           name: req.body.eventName,
@@ -422,73 +314,98 @@ router.post("/createGroupEventWithInvite", authJWT, async (req, res, next) => {
         { transaction: t }
       );
 
-      await Promise.all(
-        req.body.guests.map(async (guestEmail) => {
-          const guest = await User.findOne({
-            where: { email: guestEmail },
-          });
+      if (req.body.guests.length > 0) {
+        await Promise.all(
+          req.body.guests.map(async (guestEmail) => {
+            const guest = await User.findOne({
+              where: { email: guestEmail },
+            });
 
-          await groupEvent.addEventMembers(guest, { transaction: t });
+            await groupEvent.addEventMembers(guest, { transaction: t });
 
-          const privateCalendar = await guest.getPrivateCalendar();
-          await privateCalendar.createPrivateEvent(
-            {
-              name: groupEvent.name,
-              color: groupEvent.color,
-              busy: groupEvent.busy,
-              memo: groupEvent.memo,
-              allDay: groupEvent.allDay,
-              startTime: groupEvent.startTime,
-              endTime: groupEvent.endTime,
-              groupEventId: groupEvent.id,
-              state: 0,
-            },
-            { transaction: t }
-          );
+            const privateCalendar = await guest.getPrivateCalendar();
+            await privateCalendar.createPrivateEvent(
+              {
+                name: groupEvent.name,
+                color: groupEvent.color,
+                busy: groupEvent.busy,
+                memo: groupEvent.memo,
+                allDay: groupEvent.allDay,
+                startTime: groupEvent.startTime,
+                endTime: groupEvent.endTime,
+                groupEventId: groupEvent.id,
+                state: 0,
+              },
+              { transaction: t }
+            );
 
-          await Alert.create(
-            {
-              UserId: guest.id,
-              type: "event",
-              calendarId: req.body.calendarId,
-              eventDate: groupEvent.startTime,
-              content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
-            },
-            { transaction: t }
-          );
-        })
-      );
+            await Alert.create(
+              {
+                UserId: guest.id,
+                type: "event",
+                calendarId: req.body.calendarId,
+                eventDate: groupEvent.startTime,
+                content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
+              },
+              { transaction: t }
+            );
+          })
+        );
+      }
 
-      if (req.body.alerts) {
+      if (req.body.alerts.length > 0) {
         if (req.body.allDay === 1) {
           await Promise.all(
             req.body.alerts.map(async (alert) => {
               if (alert.type === "day") {
                 const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`;
                 const date = new Date(req.body.startTime);
+                const now = new Date();
                 date.setDate(date.getDate() - alert.time);
                 date.setHours(alert.hour);
                 date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-                await addAlert(
-                  req.myId,
-                  groupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
+
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    alert.hour,
+                    alert.minute,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               } else if (alert.type === "week") {
                 const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
                 const date = new Date(req.body.startTime);
+                const now = new Date();
                 date.setDate(date.getDate() - alert.time * 7);
                 date.setHours(alert.hour);
                 date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-                await addAlert(
-                  req.myId,
-                  groupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    alert.hour,
+                    alert.minute,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               }
             })
           );
@@ -498,47 +415,92 @@ router.post("/createGroupEventWithInvite", authJWT, async (req, res, next) => {
               if (alert.type === "minute") {
                 const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
                 const date = new Date(req.body.startTime);
+                const now = new Date();
                 date.setMinutes(date.getMinutes() - parseInt(alert.time));
-                await addAlert(
-                  req.myId,
-                  groupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
+
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               } else if (alert.type === "hour") {
                 const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
                 const date = new Date(req.body.startTime);
+                const now = new Date();
                 date.setHours(date.getHours() - parseInt(alert.time));
-                await addAlert(
-                  req.myId,
-                  groupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               } else if (alert.type === "day") {
                 const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
                 const date = new Date(req.body.startTime);
+                const now = new Date();
                 date.setDate(date.getDate() - parseInt(alert.time));
-                await addAlert(
-                  req.myId,
-                  groupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               } else if (alert.type === "week") {
                 const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
                 const date = new Date(req.body.startTime);
+                const now = new Date();
                 date.setDate(date.getDate() - parseInt(alert.time) * 7);
-                await addAlert(
-                  req.myId,
-                  groupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               }
             })
           );
@@ -663,57 +625,57 @@ router.post(
   }
 );
 
-router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
-  try {
-    const groupEvent = await Event.findOne({
-      where: { id: req.body.eventId },
-    });
+// router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
+//   try {
+//     const groupEvent = await Event.findOne({
+//       where: { id: req.body.eventId },
+//     });
 
-    await sequelize.transaction(async (t) => {
-      await Promise.all(
-        req.body.guests.map(async (guestEmail) => {
-          const guest = await User.findOne({
-            where: { email: guestEmail },
-          });
+//     await sequelize.transaction(async (t) => {
+//       await Promise.all(
+//         req.body.guests.map(async (guestEmail) => {
+//           const guest = await User.findOne({
+//             where: { email: guestEmail },
+//           });
 
-          await groupEvent.addEventMembers(guest, { transaction: t });
+//           await groupEvent.addEventMembers(guest, { transaction: t });
 
-          const privateCalendar = await guest.getPrivateCalendar();
-          await privateCalendar.createPrivateEvent(
-            {
-              name: groupEvent.name,
-              color: groupEvent.color,
-              busy: groupEvent.busy,
-              memo: groupEvent.memo,
-              allDay: groupEvent.allDay,
-              startTime: groupEvent.startTime,
-              endTime: groupEvent.endTime,
-              groupEventId: groupEvent.id,
-              state: 0,
-            },
-            { transaction: t }
-          );
+//           const privateCalendar = await guest.getPrivateCalendar();
+//           await privateCalendar.createPrivateEvent(
+//             {
+//               name: groupEvent.name,
+//               color: groupEvent.color,
+//               busy: groupEvent.busy,
+//               memo: groupEvent.memo,
+//               allDay: groupEvent.allDay,
+//               startTime: groupEvent.startTime,
+//               endTime: groupEvent.endTime,
+//               groupEventId: groupEvent.id,
+//               state: 0,
+//             },
+//             { transaction: t }
+//           );
 
-          await Alert.create(
-            {
-              UserId: guest.id,
-              type: "event",
-              calendarId: req.body.calendarId,
-              eventDate: groupEvent.startTime,
-              content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
-            },
-            { transaction: t }
-          );
-        })
-      );
-    });
+//           await Alert.create(
+//             {
+//               UserId: guest.id,
+//               type: "event",
+//               calendarId: req.body.calendarId,
+//               eventDate: groupEvent.startTime,
+//               content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
+//             },
+//             { transaction: t }
+//           );
+//         })
+//       );
+//     });
 
-    return res.status(200).send({ success: true });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
+//     return res.status(200).send({ success: true });
+//   } catch (error) {
+//     console.error(error);
+//     next(error);
+//   }
+// });
 
 router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
   try {
@@ -812,27 +774,25 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
 
 router.post("/editGroupEvent", authJWT, async (req, res, next) => {
   try {
+    const groupEvent = await Event.findOne({
+      where: { id: req.body.eventId },
+    });
+
+    if (!groupEvent) {
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
+    }
+
+    const hasAuthority = await CalendarMember.findOne({
+      where: {
+        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+      },
+    });
+
+    if (hasAuthority.authority < 2) {
+      return res.status(403).send({ message: "수정 권한이 없습니다!" });
+    }
+
     await sequelize.transaction(async (t) => {
-      const groupEvent = await Event.findOne({
-        where: { id: req.body.eventId },
-      });
-
-      if (!groupEvent) {
-        return res
-          .status(400)
-          .send({ message: "존재하지 않는 이벤트 입니다!" });
-      }
-
-      const hasAuthority = await CalendarMember.findOne({
-        where: {
-          [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
-        },
-      });
-
-      if (hasAuthority.authority < 2) {
-        return res.status(403).send({ message: "수정 권한이 없습니다!" });
-      }
-
       //'2022-07-26 07:00:18'
       await groupEvent.update(
         {
@@ -848,38 +808,100 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
         { transaction: t }
       );
 
+      if (req.body.guests.length > 0) {
+        await Promise.all(
+          req.body.guests.map(async (guestEmail) => {
+            const guest = await User.findOne({
+              where: { email: guestEmail },
+            });
+
+            await groupEvent.addEventMembers(guest, { transaction: t });
+
+            const privateCalendar = await guest.getPrivateCalendar();
+            await privateCalendar.createPrivateEvent(
+              {
+                name: groupEvent.name,
+                color: groupEvent.color,
+                busy: groupEvent.busy,
+                memo: groupEvent.memo,
+                allDay: groupEvent.allDay,
+                startTime: groupEvent.startTime,
+                endTime: groupEvent.endTime,
+                groupEventId: groupEvent.id,
+                state: 0,
+              },
+              { transaction: t }
+            );
+
+            await Alert.create(
+              {
+                UserId: guest.id,
+                type: "event",
+                calendarId: req.body.calendarId,
+                eventDate: groupEvent.startTime,
+                content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
+              },
+              { transaction: t }
+            );
+          })
+        );
+      }
+
       await deleteAlerts(req.myId, req.body.eventId);
 
-      if (req.body.alerts) {
+      if (req.body.alerts.length > 0) {
         if (req.body.allDay === 1) {
           await Promise.all(
             req.body.alerts.map(async (alert) => {
               if (alert.type === "day") {
                 const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`;
                 const date = new Date(req.body.startTime);
+                const now = new Date();
                 date.setDate(date.getDate() - alert.time);
                 date.setHours(alert.hour);
                 date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-                await addAlert(
-                  req.myId,
-                  newGroupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
+
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    alert.hour,
+                    alert.minute,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               } else if (alert.type === "week") {
                 const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
                 const date = new Date(req.body.startTime);
+                const now = new Date();
                 date.setDate(date.getDate() - alert.time * 7);
                 date.setHours(alert.hour);
                 date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-                await addAlert(
-                  req.myId,
-                  newGroupEvent.id,
-                  req.body.calendarId,
-                  content,
-                  date
-                );
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    alert.hour,
+                    alert.minute,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               }
             })
           );
@@ -889,23 +911,92 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
               if (alert.type === "minute") {
                 const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
                 const date = new Date(req.body.startTime);
+                const now = new Date();
                 date.setMinutes(date.getMinutes() - parseInt(alert.time));
-                await addAlert(req.myId, req.body.eventId, content, date);
+
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    content,
+                    date,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               } else if (alert.type === "hour") {
                 const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
                 const date = new Date(req.body.startTime);
-                date.setHours(date.getHours() - alert.time);
-                await addAlert(req.myId, req.body.eventId, content, date);
+                const now = new Date();
+                date.setHours(date.getHours() - parseInt(alert.time));
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               } else if (alert.type === "day") {
                 const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
                 const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - alert.time);
-                await addAlert(req.myId, req.body.eventId, content, date);
+                const now = new Date();
+                date.setDate(date.getDate() - parseInt(alert.time));
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               } else if (alert.type === "week") {
                 const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
                 const date = new Date(req.body.startTime);
-                date.setDate(date.getDate() - alert.time * 7);
-                await addAlert(req.myId, req.body.eventId, content, date);
+                const now = new Date();
+                date.setDate(date.getDate() - parseInt(alert.time) * 7);
+                if (now < date) {
+                  await addAlert(
+                    req.myId,
+                    groupEvent.id,
+                    req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
+                    content,
+                    date,
+                    req.myId,
+                    req.app.get("io"),
+                    req.app.get("onlineUsers")
+                  );
+                }
               }
             })
           );
