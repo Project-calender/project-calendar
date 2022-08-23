@@ -33,19 +33,26 @@ const Index = ({ hideModal, modalData }) => {
     };
 
     if (selectedDate.startDate) {
-      newDate.startTime = date.time;
-      const diffDate = new Moment(newEvent.startTime).calculateDateDiff(
-        date.time,
-      );
+      const startDate = new Moment(newDate.startTime);
+      const diffDate = new Moment(newEvent.startTime)
+        .resetTime()
+        .calculateDateDiff(date.time);
+
+      newDate.startTime = new Moment(date.time)
+        .setHour(startDate.hour)
+        .setMinute(startDate.minute).time;
       newDate.endTime = new Moment(newEvent.endTime).addDate(diffDate).time;
     }
 
     if (selectedDate.endDate) {
-      newDate.endTime = date.time;
+      const endDate = new Moment(newDate.endTime);
+      newDate.endTime = new Moment(date.time)
+        .setHour(endDate.hour)
+        .setMinute(endDate.minute).time;
     }
 
     const [startTime, endTime] = [newDate.startTime, newDate.endTime]
-      .map(time => new Moment(time).resetTime().time)
+      .map(time => new Moment(time).time)
       .sort((a, b) => a - b);
     const eventBars = createEventBar({
       standardDateTime: startTime,

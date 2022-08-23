@@ -430,7 +430,7 @@ const Index = ({ children: ModalList }) => {
                     ? newEvent.alerts.allDay
                     : newEvent.alerts.notAllDay
                   ).length < 5 && (
-                    <h4 className={styles.list_modal} onClick={clickAddAlert}>
+                    <h4 className={styles.alert_button} onClick={clickAddAlert}>
                       알림 추가
                     </h4>
                   )}

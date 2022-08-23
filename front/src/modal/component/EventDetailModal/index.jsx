@@ -132,7 +132,7 @@ const Index = ({ modalData, hideModal }) => {
               </div>
             </div>
           )}
-          {event.alerts && (
+          {event.alerts.length > 0 && (
             <div>
               <FontAwesomeIcon icon={faBell} />
               <div>

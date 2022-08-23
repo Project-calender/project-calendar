@@ -42,6 +42,12 @@ class Moment {
     return new Moment(date);
   }
 
+  setMinute(number) {
+    const date = new Date(this.time);
+    date.setMinutes(number);
+    return new Moment(date);
+  }
+
   addMonth(number) {
     const date = new Date(this.time);
     date.setMonth(date.getMonth() + number);

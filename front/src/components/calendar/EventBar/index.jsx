@@ -35,7 +35,7 @@ const Index = ({
       realTimeAlert?.map(alert => {
         const types = { week: '주', day: '일', hour: '시간', minute: '분' };
         return { ...alert, type: types[alert.type] };
-      }) || null;
+      }) || [];
     setEventDetailModalData(data => ({
       ...data,
       event: { ...event, EventMembers, EventHost, alerts },

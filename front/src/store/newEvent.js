@@ -80,6 +80,13 @@ const newEvent = createSlice({
       const { type, index, alert } = payload;
       state.alerts[type][index] = alert;
     },
+
+    removeNewEvetnAlert(state, { payload }) {
+      const { type, index } = payload;
+      state.alerts[type] = state.alerts[type].filter(
+        (_, alertIndex) => alertIndex !== index,
+      );
+    },
   },
 });
 
@@ -96,6 +103,7 @@ export const {
   updateNewEventNotAllDayAlert,
   updateNewEventStartTime,
   updateNewEventAlert,
+  removeNewEvetnAlert,
 } = newEvent.actions;
 
 export default newEvent.reducer;
