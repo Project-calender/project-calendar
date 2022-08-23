@@ -2,12 +2,12 @@ import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { EVENT } from '../../../../store/events';
+import { EVENT } from '../../../../../store/events';
 import { useDispatch, useSelector } from 'react-redux';
-import { newEventSelector } from '../../../../store/selectors/newEvent';
+import { newEventSelector } from '../../../../../store/selectors/newEvent';
 import { faCaretDown, faClose } from '@fortawesome/free-solid-svg-icons';
-import { removeNewEvetnAlert } from '../../../../store/newEvent';
-import Tooltip from '../../../../components/common/Tooltip';
+import { removeNewEvetnAlert } from '../../../../../store/newEvent';
+import Tooltip from '../../../../../components/common/Tooltip';
 
 const Index = ({ showListModal }) => {
   const newEvent = useSelector(newEventSelector);

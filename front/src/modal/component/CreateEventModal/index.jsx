@@ -9,7 +9,6 @@ import {
   faBriefcase,
   faCalendarDay,
   faCaretDown,
-  faCircleQuestion,
   faGripLines,
   faLocationDot,
   faLock,
@@ -26,6 +25,8 @@ import {
 import DateTitle from './DateTitle';
 import InviteInput from './InviteInput';
 import InviteMemberList from './InviteMemberList';
+import BusyContainer from './BusyContainer';
+import PermissionContainer from './PermissionContainer';
 import AlertContainer from './AlertContainer';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -205,6 +206,7 @@ const Index = ({ children: ModalList }) => {
           onClickItem: onClickListModalItem,
         })}
       {EventCustomAlertModal}
+
       <div className={styles.modal_container} ref={modalRef}>
         <div className={styles.modal_header}>
           <FontAwesomeIcon icon={faGripLines} />
@@ -377,37 +379,11 @@ const Index = ({ children: ModalList }) => {
               <div>
                 <FontAwesomeIcon icon={faBriefcase} />
 
-                <div
-                  onClick={e =>
-                    showEventInfoListModal(e, EVENT['busy'], 'busy')
-                  }
-                >
-                  <h3 className={styles.list_modal}>
-                    {EVENT.busy[newEvent.busy]}
-                    <FontAwesomeIcon
-                      className={styles.caret_down}
-                      icon={faCaretDown}
-                    />
-                  </h3>
-                </div>
+                <BusyContainer showListModal={showEventInfoListModal} />
               </div>
               <div>
                 <FontAwesomeIcon icon={faLock} />
-                <div className={styles.calendar_info}>
-                  <h3
-                    className={styles.list_modal}
-                    onClick={e =>
-                      showEventInfoListModal(e, EVENT.permission, 'permission')
-                    }
-                  >
-                    {EVENT.permission[newEvent.permission]}
-                    <FontAwesomeIcon
-                      className={styles.caret_down}
-                      icon={faCaretDown}
-                    />
-                  </h3>
-                  <FontAwesomeIcon icon={faCircleQuestion} />
-                </div>
+                <PermissionContainer showListModal={showEventInfoListModal} />
               </div>
               <div className={styles.alert}>
                 <FontAwesomeIcon icon={faBell} />

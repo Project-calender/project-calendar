@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
-import AlertList from '../AlertList';
+import AlertList from './AlertList';
 import { useDispatch, useSelector } from 'react-redux';
 import { newEventSelector } from '../../../../store/selectors/newEvent';
 import { EVENT } from '../../../../store/events';
