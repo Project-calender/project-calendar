@@ -4,25 +4,106 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Input from '../../common/Input';
+import useEventModal from '../../../hooks/useEventModal';
+import ListModal from '../../../modal/component/ListModal';
+import TimeListModal from '../../../modal/component/TimeListModal';
+import { useState } from 'react';
 
 const Index = () => {
+  const sendTypeModal = useEventModal();
+  const dateTypeModal = useEventModal();
+  const timeListModal = useEventModal();
+
+  const [sendType, setSendType] = useState('알림');
+  const [dateType, setDateType] = useState('일');
+  const [time, setTime] = useState('오전 9:00');
+
+  function hideAllSubModal() {
+    sendTypeModal.hideModal();
+    dateTypeModal.hideModal();
+    timeListModal.hideModal();
+  }
   return (
     <div className={styles.alert_options}>
-      <div className={styles.list_container}>
-        <h3>알림</h3>
+      <div
+        className={styles.send_modal_container}
+        onClick={e => {
+          hideAllSubModal();
+          sendTypeModal.showModal({
+            data: ['이메일', '알림'],
+          });
+          e.stopPropagation();
+        }}
+      >
+        <h3>{sendType}</h3>
         <FontAwesomeIcon icon={faCaretDown} />
+        {sendTypeModal.isModalShown && (
+          <ListModal
+            hideModal={sendTypeModal.hideModal}
+            modalData={sendTypeModal.modalData}
+            onClickItem={e => {
+              setSendType(e.target.innerText);
+              sendTypeModal.hideModal();
+              e.stopPropagation();
+            }}
+          />
+        )}
       </div>
       <Input
         type="number"
         defaultValue={1}
         className={styles.alert_input_number}
       />
-      <div className={styles.list_container}>
-        <h3>일</h3>
+      <div
+        className={styles.date_modal_container}
+        onClick={e => {
+          hideAllSubModal();
+          dateTypeModal.showModal({
+            data: ['일', '주'],
+          });
+          e.stopPropagation();
+        }}
+      >
+        <h3>{dateType}</h3>
         <FontAwesomeIcon icon={faCaretDown} />
+        {dateTypeModal.isModalShown && (
+          <ListModal
+            hideModal={dateTypeModal.hideModal}
+            modalData={dateTypeModal.modalData}
+            onClickItem={e => {
+              setDateType(e.target.innerText);
+              dateTypeModal.hideModal();
+              e.stopPropagation();
+            }}
+          />
+        )}
       </div>
       <h3>전</h3>
-      <Input defaultValue="오전 9:00" className={styles.alert_input} />
+      <div
+        className={styles.time_modal_container}
+        onClick={e => {
+          hideAllSubModal();
+          timeListModal.showModal({
+            unit: 30,
+            count: 30 * 48,
+          });
+          e.stopPropagation();
+        }}
+      >
+        <Input value={time} className={styles.alert_input} />
+        {timeListModal.isModalShown && (
+          <TimeListModal
+            hideModal={timeListModal.hideModal}
+            modalData={timeListModal.modalData}
+            onClickItem={e => {
+              setTime(e.target.innerText);
+              timeListModal.hideModal();
+              e.stopPropagation();
+            }}
+            className={styles.time_modal}
+          />
+        )}
+      </div>
     </div>
   );
 };

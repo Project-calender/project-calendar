@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 
 const Index = ({
   type,
-  defaultValue = '',
+  defaultValue = null,
+  value,
   autoFocus = false,
   placeholder,
   onBlur = () => {},
@@ -18,6 +19,7 @@ const Index = ({
     onBlur(e);
     setInputFocus(false);
   }
+
   return (
     <div className={`${styles.input_container} ${className}`}>
       <input
@@ -27,7 +29,7 @@ const Index = ({
         onFocus={() => setInputFocus(true)}
         onBlur={handleBlurEvent}
         onKeyDown={onKeyDown}
-        defaultValue={defaultValue}
+        {...(defaultValue !== null ? { defaultValue } : { value })}
       />
       <hr className={`${styles.input_line} ${styles.line_active}`} />
       <hr
@@ -42,6 +44,7 @@ const Index = ({
 Index.propTypes = {
   type: PropTypes.string,
   defaultValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   autoFocus: PropTypes.bool,
   placeholder: PropTypes.string,
   onBlur: PropTypes.func,
