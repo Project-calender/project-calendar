@@ -1,0 +1,8 @@
+.memo > div { left: -10px; background: #ededed; height: 100%; padding: 10px; border-radius: 5px; width: 80% !important; } 
+.memo input { background: #ededed; border:none !important; word-break: break-all; } 
+.memo input::placeholder { color: #6f6f6f; font-weight: 600; } 
+
+.file_title { position: relative; left: -10px; height: 100%; padding: 10px; border-radius: 5px; width: fit-content; cursor: pointer; } 
+.file_title:hover { background: #f7f7f7 !important; } 
+
+.clip_icon { transform: rotate(-45deg); } 

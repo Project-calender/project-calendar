@@ -62,6 +62,7 @@ export const createEvent = createAsyncThunk(
       color: eventInfo.color,
       permission: eventInfo.permission,
       busy: eventInfo.busy,
+      memo: eventInfo.memo,
       allDay: eventInfo.allDay,
       startTime: eventInfo.startTime,
       endTime: eventInfo.endTime,

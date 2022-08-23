@@ -4,17 +4,16 @@ import PropTypes from 'prop-types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBarsStaggered,
   faBell,
   faBriefcase,
   faCalendarDay,
   faGripLines,
   faLocationDot,
   faLock,
-  faPaperclip,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Input from '../../../components/common/Input';
+import Line from '../../../components/common/Line';
 import Modal from '../../../components/common/Modal';
 import {
   CreateEventModalContext,
@@ -25,6 +24,8 @@ import DateTitle from './DateTitle';
 import InviteInput from './InviteInput';
 import InviteMemberList from './InviteMemberList';
 
+import MemoPreviewContainer from './MemoPreviewContainer';
+import MemoContainer from './MemoContainer';
 import CalendarPreviewContainer from './CalendarPreviewContainer';
 import CalendarContainer from './CalendarContainer';
 import BusyContainer from './BusyContainer';
@@ -50,20 +51,15 @@ import { useState } from 'react';
 import { useRef } from 'react';
 
 const Index = ({ children: ModalList }) => {
-  const dispatch = useDispatch();
-  const { hideModal: hideCreateEventModal, modalData: createEventModalData } =
-    useContext(CreateEventModalContext);
-  const {
-    showModal: showEventInfoListModal,
-    hideModal: hideEventInfoListModal,
-  } = useContext(EventInfoListModalContext);
-  const { showModal: showEventCustomAlertModal } = useContext(
-    EventCustomAlertModalContext,
-  );
-  const newEvent = useSelector(newEventSelector);
+  const createEventModal = useContext(CreateEventModalContext);
+  const eventInfoListModal = useContext(EventInfoListModalContext);
+  const eventCustomAlertModal = useContext(EventCustomAlertModalContext);
 
+  const newEvent = useSelector(newEventSelector);
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
   const baseCalendarIndex = useSelector(baseCalendarIndexSelector);
+
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(
       updateNewEventBarProperties({
@@ -75,15 +71,11 @@ const Index = ({ children: ModalList }) => {
 
   function initCreateEventModal() {
     dispatch(resetNewEventState());
-    hideCreateEventModal(true);
+    createEventModal.hideModal(true);
   }
 
   function handleEventTitle(e) {
     dispatch(updateNewEventBarProperties({ eventName: e.target.value }));
-  }
-
-  function handleEventMemo(e) {
-    dispatch(updateNewEventBarProperties({ memo: e.target.value }));
   }
 
   function onClickListModalItem(e) {
@@ -109,8 +101,8 @@ const Index = ({ children: ModalList }) => {
       const alertIndex = +name[name.length - 1];
 
       if (value === values.length) {
-        showEventCustomAlertModal({ alertIndex });
-        hideEventInfoListModal();
+        eventCustomAlertModal.showModal({ alertIndex });
+        eventInfoListModal.hideModal();
         e.stopPropagation();
         return;
       }
@@ -135,7 +127,7 @@ const Index = ({ children: ModalList }) => {
     } else {
       dispatch(updateNewEventBarProperties({ [name]: value }));
     }
-    hideEventInfoListModal();
+    eventInfoListModal.hideModal();
     e.stopPropagation();
   }
 
@@ -176,6 +168,7 @@ const Index = ({ children: ModalList }) => {
   const [isAddLocation, setAddLocation] = useState(false);
   const [isAddMemo, setAddMemo] = useState(false);
   const [isAddCalendar, setAddCalendar] = useState(false);
+  const isExistInviteMembers = Object.keys(newEvent.inviteMembers).length > 0;
 
   const [EventColorModal, EventInfoListModal, EventCustomAlertModal] =
     ModalList;
@@ -187,9 +180,10 @@ const Index = ({ children: ModalList }) => {
       isCloseButtom
       isBackground
       style={{
-        ...createEventModalData?.style,
+        ...createEventModal.modalData?.style,
         boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)',
         padding: '10px 0px',
+        overflow: 'hidden',
       }}
     >
       {EventColorModal}
@@ -199,145 +193,118 @@ const Index = ({ children: ModalList }) => {
         })}
       {EventCustomAlertModal}
 
-      <div className={styles.modal_container} ref={modalRef}>
-        <div className={styles.modal_header}>
-          <FontAwesomeIcon icon={faGripLines} />
+      <div className={styles.modal_header}>
+        <FontAwesomeIcon icon={faGripLines} />
+      </div>
+      <div className={styles.modal_context} ref={modalRef}>
+        <div className={styles.event_title}>
+          <div />
+          <Input
+            type="text"
+            placeholder="제목 및 시간 추가"
+            onBlur={handleEventTitle}
+            autoFocus={true}
+          />
         </div>
-        <div className={styles.modal_context}>
-          <div className={styles.event_title}>
-            <div />
+
+        <div>
+          <div />
+          <div className={styles.modal_context_category}>
+            <button className={styles.category_active}>이벤트</button>
+            <button>할 일</button>
+          </div>
+        </div>
+
+        <DateTitle showEventInfoListModal={eventInfoListModal.showModal} />
+        <div className={styles.time_find}>
+          <div />
+          <button className={styles.time_find_button}>시간 찾기</button>
+        </div>
+
+        {isExistInviteMembers && <Line />}
+        <InviteInput />
+        <InviteMemberList members={newEvent.inviteMembers} />
+        {isExistInviteMembers && <Line />}
+
+        <div className={styles.google_meet}>
+          <img
+            className={styles.google_meet_img}
+            src={`${process.env.PUBLIC_URL}/img/google_meet_icon.png`}
+            alt="구글 미팅"
+          />
+          <button>
+            <b>Google Meet</b> 화상 회의 추가
+          </button>
+        </div>
+
+        {isAddLocation && <Line />}
+        {!isAddLocation && (
+          <div className={styles.event_info_input}>
+            <FontAwesomeIcon icon={faLocationDot} />
+            <div
+              className={styles.invite_title}
+              onClick={e => {
+                setAddLocation(true);
+                e.stopPropagation();
+              }}
+            >
+              <h4>위치 추가</h4>
+            </div>
+          </div>
+        )}
+        {isAddLocation && (
+          <div className={styles.event_info_input}>
+            <FontAwesomeIcon icon={faLocationDot} />
             <Input
               type="text"
-              placeholder="제목 및 시간 추가"
-              onBlur={handleEventTitle}
-              autoFocus={true}
+              placeholder="위치 추가"
+              autoFocus={isAddLocation}
+              onBlur={e => {
+                if (!e.target.value) setAddLocation(false);
+              }}
             />
           </div>
-          <div>
-            <div />
-            <div className={styles.modal_context_category}>
-              <button className={styles.category_active}>이벤트</button>
-              <button>할 일</button>
-            </div>
-          </div>
-          <DateTitle showEventInfoListModal={showEventInfoListModal} />
-          <div className={styles.time_find}>
-            <div />
-            <button className={styles.time_find_button}>시간 찾기</button>
-          </div>
+        )}
 
-          {Object.keys(newEvent.inviteMembers).length > 0 && (
-            <div className={styles.modal_line} />
+        {isAddLocation && <Line />}
+        {isAddMemo && !isAddLocation && <Line />}
+
+        {!isAddMemo && <MemoPreviewContainer setAddMemo={setAddMemo} />}
+        {isAddMemo && <MemoContainer autoFocus={isAddMemo} />}
+
+        {isAddMemo && <Line />}
+        {!isAddMemo && isAddCalendar && <Line />}
+
+        <div>
+          <FontAwesomeIcon icon={faCalendarDay} />
+          {!isAddCalendar && (
+            <CalendarPreviewContainer setAddCalendar={setAddCalendar} />
           )}
-          <InviteInput />
-          <InviteMemberList members={newEvent.inviteMembers} />
-          {Object.keys(newEvent.inviteMembers).length > 0 && (
-            <div className={styles.modal_line} />
-          )}
-
-          <div className={styles.google_meet}>
-            <img
-              className={styles.google_meet_img}
-              src={`${process.env.PUBLIC_URL}/img/google_meet_icon.png`}
-              alt="구글 미팅"
-            />
-            <button>
-              <b>Google Meet</b> 화상 회의 추가
-            </button>
-          </div>
-          <>
-            {isAddLocation && <div className={styles.modal_line} />}
-            <div className={styles.event_info_input}>
-              <FontAwesomeIcon icon={faLocationDot} />
-              {!isAddLocation ? (
-                <div
-                  className={styles.invite_title}
-                  onClick={e => {
-                    setAddLocation(true);
-                    e.stopPropagation();
-                  }}
-                >
-                  <h4>위치 추가</h4>
-                </div>
-              ) : (
-                <Input
-                  type="text"
-                  placeholder="위치 추가"
-                  autoFocus={isAddLocation}
-                  onBlur={e => {
-                    if (!e.target.value) setAddLocation(false);
-                  }}
-                />
-              )}
-            </div>
-            {isAddLocation && <div className={styles.modal_line} />}
-          </>
-
-          {isAddMemo && !isAddLocation && <div className={styles.modal_line} />}
-          <div className={styles.memo}>
-            <FontAwesomeIcon icon={faBarsStaggered} />
-
-            {!isAddMemo ? (
-              <div
-                className={styles.invite_title}
-                onClick={e => {
-                  setAddMemo(true);
-                  e.stopPropagation();
-                }}
-              >
-                <h4>설명 또는 첨부파일 추가</h4>
-              </div>
-            ) : (
-              <Input
-                type="text"
-                placeholder="설명 추가"
-                onBlur={handleEventMemo}
-                autoFocus={isAddMemo}
-              />
-            )}
-          </div>
-          {isAddMemo && (
-            <>
-              <div>
-                <FontAwesomeIcon
-                  icon={faPaperclip}
-                  className={styles.clip_icon}
-                />
-                <h4 className={styles.file_title}>첨부파일 추가</h4>
-              </div>
-              <div className={styles.modal_line} />
-            </>
-          )}
-
-          {!isAddMemo && isAddCalendar && <div className={styles.modal_line} />}
-          <div>
-            <FontAwesomeIcon icon={faCalendarDay} />
-            {!isAddCalendar && (
-              <CalendarPreviewContainer setAddCalendar={setAddCalendar} />
-            )}
-            {isAddCalendar && (
-              <CalendarContainer showListModal={showEventInfoListModal} />
-            )}
-          </div>
           {isAddCalendar && (
-            <>
-              <div>
-                <FontAwesomeIcon icon={faBriefcase} />
-                <BusyContainer showListModal={showEventInfoListModal} />
-              </div>
-              <div>
-                <FontAwesomeIcon icon={faLock} />
-                <PermissionContainer showListModal={showEventInfoListModal} />
-              </div>
-              <div className={styles.alert}>
-                <FontAwesomeIcon icon={faBell} />
-                <AlertContainer showListModal={showEventInfoListModal} />
-              </div>
-            </>
+            <CalendarContainer showListModal={eventInfoListModal.showModal} />
           )}
         </div>
+        {isAddCalendar && (
+          <>
+            <div>
+              <FontAwesomeIcon icon={faBriefcase} />
+              <BusyContainer showListModal={eventInfoListModal.showModal} />
+            </div>
+            <div>
+              <FontAwesomeIcon icon={faLock} />
+              <PermissionContainer
+                showListModal={eventInfoListModal.showModal}
+              />
+            </div>
+            <div className={styles.alert}>
+              <FontAwesomeIcon icon={faBell} />
+              <AlertContainer showListModal={eventInfoListModal.showModal} />
+            </div>
+          </>
+        )}
       </div>
-      {isAddCalendar && <div className={styles.modal_footer_line} />}
+      {isAddCalendar && <Line />}
+
       <div className={styles.modal_footer}>
         <button>옵션 더보기</button>
         <button onClick={saveEvent}>저장</button>
