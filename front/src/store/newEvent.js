@@ -66,6 +66,15 @@ const newEvent = createSlice({
       const { index, type, time } = payload;
       state.alerts.notAllDay[index] = { type, time };
     },
+
+    updateNewEventStartTime(state, { payload }) {
+      const { type, minute, hour } = payload;
+      const date = new Date(state[type]);
+      if (minute >= 0) date.setMinutes(minute);
+      if (hour >= 0) date.setHours(hour);
+
+      state[type] = date.getTime();
+    },
   },
 });
 
@@ -80,6 +89,7 @@ export const {
   addNewEventNotAllDayAlert,
   updateNewEventAllDayAlert,
   updateNewEventNotAllDayAlert,
+  updateNewEventStartTime,
 } = newEvent.actions;
 
 export default newEvent.reducer;

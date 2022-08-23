@@ -11,6 +11,7 @@ import { newEventSelector } from '../../../../store/selectors/newEvent';
 import {
   calculateCurrentTimeRange,
   updateNewEventBarProperties,
+  updateNewEventStartTime,
 } from '../../../../store/newEvent';
 
 import useEventModal from '../../../../hooks/useEventModal';
@@ -48,34 +49,39 @@ const Index = ({ showEventInfoListModal }) => {
     );
   }
 
-  const {
-    isModalShown: isMiniCalendarModalShown,
-    showModal: showMiniCalendarModal,
-    hideModal: hideMiniCalendarModal,
-    modalData: miniCalendarModalData,
-  } = useEventModal();
+  const miniCalendarModal = useEventModal();
+  const startTimeListModal = useEventModal();
+  const endTimeListModal = useEventModal();
 
-  const {
-    isModalShown: isTimeListModalShown,
-    showModal: showTimeListModal,
-    hideModal: hideTimeListModal,
-    modalData: timeListModalData,
-  } = useEventModal();
+  function hideAllSubModal() {
+    miniCalendarModal.hideModal();
+    startTimeListModal.hideModal();
+    endTimeListModal.hideModal();
+  }
 
   function handleMiniCalendar(e, selectedDate) {
-    hideTimeListModal();
+    hideAllSubModal();
     const { top, left } = e.target.getBoundingClientRect();
-    showMiniCalendarModal({
+    miniCalendarModal.showModal({
       selectedDate,
       style: { top: top + 20, left },
     });
     e.stopPropagation();
   }
 
-  function handleTimeList(e) {
-    hideMiniCalendarModal();
+  function handleStartTimeList(e) {
+    hideAllSubModal();
     const { top, left } = e.target.getBoundingClientRect();
-    showTimeListModal({
+    startTimeListModal.showModal({
+      style: { top: top + 30, left },
+    });
+    e.stopPropagation();
+  }
+
+  function handleEndTimeList(e) {
+    hideAllSubModal();
+    const { top, left } = e.target.getBoundingClientRect();
+    endTimeListModal.showModal({
       style: { top: top + 30, left },
     });
     e.stopPropagation();
@@ -123,19 +129,49 @@ const Index = ({ showEventInfoListModal }) => {
 
   return (
     <>
-      {isMiniCalendarModalShown && (
+      {miniCalendarModal.isModalShown && (
         <MiniCalendarModal
-          hideModal={hideMiniCalendarModal}
-          modalData={miniCalendarModalData}
+          hideModal={miniCalendarModal.hideModal}
+          modalData={miniCalendarModal.modalData}
         />
       )}
 
-      {isTimeListModalShown && (
+      {startTimeListModal.isModalShown && (
         <TimeListModal
-          hideModal={hideTimeListModal}
-          modalData={timeListModalData}
+          hideModal={startTimeListModal.hideModal}
+          modalData={startTimeListModal.modalData}
+          onClickItem={e => {
+            const date = new Date(+e.target.dataset.value);
+            dispatch(
+              updateNewEventStartTime({
+                type: 'startTime',
+                minute: date.getMinutes(),
+                hour: date.getHours(),
+              }),
+            );
+            startTimeListModal.hideModal();
+          }}
         />
       )}
+
+      {endTimeListModal.isModalShown && (
+        <TimeListModal
+          hideModal={endTimeListModal.hideModal}
+          modalData={endTimeListModal.modalData}
+          onClickItem={e => {
+            const date = new Date(+e.target.dataset.value);
+            dispatch(
+              updateNewEventStartTime({
+                type: 'endTime',
+                minute: date.getMinutes(),
+                hour: date.getHours(),
+              }),
+            );
+            endTimeListModal.hideModal();
+          }}
+        />
+      )}
+
       <div>
         <FontAwesomeIcon icon={faClock} />
         <div
@@ -150,13 +186,16 @@ const Index = ({ showEventInfoListModal }) => {
             요일)
           </h3>
           {!newEvent.allDay && (
-            <h3 className={styles.date_title_start} onClick={handleTimeList}>
+            <h3
+              className={styles.date_title_start}
+              onClick={handleStartTimeList}
+            >
               {startDate.toTimeString()}
             </h3>
           )}
           <h3 className={styles.date_title_space}>-</h3>
           {!newEvent.allDay && (
-            <h3 className={styles.date_title_end} onClick={handleTimeList}>
+            <h3 className={styles.date_title_end} onClick={handleEndTimeList}>
               {!newEvent.allDay && endDate.toTimeString()}
             </h3>
           )}

@@ -7,16 +7,22 @@ import Moment from '../../../utils/moment';
 const Index = ({ hideModal, modalData, onClickItem = () => {}, className }) => {
   const { unit = 15, count = 15 * 96 } = modalData;
   const moment = new Moment();
-  const times = [];
+  const [times, names] = [[], []];
   for (let i = 0; i < count; i += unit) {
-    times.push(moment.addMinute(i).toTimeString());
+    times.push(moment.addMinute(i).time);
+    names.push(moment.addMinute(i).toTimeString());
   }
 
   return (
     <div className={`${styles.modal_container} ${className}`}>
       <ListModal
         hideModal={hideModal}
-        modalData={{ ...modalData, data: times, name: 'times' }}
+        modalData={{
+          ...modalData,
+          data: names,
+          name: 'times',
+          dataValues: times,
+        }}
         onClickItem={onClickItem}
       />
     </div>
