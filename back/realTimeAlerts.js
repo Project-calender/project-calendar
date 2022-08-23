@@ -14,7 +14,7 @@ const restartAll = async () => {
 
             await RealTimeAlert.destroy({
               where: { id: realTimeAlert.id },
-              force: true,
+              // force: true,
             });
           },
           null,
@@ -29,6 +29,11 @@ const addAlert = async (
   userId,
   eventId,
   calendarId,
+  allDay,
+  type,
+  time,
+  hour,
+  minute,
   content,
   date,
   myId,
@@ -41,6 +46,11 @@ const addAlert = async (
         UserId: userId,
         EventId: eventId,
         CalendarId: calendarId,
+        allDay: allDay,
+        type: type,
+        time: time,
+        hour: hour,
+        minute: minute,
         content: content,
         date: date,
       },
@@ -49,10 +59,14 @@ const addAlert = async (
       alertsObject[newAlert.id] = new CronJob(
         date,
         async function () {
-          // 이제 함수에 인자로 req.myId 넣어서 onlineUsers에 찾아서 있다면 알림보내기
-          console.log(`${content}`);
+          var socketId = Object.keys(onlineUsers).find(
+            (key) => onlineUsers[key] === myId
+          );
 
-          socket.emit("alertTest", { message: "test" });
+          if (socketId) {
+            socket.to(socketId).emit("alertTest", { alert: content });
+          }
+
           await RealTimeAlert.destroy({
             where: { id: newAlert.id },
             force: true,

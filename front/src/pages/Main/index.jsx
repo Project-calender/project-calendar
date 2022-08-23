@@ -7,8 +7,26 @@ import SideNav from '../../components/SideNav';
 import { USER_PATH } from '../../constants/path';
 import { useDispatch } from 'react-redux';
 import { resetUser } from '../../store/user';
+import useSocket from '../../hooks/useSocket';
 
 const Index = () => {
+  const socket = useSocket();
+  let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+
+  useEffect(() => {
+    if (socket && userInfo) {
+      socket.emit('login', { id: userInfo.id });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('alertTest', alert => {
+        console.log(alert);
+      });
+    }
+  }, []);
+
   let [isSideBarOn, toggleSideBar] = useState(true);
 
   const dispatch = useDispatch();
