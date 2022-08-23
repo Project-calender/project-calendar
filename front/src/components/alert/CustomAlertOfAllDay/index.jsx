@@ -9,21 +9,33 @@ import ListModal from '../../../modal/component/ListModal';
 import TimeListModal from '../../../modal/component/TimeListModal';
 import { useState } from 'react';
 import Moment from '../../../utils/moment';
+import { useImperativeHandle } from 'react';
 
-const Index = () => {
+const Index = React.forwardRef((props, ref) => {
   const sendTypeModal = useEventModal();
   const dateTypeModal = useEventModal();
   const timeListModal = useEventModal();
 
   const [sendType, setSendType] = useState('알림');
   const [dateType, setDateType] = useState('일');
+  const [number, setNumber] = useState(1);
   const [time, setTime] = useState(new Moment().setHour(9).time);
+
+  useImperativeHandle(ref, () => ({
+    alert: {
+      type: dateType,
+      time: number,
+      hour: new Date(time).getHours(),
+      minute: new Date(time).getMinutes(),
+    },
+  }));
 
   function hideAllSubModal() {
     sendTypeModal.hideModal();
     dateTypeModal.hideModal();
     timeListModal.hideModal();
   }
+
   return (
     <div className={styles.alert_options}>
       <div
@@ -52,8 +64,9 @@ const Index = () => {
       </div>
       <Input
         type="number"
-        defaultValue={1}
+        value={number}
         className={styles.alert_input_number}
+        onChange={e => setNumber(+e.target.value)}
       />
       <div
         className={styles.date_modal_container}
@@ -110,6 +123,8 @@ const Index = () => {
       </div>
     </div>
   );
-};
+});
+
+Index.displayName = 'CustomAlertOfAllDay';
 
 export default Index;

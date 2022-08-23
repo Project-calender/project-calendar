@@ -75,6 +75,11 @@ const newEvent = createSlice({
 
       state[type] = date.getTime();
     },
+
+    updateNewEventAlert(state, { payload }) {
+      const { type, index, alert } = payload;
+      state.alerts[type][index] = alert;
+    },
   },
 });
 
@@ -90,6 +95,7 @@ export const {
   updateNewEventAllDayAlert,
   updateNewEventNotAllDayAlert,
   updateNewEventStartTime,
+  updateNewEventAlert,
 } = newEvent.actions;
 
 export default newEvent.reducer;

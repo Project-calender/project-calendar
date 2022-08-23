@@ -115,9 +115,10 @@ const Index = ({ children: ModalList }) => {
         newEvent.allDay === EVENT.allDay.true
           ? EVENT.alerts.allDay.values
           : EVENT.alerts.notAllDay.values;
+      const alertIndex = +name[name.length - 1];
 
       if (value === values.length) {
-        showEventCustomAlertModal();
+        showEventCustomAlertModal({ alertIndex });
         hideEventInfoListModal();
         e.stopPropagation();
         return;
@@ -126,7 +127,7 @@ const Index = ({ children: ModalList }) => {
       if (newEvent.allDay === EVENT.allDay.true) {
         dispatch(
           updateNewEventAllDayAlert({
-            index: +name[name.length - 1],
+            index: alertIndex,
             ...values[value],
           }),
         );
@@ -135,7 +136,7 @@ const Index = ({ children: ModalList }) => {
       if (newEvent.allDay === EVENT.allDay.false) {
         dispatch(
           updateNewEventNotAllDayAlert({
-            index: +name[name.length - 1],
+            index: alertIndex,
             ...values[value],
           }),
         );
