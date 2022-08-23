@@ -71,6 +71,28 @@ export const EVENT = {
         { type: '일', time: 1 },
       ],
     },
+
+    getAllDayTitle(alert) {
+      const date =
+        alert.time === 0
+          ? '당일'
+          : alert.type === '일' && alert.time === 1
+          ? '전날'
+          : `${alert.time}${alert.type} 전`;
+
+      const type = alert.hour < 12 ? '오전' : '오후';
+      const hour = (alert.hour > 12 ? alert.hour % 12 : alert.hour) || 12;
+      const time =
+        alert.minute === 0
+          ? `${type} ${hour}시`
+          : `${type} ${hour}:${alert.minute}`;
+
+      return `${date} ${time}`;
+    },
+
+    getNotAllDayTitle(alert) {
+      return `${alert.time}${alert.type} 전`;
+    },
   },
 };
 

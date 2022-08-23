@@ -30,10 +30,15 @@ const Index = ({
     const { top, left } = e.currentTarget.getBoundingClientRect();
 
     const { data } = await getEventDetail(event);
-    const { EventMembers, EventHost } = data;
+    const { EventMembers, EventHost, realTimeAlert } = data;
+    const alerts =
+      realTimeAlert?.map(alert => {
+        const types = { week: '주', day: '일', hour: '시간', minute: '분' };
+        return { ...alert, type: types[alert.type] };
+      }) || null;
     setEventDetailModalData(data => ({
       ...data,
-      event: { ...event, EventMembers, EventHost },
+      event: { ...event, EventMembers, EventHost, alerts },
       style: {
         position: {
           top: top + offsetTop,
