@@ -1,12 +1,10 @@
 import io from 'socket.io-client';
 
 const useSocket = () => {
-  const socket = io('http://localhost:80');
-  socket.on('connect');
-
-  //   const disconnect = useCallback(() => {
-  //     socket.on('disconnect');
-  //   });
+  const socket = io('http://158.247.214.79');
+  socket.on('connect', () => {
+    console.log('you are connected');
+  });
 
   return socket;
 };
