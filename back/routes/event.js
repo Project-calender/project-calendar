@@ -22,6 +22,7 @@ const {
 const router = express.Router();
 const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
+const { findAll } = require("../models/profileImage");
 
 router.post("/getAllEvent", authJWT, async (req, res, next) => {
   try {
@@ -129,6 +130,7 @@ router.post("/getGroupEvent", authJWT, async (req, res, next) => {
         "id",
         "name",
         "color",
+        "allDay",
         "permission",
         "busy",
         "memo",
@@ -158,7 +160,22 @@ router.post("/getGroupEvent", authJWT, async (req, res, next) => {
         },
       ],
     });
-    return res.status(200).send(events);
+
+    const realTimeAlert = await RealTimeAlert.findAll({
+      where: {
+        [Op.and]: {
+          UserId: req.myId,
+          EventId: req.body.eventId,
+        },
+      },
+      attributes:
+        events.allDay === 1
+          ? ["EventId", "type", "time", "hour", "minute"]
+          : ["EventId", "type", "time"],
+    });
+    return res
+      .status(200)
+      .send({ event: events, realTimeAlert: realTimeAlert });
   } catch (error) {
     console.error(error);
     next(error);
@@ -351,8 +368,13 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    alert.hour,
+                    alert.minute,
                     content,
                     date,
                     req.myId,
@@ -370,8 +392,13 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    alert.hour,
+                    alert.minute,
                     content,
                     date,
                     req.myId,
@@ -394,8 +421,13 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
                     content,
                     date,
                     req.myId,
@@ -411,8 +443,13 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
                     content,
                     date,
                     req.myId,
@@ -428,8 +465,13 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
                     content,
                     date,
                     req.myId,
@@ -445,8 +487,13 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
                     content,
                     date,
                     req.myId,
@@ -817,8 +864,13 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    alert.hour,
+                    alert.minute,
                     content,
                     date,
                     req.myId,
@@ -836,8 +888,13 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    alert.hour,
+                    alert.minute,
                     content,
                     date,
                     req.myId,
@@ -860,10 +917,15 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
                     content,
                     date,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
                     req.myId,
                     req.app.get("io"),
                     req.app.get("onlineUsers")
@@ -877,8 +939,13 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
                     content,
                     date,
                     req.myId,
@@ -894,8 +961,13 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
                     content,
                     date,
                     req.myId,
@@ -911,8 +983,13 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
                 if (now < date) {
                   await addAlert(
                     req.myId,
-                    newGroupEvent.id,
+                    groupEvent.id,
                     req.body.calendarId,
+                    req.body.allDay,
+                    alert.type,
+                    alert.time,
+                    null,
+                    null,
                     content,
                     date,
                     req.myId,
