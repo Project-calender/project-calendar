@@ -94,41 +94,34 @@ const Index = ({ children: ModalList }) => {
         }),
       );
     } else if (name.startsWith('alert')) {
-      const values =
-        newEvent.allDay === EVENT.allDay.true
-          ? EVENT.alerts.allDay.values
-          : EVENT.alerts.notAllDay.values;
-      const alertIndex = +name[name.length - 1];
-
-      if (value === values.length) {
-        eventCustomAlertModal.showModal({ alertIndex });
-        eventInfoListModal.hideModal();
-        e.stopPropagation();
-        return;
-      }
-
-      if (newEvent.allDay === EVENT.allDay.true) {
-        dispatch(
-          updateNewEventAllDayAlert({
-            index: alertIndex,
-            ...values[value],
-          }),
-        );
-      }
-
-      if (newEvent.allDay === EVENT.allDay.false) {
-        dispatch(
-          updateNewEventNotAllDayAlert({
-            index: alertIndex,
-            ...values[value],
-          }),
-        );
-      }
+      selectAlertItem(e, name, value);
     } else {
       dispatch(updateNewEventBarProperties({ [name]: value }));
     }
     eventInfoListModal.hideModal();
     e.stopPropagation();
+  }
+
+  function selectAlertItem(e, name, value) {
+    const values =
+      newEvent.allDay === EVENT.allDay.true
+        ? EVENT.alerts.allDay.values
+        : EVENT.alerts.notAllDay.values;
+    const alertIndex = +name[name.length - 1];
+
+    const isSelectCustomAlert = value === values.length;
+    if (isSelectCustomAlert) {
+      eventCustomAlertModal.showModal({ alertIndex });
+      eventInfoListModal.hideModal();
+      e.stopPropagation();
+      return;
+    }
+
+    const updateNewEventAlert =
+      newEvent.allDay === EVENT.allDay.true
+        ? updateNewEventAllDayAlert
+        : updateNewEventNotAllDayAlert;
+    dispatch(updateNewEventAlert({ index: alertIndex, ...values[value] }));
   }
 
   function saveEvent() {
