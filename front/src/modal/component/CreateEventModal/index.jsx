@@ -164,6 +164,18 @@ const Index = ({ children: ModalList }) => {
       member => member.canInvite,
     );
 
+    const alerts =
+      newEvent.allDay === EVENT.allDay.true
+        ? newEvent.alerts.allDay
+        : newEvent.alerts.notAllDay;
+    const getAlertTitle =
+      newEvent.allDay === EVENT.allDay.true
+        ? EVENT.alerts.getAllDayTitle
+        : EVENT.alerts.getNotAllDayTitle;
+    const newAlerts = [
+      ...new Map(alerts.map(alert => [getAlertTitle(alert), alert])).values(),
+    ].sort(EVENT.alerts.ASC_SORT);
+
     dispatch(
       createEvent({
         ...newEvent,
@@ -175,10 +187,7 @@ const Index = ({ children: ModalList }) => {
         startTime: new Date(newEvent.startTime).toISOString(),
         endTime: new Date(newEvent.endTime).toISOString(),
         guests: inviteMembers.map(member => member.email),
-        alerts:
-          newEvent.allDay === EVENT.allDay.true
-            ? newEvent.alerts.allDay
-            : newEvent.alerts.notAllDay,
+        alerts: newAlerts,
       }),
     );
     initCreateEventModal();

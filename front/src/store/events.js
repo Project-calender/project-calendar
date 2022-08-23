@@ -93,6 +93,18 @@ export const EVENT = {
     getNotAllDayTitle(alert) {
       return `${alert.time}${alert.type} 전`;
     },
+
+    ASC_SORT(a, b) {
+      const types = { 분: 1, 시간: 2, 일: 3, 주: 4 };
+      if (types[a.type] === types[b.type]) {
+        if (a.time === b.time) {
+          if (a.hour === b.hour) return a.minute - b.minute;
+          return a.hour - b.hour;
+        }
+        return a.time - b.time;
+      }
+      return types[a.type] - types[b.type];
+    },
   },
 };
 
