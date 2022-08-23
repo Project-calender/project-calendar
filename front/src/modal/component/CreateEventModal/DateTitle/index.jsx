@@ -150,6 +150,7 @@ const Index = ({ showEventInfoListModal }) => {
               }),
             );
             startTimeListModal.hideModal();
+            e.stopPropagation();
           }}
         />
       )}
@@ -168,6 +169,7 @@ const Index = ({ showEventInfoListModal }) => {
               }),
             );
             endTimeListModal.hideModal();
+            e.stopPropagation();
           }}
         />
       )}

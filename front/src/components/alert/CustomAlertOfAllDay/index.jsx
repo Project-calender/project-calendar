@@ -8,6 +8,7 @@ import useEventModal from '../../../hooks/useEventModal';
 import ListModal from '../../../modal/component/ListModal';
 import TimeListModal from '../../../modal/component/TimeListModal';
 import { useState } from 'react';
+import Moment from '../../../utils/moment';
 
 const Index = () => {
   const sendTypeModal = useEventModal();
@@ -16,7 +17,7 @@ const Index = () => {
 
   const [sendType, setSendType] = useState('알림');
   const [dateType, setDateType] = useState('일');
-  const [time, setTime] = useState('오전 9:00');
+  const [time, setTime] = useState(new Moment().setHour(9).time);
 
   function hideAllSubModal() {
     sendTypeModal.hideModal();
@@ -90,13 +91,16 @@ const Index = () => {
           e.stopPropagation();
         }}
       >
-        <Input value={time} className={styles.alert_input} />
+        <Input
+          value={new Moment(time).toTimeString()}
+          className={styles.alert_input}
+        />
         {timeListModal.isModalShown && (
           <TimeListModal
             hideModal={timeListModal.hideModal}
             modalData={timeListModal.modalData}
             onClickItem={e => {
-              setTime(e.target.innerText);
+              setTime(+e.target.dataset.value);
               timeListModal.hideModal();
               e.stopPropagation();
             }}

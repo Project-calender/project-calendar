@@ -58,7 +58,7 @@ const Index = ({ modalData, hideModal }) => {
   }, [style]);
 
   if (!event) return;
-  console.log(event);
+
   return (
     <Modal
       hideModal={hideModal}
