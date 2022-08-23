@@ -12,7 +12,7 @@
 .modal_context > div { display: flex; align-items: center; margin: 8px 0px; } 
 
 .modal_context > div > :nth-child(1) { width: 15%; } 
-.modal_context svg { width: 16px; height: 16px; color: #848484; position:relative; left: -4px; } 
+.modal_context svg { width: 16px; height: 16px; color: #848484; position:relative; left: -2px; } 
 
 .event_title > div { margin-top:10px; width: 82%; margin-bottom: 5px; } 
 .event_title :nth-child(2) input { font-size: 22px; margin-bottom: 5px; } 
@@ -24,28 +24,23 @@
 .time_find { margin-top: -5px !important; } 
 .time_find_button { position: relative; left: -10px; color:#1967d2 !important; padding: 5px 10px; background: white; font-size: 14px; border-radius: 3px; } 
 
-.calendar_title { position: relative; left: -5px; padding: 5px 8px !important; cursor: pointer; border-radius: 5px; width: 100%; } 
-.calendar_title:hover { background: #f7f7f7; } 
-.calendar_title > h4:hover { text-decoration: underline; } 
-.calendar_title > h4 { display: inline-block; font-weight: 600; } 
-.calendar_title > p { font-weight: 300; } 
-.calendar_color { display: inline-block; width: 15px; height: 15px; border-radius: 100%; margin-left: 8px; position: relative; top: 2px; } 
-
-.event_info_input > div { background: #ededed; height: 100%; padding: 10px 5px; border-radius: 5px; width: 80% !important; } 
+.event_info_input > div { left: -10px; background: #ededed; height: 100%; padding: 10px; border-radius: 5px; width: 80% !important; } 
 .event_info_input input { background: #ededed; border:none !important; transform : scaleY(1.1) } 
 .event_info_input input::placeholder { color: #6f6f6f; font-weight: 600; } 
 
-.invite_title { position: relative; left: -5px; padding-right: 10px !important; background: white !important; cursor: pointer; } 
+.invite_title { position: relative; left: -10px; background: white !important; cursor: pointer; } 
 .invite_title:hover { background: #f7f7f7 !important; } 
 
-.google_meet img { width: 10%; height: 30px; object-fit: contain; position:relative; left: -4px; } 
-.google_meet button { width: 220px !important; height: 35px; font-size: 14px; background: #1a73e8; color: white; } 
+.google_meet img { width: 10%; height: 30px; object-fit: contain; position:relative; left: -2px; } 
+.google_meet button { position: relative;  width: 220px !important; height: 35px; font-size: 14px; background: #1a73e8; color: white; } 
 .google_meet button:hover { filter:brightness(110%) } 
 
-.memo > div { background: #ededed; height: 100%; padding: 10px 5px; border-radius: 5px; width: 80% !important; } 
+.memo > div { left: -10px; background: #ededed; height: 100%; padding: 10px; border-radius: 5px; width: 80% !important; } 
 .memo input { background: #ededed; border:none !important; word-break: break-all; } 
 .memo input::placeholder { color: #6f6f6f; font-weight: 600; } 
 
+.file_title { position: relative; left: -10px; height: 100%; padding: 10px; border-radius: 5px; width: fit-content; cursor: pointer; } 
+.file_title:hover { background: #f7f7f7 !important; } 
 .clip_icon { transform: rotate(-45deg); } 
 
 .calendar_info { display: flex; align-items: center; width: 85%; } 

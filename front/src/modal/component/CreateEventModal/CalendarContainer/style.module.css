@@ -1,0 +1,6 @@
+.calendar_container { display: flex; }
+.calendar_container > h3 { display: flex; align-items: center; position: relative; left: -10px; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 0px !important; } 
+.calendar_container > h3 svg { margin-right: 0px; } 
+.calendar_container > h3:hover { background: #f7f7f7; } 
+
+.caret_down { margin: 0px 10px; } 

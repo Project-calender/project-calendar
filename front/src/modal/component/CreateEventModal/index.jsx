@@ -8,7 +8,6 @@ import {
   faBell,
   faBriefcase,
   faCalendarDay,
-  faCaretDown,
   faGripLines,
   faLocationDot,
   faLock,
@@ -25,6 +24,9 @@ import {
 import DateTitle from './DateTitle';
 import InviteInput from './InviteInput';
 import InviteMemberList from './InviteMemberList';
+
+import CalendarPreviewContainer from './CalendarPreviewContainer';
+import CalendarContainer from './CalendarContainer';
 import BusyContainer from './BusyContainer';
 import PermissionContainer from './PermissionContainer';
 import AlertContainer from './AlertContainer';
@@ -35,15 +37,12 @@ import {
   calendarsByWriteAuthoritySelector,
 } from '../../../store/selectors/calendars';
 
-import EventColorOption from '../../../components/calendar/EventColorOption';
-import { EVENT_COLOR } from '../../../styles/color';
 import {
   resetNewEventState,
   updateNewEventAllDayAlert,
   updateNewEventBarProperties,
   updateNewEventNotAllDayAlert,
 } from '../../../store/newEvent';
-import { useCallback } from 'react';
 import { createEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
@@ -73,13 +72,6 @@ const Index = ({ children: ModalList }) => {
       }),
     );
   }, [dispatch, calendars, baseCalendarIndex]);
-
-  const changeColor = useCallback(
-    color => {
-      dispatch(updateNewEventBarProperties({ eventColor: color }));
-    },
-    [dispatch],
-  );
 
   function initCreateEventModal() {
     dispatch(resetNewEventState());
@@ -311,7 +303,7 @@ const Index = ({ children: ModalList }) => {
                   icon={faPaperclip}
                   className={styles.clip_icon}
                 />
-                <h4>첨부파일 추가</h4>
+                <h4 className={styles.file_title}>첨부파일 추가</h4>
               </div>
               <div className={styles.modal_line} />
             </>
@@ -320,65 +312,17 @@ const Index = ({ children: ModalList }) => {
           {!isAddMemo && isAddCalendar && <div className={styles.modal_line} />}
           <div>
             <FontAwesomeIcon icon={faCalendarDay} />
-            <div className={styles.calendar_info}>
-              {!isAddCalendar ? (
-                <div
-                  className={styles.calendar_title}
-                  onClick={e => {
-                    setAddCalendar(true);
-                    e.stopPropagation();
-                  }}
-                >
-                  <h4>{calendars[newEvent.calendarId].name}</h4>
-                  <div
-                    className={styles.calendar_color}
-                    style={{ background: newEvent.calendarColor }}
-                  />
-                  <h5>{`${EVENT.busy[newEvent.busy]} · ${
-                    EVENT.permission[newEvent.permission]
-                  } · 알리지 않음`}</h5>
-                </div>
-              ) : (
-                <>
-                  <h3
-                    className={styles.list_modal}
-                    onClick={e =>
-                      showEventInfoListModal(
-                        e,
-                        calendars.map(calendar => calendar.name),
-                        'calendarId',
-                      )
-                    }
-                  >
-                    {calendars[newEvent.calendarId].name}
-                    <FontAwesomeIcon
-                      className={styles.caret_down}
-                      icon={faCaretDown}
-                    />
-                  </h3>
-                  <EventColorOption
-                    colors={
-                      Object.values(EVENT_COLOR).includes(
-                        newEvent.calendarColor,
-                      )
-                        ? EVENT_COLOR
-                        : {
-                            ...EVENT_COLOR,
-                            '캘린더 색상': newEvent.calendarColor,
-                          }
-                    }
-                    color={newEvent.eventColor || newEvent.calendarColor}
-                    changedColor={changeColor}
-                  />
-                </>
-              )}
-            </div>
+            {!isAddCalendar && (
+              <CalendarPreviewContainer setAddCalendar={setAddCalendar} />
+            )}
+            {isAddCalendar && (
+              <CalendarContainer showListModal={showEventInfoListModal} />
+            )}
           </div>
           {isAddCalendar && (
             <>
               <div>
                 <FontAwesomeIcon icon={faBriefcase} />
-
                 <BusyContainer showListModal={showEventInfoListModal} />
               </div>
               <div>
