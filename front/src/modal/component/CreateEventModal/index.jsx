@@ -21,7 +21,7 @@ import {
   EventCustomAlertModalContext,
   EventInfoListModalContext,
 } from '../../../context/EventModalContext';
-import DateTitle from './DateTitle';
+import DateTitleContainer from './DateTitleContainer';
 import InviteInput from './InviteInput';
 import InviteMemberList from './InviteMemberList';
 
@@ -164,8 +164,7 @@ const Index = ({ children: ModalList }) => {
   const [isAddCalendar, setAddCalendar] = useState(false);
   const isExistInviteMembers = Object.keys(newEvent.inviteMembers).length > 0;
 
-  const [EventColorModal, EventInfoListModal, EventCustomAlertModal] =
-    ModalList;
+  const [EventInfoListModal, ...RestModal] = ModalList;
   const modalRef = useRef();
 
   const isSubModalShown =
@@ -185,12 +184,11 @@ const Index = ({ children: ModalList }) => {
         overflow: 'hidden',
       }}
     >
-      {EventColorModal}
       {EventInfoListModal &&
         React.cloneElement(EventInfoListModal, {
           onClickItem: onClickListModalItem,
         })}
-      {EventCustomAlertModal}
+      {RestModal}
 
       <div className={styles.modal_header}>
         <FontAwesomeIcon icon={faGripLines} />
@@ -219,7 +217,9 @@ const Index = ({ children: ModalList }) => {
           </div>
         </div>
 
-        <DateTitle showEventInfoListModal={eventInfoListModal.showModal} />
+        <DateTitleContainer
+          showEventInfoListModal={eventInfoListModal.showModal}
+        />
         <div className={styles.time_find}>
           <div />
           <button className={styles.time_find_button}>시간 찾기</button>

@@ -11,15 +11,12 @@ import { newEventSelector } from '../../../../store/selectors/newEvent';
 import {
   calculateCurrentTimeRange,
   updateNewEventBarProperties,
-  updateNewEventTime,
 } from '../../../../store/newEvent';
 
-import useEventModal from '../../../../hooks/useEventModal';
-import MiniCalendarModal from '../../MiniCalendarModal';
-import TimeListModal from '../../TimeListModal';
 import { useContext } from 'react';
 import {
   EventColorModalContext,
+  EventDateModalContext,
   EventInfoListModalContext,
 } from '../../../../context/EventModalContext';
 
@@ -49,9 +46,8 @@ const Index = ({ showEventInfoListModal }) => {
     );
   }
 
-  const miniCalendarModal = useEventModal();
-  const startTimeListModal = useEventModal();
-  const endTimeListModal = useEventModal();
+  const { miniCalendarModal, startTimeListModal, endTimeListModal } =
+    useContext(EventDateModalContext);
 
   function hideAllSubModal() {
     miniCalendarModal.hideModal();
@@ -132,51 +128,6 @@ const Index = ({ showEventInfoListModal }) => {
 
   return (
     <>
-      {miniCalendarModal.isModalShown && (
-        <MiniCalendarModal
-          hideModal={miniCalendarModal.hideModal}
-          modalData={miniCalendarModal.modalData}
-        />
-      )}
-
-      {startTimeListModal.isModalShown && (
-        <TimeListModal
-          hideModal={startTimeListModal.hideModal}
-          modalData={startTimeListModal.modalData}
-          onClickItem={e => {
-            const date = new Date(+e.target.dataset.value);
-            dispatch(
-              updateNewEventTime({
-                type: 'startTime',
-                minute: date.getMinutes(),
-                hour: date.getHours(),
-              }),
-            );
-            startTimeListModal.hideModal();
-            e.stopPropagation();
-          }}
-        />
-      )}
-
-      {endTimeListModal.isModalShown && (
-        <TimeListModal
-          hideModal={endTimeListModal.hideModal}
-          modalData={endTimeListModal.modalData}
-          onClickItem={e => {
-            const date = new Date(+e.target.dataset.value);
-            dispatch(
-              updateNewEventTime({
-                type: 'endTime',
-                minute: date.getMinutes(),
-                hour: date.getHours(),
-              }),
-            );
-            endTimeListModal.hideModal();
-            e.stopPropagation();
-          }}
-        />
-      )}
-
       <div>
         <FontAwesomeIcon icon={faClock} />
         <div

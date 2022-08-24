@@ -16,4 +16,4 @@ export const EventCustomAlertModalContext = createContext({});
 
 export const miniCalendarContext = createContext({});
 
-export const eventDateModalContext = createContext({});
+export const EventDateModalContext = createContext({});
