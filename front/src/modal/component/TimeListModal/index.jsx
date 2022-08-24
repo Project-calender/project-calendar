@@ -12,7 +12,6 @@ const Index = ({ hideModal, modalData, onClickItem = () => {}, className }) => {
     times.push(moment.addMinute(i).time);
     names.push(moment.addMinute(i).toTimeString());
   }
-  console.log(selectedItem);
   return (
     <div className={`${styles.modal_container} ${className}`}>
       <ListModal

@@ -178,31 +178,17 @@ export const EVENT = {
   alerts: {
     allDay: {
       type: ['일', '주'],
-      message: [
-        '당일 오전 9시',
-        '전날 오전 9시',
-        '2일 전 오전 9시',
-        '1주 전 오전 9시',
-        '맞춤...',
-      ],
       values: [
         { type: '일', time: 0, hour: 9, minute: 0 },
         { type: '일', time: 1, hour: 9, minute: 0 },
         { type: '일', time: 2, hour: 9, minute: 0 },
         { type: '주', time: 1, hour: 9, minute: 0 },
+        { type: '맞춤' },
       ],
     },
+
     notAllDay: {
       type: ['분', '시간', '일', '주'],
-      message: [
-        '5분 전',
-        '10분 전',
-        '15분 전',
-        '30분 전',
-        '1시간 전',
-        '1일 전',
-        '맞춤...',
-      ],
       values: [
         { type: '분', time: 5 },
         { type: '분', time: 10 },
@@ -210,10 +196,12 @@ export const EVENT = {
         { type: '분', time: 30 },
         { type: '시간', time: 1 },
         { type: '일', time: 1 },
+        { type: '맞춤' },
       ],
     },
 
     getAllDayTitle(alert) {
+      if (alert.type === '맞춤') return '맞춤...';
       const date =
         alert.time === 0
           ? '당일'
@@ -232,11 +220,12 @@ export const EVENT = {
     },
 
     getNotAllDayTitle(alert) {
+      if (alert.type === '맞춤') return '맞춤...';
       return `${alert.time}${alert.type} 전`;
     },
 
     ASC_SORT(a, b) {
-      const types = { 분: 1, 시간: 2, 일: 3, 주: 4 };
+      const types = { 분: 1, 시간: 2, 일: 3, 주: 4, 맞춤: 5 };
       if (types[a.type] === types[b.type]) {
         if (a.time === b.time) {
           if (a.hour === b.hour) return a.minute - b.minute;

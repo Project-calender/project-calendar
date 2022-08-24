@@ -17,11 +17,6 @@ const Index = ({ showListModal }) => {
       ? newEvent.alerts.allDay
       : newEvent.alerts.notAllDay;
 
-  const message =
-    newEvent.allDay === EVENT.allDay.true
-      ? EVENT.alerts.allDay.message
-      : EVENT.alerts.notAllDay.message;
-
   const dispatch = useDispatch();
   function clickRemoveAlert(e, index) {
     dispatch(
@@ -33,26 +28,41 @@ const Index = ({ showListModal }) => {
     e.stopPropagation();
   }
 
-  const alertTitle =
+  const getAlertTitle =
     newEvent.allDay === EVENT.allDay.true
-      ? EVENT.alerts.getAllDayTitle(alert)
-      : EVENT.alerts.getNotAllDayTitle(alert);
+      ? EVENT.alerts.getAllDayTitle
+      : EVENT.alerts.getNotAllDayTitle;
 
+  function clickAlert(e, alert, index) {
+    const alerts =
+      newEvent.allDay === EVENT.allDay.true
+        ? EVENT.alerts.allDay.values
+        : EVENT.alerts.notAllDay.values;
+
+    const newAlerts = [
+      ...new Map(
+        alerts.concat(alert).map(alert => [getAlertTitle(alert), alert]),
+      ).values(),
+    ]
+      .sort(EVENT.alerts.ASC_SORT)
+      .map(getAlertTitle);
+
+    showListModal(e, {
+      data: newAlerts,
+      name: `alert ${index}`,
+      selectedItem: getAlertTitle(alert),
+    });
+    e.stopPropagation();
+  }
   return (
     <>
       {alerts.map((alert, index) => (
         <div key={index} className={styles.alerts_container}>
           <h3
             className={styles.alert_item}
-            onClick={e =>
-              showListModal(e, {
-                data: message,
-                name: `alert ${index}`,
-                selectedItem: alertTitle,
-              })
-            }
+            onClick={e => clickAlert(e, alert, index)}
           >
-            {alertTitle}
+            {getAlertTitle(alert)}
             <FontAwesomeIcon
               className={styles.caret_down_icon}
               icon={faCaretDown}

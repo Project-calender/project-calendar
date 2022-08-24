@@ -107,10 +107,9 @@ const Index = ({ children: ModalList }) => {
       newEvent.allDay === EVENT.allDay.true
         ? EVENT.alerts.allDay.values
         : EVENT.alerts.notAllDay.values;
-    const alertIndex = +name[name.length - 1];
 
-    const isSelectCustomAlert = value === values.length;
-    if (isSelectCustomAlert) {
+    const alertIndex = +name[name.length - 1];
+    if (e.target.innerText === '맞춤...') {
       eventCustomAlertModal.showModal({ alertIndex });
       eventInfoListModal.hideModal();
       e.stopPropagation();
