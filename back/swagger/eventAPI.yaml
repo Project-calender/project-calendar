@@ -133,56 +133,74 @@
         description: 성공
         schema:
           properties:
-            id:
-              type: integer
-            color:
-              type: string
-            priority:
-              type: string
-            memo:
-              type: string
-            startTime:
-              type: string
-            endTime:
-              type: string
-            EventHostId:
-              type: integer
-            CalendarId:
-              type: integer
-            EventHost:
+            events:
               type: object
               properties:
                 id:
                   type: integer
-                email:
+                color:
                   type: string
-                nickname:
+                priority:
                   type: string
-            EventMembers:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  email:
-                    type: string
-                  nickname:
-                    type: string
-                  ProfileImages:
+                memo:
+                  type: string
+                startTime:
+                  type: string
+                endTime:
+                  type: string
+                EventHostId:
+                  type: integer
+                CalendarId:
+                  type: integer
+                EventHost:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    email:
+                      type: string
+                    nickname:
+                      type: string
+                EventMembers:
+                  type: array
+                  items:
                     type: object
                     properties:
-                      src:
-                        type: integer
-                  EventMember:
-                    type: object
-                    properties:
-                      state:
-                        type: integer
-                      UserId:
-                        type: integer
-                      EventId:
-                        type: integer
+                      id:
+                        type: string
+                      email:
+                        type: string
+                      nickname:
+                        type: string
+                      ProfileImages:
+                        type: object
+                        properties:
+                          src:
+                            type: integer
+                      EventMember:
+                        type: object
+                        properties:
+                          state:
+                            type: integer
+                          UserId:
+                            type: integer
+                          EventId:
+                            type: integer
+            realTimeAlert:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: minute, hour, day, week / day, week (allDay)
+                time:
+                  type: integer
+                  example: 1
+                hour:
+                  type: integer
+                  example: 1 (allDay)
+                minute:
+                  type: integer
+                  example: 1 (allDay)
       500:
         $ref: "./openapi.yaml#/serverError"
 /api/event/getEventByDate:
