@@ -86,7 +86,7 @@ const Index = ({ children }) => {
     const date = new Date(+e.target.dataset.value);
     dispatch(
       updateNewEventTime({
-        type: 'startTime',
+        type,
         minute: date.getMinutes(),
         hour: date.getHours(),
       }),
