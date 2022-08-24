@@ -1,0 +1,4 @@
+.title{display: flex; align-items: center;}
+.title .back_icon{width: 50px;height: 50px;  border-radius: 50%; text-align: center; line-height: 50px; font-size: 24px; cursor: pointer;}
+.title .back_icon:hover{background: #eee;}
+.title h2{font-size: 22px; margin-left: 10px;}

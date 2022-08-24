@@ -1,0 +1,27 @@
+.container{width: 100%;height: 100vh; display: flex; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.5);position: fixed;top: 0;left: 0; z-index: 1000;}
+
+.invite_popup{width: 500px;height: 225px; background: #fff; border-radius: 10px; position: relative; }
+.invite_popup h2{width: 100%; font-size: 16px;font-weight: 400; padding: 20px 25px; box-sizing: border-box; border-bottom: 1px solid #eee;}
+
+
+.invite_form{padding: 0 25px; box-sizing: border-box; }
+.user_email{width: 100%;height: 35px;  margin: 10px 0;}
+.user_email input{width: 100%;height: 100%; border: none; background: #eee; border-radius: 5px; padding: 0 10px; box-sizing: border-box;}
+
+.user_authority{width: 100%;height: 45px;background: #eee; border-radius: 5px; padding: 0 10px; box-sizing: border-box; position: relative; cursor: pointer;}
+.user_authority > em{position: absolute; top: 3px;left: 10px; font-size: 12px;}
+.user_authority p{position: absolute; bottom: 4px; left: 10px; font-size: 14px;}
+.user_authority .down_icon{position: absolute; top: 50%; right: 10px; font-size: 14px; transform: translateY(-50%);}
+
+.authority_list{display: none; width: 100%; position: absolute; top: 0;left: 0; background: #fff;z-index: 100; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; z-index: 2000;}
+.authority_list.active{display: block;}
+.authority_list li{height: 40px; line-height: 40px; cursor: pointer; padding: 0 10px; box-sizing: border-box;}
+.authority_list li em{color: #000;}
+.authority_list li:hover{background: #eee;}
+
+.btt_wrap{position: absolute; bottom: 10px; right: 20px;}
+.btt_wrap button{font-size: 14px; background: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; box-sizing: border-box;}
+.btt_wrap button.send{ color: #1a73e8;}
+.btt_wrap button.send.inactive{pointer-events: none; color: #ccc;}
+.btt_wrap button:hover{background: #eee;}
+

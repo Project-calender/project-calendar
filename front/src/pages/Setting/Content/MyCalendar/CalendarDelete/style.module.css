@@ -1,0 +1,8 @@
+.container{margin-top: 60px;}
+
+.delete_btt{width: 80px;height: 35px; margin: 10px 0; background: #fff; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; color: #095ad3; cursor: pointer;}
+.delete_btt:hover{background: rgb(250, 250, 250); color: #174ea6;}
+
+
+
+

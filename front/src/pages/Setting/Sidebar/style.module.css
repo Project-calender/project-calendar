@@ -1,0 +1,25 @@
+.side_bar{width: 250px;height: 100%; overflow-y: auto;}
+
+.calendar{box-sizing: border-box;}
+.calendar h2{margin-left: 25px; font-size: 16px;font-weight: 400;color: #3c4043; padding: 10px 0;}
+.calendar > ul{}
+.calendar > ul > li{width: 100%; display: flex; flex-direction: column; justify-content: center;  cursor: pointer; overflow: hidden;  transition: all 0.2s;}
+.calendar > ul > li .calendar_name{display: flex; align-items: center;  padding: 12px 0; border-radius: 0 30px 30px 0; transition: all 0.2s;}
+.calendar > ul > li .calendar_name:hover{background: #eee; }
+.calendar > ul > li.active > .calendar_name{background: #E8F0FE;}
+.calendar > ul > li > .calendar_name span{display: block; width: 12px;height: 12px; border-radius: 50%; margin-left: 25px;}
+.calendar > ul > li > .calendar_name > em{font-size: 14px;font-weight: 400;color: #3c4043; margin-left: 10px;}
+.calendar > ul > li.active > .calendar_name > em{color: #1A73E8;}
+
+.setting_list{width: 100%; height: 0px; opacity: 0; position: relative; transition: all 0.2s;}
+.setting_list::before{content: "";width: 2px;height: 90%;background: #ddd; position: absolute; top: 50%;left: 25px; transform: translateY(-50%); z-index: 100;}
+.setting_list li{width: 100%; border-radius: 0 30px 30px 0; transition: all 0.2s; position: relative;}
+.setting_list li.active::before{content: "";width: 2px;height: 30px;background: #1A73E8; position: absolute; top: 50%;left: 25px; transform: translateY(-50%); z-index: 101;}
+.setting_list li:hover{background: #eee;}
+.setting_list li em{width: 100%; padding: 12px 0; display: inline-block; padding-left: 45px; box-sizing: border-box;}
+.setting_list li.active em{color: #1A73E8; }
+
+.calendar > ul > li.active{overflow: visible;}
+.calendar > ul > li.active .setting_list{height: 132px; opacity: 1;}
+.calendar > ul > li:nth-child(1).active .setting_list{height: 44px; opacity: 1;}
+.calendar > ul > li.active .setting_list.b{height: 88px; opacity: 1;}

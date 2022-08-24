@@ -1,0 +1,19 @@
+.content{width: 610px; margin-left: 165px; padding: 20px 0 40px; box-sizing: border-box;}
+.content h3{font-size: 18px;font-weight: 300;color: #70757a; margin: 10px 0;}
+
+@media (max-width : 1080px){
+    .content{ margin-left: 100px;} 
+}
+
+@media (max-width : 1000px){
+    .content{ margin-left: 50px;} 
+}
+
+@media (max-width : 950px){
+    .content{ width: 500px;} 
+}
+@media (max-width : 850px){
+    .content{ width: 450px;} 
+}
+
+
