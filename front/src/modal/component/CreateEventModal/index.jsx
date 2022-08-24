@@ -17,6 +17,7 @@ import Line from '../../../components/common/Line';
 import Modal from '../../../components/common/Modal';
 import {
   CreateEventModalContext,
+  EventColorModalContext,
   EventCustomAlertModalContext,
   EventInfoListModalContext,
 } from '../../../context/EventModalContext';
@@ -54,6 +55,7 @@ const Index = ({ children: ModalList }) => {
   const createEventModal = useContext(CreateEventModalContext);
   const eventInfoListModal = useContext(EventInfoListModalContext);
   const eventCustomAlertModal = useContext(EventCustomAlertModalContext);
+  const eventColorModal = useContext(EventColorModalContext);
 
   const newEvent = useSelector(newEventSelector);
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
@@ -166,6 +168,11 @@ const Index = ({ children: ModalList }) => {
     ModalList;
   const modalRef = useRef();
 
+  const isSubModalShown =
+    eventInfoListModal.isModalShown ||
+    eventCustomAlertModal.isModalShown ||
+    eventColorModal.isModalShown;
+
   return (
     <Modal
       hideModal={initCreateEventModal}
@@ -188,7 +195,12 @@ const Index = ({ children: ModalList }) => {
       <div className={styles.modal_header}>
         <FontAwesomeIcon icon={faGripLines} />
       </div>
-      <div className={styles.modal_context} ref={modalRef}>
+      <div
+        className={`${styles.modal_context} ${
+          isSubModalShown ? styles.scroll_hidden : ''
+        }`}
+        ref={modalRef}
+      >
         <div className={styles.event_title}>
           <div />
           <Input

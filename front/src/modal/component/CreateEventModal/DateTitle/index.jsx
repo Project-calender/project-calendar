@@ -11,7 +11,7 @@ import { newEventSelector } from '../../../../store/selectors/newEvent';
 import {
   calculateCurrentTimeRange,
   updateNewEventBarProperties,
-  updateNewEventStartTime,
+  updateNewEventTime,
 } from '../../../../store/newEvent';
 
 import useEventModal from '../../../../hooks/useEventModal';
@@ -93,6 +93,7 @@ const Index = ({ showEventInfoListModal }) => {
     EventInfoListModalContext,
   );
   const { hideModal: hideEventColorModal } = useContext(EventColorModalContext);
+
   function clickAddTime(e) {
     setDetail(true);
     handleAllDay(e, false);
@@ -145,7 +146,7 @@ const Index = ({ showEventInfoListModal }) => {
           onClickItem={e => {
             const date = new Date(+e.target.dataset.value);
             dispatch(
-              updateNewEventStartTime({
+              updateNewEventTime({
                 type: 'startTime',
                 minute: date.getMinutes(),
                 hour: date.getHours(),
@@ -164,7 +165,7 @@ const Index = ({ showEventInfoListModal }) => {
           onClickItem={e => {
             const date = new Date(+e.target.dataset.value);
             dispatch(
-              updateNewEventStartTime({
+              updateNewEventTime({
                 type: 'endTime',
                 minute: date.getMinutes(),
                 hour: date.getHours(),
