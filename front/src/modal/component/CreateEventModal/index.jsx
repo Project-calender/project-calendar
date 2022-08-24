@@ -19,6 +19,7 @@ import {
   CreateEventModalContext,
   EventColorModalContext,
   EventCustomAlertModalContext,
+  EventDateModalContext,
   EventInfoListModalContext,
 } from '../../../context/EventModalContext';
 import DateTitleContainer from './DateTitleContainer';
@@ -49,13 +50,14 @@ import { createEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
 import { useState } from 'react';
-import { useRef } from 'react';
 
 const Index = ({ children: ModalList }) => {
   const createEventModal = useContext(CreateEventModalContext);
   const eventInfoListModal = useContext(EventInfoListModalContext);
   const eventCustomAlertModal = useContext(EventCustomAlertModalContext);
   const eventColorModal = useContext(EventColorModalContext);
+  const { miniCalendarModal, startTimeListModal, endTimeListModal } =
+    useContext(EventDateModalContext);
 
   const newEvent = useSelector(newEventSelector);
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
@@ -164,14 +166,19 @@ const Index = ({ children: ModalList }) => {
   const [isAddCalendar, setAddCalendar] = useState(false);
   const isExistInviteMembers = Object.keys(newEvent.inviteMembers).length > 0;
 
+  const isSubModalShown = [
+    eventInfoListModal,
+    eventCustomAlertModal,
+    eventColorModal,
+    miniCalendarModal,
+    startTimeListModal,
+    endTimeListModal,
+  ].reduce(
+    (isSubModalShown, modal) => isSubModalShown || modal.isModalShown,
+    false,
+  );
+
   const [EventInfoListModal, ...RestModal] = ModalList;
-  const modalRef = useRef();
-
-  const isSubModalShown =
-    eventInfoListModal.isModalShown ||
-    eventCustomAlertModal.isModalShown ||
-    eventColorModal.isModalShown;
-
   return (
     <Modal
       hideModal={initCreateEventModal}
@@ -197,7 +204,6 @@ const Index = ({ children: ModalList }) => {
         className={`${styles.modal_context} ${
           isSubModalShown ? styles.scroll_hidden : ''
         }`}
-        ref={modalRef}
       >
         <div className={styles.event_title}>
           <div />

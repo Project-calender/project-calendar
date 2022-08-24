@@ -58,7 +58,7 @@ const Index = ({ showEventInfoListModal }) => {
     const { top, left } = e.target.getBoundingClientRect();
     miniCalendarModal.showModal({
       selectedDate,
-      style: { top: top + 20, left },
+      style: { top: top + 30, left },
     });
     e.stopPropagation();
   }
