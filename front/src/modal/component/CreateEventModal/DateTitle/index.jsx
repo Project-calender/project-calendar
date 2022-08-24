@@ -73,6 +73,7 @@ const Index = ({ showEventInfoListModal }) => {
     hideAllSubModal();
     const { top, left } = e.target.getBoundingClientRect();
     startTimeListModal.showModal({
+      selectedItem: startDate.toTimeString(),
       style: { top: top + 30, left },
     });
     e.stopPropagation();
@@ -82,6 +83,7 @@ const Index = ({ showEventInfoListModal }) => {
     hideAllSubModal();
     const { top, left } = e.target.getBoundingClientRect();
     endTimeListModal.showModal({
+      selectedItem: endDate.toTimeString(),
       style: { top: top + 30, left },
     });
     e.stopPropagation();
@@ -228,7 +230,11 @@ const Index = ({ showEventInfoListModal }) => {
           <h3
             className={styles.list_modal}
             onClick={e =>
-              showEventInfoListModal(e, EVENT.repeat(startDate), 'repeat')
+              showEventInfoListModal(e, {
+                data: EVENT.repeat(startDate),
+                name: 'repeat',
+                selectedItem: EVENT.repeat(startDate)[newEvent.repeat],
+              })
             }
           >
             {EVENT.repeat(startDate)[newEvent.repeat]}

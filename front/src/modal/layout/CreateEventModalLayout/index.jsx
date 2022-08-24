@@ -35,12 +35,11 @@ const Index = ({ children }) => {
     e.stopPropagation();
   }
 
-  function showEventInfoModal(e, data, name) {
+  function showEventInfoModal(e, data) {
     const { top, left } = e.currentTarget.getBoundingClientRect();
     eventColorModal.hideModal();
     eventInfoModal.showModal({
-      data,
-      name,
+      ...data,
       style: { top, left },
     });
     e.stopPropagation();

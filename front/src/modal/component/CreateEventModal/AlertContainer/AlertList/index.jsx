@@ -33,19 +33,26 @@ const Index = ({ showListModal }) => {
     e.stopPropagation();
   }
 
+  const alertTitle =
+    newEvent.allDay === EVENT.allDay.true
+      ? EVENT.alerts.getAllDayTitle(alert)
+      : EVENT.alerts.getNotAllDayTitle(alert);
+
   return (
     <>
       {alerts.map((alert, index) => (
         <div key={index} className={styles.alerts_container}>
           <h3
             className={styles.alert_item}
-            onClick={e => showListModal(e, message, `alert ${index}`)}
+            onClick={e =>
+              showListModal(e, {
+                data: message,
+                name: `alert ${index}`,
+                selectedItem: alertTitle,
+              })
+            }
           >
-            {newEvent.allDay === EVENT.allDay.true &&
-              EVENT.alerts.getAllDayTitle(alert)}
-            {newEvent.allDay === EVENT.allDay.false &&
-              EVENT.alerts.getNotAllDayTitle(alert)}
-
+            {alertTitle}
             <FontAwesomeIcon
               className={styles.caret_down_icon}
               icon={faCaretDown}
