@@ -30,6 +30,7 @@ const Index = ({
     const { top, left } = e.currentTarget.getBoundingClientRect();
 
     const { data } = await getEventDetail(event);
+    console.log(data, event);
     const { EventMembers, EventHost, realTimeAlert } = data;
     const alerts =
       realTimeAlert?.map(alert => {

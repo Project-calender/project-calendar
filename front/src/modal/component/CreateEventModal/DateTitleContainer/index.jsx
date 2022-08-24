@@ -46,14 +46,12 @@ const Index = ({ showEventInfoListModal }) => {
     );
   }
 
-  const { miniCalendarModal, startTimeListModal, endTimeListModal } =
-    useContext(EventDateModalContext);
-
-  function hideAllSubModal() {
-    miniCalendarModal.hideModal();
-    startTimeListModal.hideModal();
-    endTimeListModal.hideModal();
-  }
+  const {
+    miniCalendarModal,
+    startTimeListModal,
+    endTimeListModal,
+    hideAllSubModal,
+  } = useContext(EventDateModalContext);
 
   function handleMiniCalendar(e, selectedDate) {
     hideAllSubModal();

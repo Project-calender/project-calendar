@@ -27,10 +27,13 @@ const Index = ({ children }) => {
   const startTimeListModal = useEventModal();
   const endTimeListModal = useEventModal();
 
-  function hideCreateEventModal() {
-    createEventModal.hideModal();
-    eventColorModal.hideModal();
+  function hideAllSubModal() {
     eventInfoModal.hideModal();
+    eventCustomAlertModal.hideModal();
+    eventColorModal.hideModal();
+    miniCalendarModal.hideModal();
+    startTimeListModal.hideModal();
+    endTimeListModal.hideModal();
   }
 
   function showEventColorModal(e, colorData) {
@@ -55,21 +58,27 @@ const Index = ({ children }) => {
 
   const createEventModalContext = {
     ...createEventModal,
-    hideModal: hideCreateEventModal,
   };
   const eventColorModalContext = {
     ...eventColorModal,
-    showModal: showEventColorModal,
+    showModal: (e, data) => {
+      hideAllSubModal();
+      showEventColorModal(e, data);
+    },
   };
   const eventInfoModalContext = {
     ...eventInfoModal,
-    showModal: showEventInfoModal,
+    showModal: (e, data) => {
+      hideAllSubModal();
+      showEventInfoModal(e, data);
+    },
   };
 
   const eventDateModalContextData = {
     miniCalendarModal,
     startTimeListModal,
     endTimeListModal,
+    hideAllSubModal,
   };
 
   const dispatch = useDispatch();
