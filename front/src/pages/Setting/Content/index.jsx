@@ -15,6 +15,9 @@ const Index = ({
   setDefaultName,
   setChangeName,
   changeName,
+  setDefaultItem,
+  setPrivateActive,
+
 }) => {
   return (
     <div className={styles.container}>
@@ -29,6 +32,8 @@ const Index = ({
           setDefaultName={setDefaultName}
           changeName={changeName}
           setChangeName={setChangeName}
+          setDefaultItem={setDefaultItem}
+          setPrivateActive={setPrivateActive}
         ></MyCalendar>
       ) : (
         <AnotherCalendar
@@ -55,6 +60,9 @@ Index.propTypes = {
   setDefaultName: PropTypes.func,
   changeName: PropTypes.string,
   setChangeName: PropTypes.func,
+  setDefaultItem: PropTypes.func,
+  setPrivateActive: PropTypes.func,
+
 };
 
 export default Index;

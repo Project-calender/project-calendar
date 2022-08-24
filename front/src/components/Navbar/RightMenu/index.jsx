@@ -12,6 +12,7 @@ import {
   faList,
   faCheck,
   faUserPlus,
+  faBell,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import Tooltip from './../../common/Tooltip';
 import { useEffect } from 'react';
@@ -32,6 +33,7 @@ const Index = ({
   setUserActive,
   MenuActive,
   setMenuActive,
+  setNotice,
 }) => {
   let navigate = useNavigate();
   let [changeDate, setChangeDate] = useState(`일`);
@@ -157,6 +159,14 @@ const Index = ({
               >
                 <FontAwesomeIcon icon={faCog} className={styles.icon} />
                 <em>설정메뉴</em>
+              </li>
+              <li
+                onClick={() => {
+                  setNotice(true);
+                }}
+              >
+                <FontAwesomeIcon icon={faBell} className={styles.icon} />
+                <em>알림</em>
               </li>
             </ul>
           </div>
@@ -332,6 +342,7 @@ Index.propTypes = {
   searchActive: PropTypes.bool,
   MenuActive: PropTypes.number,
   setMenuActive: PropTypes.func,
+  setNotice: PropTypes.func,
 };
 
 export default Index;

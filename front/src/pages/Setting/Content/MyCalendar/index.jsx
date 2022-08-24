@@ -15,6 +15,8 @@ const Index = ({
   setDefaultName,
   changeName,
   setChangeName,
+  setDefaultItem,
+  setPrivateActive,
 }) => {
   let setAuthority = useRef();
   return (
@@ -44,6 +46,9 @@ const Index = ({
           setTargetItem={setTargetItem}
           privateCalendar={privateCalendar}
           calendarData={calendarData}
+          setDefaultItem={setDefaultItem}
+          setPrivateActive={setPrivateActive}
+          setChangeName={setChangeName}
         ></CalendarDelete>
       ) : null}
     </article>
@@ -59,6 +64,8 @@ Index.propTypes = {
   setDefaultName: PropTypes.func,
   changeName: PropTypes.string,
   setChangeName: PropTypes.func,
+  setDefaultItem: PropTypes.func,
+  setPrivateActive: PropTypes.func,
 };
 
 export default Index;

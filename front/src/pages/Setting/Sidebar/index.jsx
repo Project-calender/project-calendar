@@ -16,8 +16,10 @@ const Index = ({
   setDefaultName,
   setChangeName,
   setItem,
+  privateActive,
+  setPrivateActive,
 }) => {
-  let [privateActive, setPrivateActive] = useState(0); // 내 캘린더의 설정 className 추가
+
   let [groupActive, setGroupActive] = useState(-1); // 다른 캘린더의 설정 className 추가
   let [privateListActive, setPrivateListActive] = useState(1); //내 캘린더 목록의 리스트 목록에게 className 추가
   let [groupListActive, setGroupListActive] = useState(1); //다른 캘린더 목록의 리스트 목록에게 className 추가
@@ -208,6 +210,8 @@ Index.propTypes = {
   setDefaultName: PropTypes.func,
   setChangeName: PropTypes.func,
   setItem: PropTypes.func,
+  privateActive: PropTypes.number,
+  setPrivateActive: PropTypes.func,
 };
 
 export default Index;

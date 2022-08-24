@@ -10,6 +10,9 @@ const Index = ({
   setTargetItem,
   calendarData,
   privateCalendar,
+  setDefaultItem,
+  setPrivateActive,
+  setChangeName,
 }) => {
   let [popUpActive, setPopUpActive] = useState(false);
 
@@ -37,6 +40,9 @@ const Index = ({
           calendarData={calendarData}
           privateCalendar={privateCalendar}
           setPopUpActive={setPopUpActive}
+          setDefaultItem={setDefaultItem}
+          setPrivateActive={setPrivateActive}
+          setChangeName={setChangeName}
         ></PopUp>
       ) : null}
     </div>
@@ -47,7 +53,10 @@ Index.propTypes = {
   targetItem: PropTypes.object,
   setTargetItem: PropTypes.func,
   calendarData: PropTypes.func,
+  setDefaultItem: PropTypes.func,
   privateCalendar: PropTypes.array,
+  setPrivateActive: PropTypes.func,
+  setChangeName: PropTypes.func,
 };
 
 export default Index;
