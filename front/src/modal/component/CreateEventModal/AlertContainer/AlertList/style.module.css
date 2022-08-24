@@ -1,0 +1,10 @@
+.alerts_container { display: flex; justify-content: space-between; width: 100%; align-items: center; } 
+
+.alert_item { display: flex; align-items: center; position: relative; left: -10px; padding: 5px 10px 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 0px !important; cursor: pointer ; } 
+.alert_item svg { margin-right: 0px; } 
+.alert_item:hover { background: #f7f7f7; } 
+
+.caret_down_icon { margin: 0px 10px; } 
+.close_icon { visibility: hidden; cursor: pointer; border-radius: 100%; padding: 4px; width: 22px !important; height: 22px !important; } 
+.alerts_container:hover .close_icon { visibility: visible; } 
+.close_icon:hover {background: #f4f4f4;}

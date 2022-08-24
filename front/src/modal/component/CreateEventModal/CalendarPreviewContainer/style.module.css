@@ -1,0 +1,9 @@
+.calendar_title { position: relative; left: -10px; padding: 8px 10px !important; cursor: pointer; border-radius: 5px; width: 80%; } 
+.calendar_title:hover { background: #f7f7f7; } 
+.calendar_title > h4:hover { text-decoration: underline; } 
+.calendar_title > h4 { display: inline-block; font-weight: 600; } 
+.calendar_title > p { font-weight: 300; } 
+
+.calendar_color { display: inline-block; width: 15px; height: 15px; border-radius: 100%; margin-left: 8px; position: relative; top: 2px; } 
+
+.caret_down { margin: 0px 10px; } 

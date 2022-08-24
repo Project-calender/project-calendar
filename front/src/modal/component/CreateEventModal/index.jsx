@@ -4,27 +4,33 @@ import PropTypes from 'prop-types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBarsStaggered,
   faBell,
   faBriefcase,
   faCalendarDay,
-  faCaretDown,
-  faCircleQuestion,
   faGripLines,
   faLocationDot,
   faLock,
-  faPaperclip,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Input from '../../../components/common/Input';
+import Line from '../../../components/common/Line';
 import Modal from '../../../components/common/Modal';
 import {
   CreateEventModalContext,
+  EventCustomAlertModalContext,
   EventInfoListModalContext,
 } from '../../../context/EventModalContext';
 import DateTitle from './DateTitle';
 import InviteInput from './InviteInput';
-import InviteMembers from './InviteMembers';
+import InviteMemberList from './InviteMemberList';
+
+import MemoPreviewContainer from './MemoPreviewContainer';
+import MemoContainer from './MemoContainer';
+import CalendarPreviewContainer from './CalendarPreviewContainer';
+import CalendarContainer from './CalendarContainer';
+import BusyContainer from './BusyContainer';
+import PermissionContainer from './PermissionContainer';
+import AlertContainer from './AlertContainer';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -32,13 +38,12 @@ import {
   calendarsByWriteAuthoritySelector,
 } from '../../../store/selectors/calendars';
 
-import EventColorOption from '../../../components/calendar/EventColorOption';
-import { EVENT_COLOR } from '../../../styles/color';
 import {
   resetNewEventState,
+  updateNewEventAllDayAlert,
   updateNewEventBarProperties,
+  updateNewEventNotAllDayAlert,
 } from '../../../store/newEvent';
-import { useCallback } from 'react';
 import { createEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
@@ -46,17 +51,15 @@ import { useState } from 'react';
 import { useRef } from 'react';
 
 const Index = ({ children: ModalList }) => {
-  const dispatch = useDispatch();
-  const { hideModal: hideCreateEventModal, modalData: createEventModalData } =
-    useContext(CreateEventModalContext);
-  const {
-    showModal: showEventInfoListModal,
-    hideModal: hideEventInfoListModal,
-  } = useContext(EventInfoListModalContext);
-  const newEvent = useSelector(newEventSelector);
+  const createEventModal = useContext(CreateEventModalContext);
+  const eventInfoListModal = useContext(EventInfoListModalContext);
+  const eventCustomAlertModal = useContext(EventCustomAlertModalContext);
 
+  const newEvent = useSelector(newEventSelector);
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
   const baseCalendarIndex = useSelector(baseCalendarIndexSelector);
+
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(
       updateNewEventBarProperties({
@@ -66,24 +69,13 @@ const Index = ({ children: ModalList }) => {
     );
   }, [dispatch, calendars, baseCalendarIndex]);
 
-  const changeColor = useCallback(
-    color => {
-      dispatch(updateNewEventBarProperties({ eventColor: color }));
-    },
-    [dispatch],
-  );
-
   function initCreateEventModal() {
     dispatch(resetNewEventState());
-    hideCreateEventModal(true);
+    createEventModal.hideModal(true);
   }
 
   function handleEventTitle(e) {
     dispatch(updateNewEventBarProperties({ eventName: e.target.value }));
-  }
-
-  function handleEventMemo(e) {
-    dispatch(updateNewEventBarProperties({ memo: e.target.value }));
   }
 
   function onClickListModalItem(e) {
@@ -101,12 +93,35 @@ const Index = ({ children: ModalList }) => {
           inviteMembers: {},
         }),
       );
+    } else if (name.startsWith('alert')) {
+      selectAlertItem(e, name, value);
     } else {
       dispatch(updateNewEventBarProperties({ [name]: value }));
     }
-
-    hideEventInfoListModal();
+    eventInfoListModal.hideModal();
     e.stopPropagation();
+  }
+
+  function selectAlertItem(e, name, value) {
+    const values =
+      newEvent.allDay === EVENT.allDay.true
+        ? EVENT.alerts.allDay.values
+        : EVENT.alerts.notAllDay.values;
+    const alertIndex = +name[name.length - 1];
+
+    const isSelectCustomAlert = value === values.length;
+    if (isSelectCustomAlert) {
+      eventCustomAlertModal.showModal({ alertIndex });
+      eventInfoListModal.hideModal();
+      e.stopPropagation();
+      return;
+    }
+
+    const updateNewEventAlert =
+      newEvent.allDay === EVENT.allDay.true
+        ? updateNewEventAllDayAlert
+        : updateNewEventNotAllDayAlert;
+    dispatch(updateNewEventAlert({ index: alertIndex, ...values[value] }));
   }
 
   function saveEvent() {
@@ -114,17 +129,30 @@ const Index = ({ children: ModalList }) => {
       member => member.canInvite,
     );
 
+    const alerts =
+      newEvent.allDay === EVENT.allDay.true
+        ? newEvent.alerts.allDay
+        : newEvent.alerts.notAllDay;
+    const getAlertTitle =
+      newEvent.allDay === EVENT.allDay.true
+        ? EVENT.alerts.getAllDayTitle
+        : EVENT.alerts.getNotAllDayTitle;
+    const newAlerts = [
+      ...new Map(alerts.map(alert => [getAlertTitle(alert), alert])).values(),
+    ].sort(EVENT.alerts.ASC_SORT);
+
     dispatch(
       createEvent({
         ...newEvent,
         calendarId: calendars[newEvent.calendarId].id,
-        startTime: new Date(newEvent.startTime).toISOString(),
-        endTime: new Date(newEvent.endTime).toISOString(),
         color:
           newEvent.calendarColor === newEvent.eventColor
             ? null
             : newEvent.eventColor,
+        startTime: new Date(newEvent.startTime).toISOString(),
+        endTime: new Date(newEvent.endTime).toISOString(),
         guests: inviteMembers.map(member => member.email),
+        alerts: newAlerts,
       }),
     );
     initCreateEventModal();
@@ -133,18 +161,22 @@ const Index = ({ children: ModalList }) => {
   const [isAddLocation, setAddLocation] = useState(false);
   const [isAddMemo, setAddMemo] = useState(false);
   const [isAddCalendar, setAddCalendar] = useState(false);
+  const isExistInviteMembers = Object.keys(newEvent.inviteMembers).length > 0;
 
-  const [EventColorModal, EventInfoListModal] = ModalList;
+  const [EventColorModal, EventInfoListModal, EventCustomAlertModal] =
+    ModalList;
   const modalRef = useRef();
+
   return (
     <Modal
       hideModal={initCreateEventModal}
       isCloseButtom
       isBackground
       style={{
-        ...createEventModalData?.style,
+        ...createEventModal.modalData?.style,
         boxShadow: '2px 10px 24px 10px rgb(0, 0, 0, 0.25)',
         padding: '10px 0px',
+        overflow: 'hidden',
       }}
     >
       {EventColorModal}
@@ -152,220 +184,120 @@ const Index = ({ children: ModalList }) => {
         React.cloneElement(EventInfoListModal, {
           onClickItem: onClickListModalItem,
         })}
-      <div className={styles.modal_container} ref={modalRef}>
-        <div className={styles.modal_header}>
-          <FontAwesomeIcon icon={faGripLines} />
+      {EventCustomAlertModal}
+
+      <div className={styles.modal_header}>
+        <FontAwesomeIcon icon={faGripLines} />
+      </div>
+      <div className={styles.modal_context} ref={modalRef}>
+        <div className={styles.event_title}>
+          <div />
+          <Input
+            type="text"
+            placeholder="제목 및 시간 추가"
+            onBlur={handleEventTitle}
+            autoFocus={true}
+          />
         </div>
-        <div className={styles.modal_context}>
-          <div className={styles.event_title}>
-            <div />
+
+        <div>
+          <div />
+          <div className={styles.modal_context_category}>
+            <button className={styles.category_active}>이벤트</button>
+            <button>할 일</button>
+          </div>
+        </div>
+
+        <DateTitle showEventInfoListModal={eventInfoListModal.showModal} />
+        <div className={styles.time_find}>
+          <div />
+          <button className={styles.time_find_button}>시간 찾기</button>
+        </div>
+
+        {isExistInviteMembers && <Line />}
+        <InviteInput />
+        <InviteMemberList members={newEvent.inviteMembers} />
+        {isExistInviteMembers && <Line />}
+
+        <div className={styles.google_meet}>
+          <img
+            className={styles.google_meet_img}
+            src={`${process.env.PUBLIC_URL}/img/google_meet_icon.png`}
+            alt="구글 미팅"
+          />
+          <button>
+            <b>Google Meet</b> 화상 회의 추가
+          </button>
+        </div>
+
+        {isAddLocation && <Line />}
+        {!isAddLocation && (
+          <div className={styles.event_info_input}>
+            <FontAwesomeIcon icon={faLocationDot} />
+            <div
+              className={styles.invite_title}
+              onClick={e => {
+                setAddLocation(true);
+                e.stopPropagation();
+              }}
+            >
+              <h4>위치 추가</h4>
+            </div>
+          </div>
+        )}
+        {isAddLocation && (
+          <div className={styles.event_info_input}>
+            <FontAwesomeIcon icon={faLocationDot} />
             <Input
               type="text"
-              placeholder="제목 및 시간 추가"
-              onBlur={handleEventTitle}
-              autoFocus={true}
+              placeholder="위치 추가"
+              autoFocus={isAddLocation}
+              onBlur={e => {
+                if (!e.target.value) setAddLocation(false);
+              }}
             />
           </div>
-          <div>
-            <div />
-            <div className={styles.modal_context_category}>
-              <button className={styles.category_active}>이벤트</button>
-              <button>할 일</button>
-            </div>
-          </div>
-          <DateTitle showEventInfoListModal={showEventInfoListModal} />
-          <div className={styles.time_find}>
-            <div />
-            <button className={styles.time_find_button}>시간 찾기</button>
-          </div>
+        )}
 
-          {Object.keys(newEvent.inviteMembers).length > 0 && (
-            <div className={styles.modal_line} />
+        {isAddLocation && <Line />}
+        {isAddMemo && !isAddLocation && <Line />}
+
+        {!isAddMemo && <MemoPreviewContainer setAddMemo={setAddMemo} />}
+        {isAddMemo && <MemoContainer autoFocus={isAddMemo} />}
+
+        {isAddMemo && <Line />}
+        {!isAddMemo && isAddCalendar && <Line />}
+
+        <div>
+          <FontAwesomeIcon icon={faCalendarDay} />
+          {!isAddCalendar && (
+            <CalendarPreviewContainer setAddCalendar={setAddCalendar} />
           )}
-          <InviteInput />
-          <InviteMembers members={newEvent.inviteMembers} />
-          {Object.keys(newEvent.inviteMembers).length > 0 && (
-            <div className={styles.modal_line} />
-          )}
-          <div className={styles.google_meet}>
-            <img
-              className={styles.google_meet_img}
-              src={`${process.env.PUBLIC_URL}/img/google_meet_icon.png`}
-              alt="구글 미팅"
-            />
-            <button>
-              <b>Google Meet</b> 화상 회의 추가
-            </button>
-          </div>
-          <>
-            {isAddLocation && <div className={styles.modal_line} />}
-            <div className={styles.event_info_input}>
-              <FontAwesomeIcon icon={faLocationDot} />
-              {!isAddLocation ? (
-                <div
-                  className={styles.invite_title}
-                  onClick={e => {
-                    setAddLocation(true);
-                    e.stopPropagation();
-                  }}
-                >
-                  <h4>위치 추가</h4>
-                </div>
-              ) : (
-                <Input
-                  type="text"
-                  placeholder="위치 추가"
-                  autoFocus={isAddLocation}
-                  onBlur={e => {
-                    if (!e.target.value) setAddLocation(false);
-                  }}
-                />
-              )}
-            </div>
-            {isAddLocation && <div className={styles.modal_line} />}
-          </>
-
-          {isAddMemo && !isAddLocation && <div className={styles.modal_line} />}
-          <div className={styles.memo}>
-            <FontAwesomeIcon icon={faBarsStaggered} />
-
-            {!isAddMemo ? (
-              <div
-                className={styles.invite_title}
-                onClick={e => {
-                  setAddMemo(true);
-                  e.stopPropagation();
-                }}
-              >
-                <h4>설명 또는 첨부파일 추가</h4>
-              </div>
-            ) : (
-              <Input
-                type="text"
-                placeholder="설명 추가"
-                onBlur={handleEventMemo}
-                autoFocus={isAddMemo}
-              />
-            )}
-          </div>
-          {isAddMemo && (
-            <>
-              <div>
-                <FontAwesomeIcon
-                  icon={faPaperclip}
-                  className={styles.clip_icon}
-                />
-                <h4>첨부파일 추가</h4>
-              </div>
-              <div className={styles.modal_line} />
-            </>
-          )}
-
-          {!isAddMemo && isAddCalendar && <div className={styles.modal_line} />}
-          <div>
-            <FontAwesomeIcon icon={faCalendarDay} />
-            <div className={styles.calendar_info}>
-              {!isAddCalendar ? (
-                <div
-                  className={styles.calendar_title}
-                  onClick={e => {
-                    setAddCalendar(true);
-                    e.stopPropagation();
-                  }}
-                >
-                  <h4>{calendars[newEvent.calendarId].name}</h4>
-                  <div
-                    className={styles.calendar_color}
-                    style={{ background: newEvent.calendarColor }}
-                  />
-                  <h5>{`${EVENT.busy[newEvent.busy]} · ${
-                    EVENT.permission[newEvent.permission]
-                  } · 알리지 않음`}</h5>
-                </div>
-              ) : (
-                <>
-                  <h3
-                    className={styles.list_modal}
-                    onClick={e =>
-                      showEventInfoListModal(
-                        e,
-                        calendars.map(calendar => calendar.name),
-                        'calendarId',
-                      )
-                    }
-                  >
-                    {calendars[newEvent.calendarId].name}
-                    <FontAwesomeIcon
-                      className={styles.caret_down}
-                      icon={faCaretDown}
-                    />
-                  </h3>
-                  <EventColorOption
-                    colors={
-                      Object.values(EVENT_COLOR).includes(
-                        newEvent.calendarColor,
-                      )
-                        ? EVENT_COLOR
-                        : {
-                            ...EVENT_COLOR,
-                            '캘린더 색상': newEvent.calendarColor,
-                          }
-                    }
-                    color={newEvent.eventColor || newEvent.calendarColor}
-                    changedColor={changeColor}
-                  />
-                </>
-              )}
-            </div>
-          </div>
           {isAddCalendar && (
-            <>
-              <div>
-                <FontAwesomeIcon icon={faBriefcase} />
-
-                <div
-                  onClick={e =>
-                    showEventInfoListModal(e, EVENT['busy'], 'busy')
-                  }
-                >
-                  <h3 className={styles.list_modal}>
-                    {EVENT.busy[newEvent.busy]}
-                    <FontAwesomeIcon
-                      className={styles.caret_down}
-                      icon={faCaretDown}
-                    />
-                  </h3>
-                </div>
-              </div>
-              <div>
-                <FontAwesomeIcon icon={faLock} />
-                <div className={styles.calendar_info}>
-                  <h3
-                    className={styles.list_modal}
-                    onClick={e =>
-                      showEventInfoListModal(e, EVENT.permission, 'permission')
-                    }
-                  >
-                    {EVENT.permission[newEvent.permission]}
-                    <FontAwesomeIcon
-                      className={styles.caret_down}
-                      icon={faCaretDown}
-                    />
-                  </h3>
-                  <FontAwesomeIcon icon={faCircleQuestion} />
-                </div>
-              </div>
-              <div>
-                <FontAwesomeIcon icon={faBell} />
-                <div>
-                  <h4 className={styles.list_modal}>알림 추가</h4>
-                </div>
-              </div>
-            </>
+            <CalendarContainer showListModal={eventInfoListModal.showModal} />
           )}
         </div>
-        {isAddCalendar && <div className={styles.modal_line} />}
+        {isAddCalendar && (
+          <>
+            <div>
+              <FontAwesomeIcon icon={faBriefcase} />
+              <BusyContainer showListModal={eventInfoListModal.showModal} />
+            </div>
+            <div>
+              <FontAwesomeIcon icon={faLock} />
+              <PermissionContainer
+                showListModal={eventInfoListModal.showModal}
+              />
+            </div>
+            <div className={styles.alert}>
+              <FontAwesomeIcon icon={faBell} />
+              <AlertContainer showListModal={eventInfoListModal.showModal} />
+            </div>
+          </>
+        )}
       </div>
+      {isAddCalendar && <Line />}
+
       <div className={styles.modal_footer}>
         <button>옵션 더보기</button>
         <button onClick={saveEvent}>저장</button>

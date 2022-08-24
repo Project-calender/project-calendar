@@ -1,0 +1,17 @@
+.alert_options { display: flex; justify-content: left;} 
+.alert_options > h3 { font-size: 14px; margin-right: 0px; padding: 8px; padding-left: 0px; } 
+.alert_options > div { height: 20px; display: flex; align-items: center; background: #f1f3f4; margin-right: 8px; padding: 8px; border-radius: 3px; } 
+.alert_options > div > svg { margin-left: 8px; color: rgb(69, 69, 69); } 
+
+
+.alert_input {width: 50px;}
+.alert_input input { background: #f1f3f4; font-size: 14px; } 
+.alert_input input[type="number"]::-webkit-outer-spin-button, 
+.alert_input input[type="number"]::-webkit-inner-spin-button { padding: 10px 0px; height: 5px !important; } 
+.alert_input hr {background: transparent;}
+
+.send_modal_container, .date_modal_container { position: relative } 
+.send_modal_container > div, .date_modal_container > div { position: absolute; top: -7px; left: 0; box-shadow: 1px 4px 13px 0px rgb(0, 0, 0, 0.4); } 
+.send_modal_container > div > div > div { padding: 7px 8px 7px 8px; } 
+
+.date_modal_container > div > div > div { padding: 7px 30px 7px 8px; } 

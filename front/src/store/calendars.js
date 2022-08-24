@@ -7,7 +7,12 @@ import {
 } from './thunk/calendar';
 import { getAllCalendarAndEvent } from './thunk/event';
 
-export const calendarsAdapter = createEntityAdapter();
+export const calendarsAdapter = createEntityAdapter({
+  sortComparer: (a, b) => {
+    if (a.authority === b.authority) return a.id - b.id;
+    return b.authority - a.authority;
+  },
+});
 const initialState = calendarsAdapter.getInitialState();
 
 const calendars = createSlice({

@@ -17,6 +17,7 @@ const initialState = {
   repeat: 0,
   allDay: EVENT.allDay.true,
   inviteMembers: {},
+  alerts: { allDay: [], notAllDay: [] },
 };
 
 const newEvent = createSlice({
@@ -47,6 +48,45 @@ const newEvent = createSlice({
     removeInviteMember(state, { payload: member }) {
       delete state.inviteMembers[member.id];
     },
+
+    addNewEventAllDayAlert(state, { payload: { type, time, hour, minute } }) {
+      state.alerts.allDay.push({ type, time, hour, minute });
+    },
+
+    addNewEventNotAllDayAlert(state, { payload: { type, time } }) {
+      state.alerts.notAllDay.push({ type, time });
+    },
+
+    updateNewEventAllDayAlert(state, { payload }) {
+      const { index, type, time, hour, minute } = payload;
+      state.alerts.allDay[index] = { type, time, hour, minute };
+    },
+
+    updateNewEventNotAllDayAlert(state, { payload }) {
+      const { index, type, time } = payload;
+      state.alerts.notAllDay[index] = { type, time };
+    },
+
+    updateNewEventStartTime(state, { payload }) {
+      const { type, minute, hour } = payload;
+      const date = new Date(state[type]);
+      if (minute >= 0) date.setMinutes(minute);
+      if (hour >= 0) date.setHours(hour);
+
+      state[type] = date.getTime();
+    },
+
+    updateNewEventAlert(state, { payload }) {
+      const { type, index, alert } = payload;
+      state.alerts[type][index] = alert;
+    },
+
+    removeNewEvetnAlert(state, { payload }) {
+      const { type, index } = payload;
+      state.alerts[type] = state.alerts[type].filter(
+        (_, alertIndex) => alertIndex !== index,
+      );
+    },
   },
 });
 
@@ -57,6 +97,13 @@ export const {
   updateNewEventBarProperties,
   addInviteMember,
   removeInviteMember,
+  addNewEventAllDayAlert,
+  addNewEventNotAllDayAlert,
+  updateNewEventAllDayAlert,
+  updateNewEventNotAllDayAlert,
+  updateNewEventStartTime,
+  updateNewEventAlert,
+  removeNewEvetnAlert,
 } = newEvent.actions;
 
 export default newEvent.reducer;

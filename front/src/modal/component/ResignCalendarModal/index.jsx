@@ -19,7 +19,10 @@ const Index = () => {
   return (
     <Modal
       hideModal={hideModal}
-      style={{ ...modalData?.style }}
+      style={{
+        top: 'calc(50% - 100px)',
+        left: 'calc(50% - 100px)',
+      }}
       isBackground
       backgroundColor="rgb(0, 0, 0, 0.5)"
     >

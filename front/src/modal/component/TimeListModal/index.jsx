@@ -4,17 +4,26 @@ import styles from './style.module.css';
 import ListModal from '../ListModal';
 import Moment from '../../../utils/moment';
 
-const Index = ({ hideModal, modalData }) => {
+const Index = ({ hideModal, modalData, onClickItem = () => {}, className }) => {
+  const { unit = 15, count = 15 * 96 } = modalData;
   const moment = new Moment();
-  const times = [];
-  for (let i = 0; i < 15 * 96; i += 15) {
-    times.push(moment.addMinute(i).toTimeString());
+  const [times, names] = [[], []];
+  for (let i = 0; i < count; i += unit) {
+    times.push(moment.addMinute(i).time);
+    names.push(moment.addMinute(i).toTimeString());
   }
+
   return (
-    <div className={styles.modal_container}>
+    <div className={`${styles.modal_container} ${className}`}>
       <ListModal
         hideModal={hideModal}
-        modalData={{ ...modalData, data: times, name: 'times' }}
+        modalData={{
+          ...modalData,
+          data: names,
+          name: 'times',
+          dataValues: times,
+        }}
+        onClickItem={onClickItem}
       />
     </div>
   );
@@ -23,6 +32,8 @@ const Index = ({ hideModal, modalData }) => {
 Index.propTypes = {
   hideModal: PropTypes.func,
   modalData: PropTypes.object,
+  onClickItem: PropTypes.func,
+  className: PropTypes.string,
 };
 
 export default Index;

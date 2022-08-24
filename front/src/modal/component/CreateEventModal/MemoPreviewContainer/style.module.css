@@ -1,0 +1,4 @@
+.memo > div { left: -10px; background: #ededed; height: 100%; padding: 10px; border-radius: 5px; width: 80% !important; } 
+
+.invite_title { position: relative; left: -10px; background: white !important; cursor: pointer; } 
+.invite_title:hover { background: #f7f7f7 !important; } 

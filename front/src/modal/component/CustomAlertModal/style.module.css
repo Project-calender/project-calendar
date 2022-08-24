@@ -1,0 +1,9 @@
+.modal_context { width: 100%; padding: 8px 10px 8px 15px; } 
+.modal_context h1 { font-size: 16px; margin-bottom: 15px; } 
+
+.modal_footer { margin-top:10px; float: right; margin-right: 20px; } 
+.modal_footer > button { background: white; padding: 8px 10px; border-radius: 5px; cursor: pointer;} 
+.modal_footer > button:first-child:hover { background: #f7f7f7; } 
+.modal_footer > button:last-child { color: #1a73e8 } 
+.modal_footer > button:last-child:hover { background: #f1f4f9; } 
+

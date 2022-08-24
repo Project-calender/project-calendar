@@ -12,30 +12,6 @@ import {
 import { updateCheckedCalendar } from './thunk/user';
 import { isCheckedCalander } from './user';
 
-export const EVENT = {
-  busy: ['바쁨', '한가함'],
-  repeat: startDate => [
-    '반복 안함',
-    '매일',
-    `매주 ${startDate.weekDay}요일`,
-    `매월 마지막 ${startDate.weekDay}요일`,
-    `매년 ${startDate.month}월 ${startDate.date}일`,
-    '주중 매일(월-금)',
-    '맞춤...',
-  ],
-  permission: ['기본 공개 설정', '전체 공개', '비공개'],
-  state: {
-    default: 0,
-    accept: 1,
-    toBeDetermined: 2,
-    refuse: 3,
-  },
-  allDay: {
-    true: 1,
-    false: 0,
-  },
-};
-
 export const eventsAdapter = createEntityAdapter({
   selectId: state => state.id,
   sortComparer: eventSort,
@@ -176,3 +152,99 @@ function createEmptyEventBar(event, date = [], index) {
   }
   return date;
 }
+
+export const EVENT = {
+  busy: ['바쁨', '한가함'],
+  repeat: startDate => [
+    '반복 안함',
+    '매일',
+    `매주 ${startDate.weekDay}요일`,
+    `매월 마지막 ${startDate.weekDay}요일`,
+    `매년 ${startDate.month}월 ${startDate.date}일`,
+    '주중 매일(월-금)',
+    '맞춤...',
+  ],
+  permission: ['기본 공개 설정', '전체 공개', '비공개'],
+  state: {
+    default: 0,
+    accept: 1,
+    toBeDetermined: 2,
+    refuse: 3,
+  },
+  allDay: {
+    true: 1,
+    false: 0,
+  },
+  alerts: {
+    allDay: {
+      type: ['일', '주'],
+      message: [
+        '당일 오전 9시',
+        '전날 오전 9시',
+        '2일 전 오전 9시',
+        '1주 전 오전 9시',
+        '맞춤...',
+      ],
+      values: [
+        { type: '일', time: 0, hour: 9, minute: 0 },
+        { type: '일', time: 1, hour: 9, minute: 0 },
+        { type: '일', time: 2, hour: 9, minute: 0 },
+        { type: '주', time: 1, hour: 9, minute: 0 },
+      ],
+    },
+    notAllDay: {
+      type: ['분', '시간', '일', '주'],
+      message: [
+        '5분 전',
+        '10분 전',
+        '15분 전',
+        '30분 전',
+        '1시간 전',
+        '1일 전',
+        '맞춤...',
+      ],
+      values: [
+        { type: '분', time: 5 },
+        { type: '분', time: 10 },
+        { type: '분', time: 15 },
+        { type: '분', time: 30 },
+        { type: '시간', time: 1 },
+        { type: '일', time: 1 },
+      ],
+    },
+
+    getAllDayTitle(alert) {
+      const date =
+        alert.time === 0
+          ? '당일'
+          : alert.type === '일' && alert.time === 1
+          ? '전날'
+          : `${alert.time}${alert.type} 전`;
+
+      const type = alert.hour < 12 ? '오전' : '오후';
+      const hour = (alert.hour > 12 ? alert.hour % 12 : alert.hour) || 12;
+      const time =
+        alert.minute === 0
+          ? `${type} ${hour}시`
+          : `${type} ${hour}:${alert.minute}`;
+
+      return `${date} ${time}`;
+    },
+
+    getNotAllDayTitle(alert) {
+      return `${alert.time}${alert.type} 전`;
+    },
+
+    ASC_SORT(a, b) {
+      const types = { 분: 1, 시간: 2, 일: 3, 주: 4 };
+      if (types[a.type] === types[b.type]) {
+        if (a.time === b.time) {
+          if (a.hour === b.hour) return a.minute - b.minute;
+          return a.hour - b.hour;
+        }
+        return a.time - b.time;
+      }
+      return types[a.type] - types[b.type];
+    },
+  },
+};

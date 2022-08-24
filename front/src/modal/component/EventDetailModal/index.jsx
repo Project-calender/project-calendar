@@ -58,6 +58,7 @@ const Index = ({ modalData, hideModal }) => {
   }, [style]);
 
   if (!event) return;
+
   return (
     <Modal
       hideModal={hideModal}
@@ -131,11 +132,18 @@ const Index = ({ modalData, hideModal }) => {
               </div>
             </div>
           )}
-          {event.alert && (
+          {event.alerts.length > 0 && (
             <div>
               <FontAwesomeIcon icon={faBell} />
               <div>
-                <h3>30분 전</h3>
+                {event.alerts.map((alert, index) => (
+                  <h3 key={index}>
+                    {event.allDay === EVENT.allDay.true &&
+                      EVENT.alerts.getAllDayTitle(alert)}
+                    {event.allDay === EVENT.allDay.false &&
+                      EVENT.alerts.getNotAllDayTitle(alert)}
+                  </h3>
+                ))}
               </div>
             </div>
           )}
