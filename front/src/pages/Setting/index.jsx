@@ -18,6 +18,7 @@ const Index = () => {
   let [defaultName, setDefaultName] = useState(); //첫 페이지 캘린더 이름 저장
   let [changeName, setChangeName] = useState(''); //캘린더 변경된 이름 저장
   let [item, setItem] = useState();
+  let [privateActive, setPrivateActive] = useState(0); // 내 캘린더의 설정 className 추가
 
   //setting 페이지로 이동시 Navbar 3(설정)으로 변경
   useEffect(() => {
@@ -67,6 +68,8 @@ const Index = () => {
             setDefaultName={setDefaultName}
             setChangeName={setChangeName}
             setItem={setItem}
+            privateActive={privateActive}
+            setPrivateActive={setPrivateActive}
           ></Sidebar>
         </div>
         <div className={styles.content}>
@@ -83,6 +86,8 @@ const Index = () => {
             changeName={changeName}
             item={item}
             setItem={setItem}
+            setDefaultItem={setDefaultItem}
+            setPrivateActive={setPrivateActive}
           ></Content>
         </div>
       </div>

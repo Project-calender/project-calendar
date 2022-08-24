@@ -11,6 +11,9 @@ const Index = ({
   calendarData,
   privateCalendar,
   setPopUpActive,
+  setDefaultItem,
+  setPrivateActive,
+  setChangeName,
 }) => {
   let popup = useRef();
   let navigate = useNavigate();
@@ -22,9 +25,12 @@ const Index = ({
       })
       .then(res => {
         console.log('캘린더 삭제 성공', res);
-        if (privateCalendar[1]) {
-          setTargetItem(privateCalendar[1]);
+        if (privateCalendar) {
+          setTargetItem(privateCalendar[0]);
+          setPrivateActive(-1);
+          setDefaultItem(false);
           setPopUpActive(false);
+          setChangeName(privateCalendar[0].name);
         } else {
           navigate('/');
           setPopUpActive(false);
@@ -91,6 +97,9 @@ Index.propTypes = {
   calendarData: PropTypes.func,
   privateCalendar: PropTypes.array,
   setPopUpActive: PropTypes.func,
+  setDefaultItem: PropTypes.func,
+  setPrivateActive: PropTypes.func,
+  setChangeName: PropTypes.func,
 };
 
 export default Index;
