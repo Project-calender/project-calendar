@@ -46,7 +46,7 @@ const Index = () => {
     const formData = new FormData();
     formData.append('image', uploadFile);
 
-    Axios.post(`${BASE_URL}/user/setUserProfileImage`, formData)
+    Axios.post(`${BASE_URL}${USER_URL.USER_PROFILE_IMAGE}`, formData)
       .then(res => {
         setFileData(res.data.src);
       })

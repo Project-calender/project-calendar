@@ -6,6 +6,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Main from './pages/Main';
 import Login from './pages/Login';
 import Join from './pages/Join';
+import Setting from './pages/Setting';
 import YearCalendarPage from './pages/YearCalendarPage';
 import MonthCalendarPage from './pages/MonthCalendarPage';
 import DayCalendarPage from './pages/DayCalendarPage';
@@ -43,6 +44,7 @@ function App() {
         <Route path={USER_PATH.LOGIN} element={<Login />}></Route>
         <Route path={USER_PATH.JOIN} element={<Join />}></Route>
         <Route path="*" element={<Navigate to={CALENDAR_PATH.MONTH} />} />
+        <Route path="/setting" element={<Setting></Setting>}></Route>
       </Routes>
     </div>
   );

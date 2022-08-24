@@ -8,6 +8,7 @@ import { USER_PATH } from '../../constants/path';
 
 const Index = () => {
   let [isSideBarOn, toggleSideBar] = useState(true);
+  let [MenuActive, setMenuActive] = useState(1);
 
   const accessToken = sessionStorage.getItem('accessToken');
   if (!accessToken) {
@@ -19,7 +20,11 @@ const Index = () => {
   return (
     <div>
       <section className={styles.section}>
-        <NavBar toggleSideBar={toggleSideBar}></NavBar>
+        <NavBar
+          toggleSideBar={toggleSideBar}
+          MenuActive={MenuActive}
+          setMenuActive={setMenuActive}
+        ></NavBar>
         <article className={styles.article}>
           <SideBar isSideBarOn={isSideBarOn} />
           <Outlet></Outlet>

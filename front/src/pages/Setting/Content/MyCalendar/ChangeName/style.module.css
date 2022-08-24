@@ -1,0 +1,12 @@
+.calendar_set{}
+
+.calendar_name{width: 350px;height: 45px; position: relative;}
+.calendar_name::before{content: "";width: 0%;height: 2px; background: #5D73E8; position: absolute; bottom: 0;left: 50%; transform: translateX(-50%); }
+.calendar_name.active:before{width: 100%; transition: all 0.2s;}
+.calendar_name input{width: 100%;height: 100%; background: #eee; font-size: 14px; padding: 15px 5px 0px; box-sizing: border-box; border: none; border-radius: 5px;}
+.calendar_name em{position: absolute; top: 2px;left: 5px; font-size: 12px;}
+.calendar_name.active em{color: #163de9;}
+
+.change_name{padding: 5px 10px; box-sizing: border-box; background: #fff; border: 1px solid #ccc;  color: #095ad3; margin-top: 10px; border-radius: 5px; cursor: pointer;}
+.change_name:hover{background: rgb(250, 250, 250); color: #174ea6;}
+

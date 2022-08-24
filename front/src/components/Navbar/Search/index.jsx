@@ -18,7 +18,7 @@ import { EVENT_URL } from '../../../constants/api';
 import { addSearchData } from '../../../store/search';
 import { useDispatch } from 'react-redux';
 
-const Index = ({ setSearchActive }) => {
+const Index = ({ setMenuActive }) => {
   let navigate = useNavigate();
   let [searchValue, setSearchValue] = useState(``); //검색어 저장
   let search = useRef(); //검색창
@@ -38,7 +38,7 @@ const Index = ({ setSearchActive }) => {
   function clickSearchOutside(event) {
     if (!search.current.contains(event.target)) {
       if (url.pathname != `/search`) {
-        setSearchActive(false);
+        setMenuActive(1);
       }
     }
   }
@@ -65,7 +65,7 @@ const Index = ({ setSearchActive }) => {
           <div
             className={styles.back_icon}
             onClick={() => {
-              setSearchActive(false);
+              setMenuActive(1);
               navigate(CALENDAR_PATH.MAIN);
             }}
           >
@@ -114,7 +114,7 @@ const Index = ({ setSearchActive }) => {
 };
 
 Index.propTypes = {
-  setSearchActive: PropTypes.func,
+  setMenuActive: PropTypes.func,
 };
 
 export default Index;
