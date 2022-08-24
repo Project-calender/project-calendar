@@ -17,10 +17,12 @@ import Line from '../../../components/common/Line';
 import Modal from '../../../components/common/Modal';
 import {
   CreateEventModalContext,
+  EventColorModalContext,
   EventCustomAlertModalContext,
+  EventDateModalContext,
   EventInfoListModalContext,
 } from '../../../context/EventModalContext';
-import DateTitle from './DateTitle';
+import DateTitleContainer from './DateTitleContainer';
 import InviteInput from './InviteInput';
 import InviteMemberList from './InviteMemberList';
 
@@ -48,12 +50,14 @@ import { createEvent } from '../../../store/thunk/event';
 import { newEventSelector } from '../../../store/selectors/newEvent';
 import { EVENT } from '../../../store/events';
 import { useState } from 'react';
-import { useRef } from 'react';
 
 const Index = ({ children: ModalList }) => {
   const createEventModal = useContext(CreateEventModalContext);
   const eventInfoListModal = useContext(EventInfoListModalContext);
   const eventCustomAlertModal = useContext(EventCustomAlertModalContext);
+  const eventColorModal = useContext(EventColorModalContext);
+  const { miniCalendarModal, startTimeListModal, endTimeListModal } =
+    useContext(EventDateModalContext);
 
   const newEvent = useSelector(newEventSelector);
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
@@ -107,10 +111,9 @@ const Index = ({ children: ModalList }) => {
       newEvent.allDay === EVENT.allDay.true
         ? EVENT.alerts.allDay.values
         : EVENT.alerts.notAllDay.values;
-    const alertIndex = +name[name.length - 1];
 
-    const isSelectCustomAlert = value === values.length;
-    if (isSelectCustomAlert) {
+    const alertIndex = +name[name.length - 1];
+    if (e.target.innerText === '맞춤...') {
       eventCustomAlertModal.showModal({ alertIndex });
       eventInfoListModal.hideModal();
       e.stopPropagation();
@@ -163,10 +166,19 @@ const Index = ({ children: ModalList }) => {
   const [isAddCalendar, setAddCalendar] = useState(false);
   const isExistInviteMembers = Object.keys(newEvent.inviteMembers).length > 0;
 
-  const [EventColorModal, EventInfoListModal, EventCustomAlertModal] =
-    ModalList;
-  const modalRef = useRef();
+  const isSubModalShown = [
+    eventInfoListModal,
+    eventCustomAlertModal,
+    eventColorModal,
+    miniCalendarModal,
+    startTimeListModal,
+    endTimeListModal,
+  ].reduce(
+    (isSubModalShown, modal) => isSubModalShown || modal.isModalShown,
+    false,
+  );
 
+  const [EventInfoListModal, ...RestModal] = ModalList;
   return (
     <Modal
       hideModal={initCreateEventModal}
@@ -179,17 +191,20 @@ const Index = ({ children: ModalList }) => {
         overflow: 'hidden',
       }}
     >
-      {EventColorModal}
       {EventInfoListModal &&
         React.cloneElement(EventInfoListModal, {
           onClickItem: onClickListModalItem,
         })}
-      {EventCustomAlertModal}
+      {RestModal}
 
       <div className={styles.modal_header}>
         <FontAwesomeIcon icon={faGripLines} />
       </div>
-      <div className={styles.modal_context} ref={modalRef}>
+      <div
+        className={`${styles.modal_context} ${
+          isSubModalShown ? styles.scroll_hidden : ''
+        }`}
+      >
         <div className={styles.event_title}>
           <div />
           <Input
@@ -208,7 +223,9 @@ const Index = ({ children: ModalList }) => {
           </div>
         </div>
 
-        <DateTitle showEventInfoListModal={eventInfoListModal.showModal} />
+        <DateTitleContainer
+          showEventInfoListModal={eventInfoListModal.showModal}
+        />
         <div className={styles.time_find}>
           <div />
           <button className={styles.time_find_button}>시간 찾기</button>

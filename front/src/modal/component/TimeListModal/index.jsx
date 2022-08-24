@@ -5,14 +5,13 @@ import ListModal from '../ListModal';
 import Moment from '../../../utils/moment';
 
 const Index = ({ hideModal, modalData, onClickItem = () => {}, className }) => {
-  const { unit = 15, count = 15 * 96 } = modalData;
+  const { unit = 15, count = 15 * 96, selectedItem = '' } = modalData;
   const moment = new Moment();
   const [times, names] = [[], []];
   for (let i = 0; i < count; i += unit) {
     times.push(moment.addMinute(i).time);
     names.push(moment.addMinute(i).toTimeString());
   }
-
   return (
     <div className={`${styles.modal_container} ${className}`}>
       <ListModal
@@ -21,6 +20,7 @@ const Index = ({ hideModal, modalData, onClickItem = () => {}, className }) => {
           ...modalData,
           data: names,
           name: 'times',
+          selectedItem,
           dataValues: times,
         }}
         onClickItem={onClickItem}

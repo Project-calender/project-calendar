@@ -67,7 +67,7 @@ const newEvent = createSlice({
       state.alerts.notAllDay[index] = { type, time };
     },
 
-    updateNewEventStartTime(state, { payload }) {
+    updateNewEventTime(state, { payload }) {
       const { type, minute, hour } = payload;
       const date = new Date(state[type]);
       if (minute >= 0) date.setMinutes(minute);
@@ -101,7 +101,7 @@ export const {
   addNewEventNotAllDayAlert,
   updateNewEventAllDayAlert,
   updateNewEventNotAllDayAlert,
-  updateNewEventStartTime,
+  updateNewEventTime,
   updateNewEventAlert,
   removeNewEvetnAlert,
 } = newEvent.actions;

@@ -33,11 +33,11 @@ const Index = ({ showListModal }) => {
     <div className={styles.calendar_container}>
       <h3
         onClick={e =>
-          showListModal(
-            e,
-            calendars.map(calendar => calendar.name),
-            'calendarId',
-          )
+          showListModal(e, {
+            data: calendars.map(calendar => calendar.name),
+            name: 'calendarId',
+            selectedItem: calendars[newEvent.calendarId].name,
+          })
         }
       >
         {calendars[newEvent.calendarId].name}

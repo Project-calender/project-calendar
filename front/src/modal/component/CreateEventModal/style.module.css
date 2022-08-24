@@ -2,14 +2,16 @@
 .modal_header svg { position: relative; padding: 8px; z-index: 1; width: 18px; height: 18px; color: #afafb0; margin-left: 12px; border-radius: 100%; margin-top: 5px; } 
 .modal_header svg:hover { background: #f1f3f4; } 
 
-.modal_context { margin-top: 33px; width: 460px; height: 100%; color: #6b6b6b; max-height: 50vh; overflow-y: auto; overflow-x: hidden; } 
+.modal_context { margin-top: 33px; width: 460px; height: 100%; color: #6b6b6b; overflow-y: scroll; max-height: 50vh;  overflow-x: hidden; } 
+.scroll_hidden { overflow-y: hidden; }
+
 .modal_context button { color: #6b6b6b; border-radius: 5px; cursor: pointer; } 
 .modal_context button:hover { filter: brightness(98%); } 
 .modal_context h3 { font-weight: 500; } 
 .modal_context h4 { font-weight: 300; } 
 .modal_context h5 { font-weight: 300; font-size: 12px; } 
 
-.modal_context > div { display: flex; align-items: center; margin: 8px 0px; } 
+.modal_context > div { display: flex; align-items: center; margin: 8px 0px; width: 450px; } 
 .modal_context > div > :nth-child(1) { width: 15%; } 
 .modal_context svg { width: 16px; height: 16px; color: #848484; position:relative; left: -2px; }
 

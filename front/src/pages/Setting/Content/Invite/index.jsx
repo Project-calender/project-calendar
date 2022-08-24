@@ -20,7 +20,7 @@ const Index = ({ targetItem, setInvitePopup }) => {
   //사용자 그룹 캘린더 초대
   function onInvite() {
     // console.log('초대 받는 사람 이메일', userEmail);
-    console.log('캘린더 id', targetItem.id);
+    // console.log('캘린더 id', targetItem.id);
     // console.log('권한', authority);
     axios
       .post(`${CALENDAR_URL.INVITE_GROUP_CALENDAR}`, {

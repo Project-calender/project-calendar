@@ -17,6 +17,7 @@ const Index = ({
   changeName,
   setDefaultItem,
   setPrivateActive,
+
 }) => {
   return (
     <div className={styles.container}>
@@ -61,6 +62,7 @@ Index.propTypes = {
   setChangeName: PropTypes.func,
   setDefaultItem: PropTypes.func,
   setPrivateActive: PropTypes.func,
+
 };
 
 export default Index;

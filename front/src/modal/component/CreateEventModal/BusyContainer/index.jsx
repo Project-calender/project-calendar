@@ -14,7 +14,15 @@ const Index = ({ showListModal }) => {
 
   return (
     <div className={styles.busy_container}>
-      <h3 onClick={e => showListModal(e, EVENT['busy'], 'busy')}>
+      <h3
+        onClick={e =>
+          showListModal(e, {
+            data: EVENT['busy'],
+            name: 'busy',
+            selectedItem: EVENT.busy[newEvent.busy],
+          })
+        }
+      >
         {EVENT.busy[newEvent.busy]}
         <FontAwesomeIcon className={styles.caret_down} icon={faCaretDown} />
       </h3>

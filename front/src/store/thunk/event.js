@@ -57,7 +57,7 @@ export const createEvent = createAsyncThunk(
         : EVENT_URL.CREATE_PRIVATE_EVENT;
 
     const { data } = await axios.post(url, {
-      calendarId: eventInfo.calendarId,
+      calendarId: Math.abs(eventInfo.calendarId),
       eventName: eventInfo.eventName,
       color: eventInfo.color,
       permission: eventInfo.permission,
@@ -128,9 +128,12 @@ export const updateEventColor = createAsyncThunk(
 );
 
 export const getEventDetail = event => {
-  return axios.post(EVENT_URL.GET_EVENT_DETAIL, {
-    eventId: event.PrivateCalendarId ? event.groupEventId : event.id,
-  });
+  const url =
+    event.groupEventId || !event.PrivateCalendarId
+      ? EVENT_URL.GET_GROUP_EVENT_DETAIL
+      : EVENT_URL.GET_PRIVATE_EVENT_DETAIL;
+  const eventId = event.groupEventId || Math.abs(event.id);
+  return axios.post(url, { eventId });
 };
 
 export const checkEventInvite = async ({ guestEmail, calendarId }) => {
