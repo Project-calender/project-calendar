@@ -1,3 +1,57 @@
+/api/privateEvent/getGroupEvent:
+  post:
+    tags:
+      - privateEvent
+    summary: 특정 개인 이벤트의 모든 정보 가져오기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            eventId:
+              type: integer
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            events:
+              type: object
+              properties:
+                id:
+                  type: integer
+                color:
+                  type: string
+                priority:
+                  type: string
+                memo:
+                  type: string
+                startTime:
+                  type: string
+                endTime:
+                  type: string
+            realTimeAlert:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: minute, hour, day, week / day, week (allDay)
+                time:
+                  type: integer
+                  example: 1
+                hour:
+                  type: integer
+                  example: 1 (allDay)
+                minute:
+                  type: integer
+                  example: 1 (allDay)
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/privateEvent/createPrivateEvent:
   post:
     tags:
