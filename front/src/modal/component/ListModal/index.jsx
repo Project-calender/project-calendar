@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styles from './style.module.css';
 
 import Modal from '../../../components/common/Modal';
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 
 const Index = ({ hideModal, modalData, onClickItem }) => {
-  const { data, name, style, dataValues = [] } = modalData || {};
+  const {
+    data = [],
+    name,
+    style,
+    selectedItem,
+    dataValues = [],
+  } = modalData || {};
+
+  const selectedItemRef = useRef();
+  useEffect(() => {
+    if (!selectedItemRef.current) return;
+    setTimeout(() => {
+      selectedItemRef.current.scrollIntoView({
+        block: 'center',
+        inline: 'start',
+      });
+      selectedItemRef.current.style.background = '#e6e8ec';
+    }, 50);
+  });
+
   return (
     <Modal
       hideModal={hideModal}
@@ -23,6 +43,7 @@ const Index = ({ hideModal, modalData, onClickItem }) => {
             name={name}
             value={index}
             data-value={dataValues[index] || ''}
+            {...(selectedItem === item && { ref: selectedItemRef })}
           >
             {item}
           </div>

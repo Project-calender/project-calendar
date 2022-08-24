@@ -34,6 +34,7 @@ const Index = React.forwardRef((props, ref) => {
         onClick={e => {
           hideAllSubModal();
           sendTypeModal.showModal({
+            selectedItem: sendType,
             data: ['이메일', '알림'],
           });
           e.stopPropagation();
@@ -64,6 +65,7 @@ const Index = React.forwardRef((props, ref) => {
         onClick={e => {
           hideAllSubModal();
           dateTypeModal.showModal({
+            selectedItem: dateType,
             data: ['분', '시간', '일', '주'],
           });
           e.stopPropagation();

@@ -17,7 +17,15 @@ const Index = ({ showListModal }) => {
 
   return (
     <div className={styles.permission_container}>
-      <h3 onClick={e => showListModal(e, EVENT.permission, 'permission')}>
+      <h3
+        onClick={e =>
+          showListModal(e, {
+            data: EVENT.permission,
+            name: 'permission',
+            selectedItem: EVENT.permission[newEvent.permission],
+          })
+        }
+      >
         {EVENT.permission[newEvent.permission]}
         <FontAwesomeIcon className={styles.caret_down} icon={faCaretDown} />
       </h3>

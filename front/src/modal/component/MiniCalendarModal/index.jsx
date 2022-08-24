@@ -78,7 +78,10 @@ const Index = ({ hideModal, modalData }) => {
   );
 
   return (
-    <Modal hideModal={hideModal} style={{ ...style, borderRadius: 0 }}>
+    <Modal
+      hideModal={hideModal}
+      style={{ ...style, borderRadius: 0, width: 280 }}
+    >
       <div className={styles.modal_container}>
         <MiniCalendar
           selectedDate={selectedDate?.startDate || selectedDate?.endDate}

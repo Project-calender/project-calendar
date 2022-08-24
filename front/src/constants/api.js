@@ -25,7 +25,8 @@ export const CALENDAR_URL = {
 
 export const EVENT_URL = {
   GET_ALL_CALENDAR_AND_EVENT: '/event/getAllEvent',
-  GET_EVENT_DETAIL: '/event/getGroupEvent',
+  GET_GROUP_EVENT_DETAIL: '/event/getGroupEvent',
+  GET_PRIVATE_EVENT_DETAIL: '/privateEvent/getPrivateEvent',
   UPDATE_EVENT_INVITE_STATE: '/event/changeEventInviteState',
   CREATE_GROUP_EVENT: '/event/createGroupEvent',
   DELETE_GROUP_EVENT: '/event/deleteGroupEvent',
