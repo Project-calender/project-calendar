@@ -301,16 +301,64 @@ paths:
           description: 성공
           schema:
             properties:
-              type: object
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
-                color:
-                  type: string
-                OwnerId:
-                  type: integer
+              id:
+                type: integer
+              name:
+                type: string
+              color:
+                type: string
+              UserId:
+                type: integer
+        '400':
+          description: 개인 캘린더 조회 결과가 없는 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 개인 캘린더 조회 결과가 없습니다 입력값을 다시 확인해주세요
+        '402':
+          description: 수정 시도한 유저가 개인 캘린더 주인이 아닐 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
+        '500':
+          $ref: '#/serverError'
+  /api/privateCalendar/editPrivateCalendarColor:
+    post:
+      tags:
+        - privateCalendar
+      summary: 개인 캘린더 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              calendarId:
+                type: integer
+              calendarColor:
+                type: string
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              color:
+                type: string
+              UserId:
+                type: integer
         '400':
           description: 개인 캘린더 조회 결과가 없는 경우
           schema:
@@ -344,21 +392,37 @@ paths:
           schema:
             type: object
             properties:
+              eventId:
+                type: integer
+                example: 1
               eventName:
                 type: string
               color:
-                type: string
+                type: integer
+                example: '#0e0e0e'
               busy:
                 type: integer
-              allDay:
-                type: boolean
-                example: true
               memo:
                 type: string
               startTime:
                 type: string
+                example: '2022-06-02T00:00:00'
               endTime:
                 type: string
+                example: '2022-06-02T00:00:00'
+              allDay:
+                type: integer
+                example: 1
+              alerts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: minute / hour / day / week
+                    time:
+                      type: integer
       responses:
         '200':
           $ref: '#/returnPrivateEvent'
@@ -379,20 +443,68 @@ paths:
           schema:
             type: object
             properties:
+              eventId:
+                type: integer
+                example: 1
               eventName:
                 type: string
               color:
-                type: string
+                type: integer
+                example: '#0e0e0e'
               busy:
                 type: integer
-              allDay:
-                type: boolean
-                example: true
               memo:
                 type: string
               startTime:
                 type: string
+                example: '2022-06-02T00:00:00'
               endTime:
+                type: string
+                example: '2022-06-02T00:00:00'
+              allDay:
+                type: integer
+                example: 1
+              alerts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: minute / hour / day / week
+                    time:
+                      type: integer
+      responses:
+        '200':
+          $ref: '#/returnPrivateEvent'
+        '400':
+          description: 수정할 개인 이벤트 조회 결과가 없을 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 수정할 개인이벤트의 조회 결과가 없습니다
+        '500':
+          $ref: '#/serverError'
+  /api/privateEvent/editPrivateEventColor:
+    post:
+      tags:
+        - privateEvent
+      summary: 개인 이벤트 색상 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              eventId:
+                type: integer
+              color:
                 type: string
       responses:
         '200':
@@ -423,10 +535,71 @@ paths:
             type: object
             properties:
               eventId:
-                type: string
+                type: integer
       responses:
         '200':
           $ref: '#/success'
+        '500':
+          $ref: '#/serverError'
+  /api/calendar/getMyCalendars:
+    post:
+      tags:
+        - calendar
+      summary: 내 캘린더들 모두 가져오기
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              privateCalendar:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  color:
+                    type: string
+                  UserId:
+                    type: string
+              groupCalendars:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    color:
+                      type: string
+                    OwnerId:
+                      type: string
+                    CalendarMember:
+                      type: object
+                      properties:
+                        authority:
+                          type: integer
+                    CalendarMembers:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          email:
+                            type: string
+                          nickname:
+                            type: string
+                          userAuthority:
+                            type: object
+                            properties:
+                              authority:
+                                type: integer
         '500':
           $ref: '#/serverError'
   /api/calendar/createGroupCalendar:
@@ -478,12 +651,13 @@ paths:
         '200':
           $ref: '#/returnCalendar'
         '400':
-          description: 캘린더를 수정 시도한 유저가 캘린더 오너가 아닐 경우
+          description: 권한을 부여하는 유저가 권한이 3 미만인 경우
           schema:
+            type: object
             properties:
               message:
                 type: string
-                example: 캘린더의 오너만 캘린더를 수정할 수 있습니다!
+                example: 권한이 없습니다!
         '500':
           $ref: '#/serverError'
   /api/calendar/deleteGroupCalendar:
@@ -507,19 +681,20 @@ paths:
         '200':
           $ref: '#/success'
         '400':
-          description: 삭제할 캘린더의 조회 결과가 없을 경우
+          description: 권한을 부여하는 유저가 권한이 3 미만인 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 권한이 없습니다!
+        '402':
+          description: 삭제하려는 캘린더가 존재하지 않는 경우
           schema:
             properties:
               message:
                 type: string
                 example: 삭제하려는 캘린더를 찾을 수 없습니다 입력값을 다시 확인해주세요
-        '401':
-          description: 캘린더 삭제를 시도하는 유저가 캘린더의 주인이 아닐 경우
-          schema:
-            properties:
-              message:
-                type: string
-                example: 삭제하려는 유저가 캘린더의 주인이 아닙니다 본인의 캘린더인지 다시 확인해주세요
         '500':
           $ref: '#/serverError'
   /api/calendar/inviteGroupCalendar:
@@ -541,10 +716,20 @@ paths:
                 type: string
               calendarId:
                 type: integer
+              authority:
+                type: integer
       responses:
         '200':
           $ref: '#/success'
         '400':
+          description: 권한을 부여하는 유저가 권한이 3 미만인 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 권한이 없습니다!
+        '402':
           description: 게스트 조회 결과가 없을 경우
           schema:
             type: object
@@ -587,8 +772,6 @@ paths:
             properties:
               calendarId:
                 type: integer
-              hostId:
-                type: string
       responses:
         '200':
           $ref: '#/returnCalendar'
@@ -600,7 +783,7 @@ paths:
               message:
                 type: string
                 example: 존재하지 않는 캘린더입니다!
-        '401':
+        '402':
           description: 초대받은 사람이 이미 맴버인 경우
           schema:
             type: object
@@ -608,7 +791,7 @@ paths:
               message:
                 type: string
                 example: 이미 캘린더의 그룹원 입니다!
-        '402':
+        '403':
           description: 존재하지 않은 초대장을 받을 경우
           schema:
             type: object
@@ -640,8 +823,8 @@ paths:
       responses:
         '200':
           $ref: '#/success'
-        '401':
-          description: 존재하지 않는 달력
+        '400':
+          description: 캘린더 조회 결과가 없는 경우
           schema:
             type: object
             properties:
@@ -649,7 +832,7 @@ paths:
                 type: string
                 example: 존재하지 않는 캘린더입니다!
         '402':
-          description: 이미 캘린더의 긃원
+          description: 초대받은 사람이 이미 맴버인 경우
           schema:
             type: object
             properties:
@@ -657,13 +840,91 @@ paths:
                 type: string
                 example: 이미 캘린더의 그룹원 입니다!
         '403':
-          description: 초대장 만료
+          description: 존재하지 않은 초대장을 받을 경우
           schema:
             type: object
             properties:
               message:
                 type: string
-                example: 존재하지 않는 초대장입니다!
+                example: 존재하지 않는 초대장입니다
+        '500':
+          $ref: '#/serverError'
+  /api/calendar/resignCalendar:
+    post:
+      tags:
+        - calendar
+      summary: 캘린더 탈퇴하기
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              calendarId:
+                type: integer
+      responses:
+        '200':
+          $ref: '#/success'
+        '400':
+          description: 존재하지 않는 캘린더일때
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 존재하지 않는 캘린더 입니다!
+        '500':
+          $ref: '#/serverError'
+  /api/calendar/sendOutUser:
+    post:
+      tags:
+        - calendar
+      summary: 캘린더 멤버 강퇴하기
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              calendarId:
+                type: integer
+              userEmail:
+                type: string
+      responses:
+        '200':
+          $ref: '#/success'
+        '400':
+          description: 권한을 부여하는 유저가 권한이 3 미만인 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 권한 부여는 달력의 오너만 가능합니다!
+        '402':
+          description: 유저 조회 결과가 없는 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 존재하지 않는 유저입니다!
+        '403':
+          description: 그룹 캘린더에 존재하지 않는 유저일때
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 그룹 캘린더에 존재하지 않는 유저입니다!
         '500':
           $ref: '#/serverError'
   /api/calendar/giveAuthority:
@@ -683,13 +944,15 @@ paths:
             properties:
               calendarId:
                 type: integer
+              userEmail:
+                type: string
               newAuthority:
                 type: integer
       responses:
         '200':
           $ref: '#/success'
-        '401':
-          description: 로그인된 사람이 달력의 오너가 아닌 경우
+        '400':
+          description: 권한을 부여하는 유저가 권한이 3 미만인 경우
           schema:
             type: object
             properties:
@@ -705,6 +968,14 @@ paths:
                 type: string
                 example: 존재하지 않는 유저입니다!
         '403':
+          description: 존재하지 않는 캘린더일때
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 존재하지 않는 캘린더입니다!
+        '405':
           description: 권한 조정을 받은 유저가 그룹 맴버가 아닌 경우
           schema:
             type: object
@@ -712,14 +983,6 @@ paths:
               message:
                 type: string
                 example: 그룹 캘린더에 존재하지 초대되지 않은 유저입니다!
-        '405':
-          description: 달력의 오너보다 높은 권한을 부여하는 경우
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: 달력 오너보다 낮은 권한만 부여할 수 있습니다!
         '500':
           $ref: '#/serverError'
   /api/event/getAllEvent:
@@ -903,12 +1166,6 @@ paths:
                       properties:
                         state:
                           type: integer
-                        createdAt:
-                          type: string
-                        updatedAt:
-                          type: string
-                        deletedAt:
-                          type: string
                         UserId:
                           type: integer
                         EventId:
@@ -970,7 +1227,8 @@ paths:
                         state:
                           type: integer
                         allDay:
-                          type: boolean
+                          type: integer
+                          example: 1
                         privateCalendarId:
                           type: integer
               groupEvents:
@@ -1051,21 +1309,33 @@ paths:
                 type: string
                 example: '2022-06-02T00:00:00'
               allDay:
-                type: boolean
-                example: true
+                type: integer
+                example: 1
               alerts:
+                summary: ㅇㅇㅇ
                 type: array
                 items:
                   type: object
                   properties:
                     type:
                       type: string
-                      example: minute / hour / day / week
+                      example: 'minute,hour,day,week / day,week (allDay)'
                     time:
                       type: integer
+                    hour:
+                      type: integer
+                      example: 0-23시 중 써주세요 알림 받고자 하는 시각 (allDay 전용)
+                    minute:
+                      type: integer
+                      example: '알람 받고자 하는 분 ex) 오후 3시 15분에 받고 싶다면 hour에 15, minute에 15 (allDay 전용)'
+              guests:
+                type: array
+                items:
+                  type: object
+                  example: minwoo@naver.com
       responses:
         '200':
-          $ref: '#/success'
+          $ref: '#/returnEvent'
         '400':
           description: 그룹원이 아닌 사람이 이벤트를 생성하려 할때
           schema:
@@ -1075,11 +1345,11 @@ paths:
                 example: 그룹원의 멤버만 이벤트를 생성할 수 있습니다.
         '500':
           $ref: '#/serverError'
-  /api/event/inviteGroupEvent:
+  /api/event/inviteCheck:
     post:
       tags:
         - event
-      summary: 그룹 이벤트에 그룹원 초대하기
+      summary: 그룹 이벤트에 초대 가능한지 확인하기 ( 이미 존재하는 이벤트에 초대 체크 inviteCheck -> inviteGroupEvent )
       parameters:
         - name: Authorization
           in: header
@@ -1098,7 +1368,26 @@ paths:
                 type: integer
       responses:
         '200':
-          $ref: '#/success'
+          description: 성공
+          schema:
+            properties:
+              guest:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                  nickname:
+                    type: string
+                  ProfileImages:
+                    type: object
+                    properties:
+                      src:
+                        type: string
+              canInvite:
+                type: boolean
+                example: true
         '400':
           description: 존재하지 않는 유저
           schema:
@@ -1106,6 +1395,9 @@ paths:
               message:
                 type: string
                 example: 존재하지 않는 유저입니다!
+              canInvite:
+                type: boolean
+                example: false
         '402':
           description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
           schema:
@@ -1113,6 +1405,9 @@ paths:
               message:
                 type: string
                 example: 그룹 캘린더에 존재하지 않는 유저입니다!
+              canInvite:
+                type: boolean
+                example: false
         '403':
           description: 이미 그룹이벤트의 이벤트에 멤버일대
           schema:
@@ -1120,6 +1415,9 @@ paths:
               message:
                 type: string
                 example: 이미 그룹 이벤트의 멤버입니다!
+              canInvite:
+                type: boolean
+                example: false
         '405':
           description: 자신 포함 그룹원 내의 누군가가 이미 초대를 보낸 상태일때
           schema:
@@ -1127,6 +1425,97 @@ paths:
               message:
                 type: string
                 example: 이미 초대를 보낸 사람입니다!
+              canInvite:
+                type: boolean
+                example: false
+        '500':
+          $ref: '#/serverError'
+  /api/event/inviteCheckBeforeCreateEvent:
+    post:
+      tags:
+        - event
+      summary: 그룹 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전 inviteCheckBeforeCreateEvent -> createGroupEvent )
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              guestEmail:
+                type: string
+              calendarId:
+                type: integer
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              guest:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                  nickname:
+                    type: string
+                  ProfileImages:
+                    type: object
+                    properties:
+                      src:
+                        type: string
+              canInvite:
+                type: boolean
+                example: true
+        '400':
+          description: 존재하지 않는 유저
+          schema:
+            properties:
+              message:
+                type: string
+                example: 존재하지 않는 유저입니다!
+              canInvite:
+                type: boolean
+                example: false
+        '402':
+          description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
+          schema:
+            properties:
+              message:
+                type: string
+                example: 그룹 캘린더에 존재하지 않는 유저입니다!
+              canInvite:
+                type: boolean
+                example: false
+        '500':
+          $ref: '#/serverError'
+  /api/event/inviteGroupEvent:
+    post:
+      tags:
+        - event
+      summary: 그룹 이벤트에 그룹원 초대하기 ( 이벤트 생성 후 inviteCheck -> inviteGroupEvent )
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              guests:
+                type: array
+                items:
+                  type: string
+                  example: minwoo1@naver.com
+      responses:
+        '200':
+          $ref: '#/success'
         '500':
           $ref: '#/serverError'
   /api/event/changeEventInviteState:
@@ -1201,8 +1590,8 @@ paths:
                 type: string
                 example: '2022-06-02T00:00:00'
               allDay:
-                type: boolean
-                example: true
+                type: integer
+                example: 1
               alerts:
                 type: array
                 items:
@@ -1215,7 +1604,7 @@ paths:
                       type: integer
       responses:
         '200':
-          $ref: '#/success'
+          $ref: '#/returnEvent'
         '400':
           description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
           schema:
@@ -1224,6 +1613,45 @@ paths:
                 type: string
                 example: 존재하지 않는 이벤트 입니다!
         '403':
+          description: 수정 권한이 없는 경우 ( 권한 2 미만 )
+          schema:
+            properties:
+              message:
+                type: string
+                example: 수정 권한이 없습니다!
+        '500':
+          $ref: '#/serverError'
+  /api/event/editGroupEventColor:
+    post:
+      tags:
+        - event
+      summary: 그룹 이벤트 색상 변경하기
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              eventId:
+                type: integer
+                example: 1
+              color:
+                type: string
+      responses:
+        '200':
+          $ref: '#/returnEvent'
+        '400':
+          description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
+          schema:
+            properties:
+              message:
+                type: string
+                example: 존재하지 않는 이벤트 입니다!
+        '402':
           description: 수정 권한이 없는 경우 ( 권한 2 미만 )
           schema:
             properties:
@@ -1312,7 +1740,7 @@ paths:
         '500':
           $ref: '#/serverError'
   /api/alert/getAlerts:
-    get:
+    post:
       tags:
         - alert
       summary: 알림 가져오기
@@ -1336,7 +1764,7 @@ paths:
                   type: string
                 checked:
                   type: boolean
-                eventCalendarId:
+                calendarId:
                   type: integer
                 eventDate:
                   type: string

@@ -7,7 +7,11 @@ export const EventDetailModalContext = createContext({});
 export const EventColorModalContext = createContext({});
 
 export const CalendarOptionContext = createContext({});
-export const DeleteCalendarContext = createContext({});
+export const ResignCalendarContext = createContext({});
 export const ModalContext = createContext({});
 
 export const EventInfoListModalContext = createContext({});
+export const SimpleEventOptionModalContext = createContext({});
+export const EventCustomAlertModalContext = createContext({});
+
+export const miniCalendarContext = createContext({});

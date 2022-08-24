@@ -3,9 +3,18 @@ import PropTypes from 'prop-types';
 import styles from './style.module.css';
 import { CALENDAR_URL } from '../../../../../../constants/api';
 import axios from '../../../../../../utils/token';
+import { useNavigate } from 'react-router-dom';
 
-const Index = ({ targetItem, calendarData, setPopUpActive }) => {
+const Index = ({
+  targetItem,
+  setTargetItem,
+  calendarData,
+  privateCalendar,
+  setPopUpActive,
+}) => {
   let popup = useRef();
+  let navigate = useNavigate();
+
   function deleteCalendar() {
     axios
       .post(`${CALENDAR_URL.DELETE_GROUP_CALENDAR}`, {
@@ -13,6 +22,13 @@ const Index = ({ targetItem, calendarData, setPopUpActive }) => {
       })
       .then(res => {
         console.log('캘린더 삭제 성공', res);
+        if (privateCalendar[1]) {
+          setTargetItem(privateCalendar[1]);
+          setPopUpActive(false);
+        } else {
+          navigate('/');
+          setPopUpActive(false);
+        }
         calendarData();
       })
       .catch(error => {
@@ -71,7 +87,9 @@ const Index = ({ targetItem, calendarData, setPopUpActive }) => {
 
 Index.propTypes = {
   targetItem: PropTypes.object,
+  setTargetItem: PropTypes.func,
   calendarData: PropTypes.func,
+  privateCalendar: PropTypes.array,
   setPopUpActive: PropTypes.func,
 };
 

@@ -8,7 +8,7 @@ import { faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 import { useContext } from 'react';
 import {
-  DeleteCalendarContext,
+  ResignCalendarContext,
   CalendarOptionContext,
 } from '../../../../context/EventModalContext';
 
@@ -19,18 +19,12 @@ const Index = ({ calendar }) => {
     modalData: calendarOptionData,
   } = useContext(CalendarOptionContext);
 
-  const { showModal: showDeleteCalendarModal } = useContext(
-    DeleteCalendarContext,
+  const { showModal: showResignCalendarModal } = useContext(
+    ResignCalendarContext,
   );
 
   function onClickCancel(e) {
-    showDeleteCalendarModal({
-      calendar,
-      style: {
-        top: window.innerHeight / 2 - 100,
-        left: window.innerWidth / 2 - 150,
-      },
-    });
+    showResignCalendarModal({ calendar });
     e.stopPropagation();
   }
 
@@ -41,7 +35,7 @@ const Index = ({ calendar }) => {
     const maxTop = window.innerHeight - 260;
     showCalendarOptionModal({
       calendar,
-      style: { top: top + 5 > maxTop ? maxTop : top + 5, left: left },
+      style: { top: top > maxTop ? maxTop : top, left: left },
     });
     e.stopPropagation();
   }

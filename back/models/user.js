@@ -21,7 +21,6 @@ module.exports = class User extends Model {
         },
         checkedCalendar: {
           type: DataTypes.STRING(200),
-          defaultValue: "p",
         },
       },
       {
@@ -57,12 +56,12 @@ module.exports = class User extends Model {
     db.User.belongsToMany(db.User, {
       through: db.Invite,
       as: "CalendarHost",
-      foreignKey: "CalendarGuestId",
+      foreignKey: "guestId",
     });
     db.User.belongsToMany(db.User, {
       through: db.Invite,
       as: "CalendarHostGuest",
-      foreignKey: "CalendarHostId",
+      foreignKey: "hostId",
     });
 
     //ProfileImage

@@ -2,17 +2,25 @@ import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import {
   createCalendar,
   deleteCalendar,
+  resignCalendar,
   updateCalendar,
 } from './thunk/calendar';
 import { getAllCalendarAndEvent } from './thunk/event';
 
-export const calendarsAdapter = createEntityAdapter();
+export const calendarsAdapter = createEntityAdapter({
+  sortComparer: (a, b) => {
+    if (a.authority === b.authority) return a.id - b.id;
+    return b.authority - a.authority;
+  },
+});
 const initialState = calendarsAdapter.getInitialState();
 
 const calendars = createSlice({
   name: 'calendars',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    resetCalendarState: () => ({}),
+  },
   extraReducers: builder => {
     builder
       .addCase(getAllCalendarAndEvent.fulfilled, (state, { payload }) =>
@@ -27,10 +35,13 @@ const calendars = createSlice({
       })
       .addCase(deleteCalendar.fulfilled, (state, { payload: id }) => {
         calendarsAdapter.removeOne(state, id);
+      })
+      .addCase(resignCalendar.fulfilled, (state, { payload: id }) => {
+        calendarsAdapter.removeOne(state, id);
       });
   },
 });
 
-export const { action } = calendars.actions;
+export const { resetCalendarState } = calendars.actions;
 
 export default calendars.reducer;

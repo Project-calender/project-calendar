@@ -1,0 +1,7 @@
+.invite_title { position: relative; height: 19.5px !important; left: -10px; background: white !important; cursor: pointer; }
+.invite_title:hover { background: #f7f7f7 !important; }
+
+.invite_input > div { left: -10px; background: #ededed; height: 100%; padding: 10px; border-radius: 5px; width: 80% !important; } 
+.invite_input input { background: #ededed; border:none !important; transform : scaleY(1.1)} 
+.invite_input input::placeholder { color: #6f6f6f ; font-weight: 600;} 
+

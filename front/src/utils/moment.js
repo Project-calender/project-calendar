@@ -22,9 +22,29 @@ class Moment {
     return WEEK_DAYS[this.day];
   }
 
+  get hour() {
+    return new Date(this.time).getHours();
+  }
+
+  get minute() {
+    return new Date(this.time).getMinutes();
+  }
+
   setYear(number) {
     const date = new Date(this.time);
     date.setFullYear(number);
+    return new Moment(date);
+  }
+
+  setHour(number) {
+    const date = new Date(this.time);
+    date.setHours(number);
+    return new Moment(date);
+  }
+
+  setMinute(number) {
+    const date = new Date(this.time);
+    date.setMinutes(number);
     return new Moment(date);
   }
 
@@ -38,6 +58,16 @@ class Moment {
     const date = new Date(this.time);
     date.setDate(date.getDate() + number);
     return new Moment(date);
+  }
+
+  addMinute(number) {
+    const date = new Date(this.time);
+    date.setMinutes(date.getMinutes() + number);
+    return new Moment(date);
+  }
+
+  calculateDateDiff(time) {
+    return -((this.time - time) / (1000 * 60 * 60 * 24));
   }
 
   resetTime() {

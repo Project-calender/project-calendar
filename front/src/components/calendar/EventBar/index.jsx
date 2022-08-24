@@ -1,13 +1,14 @@
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { EventDetailModalContext } from '../../../context/EventModalContext';
 import styles from './style.module.css';
-import EventTimeBar from '../EventTimeBar';
-import EventFillBar from '../EventFillBar';
+import PropTypes from 'prop-types';
+import EventTimeBar from './EventTimeBar';
+import EventFillBar from './EventFillBar';
+import Moment from '../../../utils/moment';
+
+import { EventDetailModalContext } from '../../../context/EventModalContext';
 import { useSelector } from 'react-redux';
 import { baseCalendarSelector } from '../../../store/selectors/calendars';
 import { EVENT } from '../../../store/events';
-import Moment from '../../../utils/moment';
 import { getEventDetail } from '../../../store/thunk/event';
 
 const Index = ({
@@ -17,6 +18,7 @@ const Index = ({
   left = false,
   right = false,
   handleEventDetailMadal = () => {},
+  onContextMenu = () => {},
 }) => {
   const {
     setModalData: setEventDetailModalData,
@@ -28,10 +30,15 @@ const Index = ({
     const { top, left } = e.currentTarget.getBoundingClientRect();
 
     const { data } = await getEventDetail(event);
-    const { EventMembers, EventHost } = data;
+    const { EventMembers, EventHost, realTimeAlert } = data;
+    const alerts =
+      realTimeAlert?.map(alert => {
+        const types = { week: '주', day: '일', hour: '시간', minute: '분' };
+        return { ...alert, type: types[alert.type] };
+      }) || [];
     setEventDetailModalData(data => ({
       ...data,
-      event: { ...event, EventMembers, EventHost },
+      event: { ...event, EventMembers, EventHost, alerts },
       style: {
         position: {
           top: top + offsetTop,
@@ -57,6 +64,7 @@ const Index = ({
         event={event}
         eventBar={eventBar}
         clickEventBar={clickEventBar}
+        onContextMenu={onContextMenu}
         color={eventBarColor}
         isSelected={isSelected}
       />
@@ -68,6 +76,7 @@ const Index = ({
       event={event}
       eventBar={eventBar}
       clickEventBar={clickEventBar}
+      onContextMenu={onContextMenu}
       color={{ eventBarColor, calendarColor }}
       left={left}
       right={right}
@@ -92,6 +101,7 @@ Index.propTypes = {
   left: PropTypes.bool,
   right: PropTypes.bool,
   handleEventDetailMadal: PropTypes.func,
+  onContextMenu: PropTypes.func,
 };
 
 export default Index;

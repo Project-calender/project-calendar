@@ -7,6 +7,7 @@ import CalendarDelete from './CalendarDelete';
 
 const Index = ({
   targetItem,
+  setTargetItem,
   calendarData,
   privateCalendar,
   defaultItem,
@@ -14,18 +15,18 @@ const Index = ({
   setDefaultName,
   changeName,
   setChangeName,
-  item,
 }) => {
   let setAuthority = useRef();
   return (
     <article className={styles.content} ref={setAuthority}>
       <ChangeName
         targetItem={targetItem}
+        setTargetItem={setTargetItem}
+        privateCalendar={privateCalendar}
         defaultName={defaultName}
         setDefaultName={setDefaultName}
         changeName={changeName}
         setChangeName={setChangeName}
-        item={item}
         calendarData={calendarData}
       ></ChangeName>
       {defaultItem == true ? (
@@ -40,6 +41,8 @@ const Index = ({
       {defaultItem == true ? (
         <CalendarDelete
           targetItem={targetItem}
+          setTargetItem={setTargetItem}
+          privateCalendar={privateCalendar}
           calendarData={calendarData}
         ></CalendarDelete>
       ) : null}
@@ -48,6 +51,7 @@ const Index = ({
 };
 Index.propTypes = {
   targetItem: PropTypes.object,
+  setTargetItem: PropTypes.func,
   calendarData: PropTypes.func,
   privateCalendar: PropTypes.array,
   defaultItem: PropTypes.bool,
@@ -55,7 +59,6 @@ Index.propTypes = {
   setDefaultName: PropTypes.func,
   changeName: PropTypes.string,
   setChangeName: PropTypes.func,
-  item: PropTypes.object,
 };
 
 export default Index;

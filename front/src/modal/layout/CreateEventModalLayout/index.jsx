@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import CreateEventModal from '../../component/CreateEventModal';
 import EventColorModal from '../../component/EventColorModal';
 import ListModal from '../../component/ListModal';
+import CustomAlertModal from '../../component/CustomAlertModal';
 
 import {
   CreateEventModalContext,
   EventColorModalContext,
   EventInfoListModalContext,
+  EventCustomAlertModalContext,
 } from '../../../context/EventModalContext';
 import useEventModal from '../../../hooks/useEventModal';
 
@@ -15,6 +17,7 @@ const Index = ({ children }) => {
   const createEventModal = useEventModal();
   const eventColorModal = useEventModal();
   const eventInfoModal = useEventModal();
+  const eventCustomAlertModal = useEventModal();
 
   function hideCreateEventModal() {
     createEventModal.hideModal();
@@ -22,11 +25,11 @@ const Index = ({ children }) => {
     eventInfoModal.hideModal();
   }
 
-  function showEventColorModal(e, colors) {
+  function showEventColorModal(e, colorData) {
     const { top, left } = e.currentTarget.getBoundingClientRect();
     eventInfoModal.hideModal();
     eventColorModal.showModal({
-      colors,
+      ...colorData,
       style: { top, left },
     });
     e.stopPropagation();
@@ -60,15 +63,25 @@ const Index = ({ children }) => {
       {createEventModal.isModalShown && (
         <EventColorModalContext.Provider value={eventColorModalContext}>
           <EventInfoListModalContext.Provider value={eventInfoModalContext}>
-            <CreateEventModal>
-              {eventColorModal.isModalShown && <EventColorModal />}
-              {eventInfoModal.isModalShown && (
-                <ListModal
-                  hideModal={eventInfoModal.hideModal}
-                  modalData={eventInfoModal.modalData}
-                />
-              )}
-            </CreateEventModal>
+            <EventCustomAlertModalContext.Provider
+              value={eventCustomAlertModal}
+            >
+              <CreateEventModal>
+                {eventColorModal.isModalShown && <EventColorModal />}
+                {eventInfoModal.isModalShown && (
+                  <ListModal
+                    hideModal={eventInfoModal.hideModal}
+                    modalData={eventInfoModal.modalData}
+                  />
+                )}
+                {eventCustomAlertModal.isModalShown && (
+                  <CustomAlertModal
+                    hideModal={eventCustomAlertModal.hideModal}
+                    modalData={eventCustomAlertModal.modalData}
+                  />
+                )}
+              </CreateEventModal>
+            </EventCustomAlertModalContext.Provider>
           </EventInfoListModalContext.Provider>
         </EventColorModalContext.Provider>
       )}

@@ -16,7 +16,7 @@ const Index = () => {
   let [defaultItem, setDefaultItem] = useState(false); //개인 캘린더 여부 확인
   let [calendarSetting, setCalendarSetting] = useState(0); //내 캘린더의 설정 or 다른 캘린더의 설정 여부 확인
   let [defaultName, setDefaultName] = useState(); //첫 페이지 캘린더 이름 저장
-  let [changeName, setChangeName] = useState(``); //캘린더 변경된 이름 저장
+  let [changeName, setChangeName] = useState(''); //캘린더 변경된 이름 저장
   let [item, setItem] = useState();
 
   //setting 페이지로 이동시 Navbar 3(설정)으로 변경
@@ -72,6 +72,7 @@ const Index = () => {
         <div className={styles.content}>
           <Content
             targetItem={targetItem}
+            setTargetItem={setTargetItem}
             calendarData={calendarData}
             privateCalendar={privateCalendar}
             defaultItem={defaultItem}
@@ -81,6 +82,7 @@ const Index = () => {
             setChangeName={setChangeName}
             changeName={changeName}
             item={item}
+            setItem={setItem}
           ></Content>
         </div>
       </div>

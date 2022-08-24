@@ -26,6 +26,7 @@ import EventMemberList from './EventMemberList';
 import EventAttendanceButtons from './EventAttendanceButtons';
 import { deleteEvent } from '../../../store/thunk/event';
 import { EVENT } from '../../../store/events';
+import { eventSelector } from '../../../store/selectors/events';
 
 const Index = ({ modalData, hideModal }) => {
   const { style, event } = modalData || {};
@@ -36,6 +37,12 @@ const Index = ({ modalData, hideModal }) => {
     calendarByEventIdSelector(state, event),
   );
 
+  const groupEvent = useSelector(state =>
+    eventSelector(state, event?.groupEventId),
+  );
+  const groupCalendar = useSelector(state =>
+    calendarByEventIdSelector(state, groupEvent),
+  );
   useEffect(() => {
     let { top = 0, left = 0 } = style?.position || {};
     if (top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
@@ -51,6 +58,7 @@ const Index = ({ modalData, hideModal }) => {
   }, [style]);
 
   if (!event) return;
+
   return (
     <Modal
       hideModal={hideModal}
@@ -124,11 +132,18 @@ const Index = ({ modalData, hideModal }) => {
               </div>
             </div>
           )}
-          {event.alert && (
+          {event.alerts.length > 0 && (
             <div>
               <FontAwesomeIcon icon={faBell} />
               <div>
-                <h3>30분 전</h3>
+                {event.alerts.map((alert, index) => (
+                  <h3 key={index}>
+                    {event.allDay === EVENT.allDay.true &&
+                      EVENT.alerts.getAllDayTitle(alert)}
+                    {event.allDay === EVENT.allDay.false &&
+                      EVENT.alerts.getNotAllDayTitle(alert)}
+                  </h3>
+                ))}
               </div>
             </div>
           )}
@@ -136,7 +151,7 @@ const Index = ({ modalData, hideModal }) => {
           <div>
             <FontAwesomeIcon icon={faCalendarDay} />
             <div>
-              <h3>{calendar.name}</h3>
+              <h3>{groupCalendar?.name || calendar.name}</h3>
               {event.EventHost && <p>만든 사용자: {event.EventHost.email}</p>}
             </div>
           </div>

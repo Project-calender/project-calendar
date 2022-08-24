@@ -10,8 +10,8 @@ const Index = ({
   setDefaultName,
   changeName,
   setChangeName,
-  item,
   calendarData,
+  privateCalendar,
 }) => {
   let calendarName = useRef(); //calendarName 선택
   let [nameClassActive, setNameClassActive] = useState(0);
@@ -32,17 +32,17 @@ const Index = ({
 
   useEffect(() => {
     targetItem ? setDefaultName(targetItem.name) : null;
+    setChangeName(targetItem && targetItem.name);
   }, [targetItem]);
 
   function onChangeName() {
     axios
       .post(`${CALENDAR_URL.UPDATE_GROUP_CALENDAR}`, {
-        calendarId: item.id,
+        calendarId: targetItem.id,
         calendarName: changeName,
-        calendarColor: item.color,
+        calendarColor: targetItem.color,
       })
       .then(res => {
-        console.log(res);
         calendarData();
         setChangeName(res.data.name);
       })
@@ -73,7 +73,9 @@ const Index = ({
           <input
             type="text"
             placeholder={defaultName}
-            value={changeName}
+            value={
+              changeName || (privateCalendar && privateCalendar[0].name) || ''
+            }
             onChange={e => {
               setChangeName(e.target.value);
             }}
@@ -100,7 +102,7 @@ Index.propTypes = {
   setDefaultName: PropTypes.func,
   changeName: PropTypes.string,
   setChangeName: PropTypes.func,
-  item: PropTypes.object,
+  privateCalendar: PropTypes.array,
 };
 
 export default Index;

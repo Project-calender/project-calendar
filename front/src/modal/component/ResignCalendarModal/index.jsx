@@ -3,23 +3,26 @@ import { useDispatch } from 'react-redux';
 import styles from './style.module.css';
 
 import Modal from '../../../components/common/Modal';
-import { DeleteCalendarContext } from '../../../context/EventModalContext';
+import { ResignCalendarContext } from '../../../context/EventModalContext';
 import { useContext } from 'react';
-import { deleteCalendar } from '../../../store/thunk/calendar';
+import { resignCalendar } from '../../../store/thunk/calendar';
 
 const Index = () => {
-  const { hideModal, modalData } = useContext(DeleteCalendarContext);
+  const { hideModal, modalData } = useContext(ResignCalendarContext);
   const { calendar } = modalData;
 
   const dispatch = useDispatch();
-  function handleDeleteCalendar() {
-    dispatch(deleteCalendar(calendar.id));
+  function handleResignCalendar() {
+    dispatch(resignCalendar(calendar.id));
     hideModal();
   }
   return (
     <Modal
       hideModal={hideModal}
-      style={{ ...modalData?.style }}
+      style={{
+        top: 'calc(50% - 100px)',
+        left: 'calc(50% - 100px)',
+      }}
       isBackground
       backgroundColor="rgb(0, 0, 0, 0.5)"
     >
@@ -31,7 +34,7 @@ const Index = () => {
         </p>
         <div>
           <button onClick={hideModal}>취소</button>
-          <button onClick={handleDeleteCalendar}>캘린더 삭제</button>
+          <button onClick={handleResignCalendar}>캘린더 삭제</button>
         </div>
       </div>
     </Modal>

@@ -5,7 +5,12 @@ import { useState } from 'react';
 import styles from './style.module.css';
 import PopUp from './PopUp';
 
-const Index = ({ targetItem, calendarData }) => {
+const Index = ({
+  targetItem,
+  setTargetItem,
+  calendarData,
+  privateCalendar,
+}) => {
   let [popUpActive, setPopUpActive] = useState(false);
 
   return (
@@ -28,7 +33,9 @@ const Index = ({ targetItem, calendarData }) => {
       {popUpActive == true ? (
         <PopUp
           targetItem={targetItem}
+          setTargetItem={setTargetItem}
           calendarData={calendarData}
+          privateCalendar={privateCalendar}
           setPopUpActive={setPopUpActive}
         ></PopUp>
       ) : null}
@@ -38,7 +45,9 @@ const Index = ({ targetItem, calendarData }) => {
 
 Index.propTypes = {
   targetItem: PropTypes.object,
+  setTargetItem: PropTypes.func,
   calendarData: PropTypes.func,
+  privateCalendar: PropTypes.array,
 };
 
 export default Index;

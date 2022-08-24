@@ -3,8 +3,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
 import { CALENDAR_PATH } from './../../constants/path';
-import { useDispatch } from 'react-redux';
-import { updateUser } from '../../store/user';
 
 import Axios from 'axios';
 import { BASE_URL, USER_URL } from '../../constants/api';
@@ -48,7 +46,6 @@ const Index = () => {
   }
 
   //웹 스토리지에 사용자 정보, 토큰 저장 함수
-  const dispatch = useDispatch();
   function saveWebStorage(res) {
     localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken));
     sessionStorage.setItem('accessToken', JSON.stringify(res.data.accessToken));
@@ -58,7 +55,6 @@ const Index = () => {
     localStorage.setItem('userInfo', JSON.stringify({ email, id, nickname }));
     localStorage.setItem('checkedCalendar', checkedCalendar);
     localStorage.setItem('userImg', ProfileImages[0].src);
-    dispatch(updateUser({ email, id, nickname, checkedCalendar }));
   }
 
   return (

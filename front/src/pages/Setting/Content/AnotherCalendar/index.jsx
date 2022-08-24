@@ -11,7 +11,6 @@ const Index = ({
   setDefaultName,
   changeName,
   setChangeName,
-  item,
 }) => {
   return (
     <article className={styles.content}>
@@ -22,7 +21,6 @@ const Index = ({
         setDefaultName={setDefaultName}
         changeName={changeName}
         setChangeName={setChangeName}
-        item={item}
       ></ChangeName>
       <Subscribe
         targetItem={targetItem}
@@ -39,7 +37,6 @@ Index.propTypes = {
   setDefaultName: PropTypes.func,
   changeName: PropTypes.string,
   setChangeName: PropTypes.func,
-  item: PropTypes.object,
 };
 
 export default Index;

@@ -1,0 +1,26 @@
+.invite_members img { width: 28px; height: 28px; border-radius: 100%; margin-right: 10px; box-shadow: 0px 0px 2.5px 0.5px rgba(0, 0, 0, 0.7); border: 2px solid #fff; image-rendering: auto; } 
+.invite_members { width: 80%; } 
+
+.invite_member_container { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 5px 5px; border-radius: 5px; } 
+.invite_member_container:hover { background: #f4f4f4; } 
+.invite_member_container:hover .icon_delete { visibility: visible; } 
+
+.invite_member { display: flex; align-items: center; } 
+
+.icon_delete { visibility: hidden; position: static !important; width: 18px !important; height: 18px !important; cursor: pointer; border-radius: 100%; padding: 5px } 
+.icon_delete:hover { background: #e1e1e1; } 
+
+.member_info em { font-size: 12px; color: #ababab; } 
+
+.help_container { position: relative; margin-bottom: 5px; } 
+.help_container em { color: #ababab; font-size: 12px; margin-left: 5px;} 
+
+.help_modal { position: fixed; z-index: 3; left: 163px; top: 0; display: block !important; border-radius: 5px; } 
+.help_modal { width: 0px !important; height: 0px; background: transparent; padding: 8px !important; overflow: hidden; box-shadow: none; color: transparent;} 
+.help_modal:hover { background: #fff; width: 300px !important; height: 180px; box-shadow: 1px 2px 25px 5px rgba(0, 0, 0, 0.3); padding: 15px !important; color: #343434;}
+
+.help_modal ul { margin-top: 15px; margin-left: 35px; word-break: break-all; } 
+.help_modal li { list-style-type: disc; } 
+
+.icon_help { width: 14px !important; height: 14px !important; cursor: pointer; margin-left: 10px; padding-top:5px;  color: #ababab !important; } 
+.icon_help:hover .help_modal { visibility: visible !important; } 

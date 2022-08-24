@@ -179,12 +179,6 @@
                     properties:
                       state:
                         type: integer
-                      createdAt:
-                        type: string
-                      updatedAt:
-                        type: string
-                      deletedAt:
-                        type: string
                       UserId:
                         type: integer
                       EventId:
@@ -246,7 +240,8 @@
                       state:
                         type: integer
                       allDay:
-                        type: boolean
+                        type: integer
+                        example: 1
                       privateCalendarId:
                         type: integer
             groupEvents:
@@ -292,7 +287,69 @@
                           type: integer
       500:
         $ref: "./openapi.yaml#/serverError"
-
+/api/event/inviteCheckBeforeCreateEvent:
+  post:
+    tags:
+      - event
+    summary: 그룹 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전 inviteCheckBeforeCreateEvent -> createGroupEvent )
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            guestEmail:
+              type: string
+            calendarId:
+              type: integer
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            guest:
+              type: object
+              properties:
+                id:
+                  type: integer
+                email:
+                  type: string
+                nickname:
+                  type: string
+                ProfileImages:
+                  type: object
+                  properties:
+                    src:
+                      type: string
+            canInvite:
+              type: boolean
+              example: true
+      400:
+        description: 존재하지 않는 유저
+        schema:
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 유저입니다!
+            canInvite:
+              type: boolean
+              example: false
+      402:
+        description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
+        schema:
+          properties:
+            message:
+              type: string
+              example: 그룹 캘린더에 존재하지 않는 유저입니다!
+            canInvite:
+              type: boolean
+              example: false
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/event/createGroupEvent:
   post:
     tags:
@@ -328,21 +385,34 @@
               type: string
               example: "2022-06-02T00:00:00"
             allDay:
-              type: boolean
-              example: true
+              type: integer
+              example: 1
             alerts:
+              summary: ㅇㅇㅇ
               type: array
               items:
                 type: object
                 properties:
                   type:
                     type: string
-                    example: "minute / hour / day / week"
+                    example: "minute,hour,day,week (not allDay) / day,week (allDay)"
                   time:
                     type: integer
+                    example: 몇일, 몇시간, 몇분전 인지
+                  hour:
+                    type: integer
+                    example: 0-23시 중 써주세요 알림 받고자 하는 시각 (allDay 전용)
+                  minute:
+                    type: integer
+                    example: 알람 받고자 하는 분 ex) 오후 3시 15분에 받고 싶다면 hour에 15, minute에 15 (allDay 전용)
+            guests:
+              type: array
+              items:
+                type: object
+                example: "minwoo@naver.com"
     responses:
       200:
-        $ref: "./openapi.yaml#/success"
+        $ref: "./openapi.yaml#/returnEvent"
       400:
         description: 그룹원이 아닌 사람이 이벤트를 생성하려 할때
         schema:
@@ -352,12 +422,11 @@
               example: 그룹원의 멤버만 이벤트를 생성할 수 있습니다.
       500:
         $ref: "./openapi.yaml#/serverError"
-
-/api/event/inviteGroupEvent:
+/api/event/inviteCheck:
   post:
     tags:
       - event
-    summary: 그룹 이벤트에 그룹원 초대하기
+    summary: 그룹 이벤트에 초대 가능한지 확인하기 ( 이미 존재하는 이벤트에 초대 체크 inviteCheck -> editGroupEvent )
     parameters:
       - name: Authorization
         in: header
@@ -376,7 +445,26 @@
               type: integer
     responses:
       200:
-        $ref: "./openapi.yaml#/success"
+        description: 성공
+        schema:
+          properties:
+            guest:
+              type: object
+              properties:
+                id:
+                  type: integer
+                email:
+                  type: string
+                nickname:
+                  type: string
+                ProfileImages:
+                  type: object
+                  properties:
+                    src:
+                      type: string
+            canInvite:
+              type: boolean
+              example: true
       400:
         description: 존재하지 않는 유저
         schema:
@@ -384,6 +472,9 @@
             message:
               type: string
               example: 존재하지 않는 유저입니다!
+            canInvite:
+              type: boolean
+              example: false
       402:
         description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
         schema:
@@ -391,6 +482,9 @@
             message:
               type: string
               example: 그룹 캘린더에 존재하지 않는 유저입니다!
+            canInvite:
+              type: boolean
+              example: false
       403:
         description: 이미 그룹이벤트의 이벤트에 멤버일대
         schema:
@@ -398,6 +492,9 @@
             message:
               type: string
               example: 이미 그룹 이벤트의 멤버입니다!
+            canInvite:
+              type: boolean
+              example: false
       405:
         description: 자신 포함 그룹원 내의 누군가가 이미 초대를 보낸 상태일때
         schema:
@@ -405,40 +502,9 @@
             message:
               type: string
               example: 이미 초대를 보낸 사람입니다!
-      500:
-        $ref: "./openapi.yaml#/serverError"
-
-/api/event/changeEventInviteState:
-  post:
-    tags:
-      - event
-    summary: 이벤트 참여 상태 변경하기 수락 1 / 보류 2 / 거절 3 아무것도 누르지 않았다면 default 0
-    parameters:
-      - name: Authorization
-        in: header
-        required: true
-      - name: body
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            eventId:
-              type: integer
-              example: 1
-            state:
-              type: integer
-              example: 1
-    responses:
-      200:
-        $ref: "./openapi.yaml#/success"
-      400:
-        description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
-        schema:
-          properties:
-            message:
-              type: string
-              example: 존재하지 않는 이벤트 입니다!
+            canInvite:
+              type: boolean
+              example: false
       500:
         $ref: "./openapi.yaml#/serverError"
 
@@ -481,21 +547,34 @@
               type: string
               example: "2022-06-02T00:00:00"
             allDay:
-              type: boolean
-              example: true
+              type: integer
+              example: 1
             alerts:
+              summary: ㅇㅇㅇ
               type: array
               items:
                 type: object
                 properties:
                   type:
                     type: string
-                    example: "minute / hour / day / week"
+                    example: "minute,hour,day,week (not allDay) / day,week (allDay)"
                   time:
                     type: integer
+                    example: 몇일, 몇시간, 몇분전 인지
+                  hour:
+                    type: integer
+                    example: 0-23시 중 써주세요 알림 받고자 하는 시각 (allDay 전용)
+                  minute:
+                    type: integer
+                    example: 알람 받고자 하는 분 ex) 오후 3시 15분에 받고 싶다면 hour에 15, minute에 15 (allDay 전용)
+            guests:
+              type: array
+              items:
+                type: object
+                example: "minwoo@naver.com"
     responses:
       200:
-        $ref: "./openapi.yaml#/success"
+        $ref: "./openapi.yaml#/returnEvent"
       400:
         description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
         schema:
@@ -513,6 +592,45 @@
       500:
         $ref: "./openapi.yaml#/serverError"
 
+/api/event/editGroupEventColor:
+  post:
+    tags:
+      - event
+    summary: 그룹 이벤트 색상 변경하기
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            eventId:
+              type: integer
+              example: 1
+            color:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/returnEvent"
+      400:
+        description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
+        schema:
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 이벤트 입니다!
+      402:
+        description: 수정 권한이 없는 경우 ( 권한 2 미만 )
+        schema:
+          properties:
+            message:
+              type: string
+              example: 수정 권한이 없습니다!
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/event/deleteGroupEvent:
   post:
     tags:
@@ -554,6 +672,39 @@
       500:
         $ref: "./openapi.yaml#/serverError"
 
+/api/event/changeEventInviteState:
+  post:
+    tags:
+      - event
+    summary: 이벤트 참여 상태 변경하기 수락 1 / 보류 2 / 거절 3 아무것도 누르지 않았다면 default 0
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            eventId:
+              type: integer
+              example: 1
+            state:
+              type: integer
+              example: 1
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      400:
+        description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
+        schema:
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 이벤트 입니다!
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/event/searchEvent:
   post:
     tags:

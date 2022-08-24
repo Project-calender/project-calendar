@@ -44,7 +44,7 @@ function App() {
         <Route path={USER_PATH.LOGIN} element={<Login />}></Route>
         <Route path={USER_PATH.JOIN} element={<Join />}></Route>
         <Route path="*" element={<Navigate to={CALENDAR_PATH.MONTH} />} />
-        <Route path="/setting" element={<Setting></Setting>}></Route>
+        <Route path={USER_PATH.SETTING} element={<Setting></Setting>}></Route>
       </Routes>
     </div>
   );

@@ -1,14 +1,16 @@
 import React from 'react';
-import Moment from '../../../utils/moment';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import { EVENT } from '../../../store/events';
+
+import { EVENT } from '../../../../store/events';
+import Moment from '../../../../utils/moment';
 
 const Index = ({
   event,
   color,
   eventBar,
   clickEventBar = () => {},
+  onContextMenu = () => {},
   isSelected,
 }) => {
   const eventBarStyle = {
@@ -28,6 +30,7 @@ const Index = ({
         isSelected ? styles.event_bar_active : ''
       }`}
       onClick={clickEventBar}
+      onContextMenu={e => onContextMenu(e, event)}
       name="event_bar"
     >
       <div
@@ -58,6 +61,7 @@ Index.propTypes = {
   eventBar: PropTypes.object,
   color: PropTypes.string,
   clickEventBar: PropTypes.func,
+  onContextMenu: PropTypes.func,
   isSelected: PropTypes.bool,
 };
 

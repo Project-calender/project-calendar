@@ -40,3 +40,13 @@ export const deleteCalendar = createAsyncThunk(
     return calendarId;
   },
 );
+
+export const resignCalendar = createAsyncThunk(
+  CALENDAR_URL.RESIGN_GROUP_CALENDAR,
+  async calendarId => {
+    await axios.post(CALENDAR_URL.RESIGN_GROUP_CALENDAR, {
+      calendarId,
+    });
+    return calendarId;
+  },
+);

@@ -12,8 +12,10 @@ import {
 import {
   EventDetailModalContext,
   EventListModalContext,
+  SimpleEventOptionModalContext,
 } from '../../../../../../context/EventModalContext';
 import { calendarByEventIdsSelector } from '../../../../../../store/selectors/calendars';
+import { newEventEmptyBarByTimeSelector } from '../../../../../../store/selectors/newEvent';
 
 const Index = ({ date, maxHeight }) => {
   const { showModal: showEventListModal, hideModal: hideEventListModal } =
@@ -21,6 +23,10 @@ const Index = ({ date, maxHeight }) => {
   const { showModal: showEventDetailModal, hideModal: hideEventDetailModal } =
     useContext(EventDetailModalContext);
   const $eventList = useRef();
+  const {
+    showModal: showSimpleEventOptionModal,
+    hideModal: hideSimpleEventOptionModal,
+  } = useContext(SimpleEventOptionModalContext);
 
   const eventBars = useSelector(state => eventsByDateSelector(state, date));
   const calendars = useSelector(state =>
@@ -30,11 +36,15 @@ const Index = ({ date, maxHeight }) => {
     eventsByEventIdsSelector(state, eventBars || []),
   );
 
+  const newEventEmptyBar = useSelector(state =>
+    newEventEmptyBarByTimeSelector(state, date.time),
+  );
+
   if (!eventBars) return;
 
-  const countEventBar = Math.floor(maxHeight / 30);
+  const countEventBar = Math.floor(maxHeight / 30) - (newEventEmptyBar ? 1 : 0);
   const previewEvent = countEventBar ? eventBars.slice(0, countEventBar) : [];
-  const restEvent = eventBars.slice(countEventBar);
+  const restEvent = eventBars.slice(countEventBar).filter(event => event);
 
   function clickReadMore(e) {
     const { top, left } = $eventList.current.getBoundingClientRect();
@@ -50,17 +60,25 @@ const Index = ({ date, maxHeight }) => {
   function handleEventDetailMadal(e) {
     showEventDetailModal();
     hideEventListModal();
+    hideSimpleEventOptionModal();
     e.stopPropagation();
 
     return { offsetTop: 25 };
   }
 
+  function handleSimpleEventOptionModal(e, event) {
+    const { pageX, pageY } = e;
+    showSimpleEventOptionModal({ style: { top: pageY, left: pageX }, event });
+    hideEventDetailModal();
+    e.preventDefault();
+  }
   return (
     <div
       className={styles.event_list}
       ref={$eventList}
       data-drag-date={date.time}
     >
+      {newEventEmptyBar && <EventBar />}
       {previewEvent.slice(0, countEventBar).map((eventBar, index) => (
         <EventBar
           key={index}
@@ -68,9 +86,16 @@ const Index = ({ date, maxHeight }) => {
           calendar={calendars[index]}
           eventBar={eventBar}
           handleEventDetailMadal={handleEventDetailMadal}
+          onContextMenu={
+            calendars[index]?.authority >= 2
+              ? handleSimpleEventOptionModal
+              : null
+          }
         />
       ))}
-      <ReadMoreTitle events={restEvent} clickReadMore={clickReadMore} />
+      {restEvent.length > 0 && (
+        <ReadMoreTitle events={restEvent} clickReadMore={clickReadMore} />
+      )}
     </div>
   );
 };

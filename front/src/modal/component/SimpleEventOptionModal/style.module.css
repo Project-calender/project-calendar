@@ -1,0 +1,41 @@
+.modal_container {
+    width: 190px;
+}
+
+.delete_event {
+    width: inherit;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0px 20px;
+    cursor: pointer;
+}
+
+.delete_event:hover{
+    background: #efefef;
+}
+
+.delete_event > svg{
+    color: gray;
+    width: 14px;
+    height: 14px;
+}
+
+.delete_event > em{
+   padding-left: 20px;
+   font-size: 14px;
+}
+
+.modal_container hr {
+    border: none;
+    height: 1.5px;
+    margin:0px;
+    background-color: #e1e1e1;
+}
+
+.event_color {
+    margin: 15px 15px;
+    width: 150px;
+    display: flex;
+    flex-wrap: wrap;
+}

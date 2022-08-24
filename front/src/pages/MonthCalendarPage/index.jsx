@@ -10,6 +10,10 @@ import CreateEventMaodalLayout from '../../modal/layout/CreateEventModalLayout';
 import useAddMonthByWheel from '../../hooks/useAddMonthByWheel';
 import { getAllCalendarAndEvent } from '../../store/thunk/event';
 
+import SimpleEventOptionModal from '../../modal/component/SimpleEventOptionModal';
+import ModalLayout from '../../modal/layout/ModalLayout';
+import { SimpleEventOptionModalContext } from '../../context/EventModalContext';
+
 const Index = () => {
   const dispatch = useDispatch();
 
@@ -29,7 +33,12 @@ const Index = () => {
       <CreateEventMaodalLayout>
         <EventDetailModalLayout>
           <EventListModalLayout>
-            <MonthCalendar month={month} />
+            <ModalLayout
+              Modal={SimpleEventOptionModal}
+              Context={SimpleEventOptionModalContext}
+            >
+              <MonthCalendar month={month} />
+            </ModalLayout>
           </EventListModalLayout>
         </EventDetailModalLayout>
       </CreateEventMaodalLayout>

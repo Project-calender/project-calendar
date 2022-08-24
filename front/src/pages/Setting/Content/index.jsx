@@ -6,6 +6,7 @@ import AnotherCalendar from './AnotherCalendar';
 
 const Index = ({
   targetItem,
+  setTargetItem,
   calendarData,
   privateCalendar,
   defaultItem,
@@ -14,13 +15,13 @@ const Index = ({
   setDefaultName,
   setChangeName,
   changeName,
-  item,
 }) => {
   return (
     <div className={styles.container}>
       {calendarSetting == 0 ? (
         <MyCalendar
           targetItem={targetItem}
+          setTargetItem={setTargetItem}
           calendarData={calendarData}
           privateCalendar={privateCalendar}
           defaultItem={defaultItem}
@@ -28,7 +29,6 @@ const Index = ({
           setDefaultName={setDefaultName}
           changeName={changeName}
           setChangeName={setChangeName}
-          item={item}
         ></MyCalendar>
       ) : (
         <AnotherCalendar
@@ -38,7 +38,6 @@ const Index = ({
           setDefaultName={setDefaultName}
           changeName={changeName}
           setChangeName={setChangeName}
-          item={item}
         ></AnotherCalendar>
       )}
     </div>
@@ -47,6 +46,7 @@ const Index = ({
 
 Index.propTypes = {
   targetItem: PropTypes.object,
+  setTargetItem: PropTypes.func,
   calendarData: PropTypes.func,
   privateCalendar: PropTypes.array,
   defaultItem: PropTypes.bool,
@@ -55,7 +55,6 @@ Index.propTypes = {
   setDefaultName: PropTypes.func,
   changeName: PropTypes.string,
   setChangeName: PropTypes.func,
-  item: PropTypes.object,
 };
 
 export default Index;
