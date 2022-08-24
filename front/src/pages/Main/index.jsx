@@ -21,8 +21,8 @@ const Index = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('alertTest', alert => {
-        console.log(alert);
+      socket.on('alertTest', data => {
+        alert(data.alert);
       });
     }
   }, []);
