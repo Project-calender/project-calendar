@@ -15,10 +15,8 @@ module.exports = (server, app) => {
   io.on("connection", (socket) => {
     socket.on("login", (data) => {
       onlineUsers[socket.id] = data.id;
-      console.log("onlineUsers: ", onlineUsers);
     });
 
-    socket.emit("sendAlert", { alert: "알림!" });
     socket.on("disconnect", async () => {
       console.log(`${socket.id}유저 연결 해제`);
       delete onlineUsers[socket.id];

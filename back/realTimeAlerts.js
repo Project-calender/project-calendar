@@ -56,10 +56,6 @@ const addAlert = async (
       },
       { transaction: t }
     ).then((newAlert) => {
-      const now = new Date();
-      console.log("현재 서버 컴퓨터 시작", now);
-      console.log("알림 시각", date);
-
       alertsObject[newAlert.id] = new CronJob(
         date,
         async function () {
@@ -67,11 +63,9 @@ const addAlert = async (
             (key) => onlineUsers[key] === myId
           );
 
-          console.log(socketId);
-          // if (socketId) {
-          //   socket.to(socketId).emit("alertTest", { alert: content });
-          // }
-          socket.emit("alertTest", { alert: content });
+          if (socketId) {
+            socket.to(socketId).emit("alertTest", { alert: content });
+          }
 
           await RealTimeAlert.destroy({
             where: { id: newAlert.id },
