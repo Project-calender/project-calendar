@@ -7,7 +7,8 @@ import styles from './style.module.css';
 const Index = ({ setNotice }) => {
   const [alerts, setAlerts] = useState([]);
   let notice = useRef(); //알림창
-  let [pageNumber, setPageNumber] = useState(1); //현재 페이지
+  let [totalPage, setTotalPage] = useState(0); //알림 총 페이지 수
+  let [pageNumber, setPageNumber] = useState(1); //현재 알림 페이지
 
   useEffect(() => {
     onNotice(pageNumber);
@@ -20,8 +21,9 @@ const Index = ({ setNotice }) => {
         page: pageNumber,
       })
       .then(({ data }) => {
-        setAlerts(data);
-        console.log(data);
+        setAlerts(data.alerts);
+        let page = Math.ceil(data.count / 8);
+        setTotalPage(page);
       })
       .catch(error => {
         console.log('실패', error);
@@ -31,14 +33,14 @@ const Index = ({ setNotice }) => {
       });
   }
 
-  //수락 완료시 알림 읽음
+  //알림 읽음
   function noticeRead(alertNum) {
     axios
-      .post(`/alert/read`, {
+      .post('/alert/read', {
         alertId: alertNum,
       })
-      .then(res => {
-        console.log(res.status);
+      .then(() => {
+        onNotice(pageNumber);
       });
   }
 
@@ -62,60 +64,85 @@ const Index = ({ setNotice }) => {
     <div ref={notice} className={styles.container}>
       <div className={styles.content}>
         <div className={styles.events}>
-          {alerts.map(alert => (
-            <div key={alert.id} className={styles.event}>
-              <div>
-                <div>{alert.createdAt.substring(0, 10)}</div>
-                <div className={styles.content}>{alert.content}</div>
-              </div>
-              {alert.type === 'calendarInvite' && (
-                <div className={styles.inviteBtns}>
-                  <div
-                    className={styles.acceptInvite}
-                    onClick={() => {
-                      axios
-                        .post(CALENDAR_URL.ACCEPT_CALENDAR_INVITE, {
-                          calendarId: alert.calendarId,
-                        })
-                        .then(res => {
-                          console.log(res);
+          {alerts &&
+            alerts.map(alert => (
+              <div
+                key={alert.id}
+                className={
+                  alert.checked == true
+                    ? `${styles.active} ${styles.event}`
+                    : styles.event
+                }
+              >
+                <div>
+                  <div>{alert.createdAt.substring(0, 10)}</div>
+                  <div className={styles.content}>{alert.content}</div>
+                </div>
+                {alert.type === 'calendarInvite' && (
+                  <div className={styles.inviteBtns}>
+                    {alert.checked == false ? (
+                      <div
+                        className={styles.acceptInvite}
+                        onClick={() => {
+                          axios
+                            .post(CALENDAR_URL.ACCEPT_CALENDAR_INVITE, {
+                              calendarId: alert.calendarId,
+                              alertId: alert.id,
+                            })
+                            .then(res => {
+                              console.log('수락', res);
+                              onNotice(pageNumber);
+                            });
+                        }}
+                      >
+                        <em>수락</em>
+                      </div>
+                    ) : null}
+                    {alert.checked == false ? (
+                      <div
+                        className={styles.rejectInvite}
+                        onClick={() => {
+                          axios
+                            .post(CALENDAR_URL.REJECT_CALENDAR_INVITE, {
+                              calendarId: alert.calendarId,
+                              alertId: alert.id,
+                            })
+                            .then(() => {
+                              onNotice(pageNumber);
+                            });
+                        }}
+                      >
+                        <em>거절</em>
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+                {alert.type === 'calendarInviteReject' ||
+                alert.type === 'eventRemoved' ||
+                alert.type === 'event' ||
+                alert.type === 'calendarInviteReject' ||
+                alert.type === 'calenderChanged' ||
+                alert.type === 'calenderNewMember' ? (
+                  <div className={styles.inviteBtns}>
+                    {alert.checked == false ? (
+                      <div
+                        className={styles.acceptInvite}
+                        onClick={() => {
                           noticeRead(alert.id);
-                        });
-                    }}
-                  >
-                    수락
+                        }}
+                      >
+                        <em>알림 확인</em>
+                      </div>
+                    ) : null}
                   </div>
-                  <div
-                    className={styles.rejectInvite}
-                    onClick={() => {
-                      axios
-                        .post(CALENDAR_URL.REJECT_CALENDAR_INVITE, {
-                          calendarId: alert.calendarId,
-                        })
-                        .then(console.log);
-                    }}
-                  >
-                    거절
-                  </div>
-                </div>
-              )}
-              {alert.type === 'event' && (
-                <div
-                  className={styles.toEvent}
-                  onClick={() => {
-                    console.log('a');
-                  }}
-                >
-                  해당 이벤트로 가기
-                </div>
-              )}
-            </div>
-          ))}
+                ) : null}
+              </div>
+            ))}
           <div className={styles.pageBtn}>
             <div
               className={
                 pageNumber <= 1
-                  ? `${styles.active} ${styles.prevPage}`
+                  ? `${styles.visible} ${styles.prevPage}`
                   : styles.prevPage
               }
               onClick={() => {
@@ -125,7 +152,11 @@ const Index = ({ setNotice }) => {
               <em>이전</em>
             </div>
             <div
-              className={styles.nextPage}
+              className={
+                pageNumber >= totalPage
+                  ? `${styles.visible} ${styles.nextPage}`
+                  : styles.nextPage
+              }
               onClick={() => {
                 setPageNumber(pageNumber + 1);
               }}
