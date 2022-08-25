@@ -17,6 +17,7 @@ router.post("/getAlerts", authJWT, async (req, res, next) => {
         "calendarId",
         "eventDate",
         "createdAt",
+        [sequelize.fn("COUNT", sequelize.col("id")), "alert_count"],
       ],
       order: [["id", "DESC"]],
       limit: 8, //limit개 가져와라

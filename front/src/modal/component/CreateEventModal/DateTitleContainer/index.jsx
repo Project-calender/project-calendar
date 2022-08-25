@@ -11,15 +11,12 @@ import { newEventSelector } from '../../../../store/selectors/newEvent';
 import {
   calculateCurrentTimeRange,
   updateNewEventBarProperties,
-  updateNewEventStartTime,
 } from '../../../../store/newEvent';
 
-import useEventModal from '../../../../hooks/useEventModal';
-import MiniCalendarModal from '../../MiniCalendarModal';
-import TimeListModal from '../../TimeListModal';
 import { useContext } from 'react';
 import {
   EventColorModalContext,
+  EventDateModalContext,
   EventInfoListModalContext,
 } from '../../../../context/EventModalContext';
 
@@ -49,22 +46,19 @@ const Index = ({ showEventInfoListModal }) => {
     );
   }
 
-  const miniCalendarModal = useEventModal();
-  const startTimeListModal = useEventModal();
-  const endTimeListModal = useEventModal();
-
-  function hideAllSubModal() {
-    miniCalendarModal.hideModal();
-    startTimeListModal.hideModal();
-    endTimeListModal.hideModal();
-  }
+  const {
+    miniCalendarModal,
+    startTimeListModal,
+    endTimeListModal,
+    hideAllSubModal,
+  } = useContext(EventDateModalContext);
 
   function handleMiniCalendar(e, selectedDate) {
     hideAllSubModal();
     const { top, left } = e.target.getBoundingClientRect();
     miniCalendarModal.showModal({
       selectedDate,
-      style: { top: top + 20, left },
+      style: { top: top + 30, left },
     });
     e.stopPropagation();
   }
@@ -73,6 +67,7 @@ const Index = ({ showEventInfoListModal }) => {
     hideAllSubModal();
     const { top, left } = e.target.getBoundingClientRect();
     startTimeListModal.showModal({
+      selectedItem: startDate.toTimeString(),
       style: { top: top + 30, left },
     });
     e.stopPropagation();
@@ -82,6 +77,7 @@ const Index = ({ showEventInfoListModal }) => {
     hideAllSubModal();
     const { top, left } = e.target.getBoundingClientRect();
     endTimeListModal.showModal({
+      selectedItem: endDate.toTimeString(),
       style: { top: top + 30, left },
     });
     e.stopPropagation();
@@ -91,6 +87,7 @@ const Index = ({ showEventInfoListModal }) => {
     EventInfoListModalContext,
   );
   const { hideModal: hideEventColorModal } = useContext(EventColorModalContext);
+
   function clickAddTime(e) {
     setDetail(true);
     handleAllDay(e, false);
@@ -129,51 +126,6 @@ const Index = ({ showEventInfoListModal }) => {
 
   return (
     <>
-      {miniCalendarModal.isModalShown && (
-        <MiniCalendarModal
-          hideModal={miniCalendarModal.hideModal}
-          modalData={miniCalendarModal.modalData}
-        />
-      )}
-
-      {startTimeListModal.isModalShown && (
-        <TimeListModal
-          hideModal={startTimeListModal.hideModal}
-          modalData={startTimeListModal.modalData}
-          onClickItem={e => {
-            const date = new Date(+e.target.dataset.value);
-            dispatch(
-              updateNewEventStartTime({
-                type: 'startTime',
-                minute: date.getMinutes(),
-                hour: date.getHours(),
-              }),
-            );
-            startTimeListModal.hideModal();
-            e.stopPropagation();
-          }}
-        />
-      )}
-
-      {endTimeListModal.isModalShown && (
-        <TimeListModal
-          hideModal={endTimeListModal.hideModal}
-          modalData={endTimeListModal.modalData}
-          onClickItem={e => {
-            const date = new Date(+e.target.dataset.value);
-            dispatch(
-              updateNewEventStartTime({
-                type: 'endTime',
-                minute: date.getMinutes(),
-                hour: date.getHours(),
-              }),
-            );
-            endTimeListModal.hideModal();
-            e.stopPropagation();
-          }}
-        />
-      )}
-
       <div>
         <FontAwesomeIcon icon={faClock} />
         <div
@@ -228,7 +180,11 @@ const Index = ({ showEventInfoListModal }) => {
           <h3
             className={styles.list_modal}
             onClick={e =>
-              showEventInfoListModal(e, EVENT.repeat(startDate), 'repeat')
+              showEventInfoListModal(e, {
+                data: EVENT.repeat(startDate),
+                name: 'repeat',
+                selectedItem: EVENT.repeat(startDate)[newEvent.repeat],
+              })
             }
           >
             {EVENT.repeat(startDate)[newEvent.repeat]}

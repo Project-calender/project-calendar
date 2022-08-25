@@ -15,4 +15,5 @@ export const CALENDAR_PATH = {
 export const USER_PATH = {
   LOGIN: '/login',
   JOIN: '/join',
+  SETTING: '/setting',
 };

@@ -1,11 +1,45 @@
 const express = require("express");
 const Sequelize = require("sequelize");
-
-const { sequelize, Calendar } = require("../models");
-const { User, PrivateEvent, PrivateCalendar } = require("../models");
+const { Op } = require("sequelize");
+const {
+  sequelize,
+  Calendar,
+  User,
+  PrivateEvent,
+  PrivateCalendar,
+  RealTimeAlert,
+} = require("../models");
 const router = express.Router();
 const authJWT = require("../utils/authJWT");
 const { addPrivateAlert, deletePrivateAlerts } = require("../realTimeAlerts");
+
+router.post("/getPrivateEvent", authJWT, async (req, res, next) => {
+  try {
+    const events = await PrivateEvent.findOne({
+      where: { id: req.body.eventId },
+    });
+
+    const realTimeAlert = await RealTimeAlert.findAll({
+      where: {
+        [Op.and]: {
+          UserId: req.myId,
+          PrivateEventId: req.body.eventId,
+        },
+      },
+      paranoid: false,
+      attributes:
+        events.allDay === 1
+          ? ["type", "time", "hour", "minute"]
+          : ["type", "time"],
+    });
+    return res
+      .status(200)
+      .send({ event: events, realTimeAlert: realTimeAlert });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 
 // 개인이벤트 만들기
 router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
@@ -41,14 +75,38 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
                 date.setDate(date.getDate() - alert.time);
                 date.setHours(alert.hour);
                 date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-                await addPrivateAlert(req.myId, privateEvent.id, content, date);
+                await addPrivateAlert(
+                  privateEvent.id,
+                  req.body.allDay,
+                  alert.type,
+                  alert.time,
+                  alert.hour,
+                  alert.minute,
+                  content,
+                  date,
+                  req.myId,
+                  req.app.get("io"),
+                  req.app.get("onlineUsers")
+                );
               } else if (alert.type === "week") {
                 const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
                 const date = new Date(req.body.startTime);
                 date.setDate(date.getDate() - alert.time * 7);
                 date.setHours(alert.hour);
                 date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-                await addPrivateAlert(req.myId, privateEvent.id, content, date);
+                await addPrivateAlert(
+                  privateEvent.id,
+                  req.body.allDay,
+                  alert.type,
+                  alert.time,
+                  alert.hour,
+                  alert.minute,
+                  content,
+                  date,
+                  req.myId,
+                  req.app.get("io"),
+                  req.app.get("onlineUsers")
+                );
               }
             })
           );
@@ -59,22 +117,70 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
                 const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
                 const date = new Date(req.body.startTime);
                 date.setMinutes(date.getMinutes() - parseInt(alert.time));
-                await addPrivateAlert(req.myId, privateEvent.id, content, date);
+                await addPrivateAlert(
+                  privateEvent.id,
+                  req.body.allDay,
+                  alert.type,
+                  alert.time,
+                  null,
+                  null,
+                  content,
+                  date,
+                  req.myId,
+                  req.app.get("io"),
+                  req.app.get("onlineUsers")
+                );
               } else if (alert.type === "hour") {
                 const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
                 const date = new Date(req.body.startTime);
                 date.setHours(date.getHours() - parseInt(alert.time));
-                await addPrivateAlert(req.myId, privateEvent.id, content, date);
+                await addPrivateAlert(
+                  privateEvent.id,
+                  req.body.allDay,
+                  alert.type,
+                  alert.time,
+                  null,
+                  null,
+                  content,
+                  date,
+                  req.myId,
+                  req.app.get("io"),
+                  req.app.get("onlineUsers")
+                );
               } else if (alert.type === "day") {
                 const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
                 const date = new Date(req.body.startTime);
                 date.setDate(date.getDate() - parseInt(alert.time));
-                await addPrivateAlert(req.myId, privateEvent.id, content, date);
+                await addPrivateAlert(
+                  privateEvent.id,
+                  req.body.allDay,
+                  alert.type,
+                  alert.time,
+                  null,
+                  null,
+                  content,
+                  date,
+                  req.myId,
+                  req.app.get("io"),
+                  req.app.get("onlineUsers")
+                );
               } else if (alert.type === "week") {
                 const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
                 const date = new Date(req.body.startTime);
                 date.setDate(date.getDate() - parseInt(alert.time) * 7);
-                await addPrivateAlert(req.myId, privateEvent.id, content, date);
+                await addPrivateAlert(
+                  privateEvent.id,
+                  req.body.allDay,
+                  alert.type,
+                  alert.time,
+                  null,
+                  null,
+                  content,
+                  date,
+                  req.myId,
+                  req.app.get("io"),
+                  req.app.get("onlineUsers")
+                );
               }
             })
           );
@@ -129,14 +235,38 @@ router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
               date.setDate(date.getDate() - alert.time);
               date.setHours(alert.hour);
               date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-              await addPrivateAlert(req.myId, privateEvent.id, content, date);
+              await addPrivateAlert(
+                myEvent.id,
+                req.body.allDay,
+                alert.type,
+                alert.time,
+                alert.hour,
+                alert.minute,
+                content,
+                date,
+                req.myId,
+                req.app.get("io"),
+                req.app.get("onlineUsers")
+              );
             } else if (alert.type === "week") {
               const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
               const date = new Date(req.body.startTime);
               date.setDate(date.getDate() - alert.time * 7);
               date.setHours(alert.hour);
               date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-              await addPrivateAlert(req.myId, privateEvent.id, content, date);
+              await addPrivateAlert(
+                myEvent.id,
+                req.body.allDay,
+                alert.type,
+                alert.time,
+                alert.hour,
+                alert.minute,
+                content,
+                date,
+                req.myId,
+                req.app.get("io"),
+                req.app.get("onlineUsers")
+              );
             }
           })
         );
@@ -147,22 +277,70 @@ router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
               const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
               const date = new Date(req.body.startTime);
               date.setMinutes(date.getMinutes() - parseInt(alert.time));
-              await addPrivateAlert(req.myId, privateEvent.id, content, date);
+              await addPrivateAlert(
+                myEvent.id,
+                req.body.allDay,
+                alert.type,
+                alert.time,
+                null,
+                null,
+                content,
+                date,
+                req.myId,
+                req.app.get("io"),
+                req.app.get("onlineUsers")
+              );
             } else if (alert.type === "hour") {
               const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
               const date = new Date(req.body.startTime);
               date.setHours(date.getHours() - parseInt(alert.time));
-              await addPrivateAlert(req.myId, privateEvent.id, content, date);
+              await addPrivateAlert(
+                myEvent.id,
+                req.body.allDay,
+                alert.type,
+                alert.time,
+                null,
+                null,
+                content,
+                date,
+                req.myId,
+                req.app.get("io"),
+                req.app.get("onlineUsers")
+              );
             } else if (alert.type === "day") {
               const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
               const date = new Date(req.body.startTime);
               date.setDate(date.getDate() - parseInt(alert.time));
-              await addPrivateAlert(req.myId, privateEvent.id, content, date);
+              await addPrivateAlert(
+                myEvent.id,
+                req.body.allDay,
+                alert.type,
+                alert.time,
+                null,
+                null,
+                content,
+                date,
+                req.myId,
+                req.app.get("io"),
+                req.app.get("onlineUsers")
+              );
             } else if (alert.type === "week") {
               const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
               const date = new Date(req.body.startTime);
               date.setDate(date.getDate() - parseInt(alert.time) * 7);
-              await addPrivateAlert(req.myId, privateEvent.id, content, date);
+              await addPrivateAlert(
+                myEvent.id,
+                req.body.allDay,
+                alert.type,
+                alert.time,
+                null,
+                null,
+                content,
+                date,
+                req.myId,
+                req.app.get("io"),
+                req.app.get("onlineUsers")
+              );
             }
           })
         );

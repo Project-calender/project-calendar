@@ -12,6 +12,7 @@ import {
   faList,
   faCheck,
   faUserPlus,
+  faBell,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import Tooltip from './../../common/Tooltip';
 import { useEffect } from 'react';
@@ -30,8 +31,9 @@ const Index = ({
   setUserClassAdd,
   userActive,
   setUserActive,
-  searchActive,
-  setSearchActive,
+  MenuActive,
+  setMenuActive,
+  setNotice,
 }) => {
   let navigate = useNavigate();
   let [changeDate, setChangeDate] = useState(`일`);
@@ -103,7 +105,7 @@ const Index = ({
       setUserActive(false);
       setUserClassAdd(``);
     }
-    if (searchActive == false) {
+    if (MenuActive == 1) {
       if (!dateList.current.contains(event.target)) {
         setDateActive(false);
         setActiveClass(``);
@@ -129,30 +131,15 @@ const Index = ({
       });
   }
 
-  //수정2
-  function test() {
-    axios
-      .post(`/calendar/createGroupCalendar`, {
-        calendarName: 'ohaas12213',
-        calendarColor: 'redasd123',
-      })
-      .then(res => {
-        console.log('테스트 성공', res);
-      })
-      .catch(error => {
-        console.log('테스트 실패', error);
-      });
-  }
-
   return (
     <div>
       <div className={styles.right_menu}>
-        {searchActive == false ? (
+        {MenuActive == 1 ? (
           <div className={styles.menu_icon}>
             <ul>
               <li
                 onClick={() => {
-                  setSearchActive(true);
+                  setMenuActive(2);
                 }}
               >
                 <FontAwesomeIcon icon={faSearch} className={styles.icon} />
@@ -165,14 +152,26 @@ const Index = ({
                 />
                 <em>지원</em>
               </li>
-              <li>
+              <li
+                onClick={() => {
+                  navigate('/setting');
+                }}
+              >
                 <FontAwesomeIcon icon={faCog} className={styles.icon} />
                 <em>설정메뉴</em>
+              </li>
+              <li
+                onClick={() => {
+                  setNotice(true);
+                }}
+              >
+                <FontAwesomeIcon icon={faBell} className={styles.icon} />
+                <em>알림</em>
               </li>
             </ul>
           </div>
         ) : null}
-        {searchActive == false ? (
+        {MenuActive == 1 ? (
           <div className={`${styles.date_list} ${activeClass}`} ref={dateList}>
             <div
               className={styles.date_btt}
@@ -256,7 +255,6 @@ const Index = ({
             </div>
           </div>
         ) : null}
-
         <div className={styles.more}>
           <Tooltip title="Google 앱">
             <FontAwesomeIcon icon={faList} className={styles.icon} />
@@ -281,15 +279,7 @@ const Index = ({
               <h2>{userInfo?.nickname}</h2>
               <em>{userInfo?.email}</em>
               <button>
-                <strong
-                  onClick={e => {
-                    e.stopPropagation();
-                    test();
-                  }}
-                >
-                  Google
-                </strong>{' '}
-                계정 관리
+                <strong>Google</strong> 계정 관리
               </button>
             </div>
             <div className={styles.account}>
@@ -350,7 +340,9 @@ Index.propTypes = {
   userActive: PropTypes.bool,
   setUserActive: PropTypes.func,
   searchActive: PropTypes.bool,
-  setSearchActive: PropTypes.func,
+  MenuActive: PropTypes.number,
+  setMenuActive: PropTypes.func,
+  setNotice: PropTypes.func,
 };
 
 export default Index;

@@ -1,0 +1,35 @@
+/* 특정 사용자와 공유 */
+.calendar_share{margin-top: 20px;}
+.share_list{ }
+.share_list > ul{}
+.share_list > ul > li{display: flex; justify-content: space-between; align-items: center; position: relative; border-bottom: 1px solid #ddd; padding: 10px 0; box-sizing: border-box;}
+.share_list > ul > li:nth-child(1){border-top: 1px solid #ddd;}
+
+
+/* 특정 사용자와 공유 유저 정보 */
+.user{display: flex; align-items: center;}
+.user .user_img{width: 35px;height: 35px; background: #eee; border-radius: 50%;}
+.user .user_img img{width: 100%;height: 100%;object-fit: cover;  border-radius: 50%;}
+.user .user_info{margin-left: 20px;}
+.user .user_info p{font-size: 14px;}
+.user .user_info em{font-size: 12px;}
+
+.user_add_btt{width: 130px;height: 40px; margin-top: 5px; background: #fff; color: #095ad3; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;}
+.user_add_btt:hover{background: rgb(250, 250, 250); color: #174ea6;}
+.user_add_btt .plus_icon{font-size: 16px;}
+.user_add_btt em{margin-left: 10px; font-size: 14px;  font-weight:500;}
+
+/* 권한 설정 버튼 */
+.authority{position: relative;}
+.authority_btt{width: 170px;height: 35px; display: flex; justify-content: space-between; align-items: center; padding: 0 5px; box-sizing: border-box; cursor: pointer;  border-radius: 5px; background: #F1F3F4;}
+.authority_btt > em{}
+
+.authority_list{display: none; width: 260px; position: absolute; top: 0;left: 0; background: #fff;z-index: 100; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;}
+.authority.active .authority_list{display: block;}
+.authority_list li{height: 40px; line-height: 40px; cursor: pointer; padding: 0 10px; box-sizing: border-box;}
+.authority_list li:hover{background: #eee;}
+
+.expulsion{position: absolute; top: 50%; right: -25px; transform: translateY(-50%); cursor: pointer; z-index: 99;}
+.expulsion .icon{font-size: 20px;}
+
+

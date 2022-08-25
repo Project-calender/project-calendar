@@ -4,6 +4,7 @@ import styles from './style.module.css';
 import NavBar from '../../components/Navbar';
 import SideBar from '../../components/SideBar';
 import SideNav from '../../components/SideNav';
+import AlertPage from '../AlertPage';
 import { USER_PATH } from '../../constants/path';
 import { useDispatch } from 'react-redux';
 import { resetUser } from '../../store/user';
@@ -12,6 +13,7 @@ import useSocket from '../../hooks/useSocket';
 const Index = () => {
   const socket = useSocket();
   let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  let [notice, setNotice] = useState(false); //알림 팝업창 컨트롤
 
   useEffect(() => {
     if (socket && userInfo) {
@@ -28,6 +30,7 @@ const Index = () => {
   }, []);
 
   let [isSideBarOn, toggleSideBar] = useState(true);
+  let [MenuActive, setMenuActive] = useState(1);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -44,12 +47,22 @@ const Index = () => {
   return (
     <div>
       <section className={styles.section}>
-        <NavBar toggleSideBar={toggleSideBar}></NavBar>
+        <NavBar
+          toggleSideBar={toggleSideBar}
+          MenuActive={MenuActive}
+          setMenuActive={setMenuActive}
+          setNotice={setNotice}
+        ></NavBar>
         <article className={styles.article}>
           <SideBar isSideBarOn={isSideBarOn} />
           <Outlet></Outlet>
           <SideNav></SideNav>
         </article>
+        {notice == true ? (
+          <div className={styles.AlertPage}>
+            <AlertPage setNotice={setNotice}></AlertPage>
+          </div>
+        ) : null}
       </section>
     </div>
   );

@@ -5,6 +5,7 @@ export const USER_URL = {
   SINGUP: '/user/signup',
   LOGOUT: '/user/logout',
   CHECK_CALENDAR: '/user/checkedCalendar',
+  USER_PROFILE_IMAGE: '/user/setUserProfileImage',
 };
 
 export const CALENDAR_URL = {
@@ -12,6 +13,11 @@ export const CALENDAR_URL = {
   UPDATE_GROUP_CALENDAR: '/calendar/editGroupCalendar',
   UPDATE_PRIVATE_CALENDAR: '/privateCalendar/editPrivateCalendar',
   DELETE_GROUP_CALENDAR: '/calendar/deleteGroupCalendar',
+  GET_MY_CALENDARS: '/calendar/getMyCalendars',
+  GIVE_AUTHORITY: '/calendar/giveAuthority',
+  INVITE_GROUP_CALENDAR: '/calendar/inviteGroupCalendar',
+  SEND_OUT_USER: '/calendar/sendOutUser',
+  RESIGN_CALENDAR: '/calendar/resignCalendar',
   RESIGN_GROUP_CALENDAR: '/calendar/resignCalendar',
   ACCEPT_CALENDAR_INVITE: '/calendar/acceptCalendarInvite',
   REJECT_CALENDAR_INVITE: '/calendar/rejectCalendarInvite',
@@ -19,7 +25,8 @@ export const CALENDAR_URL = {
 
 export const EVENT_URL = {
   GET_ALL_CALENDAR_AND_EVENT: '/event/getAllEvent',
-  GET_EVENT_DETAIL: '/event/getGroupEvent',
+  GET_GROUP_EVENT_DETAIL: '/event/getGroupEvent',
+  GET_PRIVATE_EVENT_DETAIL: '/privateEvent/getPrivateEvent',
   UPDATE_EVENT_INVITE_STATE: '/event/changeEventInviteState',
   CREATE_GROUP_EVENT: '/event/createGroupEvent',
   DELETE_GROUP_EVENT: '/event/deleteGroupEvent',

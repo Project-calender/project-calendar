@@ -1,0 +1,8 @@
+.popup{width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); position: fixed; top: 50%;left: 50%; transform: translate(-50%,-50%); display: flex; justify-content: center; align-items: center; z-index: 9999;} 
+.popup_content{width: 340px;height: 140px; background: #fff; border-radius: 10px; padding: 20px; box-sizing: border-box; position: relative;}
+.popup_content p{font-size: 14px;}
+
+.btt_wrap{position: absolute; bottom: 20px; right: 20px;}
+.popup_content button{padding: 5px 10px; border-radius: 5px; font-size: 14px; background: #fff; cursor: pointer;}
+.popup_content button.delete_btn{color: #174ea6; font-weight: 500;}
+.popup_content button:hover{background: #eee;}

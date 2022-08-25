@@ -377,6 +377,60 @@ paths:
                 example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
         '500':
           $ref: '#/serverError'
+  /api/privateEvent/getGroupEvent:
+    post:
+      tags:
+        - privateEvent
+      summary: 특정 개인 이벤트의 모든 정보 가져오기
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              eventId:
+                type: integer
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              events:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  color:
+                    type: string
+                  priority:
+                    type: string
+                  memo:
+                    type: string
+                  startTime:
+                    type: string
+                  endTime:
+                    type: string
+              realTimeAlert:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: 'minute, hour, day, week / day, week (allDay)'
+                  time:
+                    type: integer
+                    example: 1
+                  hour:
+                    type: integer
+                    example: 1 (allDay)
+                  minute:
+                    type: integer
+                    example: 1 (allDay)
+        '500':
+          $ref: '#/serverError'
   /api/privateEvent/createPrivateEvent:
     post:
       tags:
@@ -577,8 +631,20 @@ paths:
                       type: string
                     color:
                       type: string
-                    OwnerId:
-                      type: string
+                    Owner:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        email:
+                          type: string
+                        nickname:
+                          type: string
+                        ProfileImages:
+                          type: object
+                          properties:
+                            src:
+                              type: string
                     CalendarMember:
                       type: object
                       properties:
@@ -600,6 +666,11 @@ paths:
                             properties:
                               authority:
                                 type: integer
+                          ProfileImages:
+                            type: object
+                            properties:
+                              src:
+                                type: string
         '500':
           $ref: '#/serverError'
   /api/calendar/createGroupCalendar:
@@ -1120,56 +1191,74 @@ paths:
           description: 성공
           schema:
             properties:
-              id:
-                type: integer
-              color:
-                type: string
-              priority:
-                type: string
-              memo:
-                type: string
-              startTime:
-                type: string
-              endTime:
-                type: string
-              EventHostId:
-                type: integer
-              CalendarId:
-                type: integer
-              EventHost:
+              events:
                 type: object
                 properties:
                   id:
                     type: integer
-                  email:
+                  color:
                     type: string
-                  nickname:
+                  priority:
                     type: string
-              EventMembers:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    email:
-                      type: string
-                    nickname:
-                      type: string
-                    ProfileImages:
+                  memo:
+                    type: string
+                  startTime:
+                    type: string
+                  endTime:
+                    type: string
+                  EventHostId:
+                    type: integer
+                  CalendarId:
+                    type: integer
+                  EventHost:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      nickname:
+                        type: string
+                  EventMembers:
+                    type: array
+                    items:
                       type: object
                       properties:
-                        src:
-                          type: integer
-                    EventMember:
-                      type: object
-                      properties:
-                        state:
-                          type: integer
-                        UserId:
-                          type: integer
-                        EventId:
-                          type: integer
+                        id:
+                          type: string
+                        email:
+                          type: string
+                        nickname:
+                          type: string
+                        ProfileImages:
+                          type: object
+                          properties:
+                            src:
+                              type: integer
+                        EventMember:
+                          type: object
+                          properties:
+                            state:
+                              type: integer
+                            UserId:
+                              type: integer
+                            EventId:
+                              type: integer
+              realTimeAlert:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: 'minute, hour, day, week / day, week (allDay)'
+                  time:
+                    type: integer
+                    example: 1
+                  hour:
+                    type: integer
+                    example: 1 (allDay)
+                  minute:
+                    type: integer
+                    example: 1 (allDay)
         '500':
           $ref: '#/serverError'
   /api/event/getEventByDate:
@@ -1274,6 +1363,69 @@ paths:
                             type: integer
         '500':
           $ref: '#/serverError'
+  /api/event/inviteCheckBeforeCreateEvent:
+    post:
+      tags:
+        - event
+      summary: 그룹 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전 inviteCheckBeforeCreateEvent -> createGroupEvent )
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              guestEmail:
+                type: string
+              calendarId:
+                type: integer
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              guest:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  email:
+                    type: string
+                  nickname:
+                    type: string
+                  ProfileImages:
+                    type: object
+                    properties:
+                      src:
+                        type: string
+              canInvite:
+                type: boolean
+                example: true
+        '400':
+          description: 존재하지 않는 유저
+          schema:
+            properties:
+              message:
+                type: string
+                example: 존재하지 않는 유저입니다!
+              canInvite:
+                type: boolean
+                example: false
+        '402':
+          description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
+          schema:
+            properties:
+              message:
+                type: string
+                example: 그룹 캘린더에 존재하지 않는 유저입니다!
+              canInvite:
+                type: boolean
+                example: false
+        '500':
+          $ref: '#/serverError'
   /api/event/createGroupEvent:
     post:
       tags:
@@ -1319,9 +1471,10 @@ paths:
                   properties:
                     type:
                       type: string
-                      example: 'minute,hour,day,week / day,week (allDay)'
+                      example: 'minute,hour,day,week (not allDay) / day,week (allDay)'
                     time:
                       type: integer
+                      example: '몇일, 몇시간, 몇분전 인지'
                     hour:
                       type: integer
                       example: 0-23시 중 써주세요 알림 받고자 하는 시각 (allDay 전용)
@@ -1349,7 +1502,7 @@ paths:
     post:
       tags:
         - event
-      summary: 그룹 이벤트에 초대 가능한지 확인하기 ( 이미 존재하는 이벤트에 초대 체크 inviteCheck -> inviteGroupEvent )
+      summary: 그룹 이벤트에 초대 가능한지 확인하기 ( 이미 존재하는 이벤트에 초대 체크 inviteCheck -> editGroupEvent )
       parameters:
         - name: Authorization
           in: header
@@ -1430,127 +1583,6 @@ paths:
                 example: false
         '500':
           $ref: '#/serverError'
-  /api/event/inviteCheckBeforeCreateEvent:
-    post:
-      tags:
-        - event
-      summary: 그룹 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전 inviteCheckBeforeCreateEvent -> createGroupEvent )
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              guestEmail:
-                type: string
-              calendarId:
-                type: integer
-      responses:
-        '200':
-          description: 성공
-          schema:
-            properties:
-              guest:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  email:
-                    type: string
-                  nickname:
-                    type: string
-                  ProfileImages:
-                    type: object
-                    properties:
-                      src:
-                        type: string
-              canInvite:
-                type: boolean
-                example: true
-        '400':
-          description: 존재하지 않는 유저
-          schema:
-            properties:
-              message:
-                type: string
-                example: 존재하지 않는 유저입니다!
-              canInvite:
-                type: boolean
-                example: false
-        '402':
-          description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
-          schema:
-            properties:
-              message:
-                type: string
-                example: 그룹 캘린더에 존재하지 않는 유저입니다!
-              canInvite:
-                type: boolean
-                example: false
-        '500':
-          $ref: '#/serverError'
-  /api/event/inviteGroupEvent:
-    post:
-      tags:
-        - event
-      summary: 그룹 이벤트에 그룹원 초대하기 ( 이벤트 생성 후 inviteCheck -> inviteGroupEvent )
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              guests:
-                type: array
-                items:
-                  type: string
-                  example: minwoo1@naver.com
-      responses:
-        '200':
-          $ref: '#/success'
-        '500':
-          $ref: '#/serverError'
-  /api/event/changeEventInviteState:
-    post:
-      tags:
-        - event
-      summary: 이벤트 참여 상태 변경하기 수락 1 / 보류 2 / 거절 3 아무것도 누르지 않았다면 default 0
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              eventId:
-                type: integer
-                example: 1
-              state:
-                type: integer
-                example: 1
-      responses:
-        '200':
-          $ref: '#/success'
-        '400':
-          description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
-          schema:
-            properties:
-              message:
-                type: string
-                example: 존재하지 않는 이벤트 입니다!
-        '500':
-          $ref: '#/serverError'
   /api/event/editGroupEvent:
     post:
       tags:
@@ -1593,15 +1625,28 @@ paths:
                 type: integer
                 example: 1
               alerts:
+                summary: ㅇㅇㅇ
                 type: array
                 items:
                   type: object
                   properties:
                     type:
                       type: string
-                      example: minute / hour / day / week
+                      example: 'minute,hour,day,week (not allDay) / day,week (allDay)'
                     time:
                       type: integer
+                      example: '몇일, 몇시간, 몇분전 인지'
+                    hour:
+                      type: integer
+                      example: 0-23시 중 써주세요 알림 받고자 하는 시각 (allDay 전용)
+                    minute:
+                      type: integer
+                      example: '알람 받고자 하는 분 ex) 오후 3시 15분에 받고 싶다면 hour에 15, minute에 15 (allDay 전용)'
+              guests:
+                type: array
+                items:
+                  type: object
+                  example: minwoo@naver.com
       responses:
         '200':
           $ref: '#/returnEvent'
@@ -1698,6 +1743,39 @@ paths:
               message:
                 type: string
                 example: 삭제 권한이 없습니다!
+        '500':
+          $ref: '#/serverError'
+  /api/event/changeEventInviteState:
+    post:
+      tags:
+        - event
+      summary: 이벤트 참여 상태 변경하기 수락 1 / 보류 2 / 거절 3 아무것도 누르지 않았다면 default 0
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              eventId:
+                type: integer
+                example: 1
+              state:
+                type: integer
+                example: 1
+      responses:
+        '200':
+          $ref: '#/success'
+        '400':
+          description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
+          schema:
+            properties:
+              message:
+                type: string
+                example: 존재하지 않는 이벤트 입니다!
         '500':
           $ref: '#/serverError'
   /api/event/searchEvent:

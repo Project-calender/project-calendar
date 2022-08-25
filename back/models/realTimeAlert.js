@@ -45,7 +45,6 @@ module.exports = class RealTimeAlert extends Model {
       {
         modelName: "RealTimeAlert",
         tableName: "RealTimeAlerts",
-        timestamps: false,
         paranoid: true,
         charset: "utf8",
         sequelize,
