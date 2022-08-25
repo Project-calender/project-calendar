@@ -137,6 +137,8 @@ const addPrivateAlert = async (
           true
         );
       }
+
+      console.log(alertsObject);
     });
   });
 };
@@ -197,7 +199,7 @@ const deleteAlertsByEventId = async (eventId) => {
     await Promise.all(
       alerts.map((alert) => {
         alertIds.push(alert.id);
-        alertsObject[alert.id].stop();
+        alertsObject[alert.id]?.stop();
       })
     ).then(async () => {
       await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
@@ -215,7 +217,7 @@ const deleteAlertsByCalendarId = async (calendarId) => {
     await Promise.all(
       alerts.map((alert) => {
         alertIds.push(alert.id);
-        alertsObject[alert.id].stop();
+        alertsObject[alert.id]?.stop();
       })
     ).then(async () => {
       await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
