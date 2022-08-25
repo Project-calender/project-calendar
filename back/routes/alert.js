@@ -5,6 +5,7 @@ const { Alert } = require("../models");
 const router = express.Router();
 const authJWT = require("../utils/authJWT");
 const { Op } = require("sequelize");
+
 router.post("/getAlerts", authJWT, async (req, res, next) => {
   try {
     const alerts = await Alert.findAndCountAll({
@@ -20,7 +21,7 @@ router.post("/getAlerts", authJWT, async (req, res, next) => {
     res.status(200).send({ count: alerts.count, alerts: alerts.rows });
 
     var now = new Date();
-    now.setDate(now.getDate() - 30);
+    now.setDate(now.getDate() - 15);
     await Alert.destroy({
       where: {
         [Op.and]: {
