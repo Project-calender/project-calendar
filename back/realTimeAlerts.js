@@ -121,7 +121,7 @@ const addPrivateAlert = async (
           date,
           async function () {
             var socketId = Object.keys(onlineUsers).find(
-              (key) => onlineUsers[key] === myId
+              (key) => onlineUsers[key] === userId
             );
 
             if (socketId) {
@@ -181,7 +181,7 @@ const deletePrivateAlerts = async (userId, eventId) => {
     await Promise.all(
       alerts.map((alert) => {
         alertIds.push(alert.id);
-        alertsObject[alert.id].stop();
+        alertsObject[alert.id]?.stop();
       })
     ).then(async () => {
       await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
