@@ -246,6 +246,8 @@
           properties:
             calendarId:
               type: integer
+            alertId:
+              type: integer
     responses:
       200:
         $ref: "./openapi.yaml#/returnCalendar"
@@ -292,7 +294,7 @@
           properties:
             calendarId:
               type: integer
-            hostId:
+            alertId:
               type: integer
     responses:
       200:

@@ -402,6 +402,11 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
         force: true,
       });
 
+      const readAlert = await Alert.findOne({
+        where: { id: req.body.alertId },
+      });
+      await readAlert.update({ checked: true }, { transaction: t });
+
       const members = await groupCalendar.getCalendarMembers();
       await Promise.all(
         members.map((member) =>
@@ -481,6 +486,11 @@ router.post("/rejectCalendarInvite", authJWT, async (req, res, next) => {
         transaction: t,
         force: true,
       });
+
+      const readAlert = await Alert.findOne({
+        where: { id: req.body.alertId },
+      });
+      await readAlert.update({ checked: true }, { transaction: t });
     });
     return res.status(200).send({ success: true });
   } catch (error) {
