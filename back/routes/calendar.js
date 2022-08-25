@@ -404,6 +404,7 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
 
       const readAlert = await Alert.findOne({
         where: { id: req.body.alertId },
+        transaction: t,
       });
       await readAlert.update({ checked: true }, { transaction: t });
 
@@ -422,7 +423,7 @@ router.post("/acceptCalendarInvite", authJWT, async (req, res, next) => {
       );
     });
 
-    return res.status(200).send(groupCalendar);
+    return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
     next(error);
