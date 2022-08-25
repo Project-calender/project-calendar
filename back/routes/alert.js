@@ -39,7 +39,7 @@ router.post("/getAlerts", authJWT, async (req, res, next) => {
 
 router.post("/read", authJWT, async (req, res, next) => {
   try {
-    const alert = await Alert.find({
+    const alert = await Alert.findOne({
       where: { id: req.body.alertId },
     });
 

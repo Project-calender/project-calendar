@@ -15,12 +15,12 @@ module.exports = (server, app) => {
   io.on("connection", (socket) => {
     socket.on("login", (data) => {
       onlineUsers[socket.id] = data.id;
+      console.log("현재 접속 유저:", onlineUsers);
     });
 
     socket.on("disconnect", async () => {
       console.log(`${socket.id}유저 연결 해제`);
       delete onlineUsers[socket.id];
-
       console.log(onlineUsers);
     });
   });
