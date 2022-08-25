@@ -11,19 +11,22 @@ const restartAll = async () => {
   }).then(async (realTimeAlerts) => {
     await Promise.all(
       realTimeAlerts.map(async (realTimeAlert) => {
-        alertsObject[realTimeAlert.id] = new CronJob(
-          realTimeAlert.date,
-          async function () {
-            console.log(`${realTimeAlert.content}`);
+        var now = new Date();
+        if (now < realTimeAlert.date) {
+          alertsObject[realTimeAlert.id] = new CronJob(
+            realTimeAlert.date,
+            async function () {
+              console.log(`${realTimeAlert.content}`);
 
-            await RealTimeAlert.destroy({
-              where: { id: realTimeAlert.id },
-              // force: true,
-            });
-          },
-          null,
-          true
-        );
+              await RealTimeAlert.destroy({
+                where: { id: realTimeAlert.id },
+                // force: true,
+              });
+            },
+            null,
+            true
+          );
+        }
       })
     );
   });

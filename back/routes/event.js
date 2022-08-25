@@ -1103,22 +1103,48 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
   }
 });
 
+// 자신이 참여하지 않은 이벤트도 검색되게하고, 개인 이벤트도 검색되게하기
 router.post("/searchEvent", authJWT, async (req, res, next) => {
   try {
     const searchWord = req.body.searchWord;
 
     const me = await User.findOne({ where: { id: req.myId } });
 
-    const searchEvents = await me.getGroupEvents({
-      where: { name: { [Op.like]: "%" + searchWord + "%" } },
-      attributes: {
-        exclude: ["color", "priority", "memo", "EventHostId"],
-      },
+    var events = [];
+    const groupCalendars = await me.getGroupCalendars({
+      attributes: [],
+      include: [
+        {
+          model: Event,
+          as: "GroupEvents",
+          where: { name: { [Op.like]: "%" + searchWord + "%" } },
+        },
+      ],
       joinTableAttributes: [],
-      separate: true,
     });
 
-    return res.status(200).send(searchEvents);
+    await Promise.all(
+      groupCalendars.map(async (groupCalendar) => {
+        events.push(groupCalendar.GroupEvents);
+      })
+    );
+
+    const privateEvents = await me.getPrivateCalendar({
+      attributes: [],
+      include: [
+        {
+          model: PrivateEvent,
+          where: { name: { [Op.like]: "%" + searchWord + "%" } },
+        },
+      ],
+    });
+
+    events = events?.flat();
+
+    if (privateEvents) {
+      events = events.concat(privateEvents?.PrivateEvents);
+    }
+    return res.status(200).send(events);
   } catch (error) {
     console.error(error);
     next(error);
