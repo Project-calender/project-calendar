@@ -121,7 +121,7 @@ const addPrivateAlert = async (
           date,
           async function () {
             var socketId = Object.keys(onlineUsers).find(
-              (key) => onlineUsers[key] === myId
+              (key) => onlineUsers[key] === userId
             );
 
             if (socketId) {
