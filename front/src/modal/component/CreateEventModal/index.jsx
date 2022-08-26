@@ -179,6 +179,7 @@ const Index = ({ children: ModalList }) => {
   );
 
   const [EventInfoListModal, ...RestModal] = ModalList;
+
   return (
     <Modal
       hideModal={initCreateEventModal}
@@ -197,7 +198,7 @@ const Index = ({ children: ModalList }) => {
         })}
       {RestModal}
 
-      <div className={styles.modal_header}>
+      <div className={styles.modal_header} name="modal-move-trigger">
         <FontAwesomeIcon icon={faGripLines} />
       </div>
       <div

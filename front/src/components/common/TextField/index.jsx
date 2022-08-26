@@ -19,7 +19,7 @@ const Index = React.forwardRef(
     useImperativeHandle(ref, () => ({
       setErrorMessage,
       focus: () => inputRef.current.focus(),
-      value: inputRef.current.value,
+      value: inputValue,
     }));
 
     return (

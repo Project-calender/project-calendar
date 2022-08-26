@@ -1,1 +1,1 @@
-.line { position: relative; background: #e8e8e8; height: 1px !important; width: calc(100% + 16px); left: -8px; z-index: 2; margin-bottom: 10px; } 
+.line { position: relative; background: #e8e8e8; height: 1px !important; width: calc(100% + 16px) !important; left: -8px; z-index: 2; margin-bottom: 10px; } 

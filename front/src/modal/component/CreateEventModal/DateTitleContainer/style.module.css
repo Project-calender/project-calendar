@@ -1,4 +1,4 @@
-.date_title { position: relative; left: -10px;  padding: 5px 10px; cursor: pointer; border-radius: 4px; } 
+.date_title { position: relative; left: -10px;  padding: 5px 7px 5px 10px; cursor: pointer; border-radius: 4px; } 
 .date_title_active:hover { background: #f7f7f7; } 
 .date_title > h3 { display: inline-block; border-bottom: 1px solid transparent; } 
 .date_title > h3:hover { border-bottom: 1px solid #afafb0; } 

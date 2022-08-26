@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Tooltip from '../Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
+import useDraggable from '../../../hooks/useDraggable';
 
 const Index = ({
   children,
@@ -15,7 +16,14 @@ const Index = ({
   isBackground = false,
   backgroundColor = 'transform',
 }) => {
-  const $modal = useRef();
+  const modalRef = useRef();
+  const modalBackgroundRef = useRef();
+
+  const { isMouseDown, readyMoveElement, stopMoveElement } = useDraggable(
+    modalRef,
+    modalBackgroundRef,
+  );
+
   useEffect(() => {
     document.addEventListener('click', clickModalOutside);
     document.body.style.overflow = 'hidden';
@@ -26,7 +34,7 @@ const Index = ({
   });
 
   function clickModalOutside(event) {
-    if (!$modal.current.contains(event.target)) {
+    if (!isMouseDown && !modalRef.current.contains(event.target)) {
       hideModal();
     }
   }
@@ -35,16 +43,25 @@ const Index = ({
     <>
       {isBackground && (
         <div
-          className={styles.modal_background}
+          className={`${styles.modal_background} ${
+            isMouseDown ? styles.max_zIndex : ''
+          }`}
           style={{ backgroundColor }}
           onWheel={e => e.stopPropagation()}
+          ref={modalBackgroundRef}
+          onMouseUp={stopMoveElement}
         />
       )}
       <div
         className={styles.modal_container}
-        ref={$modal}
+        ref={modalRef}
+        name="modal"
         style={style}
         onWheel={e => e.stopPropagation()}
+        onMouseDown={e => {
+          if (e.target.getAttribute('name') !== 'modal-move-trigger') return;
+          readyMoveElement(e);
+        }}
       >
         {isCloseButtom && (
           <div className={styles.modal_close_icon}>

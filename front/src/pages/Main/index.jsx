@@ -19,7 +19,7 @@ const Index = () => {
     if (socket && userInfo) {
       socket.emit('login', { id: userInfo.id });
     }
-  }, []);
+  }, [socket, userInfo]);
 
   useEffect(() => {
     if (socket) {
@@ -27,6 +27,9 @@ const Index = () => {
         alert(data.alert);
       });
     }
+    return () => {
+      socket?.off('alertTest');
+    };
   }, []);
 
   let [isSideBarOn, toggleSideBar] = useState(true);
