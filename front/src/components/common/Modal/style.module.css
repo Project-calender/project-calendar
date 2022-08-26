@@ -8,10 +8,7 @@
  height: 100vh; 
  z-index: 998; 
  } 
- .max_zIndex {
-    z-index: 1000;
-    cursor:move;
- }
+ .max_zIndex { z-index: 1000; cursor:move; } 
 
 @keyframes openEffect { 
  from { transform: scale(0); } 
@@ -20,4 +17,4 @@
 
 .modal_close_icon { position: absolute; top: 8px; right: 10px; border-radius: 100%; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; z-index:3; } 
 .modal_close_icon svg { width: 18px; height: 18px; color: #525252; } 
-.modal_close_icon:hover { background: #f1f1f1 ; } 
+.modal_close_icon:hover { background: #f1f1f1; } 
