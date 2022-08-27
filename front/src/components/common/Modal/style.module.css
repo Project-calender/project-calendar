@@ -8,6 +8,7 @@
  height: 100vh; 
  z-index: 998; 
  } 
+ .max_zIndex { z-index: 1000; cursor:move; } 
 
 @keyframes openEffect { 
  from { transform: scale(0); } 

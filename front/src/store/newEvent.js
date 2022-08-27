@@ -69,11 +69,13 @@ const newEvent = createSlice({
 
     updateNewEventTime(state, { payload }) {
       const { type, minute, hour } = payload;
-      const date = new Date(state[type]);
-      if (minute >= 0) date.setMinutes(minute);
-      if (hour >= 0) date.setHours(hour);
-
-      state[type] = date.getTime();
+      let date = new Moment(state[type]);
+      if (minute >= 0) date = date.setMinute(minute);
+      if (hour >= 0) date = date.setHour(hour);
+      if (type === 'endTime' && state.startTime > date.time) {
+        date = date.addDate(1);
+      }
+      state[type] = date.time;
     },
 
     updateNewEventAlert(state, { payload }) {

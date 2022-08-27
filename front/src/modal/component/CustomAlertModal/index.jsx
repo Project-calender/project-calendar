@@ -17,6 +17,7 @@ const Index = ({ hideModal, modalData }) => {
 
   const dispatch = useDispatch();
   function handleAddAlert(e) {
+    if (!alertRef.current.checkAlertTime()) return;
     dispatch(
       updateNewEventAlert({
         type: allDay ? 'allDay' : 'notAllDay',
@@ -27,6 +28,7 @@ const Index = ({ hideModal, modalData }) => {
     hideModal();
     e.stopPropagation();
   }
+
   return (
     <Modal
       hideModal={hideModal}
@@ -46,7 +48,14 @@ const Index = ({ hideModal, modalData }) => {
           <CustomAlertOfNotAllDay ref={alertRef} />
         )}
         <div className={styles.modal_footer}>
-          <button>취소</button>
+          <button
+            onClick={e => {
+              hideModal();
+              e.stopPropagation();
+            }}
+          >
+            취소
+          </button>
           <button onClick={handleAddAlert}>완료</button>
         </div>
       </div>

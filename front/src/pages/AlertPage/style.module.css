@@ -1,4 +1,4 @@
-.container{ width: 40vw;height: 100vh;}
+.container{ width: 40vw;}
 
 .content {
   width: 100%;
@@ -26,6 +26,7 @@
   align-items: center;
   
 }
+.event.active{border-color: #ccc; color: #aaa; pointer-events: none;}
 
 .content {
   margin-top: 5px;
@@ -87,13 +88,15 @@
   transform: scale(1.1);
 }
 
-.prevPage.active{pointer-events: none; color: #ccc;}
+.prevPage.visible{pointer-events: none; color: #ccc;}
 
 .nextPage {
   cursor: pointer;
   font-size: medium;
   margin: 10px 10px 0 0;
 }
+
+.nextPage.visible{pointer-events: none; color: #ccc;}
 
 .nextPage:hover {
   font-weight: 500;
@@ -105,6 +108,7 @@
 
 .acceptInvite {
 }
+
 
 
 @media (max-width:1200px){

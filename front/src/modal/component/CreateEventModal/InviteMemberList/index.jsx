@@ -6,26 +6,24 @@ import { faQuestionCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Tooltip from '../../../../components/common/Tooltip';
 import { useDispatch } from 'react-redux';
 import { removeInviteMember } from '../../../../store/newEvent';
-import { useRef } from 'react';
-import { useEffect } from 'react';
+
 const Index = ({ members }) => {
   const dispatch = useDispatch();
   function clickRemove(member) {
     dispatch(removeInviteMember(member));
   }
 
+  const [helfModalPosition, setHelfModalStyle] = useState({});
+
+  function moveHelfModal(e) {
+    const { top, left } = e.currentTarget.getBoundingClientRect();
+    if (helfModalPosition.top !== top)
+      setHelfModalStyle({ top, left: left + 20, visibility: 'visible' });
+  }
+
   const isExistCanNotInviteMember = Object.values(members).find(
     member => !member.canInvite,
   );
-
-  const helpRef = useRef();
-  const [helfModalPosition, setHelfModalPosition] = useState({});
-  useEffect(() => {
-    if (helpRef.current) {
-      const { top, left } = helpRef.current.getBoundingClientRect();
-      setHelfModalPosition({ top, left: left + 158 });
-    }
-  }, [members]);
 
   return (
     <div>
@@ -61,10 +59,14 @@ const Index = ({ members }) => {
         ))}
         {isExistCanNotInviteMember && (
           <div className={styles.help_container}>
-            <em ref={helpRef}>* 캘린더를 표시할 수 없습니다.</em>
+            <em>* 캘린더를 표시할 수 없습니다.</em>
             <FontAwesomeIcon
               icon={faQuestionCircle}
               className={styles.icon_help}
+              onMouseOver={moveHelfModal}
+              onMouseLeave={() => {
+                setHelfModalStyle({ visibility: 'hidden' });
+              }}
             />
             <div className={styles.help_modal} style={helfModalPosition}>
               <p>
