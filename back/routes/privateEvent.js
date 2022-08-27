@@ -7,7 +7,9 @@ const {
   User,
   PrivateEvent,
   PrivateCalendar,
+  ProfileImage,
   RealTimeAlert,
+  Event,
 } = require("../models");
 const router = express.Router();
 const authJWT = require("../utils/authJWT");
@@ -18,6 +20,37 @@ router.post("/getPrivateEvent", authJWT, async (req, res, next) => {
     const events = await PrivateEvent.findOne({
       where: { id: req.body.eventId },
     });
+
+    const groupEvent = events.groupEventId
+      ? await Event.findOne({
+          where: { id: events.groupEventId },
+          attributes: [],
+          include: [
+            {
+              model: User,
+              as: "EventHost",
+              attributes: {
+                exclude: ["password", "checkedCalendar"],
+              },
+            },
+            {
+              model: User,
+              as: "EventMembers",
+              attributes: ["id", "email", "nickname"],
+              include: [
+                {
+                  model: ProfileImage,
+                  attributes: ["src"],
+                },
+              ],
+            },
+          ],
+        })
+      : null;
+
+    const eventCopy = JSON.parse(JSON.stringify(events));
+    eventCopy["EventHost"] = groupEvent.EventHost;
+    eventCopy["EventMembers"] = groupEvent.EventMembers;
 
     const realTimeAlert = await RealTimeAlert.findAll({
       where: {
@@ -32,9 +65,11 @@ router.post("/getPrivateEvent", authJWT, async (req, res, next) => {
           ? ["type", "time", "hour", "minute"]
           : ["type", "time"],
     });
-    return res
-      .status(200)
-      .send({ event: events, realTimeAlert: realTimeAlert });
+
+    return res.status(200).send({
+      event: eventCopy,
+      realTimeAlert: realTimeAlert,
+    });
   } catch (error) {
     console.error(error);
     next(error);

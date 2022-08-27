@@ -797,6 +797,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
               where: { email: guestEmail },
             });
 
+            // guest가 이벤트에 없는 경우만 초대
             await groupEvent.addEventMembers(guest, { transaction: t });
 
             const privateCalendar = await guest.getPrivateCalendar();
@@ -1140,7 +1141,6 @@ router.post("/searchEvent", authJWT, async (req, res, next) => {
     });
 
     events = events?.flat();
-
     if (privateEvents) {
       events = events.concat(privateEvents?.PrivateEvents);
     }
