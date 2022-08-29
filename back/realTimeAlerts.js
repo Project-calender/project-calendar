@@ -11,19 +11,22 @@ const restartAll = async () => {
   }).then(async (realTimeAlerts) => {
     await Promise.all(
       realTimeAlerts.map(async (realTimeAlert) => {
-        alertsObject[realTimeAlert.id] = new CronJob(
-          realTimeAlert.date,
-          async function () {
-            console.log(`${realTimeAlert.content}`);
+        var now = new Date();
+        if (now < realTimeAlert.date) {
+          alertsObject[realTimeAlert.id] = new CronJob(
+            realTimeAlert.date,
+            async function () {
+              console.log(`${realTimeAlert.content}`);
 
-            await RealTimeAlert.destroy({
-              where: { id: realTimeAlert.id },
-              // force: true,
-            });
-          },
-          null,
-          true
-        );
+              await RealTimeAlert.destroy({
+                where: { id: realTimeAlert.id },
+                // force: true,
+              });
+            },
+            null,
+            true
+          );
+        }
       })
     );
   });
@@ -121,7 +124,7 @@ const addPrivateAlert = async (
           date,
           async function () {
             var socketId = Object.keys(onlineUsers).find(
-              (key) => onlineUsers[key] === myId
+              (key) => onlineUsers[key] === userId
             );
 
             if (socketId) {
@@ -137,6 +140,8 @@ const addPrivateAlert = async (
           true
         );
       }
+
+      console.log(alertsObject);
     });
   });
 };
@@ -179,7 +184,7 @@ const deletePrivateAlerts = async (userId, eventId) => {
     await Promise.all(
       alerts.map((alert) => {
         alertIds.push(alert.id);
-        alertsObject[alert.id].stop();
+        alertsObject[alert.id]?.stop();
       })
     ).then(async () => {
       await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
@@ -197,7 +202,7 @@ const deleteAlertsByEventId = async (eventId) => {
     await Promise.all(
       alerts.map((alert) => {
         alertIds.push(alert.id);
-        alertsObject[alert.id].stop();
+        alertsObject[alert.id]?.stop();
       })
     ).then(async () => {
       await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
@@ -215,7 +220,7 @@ const deleteAlertsByCalendarId = async (calendarId) => {
     await Promise.all(
       alerts.map((alert) => {
         alertIds.push(alert.id);
-        alertsObject[alert.id].stop();
+        alertsObject[alert.id]?.stop();
       })
     ).then(async () => {
       await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });

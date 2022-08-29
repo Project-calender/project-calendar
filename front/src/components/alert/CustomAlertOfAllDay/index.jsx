@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styles from './style.module.css';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,15 +18,24 @@ const Index = React.forwardRef((props, ref) => {
 
   const [sendType, setSendType] = useState('알림');
   const [dateType, setDateType] = useState('일');
-  const [number, setNumber] = useState(1);
+  const [dateNumber, setDateNumber] = useState(1);
+  const dateNumberRef = useRef();
+  const [dateNumberErorr, setDateNumberError] = useState('');
   const [time, setTime] = useState(new Moment().setHour(9).time);
 
   useImperativeHandle(ref, () => ({
     alert: {
       type: dateType,
-      time: number,
+      time: dateNumber,
       hour: new Date(time).getHours(),
       minute: new Date(time).getMinutes(),
+    },
+    checkAlertTime: () => {
+      if (!checkDateNumber(dateNumber)) {
+        dateNumberRef.current.focus();
+        return false;
+      }
+      return true;
     },
   }));
 
@@ -34,6 +43,28 @@ const Index = React.forwardRef((props, ref) => {
     sendTypeModal.hideModal();
     dateTypeModal.hideModal();
     timeListModal.hideModal();
+  }
+
+  function onChangeNumber(e) {
+    const number = +e.target.value;
+    checkDateNumber(number);
+    setDateNumber(+e.target.value);
+  }
+
+  function checkDateNumber(number) {
+    if (dateType === '분' && (number < 0 || number > 40320)) {
+      setDateNumberError('0분에서 40320분 사이여야 합니다.');
+    } else if (dateType === '시간' && (number < 0 || number > 672)) {
+      setDateNumberError('0시간에서 672시간 사이여야 합니다.');
+    } else if (dateType === '일' && (number < 0 || number > 28)) {
+      setDateNumberError('0일에서 28일 사이여야 합니다.');
+    } else if (dateType === '주' && (number < 0 || number > 4)) {
+      setDateNumberError('0주에서 4주 사이여야 합니다.');
+    } else {
+      setDateNumberError('');
+      return true;
+    }
+    return false;
   }
 
   return (
@@ -51,6 +82,7 @@ const Index = React.forwardRef((props, ref) => {
       >
         <h3>{sendType}</h3>
         <FontAwesomeIcon icon={faCaretDown} />
+
         {sendTypeModal.isModalShown && (
           <ListModal
             hideModal={sendTypeModal.hideModal}
@@ -63,12 +95,28 @@ const Index = React.forwardRef((props, ref) => {
           />
         )}
       </div>
-      <Input
-        type="number"
-        value={number}
-        className={styles.alert_input_number}
-        onChange={e => setNumber(+e.target.value)}
-      />
+
+      <div className={styles.alert_input_container}>
+        <Input
+          type="number"
+          value={dateNumber}
+          className={`${styles.alert_input_number} ${
+            dateNumberErorr ? styles.error_input : ''
+          }`}
+          onChange={onChangeNumber}
+          onFocus={() => checkDateNumber(dateNumber)}
+          onBlur={() => setDateNumberError('')}
+          ref={dateNumberRef}
+        />
+
+        {dateNumberErorr && (
+          <div className={styles.error_message}>
+            <div className={styles.square} />
+            <p>{dateNumberErorr}</p>
+          </div>
+        )}
+      </div>
+
       <div
         className={styles.date_modal_container}
         onClick={e => {
@@ -82,12 +130,14 @@ const Index = React.forwardRef((props, ref) => {
       >
         <h3>{dateType}</h3>
         <FontAwesomeIcon icon={faCaretDown} />
+
         {dateTypeModal.isModalShown && (
           <ListModal
             hideModal={dateTypeModal.hideModal}
             modalData={dateTypeModal.modalData}
             onClickItem={e => {
               setDateType(e.target.innerText);
+              setDateNumber(1);
               dateTypeModal.hideModal();
               e.stopPropagation();
             }}
@@ -95,6 +145,7 @@ const Index = React.forwardRef((props, ref) => {
         )}
       </div>
       <h3>전</h3>
+
       <div
         className={styles.time_modal_container}
         onClick={e => {
@@ -111,6 +162,7 @@ const Index = React.forwardRef((props, ref) => {
           value={new Moment(time).toTimeString()}
           className={styles.alert_input}
         />
+
         {timeListModal.isModalShown && (
           <TimeListModal
             hideModal={timeListModal.hideModal}

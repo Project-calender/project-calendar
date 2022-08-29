@@ -843,6 +843,8 @@ paths:
             properties:
               calendarId:
                 type: integer
+              alertId:
+                type: integer
       responses:
         '200':
           $ref: '#/returnCalendar'
@@ -889,7 +891,7 @@ paths:
             properties:
               calendarId:
                 type: integer
-              hostId:
+              alertId:
                 type: integer
       responses:
         '200':
@@ -1821,7 +1823,7 @@ paths:
     post:
       tags:
         - alert
-      summary: 알림 가져오기
+      summary: '알림 가져오기 calenderChanged (캘린더 정보 변경 알림) / calendarInvite (캘린더 초대받음) / calenderNewMember (초대받은 사람이 수락 시, 해당 캘린더의 모두에게 알림) / calendarInviteReject (초대받은 사람이 거절시, 초대장 보낸 사람에게 알림) / authorityChange (나의 권한 변경됨) / event (이벤트 초대받음, 새 유저 참여, 유저 탈퇴 ) / eventRemoved (이벤트 삭제)'
       parameters:
         - name: Authorization
           in: header
@@ -1834,18 +1836,33 @@ paths:
             items:
               type: object
               properties:
-                id:
+                count:
                   type: integer
-                type:
-                  type: string
-                content:
-                  type: string
-                checked:
-                  type: boolean
-                calendarId:
-                  type: integer
-                eventDate:
-                  type: string
+                  example: 96 (전체 알림 개수)
+                alerts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      type:
+                        type: string
+                        example: 위에 type별 설명 적어 놓음
+                      content:
+                        type: string
+                      checked:
+                        type: boolean
+                        example: false/true 읽음 표시
+                      calendarId:
+                        type: integer
+                        example: 달력 초대 수락/거부시 서버에 전송 ( 또는 수정된 캘린더로 이동하는 기능 만들때 사용 )
+                      eventDate:
+                        type: string
+                        example: '이벤트 시작 날짜 ( 이벤트 초대 받았을 때나 이벤트가 수정 되었을때, 그 이벤트가 있는 날짜로 가는 기능을 만들 시에 사용 )'
+                      createdAt:
+                        type: string
+                        example: 알림 생성 날짜
         '500':
           $ref: '#/serverError'
   /api/alert/read:

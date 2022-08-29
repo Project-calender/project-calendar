@@ -35,6 +35,44 @@
                   type: string
                 endTime:
                   type: string
+                groupEventId:
+                  type: integer
+                PrivateCalendarId:
+                  type: integer
+                EventHost:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    email:
+                      type: string
+                    nickname:
+                      type: string
+                EventMembers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      email:
+                        type: string
+                      nickname:
+                        type: string
+                      ProfileImages:
+                        type: object
+                        properties:
+                          src:
+                            type: integer
+                      EventMember:
+                        type: object
+                        properties:
+                          state:
+                            type: integer
+                          UserId:
+                            type: integer
+                          EventId:
+                            type: integer
             realTimeAlert:
               type: object
               properties:

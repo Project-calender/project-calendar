@@ -29,23 +29,11 @@ const Index = ({
     const { offsetTop = 0, offsetLeft = 0 } = handleEventDetailMadal(e);
     const { top, left } = e.currentTarget.getBoundingClientRect();
 
-    const { data } = await getEventDetail(event);
-    console.log(data, event);
-    const { EventMembers, EventHost, realTimeAlert } = data;
-    const alerts =
-      realTimeAlert?.map(alert => {
-        const types = { week: '주', day: '일', hour: '시간', minute: '분' };
-        return { ...alert, type: types[alert.type] };
-      }) || [];
+    const eventData = await getEventDetail(event);
     setEventDetailModalData(data => ({
       ...data,
-      event: { ...event, EventMembers, EventHost, alerts },
-      style: {
-        position: {
-          top: top + offsetTop,
-          left: left + offsetLeft,
-        },
-      },
+      event: eventData,
+      style: { top: top + offsetTop, left: left + offsetLeft },
     }));
   }
 

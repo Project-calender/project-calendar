@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import styles from './style.module.css';
 import EventDetailModal from '../../modal/component/EventDetailModal';
 import useEventModal from '../../hooks/useEventModal';
-import axios from '../../utils/token';
-import { EVENT_URL } from '../../constants/api';
 import { EVENT } from '../../store/events';
+import { getEventDetail } from '../../store/thunk/event';
 
 const Index = () => {
-  let { isModalShown, showModal, hideModal, modalData } = useEventModal();
+  let { isModalShown, showModal, hideModal, modalData, setModalData } =
+    useEventModal();
 
   //redux 검색 정보 상태관리
   let searchValue = useSelector(state => {
@@ -26,22 +26,15 @@ const Index = () => {
 
   //이벤트 팝업창 컨트롤
   async function clickEventBar(e, event) {
-    const { top, right } = e.currentTarget.getBoundingClientRect();
-    const { data } = await axios.post(EVENT_URL.GET_EVENT_DETAIL, {
-      eventId: event.PrivateCalendarId ? event.groupEventId : event.id,
-    });
-    const { EventMembers, EventHost } = data;
-    showModal(data => ({
-      ...data,
-      event: { ...event, EventMembers, EventHost },
-      style: {
-        position: {
-          top: top,
-          left: right,
-        },
-      },
-    }));
     e.stopPropagation();
+
+    const { top, right } = e.currentTarget.getBoundingClientRect();
+    const eventData = await getEventDetail(event);
+    if (!isModalShown) showModal();
+    setModalData({
+      event: eventData,
+      style: { top: top, left: right },
+    });
   }
 
   return (
