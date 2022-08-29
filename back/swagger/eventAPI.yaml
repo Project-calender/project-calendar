@@ -111,6 +111,53 @@
                           type: integer
       500:
         $ref: "./openapi.yaml#/serverError"
+/api/event/getAllEventForYear:
+  post:
+    tags:
+      - event
+    summary: 1년 동안의 모든 이벤트 가져오기 (정렬은 하지 않음, 필요한 정렬 순서가 있다면 요청 )
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+    responses:
+      200:
+        description: 성공
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              color:
+                type: string
+              memo:
+                type: string
+              startTime:
+                type: string
+              endTime:
+                type: string
+              allDay:
+                type: integer
+              busy:
+                type: integer
+              permission:
+                type: integer
+                example: 1 그룹 캘린더 전용
+              EventHostId:
+                type: integer
+                example: 1 그룹 캘린더 전용
+              CalendarId:
+                type: integer
+                example: 1 그룹 캘린더 전용
+              PrivateCalendarId:
+                type: integer
+                example: 1 개인 캘린더 전용
+      500:
+        $ref: "./openapi.yaml#/serverError"
 /api/event/getGroupEvent:
   post:
     tags:

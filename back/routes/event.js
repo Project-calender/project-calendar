@@ -23,6 +23,81 @@ const router = express.Router();
 const { Op } = require("sequelize");
 const authJWT = require("../utils/authJWT");
 
+router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
+  try {
+    const me = await User.findOne({ where: { id: req.myId } });
+    const now = new Date();
+    const beforeYear = now.setFullYear(now.getFullYear() - 1);
+    var events = [];
+    const groupCalendars = await me.getGroupCalendars({
+      attributes: [],
+      include: [
+        {
+          model: Event,
+          as: "GroupEvents",
+          where: {
+            [Op.or]: {
+              startTime: {
+                [Op.gte]: beforeYear,
+              },
+
+              [Op.and]: {
+                startTime: {
+                  [Op.lte]: beforeYear,
+                },
+                endTime: {
+                  [Op.gte]: beforeYear,
+                },
+              },
+            },
+          },
+        },
+      ],
+      joinTableAttributes: [],
+    });
+
+    await Promise.all(
+      groupCalendars.map(async (groupCalendar) => {
+        events.push(groupCalendar.GroupEvents);
+      })
+    );
+
+    const privateEvents = await me.getPrivateCalendar({
+      attributes: [],
+      include: [
+        {
+          model: PrivateEvent,
+          where: {
+            [Op.or]: {
+              startTime: {
+                [Op.gte]: beforeYear,
+              },
+
+              [Op.and]: {
+                startTime: {
+                  [Op.lte]: beforeYear,
+                },
+                endTime: {
+                  [Op.gte]: beforeYear,
+                },
+              },
+            },
+          },
+        },
+      ],
+    });
+
+    events = events?.flat();
+    if (privateEvents) {
+      events = events.concat(privateEvents?.PrivateEvents);
+    }
+    return res.status(200).send(events);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/getAllEvent", authJWT, async (req, res, next) => {
   try {
     const me = await User.findOne({ where: { id: req.myId } });
@@ -797,35 +872,45 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
               where: { email: guestEmail },
             });
 
-            // guest가 이벤트에 없는 경우만 초대
-            await groupEvent.addEventMembers(guest, { transaction: t });
-
-            const privateCalendar = await guest.getPrivateCalendar();
-            await privateCalendar.createPrivateEvent(
-              {
-                name: groupEvent.name,
-                color: groupEvent.color,
-                busy: groupEvent.busy,
-                memo: groupEvent.memo,
-                allDay: groupEvent.allDay,
-                startTime: groupEvent.startTime,
-                endTime: groupEvent.endTime,
-                groupEventId: groupEvent.id,
-                state: 0,
+            const alreadyMember = await EventMember.findOne({
+              where: {
+                [Op.and]: {
+                  UserId: guest.id,
+                  EventId: req.body.eventId,
+                },
               },
-              { transaction: t }
-            );
+            });
 
-            await Alert.create(
-              {
-                UserId: guest.id,
-                type: "event",
-                calendarId: req.body.calendarId,
-                eventDate: groupEvent.startTime,
-                content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
-              },
-              { transaction: t }
-            );
+            if (!alreadyMember) {
+              await groupEvent.addEventMembers(guest, { transaction: t });
+
+              const privateCalendar = await guest.getPrivateCalendar();
+              await privateCalendar.createPrivateEvent(
+                {
+                  name: groupEvent.name,
+                  color: groupEvent.color,
+                  busy: groupEvent.busy,
+                  memo: groupEvent.memo,
+                  allDay: groupEvent.allDay,
+                  startTime: groupEvent.startTime,
+                  endTime: groupEvent.endTime,
+                  groupEventId: groupEvent.id,
+                  state: 0,
+                },
+                { transaction: t }
+              );
+
+              await Alert.create(
+                {
+                  UserId: guest.id,
+                  type: "event",
+                  calendarId: req.body.calendarId,
+                  eventDate: groupEvent.startTime,
+                  content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
+                },
+                { transaction: t }
+              );
+            }
           })
         );
       }
@@ -1164,17 +1249,13 @@ router.post("/test2", async (req, res, next) => {
 
 router.post("/test", async (req, res, next) => {
   try {
-    const test = await User.findOne({
+    const user = await User.findOne({
       where: { id: 1 },
-      include: [
-        {
-          model: Calendar,
-          as: "GroupCalendars",
-          through: { attributes: [] },
-        },
-      ],
     });
-    return res.status(200).send(test);
+
+    const addAge = JSON.parse(JSON.stringify(user));
+    addAge["age"] = 1;
+    return res.status(200).send(addAge);
   } catch (error) {
     console.error(error);
     next(error);
