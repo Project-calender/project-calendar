@@ -414,6 +414,44 @@ paths:
                     type: string
                   endTime:
                     type: string
+                  groupEventId:
+                    type: integer
+                  PrivateCalendarId:
+                    type: integer
+                  EventHost:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      nickname:
+                        type: string
+                  EventMembers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        email:
+                          type: string
+                        nickname:
+                          type: string
+                        ProfileImages:
+                          type: object
+                          properties:
+                            src:
+                              type: integer
+                        EventMember:
+                          type: object
+                          properties:
+                            state:
+                              type: integer
+                            UserId:
+                              type: integer
+                            EventId:
+                              type: integer
               realTimeAlert:
                 type: object
                 properties:
@@ -1169,6 +1207,53 @@ paths:
                             type: integer
                           CalendarId:
                             type: integer
+        '500':
+          $ref: '#/serverError'
+  /api/event/getAllEventForYear:
+    post:
+      tags:
+        - event
+      summary: 1년 동안의 모든 이벤트 가져오기
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+      responses:
+        '200':
+          description: 성공
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                color:
+                  type: string
+                memo:
+                  type: string
+                startTime:
+                  type: string
+                endTime:
+                  type: string
+                allDay:
+                  type: integer
+                busy:
+                  type: integer
+                permission:
+                  type: integer
+                  example: 1 그룹 캘린더 전용
+                EventHostId:
+                  type: integer
+                  example: 1 그룹 캘린더 전용
+                CalendarId:
+                  type: integer
+                  example: 1 그룹 캘린더 전용
+                PrivateCalendarId:
+                  type: integer
+                  example: 1 개인 캘린더 전용
         '500':
           $ref: '#/serverError'
   /api/event/getGroupEvent:
