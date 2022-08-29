@@ -19,8 +19,8 @@ const Index = () => {
   //날짜 순으로 정렬
   searchValue = copySearchValue.sort(function (a, b) {
     return (
-      a.startTime.substr(5, 5).replace('-', '') -
-      b.startTime.substr(5, 5).replace('-', '')
+      a.startTime.substr(0, 10).replaceAll('-', '') -
+      b.startTime.substr(0, 10).replaceAll('-', '')
     );
   });
 
@@ -52,9 +52,9 @@ const Index = () => {
       <div className={styles.container}>
         <ul>
           {searchValue &&
-            searchValue.map(function (item) {
+            searchValue.map(function (item, index) {
               return (
-                <li key={item.id}>
+                <li key={index}>
                   <div className={styles.time}>
                     <div className={styles.day}>
                       <em>{item.startTime.substr(8, 2)}</em>
@@ -73,7 +73,7 @@ const Index = () => {
                     }}
                   >
                     <div className={styles.all_day}>
-                      {item.allDay == EVENT.allDay.false ||
+                      {item.allDay == EVENT.allDay.true ||
                       item.endTime.substr(5, 5).replace('-', '') -
                         item.startTime.substr(5, 5).replace('-', '') >
                         1 ? (
@@ -93,6 +93,11 @@ const Index = () => {
               );
             })}
         </ul>
+        {searchValue && searchValue.length == 0 ? (
+          <div className={styles.search_undefined}>
+            <em>검색 결과가 없습니다.</em>
+          </div>
+        ) : null}
       </div>
     </>
   );
