@@ -127,13 +127,30 @@ export const updateEventColor = createAsyncThunk(
   },
 );
 
-export const getEventDetail = event => {
-  const url =
-    event.groupEventId || !event.PrivateCalendarId
-      ? EVENT_URL.GET_GROUP_EVENT_DETAIL
-      : EVENT_URL.GET_PRIVATE_EVENT_DETAIL;
-  const eventId = event.groupEventId || Math.abs(event.id);
-  return axios.post(url, { eventId });
+export const getEventDetail = async event => {
+  const url = !event.PrivateCalendarId
+    ? EVENT_URL.GET_GROUP_EVENT_DETAIL
+    : EVENT_URL.GET_PRIVATE_EVENT_DETAIL;
+  const { data } = await axios.post(url, { eventId: Math.abs(event.id) });
+  const { event: events, realTimeAlert } = data;
+
+  const alerts =
+    realTimeAlert?.map(alert => {
+      const types = { week: '주', day: '일', hour: '시간', minute: '분' };
+      return { ...alert, type: types[alert.type] };
+    }) || [];
+
+  if (event.PrivateCalendarId)
+    return {
+      ...events,
+      alerts,
+      id: Math.min(event.id, -event.id),
+      PrivateCalendarId: Math.min(
+        event.PrivateCalendarId,
+        -event.PrivateCalendarId,
+      ),
+    };
+  return { ...events, alerts };
 };
 
 export const checkEventInvite = async ({ guestEmail, calendarId }) => {
