@@ -44,7 +44,7 @@ const Index = ({ modalData, hideModal }) => {
     calendarByEventIdSelector(state, groupEvent),
   );
   useEffect(() => {
-    let { top = 0, left = 0 } = style?.position || {};
+    let { top = 0, left = 0 } = style || {};
     if (top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
       top = window.innerHeight - $modal.current?.offsetHeight - 35;
     }
