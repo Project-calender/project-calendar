@@ -36,6 +36,7 @@ const Index = ({ date }) => {
       <em onClick={() => moveDayCalendar(date)}>{getTitleDate(date)}</em>
       <div
         className={styles.event_selection_container}
+        name="event-drag-space"
         data-drag-date={date.time}
         ref={containerDiv}
       >
