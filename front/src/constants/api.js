@@ -38,6 +38,7 @@ export const EVENT_URL = {
   CHECK_EVENT_INVITE: '/event/inviteCheck',
   CHECK_CREATE_EVENT_INVITE: '/event/inviteCheckBeforeCreateEvent',
   INVITE_GROUP_EVENT: '/event/inviteGroupEvent',
+  ALL_EVENT: '/event/getAllEventForYear',
 };
 
 export const ALERT_URL = {
