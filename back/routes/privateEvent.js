@@ -49,8 +49,8 @@ router.post("/getPrivateEvent", authJWT, async (req, res, next) => {
       : null;
 
     const eventCopy = JSON.parse(JSON.stringify(events));
-    eventCopy["EventHost"] = groupEvent.EventHost;
-    eventCopy["EventMembers"] = groupEvent.EventMembers;
+    eventCopy["EventHost"] = groupEvent ? groupEvent.EventHost : null;
+    eventCopy["EventMembers"] = groupEvent ? groupEvent.EventMembers : null;
 
     const realTimeAlert = await RealTimeAlert.findAll({
       where: {

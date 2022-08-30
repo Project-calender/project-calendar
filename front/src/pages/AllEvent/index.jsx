@@ -13,6 +13,7 @@ import { isCheckedCalander } from '../../store/user';
 import { useRef } from 'react';
 import { EVENT_URL } from '../../constants/api';
 
+
 const Index = () => {
   let calendarCheck = useSelector(checkedCalendarSelector);
   let { isModalShown, showModal, hideModal, modalData, setModalData } =
@@ -182,7 +183,6 @@ const Index = () => {
             })}
           </ul>
         )}
-
         {filterEvent && filterEvent.length == 0 ? (
           <div className={styles.search_undefined}>
             <em>이벤트 결과가 없습니다.</em>

@@ -4,6 +4,7 @@
 .container ul li .wrap{width: 100%; padding: 0 40px 0 0; box-sizing: border-box;}
 
 .container ul li .time{ display: flex; align-items: center; }
+
 .container ul li .time .day{width: 35px;height: 35px; border-radius: 50%; text-align: center; line-height: 35px; cursor: pointer;}
 .container ul li .time .day:hover{background: #eee;}
 .container ul li .time.today .day{background: #4285F4;}
