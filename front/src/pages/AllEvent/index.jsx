@@ -11,6 +11,7 @@ import { checkedCalendarSelector } from '../../store/selectors/user';
 import { useSelector } from 'react-redux';
 import { isCheckedCalander } from '../../store/user';
 import { useRef } from 'react';
+import { EVENT_URL } from '../../constants/api';
 
 const Index = () => {
   let calendarCheck = useSelector(checkedCalendarSelector);
@@ -28,7 +29,7 @@ const Index = () => {
   }, [calendarCheck]);
 
   function onEvent() {
-    axios.post(`/event/getAllEventForYear`).then(res => {
+    axios.post(EVENT_URL.ALL_EVENT).then(res => {
       setAllEvent(res.data);
     });
   }
