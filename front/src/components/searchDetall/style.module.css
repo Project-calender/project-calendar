@@ -1,5 +1,5 @@
-.container{width: 100%;height: 100vh; overflow-y: auto;}
-.container ul{}
+.container{width: 100%; height: 94.5vh; overflow-y: auto;}
+.container ul{height: 100%;}
 .container ul li{width: 100%; height: 50px; display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 0 10px; box-sizing: border-box;}
 
 .container ul li .time{ display: flex; align-items: center;}
@@ -14,6 +14,7 @@
 
 .event_wrap{width: 100%;height: 30px; display: flex; align-items: center; margin-left: 40px; border-radius: 15px; padding: 0 10px; box-sizing: border-box; cursor: pointer;}
 .event_wrap:hover{ background: #eee;}
+.event_wrap.active{ background: #fff;box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;}
 
 .all_day{width: 190px;  position: relative;}
 .all_day em{margin-left: 30px; font-size: 14px;color: #3c4043;} 

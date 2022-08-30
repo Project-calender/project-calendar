@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styles from './style.module.css';
 import EventDetailModal from '../../modal/component/EventDetailModal';
@@ -9,6 +9,8 @@ import { getEventDetail } from '../../store/thunk/event';
 const Index = () => {
   let { isModalShown, showModal, hideModal, modalData, setModalData } =
     useEventModal();
+  let [clickEvent, setClickEvent] = useState(); //클릭한 이벤트 index
+  let eventItem = useRef(); //이벤트 아이템
 
   //redux 검색 정보 상태관리
   let searchValue = useSelector(state => {
@@ -37,6 +39,22 @@ const Index = () => {
     });
   }
 
+  //외부 클릭시 className 제거
+  useEffect(() => {
+    document.addEventListener('mousedown', clickModalOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', clickModalOutside);
+    };
+  });
+
+  //외부 클릭시 className 제거
+  function clickModalOutside(event) {
+    if (!eventItem.current.contains(event.target)) {
+      setClickEvent(-1);
+    }
+  }
+
   return (
     <>
       {isModalShown && (
@@ -60,9 +78,15 @@ const Index = () => {
                     </div>
                   </div>
                   <div
-                    className={styles.event_wrap}
+                    ref={eventItem}
+                    className={
+                      clickEvent == index
+                        ? `${styles.active} ${styles.event_wrap}`
+                        : styles.event_wrap
+                    }
                     onClick={e => {
                       clickEventBar(e, item);
+                      setClickEvent(index);
                     }}
                   >
                     <div className={styles.all_day}>
@@ -80,6 +104,7 @@ const Index = () => {
                     </div>
                     <div className={styles.content}>
                       <p>{item.name}</p>
+                      {item.name.length == 0 ? <p>(제목 없음)</p> : null}
                     </div>
                   </div>
                 </li>

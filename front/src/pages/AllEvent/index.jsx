@@ -1,25 +1,38 @@
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import useEventModal from '../../hooks/useEventModal';
 import { EVENT } from '../../store/events';
 import axios from '../../utils/token';
 import styles from './style.module.css';
+import EventDetailModal from '../../modal/component/EventDetailModal';
+import { getEventDetail } from '../../store/thunk/event';
+import { checkedCalendarSelector } from '../../store/selectors/user';
+import { useSelector } from 'react-redux';
+import { isCheckedCalander } from '../../store/user';
+import { useRef } from 'react';
 
 const Index = () => {
+  let calendarCheck = useSelector(checkedCalendarSelector);
+  let { isModalShown, showModal, hideModal, modalData, setModalData } =
+    useEventModal();
   let [toDay, setToDay] = useState(); //오늘 날짜
+  let [nextDay, setNextDay] = useState(); //다음 해 날짜
   let [allEvent, setAllEvent] = useState(); //모든 이벤트
   let [filterEvent, setFilterEvent] = useState(); //필터된 이벤트
   let [day, setDay] = useState(); //한국 일자
+  let [clickEvent, setClickEvent] = useState(); //클릭한 이벤트 index
+  let eventItem = useRef(); //이벤트 아이템
 
   useEffect(() => {
-    axios
-      .post(`event/searchEvent`, {
-        searchWord: ``,
-      })
-      .then(res => {
-        setAllEvent(res.data);
-      });
-  }, []);
+    onEvent();
+  }, [calendarCheck]);
+
+  function onEvent() {
+    axios.post(`/event/getAllEventForYear`).then(res => {
+      setAllEvent(res.data);
+    });
+  }
 
   useEffect(() => {
     eventFilter();
@@ -28,12 +41,16 @@ const Index = () => {
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const day = ('0' + date.getDate()).slice(-2);
     const dateStr = year + month + day;
+    const nextYear = year + 1;
+    const nextDay = nextYear + month + day;
 
-    setToDay(dateStr);
+    setToDay(dateStr); //오늘 날짜 저장
+    setNextDay(nextDay); //오늘 날짜 기준 다음 년 날짜 저장
   }, [allEvent]);
 
   function eventFilter() {
     let copyAllEvent = allEvent && [...allEvent];
+
     //날짜 순으로 정렬
     let newAllEvent =
       allEvent &&
@@ -47,16 +64,19 @@ const Index = () => {
     // 현재 날짜 기준으로 필터
     newAllEvent =
       newAllEvent &&
-      newAllEvent.filter(a => {
-        let date = new Date(a.startTime);
-        const year = date.getFullYear();
-        const month = ('0' + (date.getMonth() + 1)).slice(-2);
-        const day = ('0' + date.getDate()).slice(-2);
-        const dateStr = year + month + day;
+      newAllEvent
+        .filter(a => {
+          let date = new Date(a.startTime);
+          const year = date.getFullYear();
+          const month = ('0' + (date.getMonth() + 1)).slice(-2);
+          const day = ('0' + date.getDate()).slice(-2);
+          const dateStr = year + month + day;
 
-        return dateStr >= toDay && dateStr <= 20230829;
-      });
+          return dateStr >= toDay && dateStr <= nextDay;
+        })
+        .filter(isCheckedCalander); //캘린더에 체크된 이벤트만 필터
 
+    //한국 날짜로 변경
     let newToDay =
       newAllEvent &&
       newAllEvent.map(a => {
@@ -65,13 +85,44 @@ const Index = () => {
         return day;
       });
 
-    setDay(newToDay);
+    setDay(newToDay); //한국 날짜 저장
+    setFilterEvent(newAllEvent); //필터된 이벤트 배열로 저장
+  }
 
-    setFilterEvent(newAllEvent);
+  //이벤트 팝업창 컨트롤
+  async function clickEventBar(e, event) {
+    e.stopPropagation();
+
+    const { top, right } = e.currentTarget.getBoundingClientRect();
+    const eventData = await getEventDetail(event);
+    if (!isModalShown) showModal();
+    setModalData({
+      event: eventData,
+      style: { top: top, left: right },
+    });
+  }
+
+  //외부 클릭시 className 제거
+  useEffect(() => {
+    document.addEventListener('mousedown', clickModalOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', clickModalOutside);
+    };
+  });
+
+  //외부 클릭시 className 제거
+  function clickModalOutside(event) {
+    if (!eventItem.current.contains(event.target)) {
+      setClickEvent(-1);
+    }
   }
 
   return (
     <>
+      {isModalShown && (
+        <EventDetailModal hideModal={hideModal} modalData={modalData} />
+      )}
       <div className={styles.container}>
         <ul>
           {filterEvent &&
@@ -89,7 +140,18 @@ const Index = () => {
                       </p>
                     </div>
                   </div>
-                  <div className={styles.event_wrap}>
+                  <div
+                    ref={eventItem}
+                    className={
+                      clickEvent == index
+                        ? `${styles.active} ${styles.event_wrap}`
+                        : styles.event_wrap
+                    }
+                    onClick={e => {
+                      clickEventBar(e, item);
+                      setClickEvent(index);
+                    }}
+                  >
                     <div className={styles.all_day}>
                       {item.allDay == EVENT.allDay.true ||
                       item.endTime.substr(5, 5).replace('-', '') -
@@ -105,6 +167,7 @@ const Index = () => {
                     </div>
                     <div className={styles.content}>
                       <p>{item.name}</p>
+                      {item.name.length == 0 ? <p>(제목 없음)</p> : null}
                     </div>
                   </div>
                 </li>
