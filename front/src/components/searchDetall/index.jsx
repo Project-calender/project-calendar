@@ -38,14 +38,6 @@ const Index = () => {
     setSearchFilter(event);
   }, [searchValue]);
 
-  //날짜 순으로 정렬
-  searchValue = copySearchValue.sort(function (a, b) {
-    return (
-      a.startTime.substr(0, 10).replaceAll('-', '') -
-      b.startTime.substr(0, 10).replaceAll('-', '')
-    );
-  });
-
 
   //이벤트 팝업창 컨트롤
   async function clickEventBar(e, event) {
