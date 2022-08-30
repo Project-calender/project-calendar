@@ -1,30 +1,93 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import styles from './style.module.css';
-import EventDetailModal from '../../modal/component/EventDetailModal';
+import React from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import useEventModal from '../../hooks/useEventModal';
 import { EVENT } from '../../store/events';
+import axios from '../../utils/token';
+import styles from './style.module.css';
+import EventDetailModal from '../../modal/component/EventDetailModal';
 import { getEventDetail } from '../../store/thunk/event';
+import { checkedCalendarSelector } from '../../store/selectors/user';
+import { useSelector } from 'react-redux';
+import { isCheckedCalander } from '../../store/user';
+import { useRef } from 'react';
 
 const Index = () => {
+  let calendarCheck = useSelector(checkedCalendarSelector);
   let { isModalShown, showModal, hideModal, modalData, setModalData } =
     useEventModal();
+  let [toDay, setToDay] = useState(); //오늘 날짜
+  let [nextDay, setNextDay] = useState(); //다음 해 날짜
+  let [allEvent, setAllEvent] = useState(); //모든 이벤트
+  let [filterEvent, setFilterEvent] = useState(); //필터된 이벤트
+  let [day, setDay] = useState(); //한국 일자
   let [clickEvent, setClickEvent] = useState(); //클릭한 이벤트 index
   let eventItem = useRef(); //이벤트 아이템
 
-  //redux 검색 정보 상태관리
-  let searchValue = useSelector(state => {
-    return state.search.data;
-  });
-  let copySearchValue = [...searchValue];
+  useEffect(() => {
+    onEvent();
+  }, [calendarCheck]);
 
-  //날짜 순으로 정렬
-  searchValue = copySearchValue.sort(function (a, b) {
-    return (
-      a.startTime.substr(0, 10).replaceAll('-', '') -
-      b.startTime.substr(0, 10).replaceAll('-', '')
-    );
-  });
+  function onEvent() {
+    axios.post(`/event/getAllEventForYear`).then(res => {
+      setAllEvent(res.data);
+    });
+  }
+
+  useEffect(() => {
+    eventFilter();
+    let date = new Date();
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    const dateStr = year + month + day;
+    const nextYear = year + 1;
+    const nextDay = nextYear + month + day;
+
+    setToDay(dateStr); //오늘 날짜 저장
+    setNextDay(nextDay); //오늘 날짜 기준 다음 년 날짜 저장
+  }, [allEvent]);
+
+  function eventFilter() {
+    let copyAllEvent = allEvent && [...allEvent];
+
+    //날짜 순으로 정렬
+    let newAllEvent =
+      allEvent &&
+      copyAllEvent.sort(function (a, b) {
+        return (
+          a.startTime.substr(0, 10).replaceAll('-', '') -
+          b.startTime.substr(0, 10).replaceAll('-', '')
+        );
+      });
+
+    // 현재 날짜 기준으로 필터
+    newAllEvent =
+      newAllEvent &&
+      newAllEvent
+        .filter(a => {
+          let date = new Date(a.startTime);
+          const year = date.getFullYear();
+          const month = ('0' + (date.getMonth() + 1)).slice(-2);
+          const day = ('0' + date.getDate()).slice(-2);
+          const dateStr = year + month + day;
+
+          return dateStr >= toDay && dateStr <= nextDay;
+        })
+        .filter(isCheckedCalander); //캘린더에 체크된 이벤트만 필터
+
+    //한국 날짜로 변경
+    let newToDay =
+      newAllEvent &&
+      newAllEvent.map(a => {
+        let date = new Date(a.startTime);
+        const day = ('0' + date.getDate()).slice(-2);
+        return day;
+      });
+
+    setDay(newToDay); //한국 날짜 저장
+    setFilterEvent(newAllEvent); //필터된 이벤트 배열로 저장
+  }
 
   //이벤트 팝업창 컨트롤
   async function clickEventBar(e, event) {
@@ -62,13 +125,13 @@ const Index = () => {
       )}
       <div className={styles.container}>
         <ul>
-          {searchValue &&
-            searchValue.map(function (item, index) {
+          {filterEvent &&
+            filterEvent.map(function (item, index) {
               return (
                 <li key={index}>
                   <div className={styles.time}>
                     <div className={styles.day}>
-                      <em>{item.startTime.substr(8, 2)}</em>
+                      <em>{day[index]}</em>
                     </div>
                     <div className={styles.year}>
                       <p>
@@ -111,9 +174,9 @@ const Index = () => {
               );
             })}
         </ul>
-        {searchValue && searchValue.length == 0 ? (
+        {filterEvent && filterEvent.length == 0 ? (
           <div className={styles.search_undefined}>
-            <em>검색 결과가 없습니다.</em>
+            <em>이벤트 결과가 없습니다.</em>
           </div>
         ) : null}
       </div>

@@ -26,7 +26,9 @@ const user = createSlice({
 
 export function isCheckedCalander(event) {
   return getCheckedCalendar().includes(
-    event?.PrivateCalendarId || event?.CalendarId,
+    (event?.PrivateCalendarId &&
+      Math.min(event.PrivateCalendarId, -event.PrivateCalendarId)) ||
+      event?.CalendarId,
   );
 }
 

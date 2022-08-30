@@ -1,4 +1,4 @@
-.container{width: 100%; height: 94.5vh; overflow-y: auto;}
+.container{width: 100%;height: 94.5vh; overflow-y: auto;}
 .container ul{height: 100%;}
 .container ul li{width: 100%; height: 50px; display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 0 10px; box-sizing: border-box;}
 
