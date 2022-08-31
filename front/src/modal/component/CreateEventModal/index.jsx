@@ -33,6 +33,7 @@ import CalendarContainer from './CalendarContainer';
 import BusyContainer from './BusyContainer';
 import PermissionContainer from './PermissionContainer';
 import AlertContainer from './AlertContainer';
+import GoogleMeetButton from './GoogleMeetButton';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -215,7 +216,6 @@ const Index = ({ children: ModalList }) => {
             autoFocus={true}
           />
         </div>
-
         <div>
           <div />
           <div className={styles.modal_context_category}>
@@ -223,7 +223,6 @@ const Index = ({ children: ModalList }) => {
             <button>할 일</button>
           </div>
         </div>
-
         <DateTitleContainer
           showEventInfoListModal={eventInfoListModal.showModal}
         />
@@ -231,22 +230,12 @@ const Index = ({ children: ModalList }) => {
           <div />
           <button className={styles.time_find_button}>시간 찾기</button>
         </div>
-
         {isExistInviteMembers && <Line />}
         <InviteInput />
         <InviteMemberList members={newEvent.inviteMembers} />
         {isExistInviteMembers && <Line />}
 
-        <div className={styles.google_meet}>
-          <img
-            className={styles.google_meet_img}
-            src={`${process.env.PUBLIC_URL}/img/google_meet_icon.png`}
-            alt="구글 미팅"
-          />
-          <button>
-            <b>Google Meet</b> 화상 회의 추가
-          </button>
-        </div>
+        <GoogleMeetButton />
 
         {isAddLocation && <Line />}
         {!isAddLocation && (
@@ -276,16 +265,12 @@ const Index = ({ children: ModalList }) => {
             />
           </div>
         )}
-
         {isAddLocation && <Line />}
         {isAddMemo && !isAddLocation && <Line />}
-
         {!isAddMemo && <MemoPreviewContainer setAddMemo={setAddMemo} />}
         {isAddMemo && <MemoContainer autoFocus={isAddMemo} />}
-
         {isAddMemo && <Line />}
         {!isAddMemo && isAddCalendar && <Line />}
-
         <div>
           <FontAwesomeIcon icon={faCalendarDay} />
           {!isAddCalendar && (

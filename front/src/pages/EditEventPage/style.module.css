@@ -1,0 +1,38 @@
+.edit_page { }
+
+.alert_item { display: flex; align-items: center; margin-bottom: 8px; } 
+
+.user_info { display: flex; margin-bottom: 10px; } 
+.user_info:last-child { margin-bottom: 0px; } 
+
+.user_info .user_profile { position: relative; margin-right: 15px; } 
+.user_info .user_profile img { position: relative; border-radius: 100%; background: white; width: 25px; height: 25px; color: white; } 
+.user_info .user_state { border-radius: 100%; background: gainsboro; color: #515151; padding: 2px; width: 10px; height: 10px; border: 1px solid white; position: absolute; left:18px; top: 11px; } 
+
+.user_info .accept { background: #b4eecf; color: #046a1f; } 
+.user_info .refuse { background: #ffcece; color: #da1515; } 
+.user_info .toBeDetermined { background: gainsboro; color: #3b3b3b; } 
+
+
+.invite_members img { width: 28px; height: 28px; border-radius: 100%; margin-right: 10px; box-shadow: 0px 0px 2.5px 0.5px rgba(0, 0, 0, 0.7); border: 2px solid #fff; image-rendering: auto; } 
+.invite_members { width: 370px;  position: relative; left: -10px; } 
+
+.invite_member_container { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 5px 5px; border-radius: 5px; } 
+.invite_member_container:hover { background: #f4f4f4; } 
+.invite_member_container:hover .icon_delete { visibility: visible; } 
+
+.invite_member { display: flex; align-items: center; padding-left: 5px; } 
+
+.icon_delete { visibility: hidden; position: static !important; width: 18px !important; height: 18px !important; cursor: pointer; border-radius: 100%; padding: 5px } 
+.icon_delete:hover { background: #e1e1e1; } 
+
+.member_info em { font-size: 12px; color: #ababab; } 
+
+.help_container { position: relative; margin-bottom: 5px; } 
+.help_container em { color: #ababab; font-size: 12px; margin-left: 10px;  } 
+
+.help_modal {visibility: hidden; position: fixed; z-index: 3; left: 163px; top: 0; border-radius: 5px; background: #fff; width: 300px !important; height: 180px; box-shadow: 1px 2px 25px 5px rgba(0, 0, 0, 0.3); padding: 15px !important; color: #343434;} 
+.help_modal ul { margin-top: 15px; margin-left: 35px; word-break: break-all; } 
+.help_modal li { list-style-type: disc; } 
+
+.icon_help { width: 14px !important; height: 14px !important; cursor: pointer; margin-left: 10px; padding-top:5px;  color: #ababab !important; } 

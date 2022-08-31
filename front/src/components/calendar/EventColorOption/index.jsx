@@ -10,6 +10,7 @@ const Index = ({ colors, color, changedColor = '' }) => {
   const { showModal: showEventColorModal, modalData } = useContext(
     EventColorModalContext,
   );
+  console.log(colors);
 
   useEffect(() => {
     if (modalData?.color && modalData?.color !== color)

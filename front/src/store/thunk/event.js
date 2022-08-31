@@ -131,6 +131,7 @@ export const getEventDetail = async event => {
   const url = !event.PrivateCalendarId
     ? EVENT_URL.GET_GROUP_EVENT_DETAIL
     : EVENT_URL.GET_PRIVATE_EVENT_DETAIL;
+
   const { data } = await axios.post(url, { eventId: Math.abs(event.id) });
   const { event: events, realTimeAlert } = data;
 
