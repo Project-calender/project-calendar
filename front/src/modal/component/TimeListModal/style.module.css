@@ -1,13 +1,6 @@
-.modal_container > div{
-    width: 180px !important; 
-    padding: 0px !important;
-}
-.modal_container { position: absolute;}
+.modal_container > div { width: 180px !important; padding: 0px !important; } 
+.modal_container { position: absolute; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none}
 
-.modal_container > div > div{
-    height: 200px;
-}
+.modal_container > div > div { height: 200px; } 
 
-.modal_container > div > div > div{
-    padding: 10px 15px;
-}
+.modal_container > div > div > div { padding: 10px 15px; } 

@@ -18,6 +18,7 @@ const initialState = {
   allDay: EVENT.allDay.true,
   inviteMembers: {},
   alerts: { allDay: [], notAllDay: [] },
+  isCreateEvent: false,
 };
 
 const newEvent = createSlice({
@@ -122,6 +123,10 @@ export function calculateCurrentTimeRange(startTime, endTime) {
     startDate.setMinutes(startDate.getMinutes() + 15);
     endDate.setMinutes(endDate.getMinutes() + 15);
   }
+
+  const maxDate = new Moment(startTime).resetTime().setHour(23).setMinute(45);
+  if (maxDate.time < startDate.getTime())
+    return [maxDate.time, maxDate.setHour(24).setMinute(0).time];
 
   return [startDate, endDate].map(date => date.getTime());
 }

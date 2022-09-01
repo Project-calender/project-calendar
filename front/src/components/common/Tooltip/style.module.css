@@ -1,3 +1,3 @@
 .tooltip { position: relative; width:fit-content; height: fit-content; display: inline; }
-.tooltip > em {position: absolute; width:max-content; border-radius: 10%; top:calc(100% + 10px); left:50%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.2s; transform: translateX(-50%); text-align: center; padding: 5px 8px;}
-.tooltip:hover > em{ visibility: visible; opacity: 0.95;  z-index: 999; }
+.tooltip > em { z-index: 999;  position: absolute; width:max-content; border-radius: 10%; top:calc(100% + 10px); left:50%; background: #555; font-size: 12px; color: #fff; visibility: hidden; opacity: 0; transition: all 0.2s; transform: translateX(-50%); text-align: center; padding: 5px 8px;}
+.tooltip:hover > em{ visibility: visible; opacity: 0.95;  }

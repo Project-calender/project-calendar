@@ -8,11 +8,17 @@ import useEventModal from '../../../hooks/useEventModal';
 import AddEventButtonModal from '../../../modal/component/AddEventButtonModal';
 
 const Index = () => {
-  const { showModal, isModalShown, hideModal, modalData } = useEventModal();
+  const {
+    showModal: showAddEventButtonModal,
+    isModalShown,
+    hideModal,
+    modalData,
+  } = useEventModal();
+
   function onClick(e) {
     const { left, top } = e.currentTarget.getBoundingClientRect();
 
-    showModal({
+    showAddEventButtonModal({
       data: ['이벤트', '할 일'],
       style: { top: top + 60, left: left + 12 },
     });

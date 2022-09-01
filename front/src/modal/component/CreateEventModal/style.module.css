@@ -32,10 +32,6 @@
 .invite_title { position: relative; left: -10px; background: white !important; cursor: pointer; } 
 .invite_title:hover { background: #f7f7f7 !important; } 
 
-.google_meet img { width: 10%; height: 30px; object-fit: contain; position:relative; left: -2px; } 
-.google_meet button { position: relative;  width: 220px !important; height: 35px; font-size: 14px; background: #1a73e8; color: white; } 
-.google_meet button:hover { filter:brightness(110%) } 
-
 .memo > div { left: -10px; background: #ededed; height: 100%; padding: 10px; border-radius: 5px; width: 80% !important; } 
 
 .calendar_info { display: flex; align-items: center; width: 85%; } 

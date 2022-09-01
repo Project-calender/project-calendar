@@ -1,0 +1,4 @@
+.google_meet {display: flex; align-items: center;}
+.google_meet img { width: 10%; height: 30px; object-fit: contain; position:relative; left: -2px; } 
+.google_meet button { position: relative;  width: 220px !important; height: 35px; font-size: 14px; background: #1a73e8; color: white; border-radius: 3px;} 
+.google_meet button:hover { filter:brightness(110%) } 

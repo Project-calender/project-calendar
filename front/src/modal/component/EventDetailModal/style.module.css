@@ -1,7 +1,7 @@
 .modal_container { width: 420px; text-align: center;} 
 
 .modal_header { display: flex; justify-content: right; margin-right: 35px; height: 25px; align-items: center; } 
-.modal_header svg { margin-right: 5px; width: 16px; height: 16px; color: #515151; border-radius: 100%; padding:10px; } 
+.modal_header svg { margin-right: 5px; width: 16px; height: 16px; color: #515151; border-radius: 100%; padding:10px; cursor: pointer;} 
 .modal_header svg:hover { background: #f0f0f0; } 
 
 .modal_body { max-height: 500px; overflow-y: auto; overflow-x: hidden;}

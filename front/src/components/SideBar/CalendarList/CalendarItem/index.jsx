@@ -10,9 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateCheckedCalendar } from '../../../../store/thunk/user';
 
 const Index = ({ calendar }) => {
-  const checkedCalendar = useSelector(state =>
-    checkedCalendarSelector(state, calendar),
-  );
+  const checkedCalendar = useSelector(checkedCalendarSelector);
   const checked = checkedCalendar.includes(calendar?.id);
 
   const dispatch = useDispatch();
