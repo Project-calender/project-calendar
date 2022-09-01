@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './style.module.css';
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getEventDetail } from '../../store/thunk/event';
+import { getEventDetail, updateEvent } from '../../store/thunk/event';
 
 import Input from '../../components/common/Input';
 import CheckBox from '../../components/common/CheckBox';
@@ -31,10 +31,7 @@ import EventColorModal from '../../modal/component/EventColorModal';
 import CustomAlertOfAllDay from '../../components/alert/CustomAlertOfAllDay';
 import CustomAlertOfNotAllDay from '../../components/alert/CustomAlertOfNotAllDay';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  calendarByEventIdSelector,
-  calendarsByWriteAuthoritySelector,
-} from '../../store/selectors/calendars';
+import { calendarsByWriteAuthoritySelector } from '../../store/selectors/calendars';
 import { getAllCalendar } from '../../store/thunk/calendar';
 import { EVENT_COLOR } from '../../styles/color';
 import useEventModal from '../../hooks/useEventModal';
@@ -43,11 +40,22 @@ const Index = () => {
   const { state: eventInfo } = useLocation();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
+  const calendars = useSelector(calendarsByWriteAuthoritySelector);
+
+  useEffect(() => {
+    const calendarIndex = calendars.findIndex(
+      calendar =>
+        calendar.id === (eventInfo.PrivateCalendarId || eventInfo.CalendarId),
+    );
+    if (calendarIndex > -1) {
+      setEvent(event => ({ ...event, calendarIndex }));
+    }
+  }, [calendars]);
 
   const dispatch = useDispatch();
   useEffect(() => {
-    initEvent(eventInfo);
     dispatch(getAllCalendar());
+    initEvent(eventInfo);
   }, []);
 
   async function initEvent(event) {
@@ -57,17 +65,23 @@ const Index = () => {
         obj[member.email] = { ...member, canInvite: false };
         return obj;
       }, {}) || {};
-    setEvent(eventData);
+
+    setEvent({
+      ...event,
+      ...eventData,
+      alerts:
+        eventData.allDay === EVENT.allDay.true
+          ? { allDay: eventData.alerts, notAllDay: [] }
+          : { allDay: [], notAllDay: eventData.alerts },
+    });
   }
-  const calendars = useSelector(calendarsByWriteAuthoritySelector);
-  const calendar = useSelector(state =>
-    calendarByEventIdSelector(state, event),
-  );
+
   const eventColorModal = useEventModal();
   const eventColorModalContext = {
     ...eventColorModal,
     showModal: showEventColorModal,
   };
+
   function showEventColorModal(e, colorData) {
     const { top, left } = e.currentTarget.getBoundingClientRect();
     eventColorModal.showModal({
@@ -77,7 +91,7 @@ const Index = () => {
     e.stopPropagation();
   }
 
-  if (!event) return;
+  if (!event || !event.id || event.calendarIndex < 0) return;
 
   const [startDate, endDate] = [event.startTime, event.endTime].map(
     time => new Moment(new Date(time)),
@@ -92,6 +106,39 @@ const Index = () => {
     }
   }
 
+  function saveEvent() {
+    const inviteMembers = Object.values(event.EventMembers).filter(
+      member => member.canInvite,
+    );
+
+    const alerts =
+      event.allDay === EVENT.allDay.true
+        ? event.alerts.allDay
+        : event.alerts.notAllDay;
+    const getAlertTitle =
+      event.allDay === EVENT.allDay.true
+        ? EVENT.alerts.getAllDayTitle
+        : EVENT.alerts.getNotAllDayTitle;
+    const newAlerts = [
+      ...new Map(alerts.map(alert => [getAlertTitle(alert), alert])).values(),
+    ].sort(EVENT.alerts.ASC_SORT);
+
+    dispatch(
+      updateEvent({
+        ...event,
+        calendarId: calendars[event.calendarIndex].id,
+        color:
+          event.calendarColor === event.eventColor ? null : event.eventColor,
+        startTime: new Date(event.startTime).toISOString(),
+        endTime: new Date(event.endTime).toISOString(),
+        guests: inviteMembers.map(member => member.email),
+        alerts: newAlerts,
+      }),
+    );
+  }
+
+  const isAllDay = event.allDay === EVENT.allDay.true;
+  const alerts = isAllDay ? event.alerts.allDay : event.alerts.notAllDay;
   return (
     <>
       <div className={styles.date_title_conitner}>
@@ -111,7 +158,7 @@ const Index = () => {
                 setEvent(event => ({ ...event, name: e.target.value }));
               }}
             />
-            <button>저장</button>
+            <button onClick={saveEvent}>저장</button>
             <button>
               추가 작업 <FontAwesomeIcon icon={faCaretDown} />
             </button>
@@ -191,8 +238,8 @@ const Index = () => {
           <div>
             <FontAwesomeIcon icon={faBell} />
             <div>
-              {event.allDay === EVENT.allDay.true
-                ? event.alerts.map((alert, index) => (
+              {isAllDay
+                ? event.alerts.allDay.map((alert, index) => (
                     <div key={index} className={styles.alert_item}>
                       <CustomAlertOfAllDay alert={alert} />
                       <Tooltip title="알림 삭제">
@@ -203,7 +250,7 @@ const Index = () => {
                       </Tooltip>
                     </div>
                   ))
-                : event.alerts.map((alert, index) => (
+                : event.alerts.notAllDay.map((alert, index) => (
                     <div key={index} className={styles.alert_item}>
                       <CustomAlertOfNotAllDay alert={alert} />
                       <Tooltip title="알림 삭제">
@@ -214,7 +261,7 @@ const Index = () => {
                       </Tooltip>
                     </div>
                   ))}
-              {event.alerts.length < 5 && (
+              {alerts.length < 5 && (
                 <button
                   className={styles.add_alert_button}
                   onClick={clickAddAlert}
@@ -229,19 +276,19 @@ const Index = () => {
             <Select
               name="calendar"
               itemList={calendars.map(calendar => calendar.name)}
-              selectedItem={calendar?.name}
+              selectedItem={calendars[event.calendarIndex]?.name}
               onChange={e => {
                 console.log(e.target.getAttribute('value'));
                 setEvent(event => ({
                   ...event,
-                  busy: +e.target.getAttribute('value'),
+                  calendarIndex: +e.target.getAttribute('value'),
                 }));
               }}
             />
             <EventColorModalContext.Provider value={eventColorModalContext}>
               <EventColorOption
                 colors={EVENT_COLOR}
-                color={event?.color || calendar?.color}
+                color={event?.color || calendars[event.calendarIndex]?.color}
               />
               {eventColorModal.isModalShown && <EventColorModal />}
             </EventColorModalContext.Provider>

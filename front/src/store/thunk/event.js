@@ -82,6 +82,40 @@ export const createEvent = createAsyncThunk(
   },
 );
 
+export const updateEvent = createAsyncThunk(
+  EVENT_URL.UPDATE_GROUP_EVENT,
+  async eventInfo => {
+    const url =
+      eventInfo.calendarId > 0
+        ? EVENT_URL.UPDATE_GROUP_EVENT
+        : EVENT_URL.UPDATE_PRIVATE_EVENT;
+
+    const { data } = await axios.post(url, {
+      calendarId: Math.abs(eventInfo.calendarId),
+      eventName: eventInfo.eventName,
+      color: eventInfo.color,
+      permission: eventInfo.permission,
+      busy: eventInfo.busy,
+      memo: eventInfo.memo,
+      allDay: eventInfo.allDay,
+      startTime: eventInfo.startTime,
+      endTime: eventInfo.endTime,
+      alerts: eventInfo.alerts.map(alert => {
+        const type = { 분: 'minute', 시간: 'hour', 일: 'day', 주: 'week' };
+        return { ...alert, type: type[alert.type] };
+      }),
+      guests: eventInfo.guests,
+    });
+
+    if (eventInfo.calendarId > 0) return data;
+    return {
+      ...data,
+      id: -data.id,
+      PrivateCalendarId: -data.PrivateCalendarId,
+    };
+  },
+);
+
 export const deleteEvent = createAsyncThunk(
   EVENT_URL.DELETE_GROUP_EVENT,
   async event => {

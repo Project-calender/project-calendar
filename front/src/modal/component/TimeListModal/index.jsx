@@ -23,10 +23,7 @@ const Index = ({ hideModal, modalData, onClickItem = () => {}, className }) => {
           selectedItem,
           dataValues: times,
         }}
-        onClickItem={e => {
-          console.log(e);
-          onClickItem(e);
-        }}
+        onClickItem={onClickItem}
       />
     </div>
   );
