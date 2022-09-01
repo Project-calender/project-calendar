@@ -59,9 +59,19 @@ const Index = ({ item, clickEventBar = () => {} }) => {
                   <em>종일</em>
                 </div>
               ) : (
-                <em>
-                  {item.startTime.substr(11, 5)} ~ {item.endTime.substr(11, 5)}
-                </em>
+                <div>
+                  <span
+                    style={{
+                      background:
+                        (item && item.color) ||
+                        (calendars && calendars[index].color),
+                    }}
+                  ></span>
+                  <em>
+                    {item.startTime.substr(11, 5)} ~{' '}
+                    {item.endTime.substr(11, 5)}
+                  </em>
+                </div>
               )}
             </div>
             <div className={styles.content}>
