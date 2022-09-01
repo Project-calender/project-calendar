@@ -13,8 +13,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import Input from '../../common/Input';
+import Tooltip from '../../common/Tooltip';
+
 const Index = ({ eventMembers }) => {
-  console.log(eventMembers);
   const [helfModalPosition, setHelfModalStyle] = useState({});
 
   function moveHelfModal(e) {
@@ -55,30 +56,35 @@ const Index = ({ eventMembers }) => {
   );
 
   return (
-    <div>
-      <Input placeholder={'참석자 추가'} />
-      <p>참석자 {Object.keys(eventMembers).length}명</p>
+    <div className={styles.members_container}>
+      <Input placeholder={'참석자 추가'} className={styles.input_fill} />
+      {Object.keys(eventMembers).length > 0 && (
+        <p>참석자 {Object.keys(eventMembers).length}명</p>
+      )}
       <em>{memberStateTitle}</em>
 
       {Object.values(eventMembers).map(member => (
-        <div key={member.id} className={styles.user_info}>
-          <div className={styles.user_profile}>
-            <img src={member.ProfileImages[0].src} alt="profile" />
-            {member.EventMember.state ? (
-              <FontAwesomeIcon
-                className={`${styles.user_state} ${
-                  styles[EVENT_STATE_KEY[member.EventMember.state]]
-                }`}
-                icon={
-                  EVENT_STATE[EVENT_STATE_KEY[member.EventMember.state]].icon
-                }
-              />
-            ) : null}
+        <div key={member.id} className={styles.member_container}>
+          <div className={styles.user_title}>
+            <div className={styles.user_profile}>
+              <img src={member.ProfileImages[0].src} alt="profile" />
+              {member.EventMember.state ? (
+                <FontAwesomeIcon
+                  className={`${styles.user_state} ${
+                    styles[EVENT_STATE_KEY[member.EventMember.state]]
+                  }`}
+                  icon={
+                    EVENT_STATE[EVENT_STATE_KEY[member.EventMember.state]].icon
+                  }
+                />
+              ) : null}
+            </div>
+            <p>{member.email}</p>
+            {!member.canInvite && <em>*</em>}
           </div>
-          <h3>
-            {member.email} {!member.canInvite && <em>*</em>}
+          <Tooltip title="삭제" top={0}>
             <FontAwesomeIcon icon={faClose} className={styles.icon_delete} />
-          </h3>
+          </Tooltip>
         </div>
       ))}
 

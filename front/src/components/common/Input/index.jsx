@@ -33,7 +33,7 @@ const Index = React.forwardRef(
     }));
 
     return (
-      <div className={`${styles.input_container} ${className}`}>
+      <div className={`${styles.input_container} ${className}`} name="input">
         <input
           ref={inputRef}
           type={type}

@@ -17,6 +17,7 @@ const Index = ({
   function onClickItem(e) {
     onChange(e);
     hideModal();
+    e.stopPropagation();
   }
 
   return (

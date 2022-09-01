@@ -173,9 +173,10 @@ const Index = React.forwardRef(({ alert }, ref) => {
             hideModal={timeListModal.hideModal}
             modalData={timeListModal.modalData}
             onClickItem={e => {
+              e.stopPropagation();
+              if (!Number(e.target.dataset.value)) return;
               setTime(+e.target.dataset.value);
               timeListModal.hideModal();
-              e.stopPropagation();
             }}
             className={styles.time_modal}
           />
