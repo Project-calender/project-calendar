@@ -2,7 +2,6 @@ import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import useEventModal from '../../hooks/useEventModal';
-import { EVENT } from '../../store/events';
 import axios from '../../utils/token';
 import styles from './style.module.css';
 import EventDetailModal from '../../modal/component/EventDetailModal';
@@ -10,9 +9,8 @@ import { getEventDetail } from '../../store/thunk/event';
 import { checkedCalendarSelector } from '../../store/selectors/user';
 import { useSelector } from 'react-redux';
 import { isCheckedCalander } from '../../store/user';
-import { useRef } from 'react';
 import { EVENT_URL } from '../../constants/api';
-
+import EventItem from './EventItem';
 
 const Index = () => {
   let calendarCheck = useSelector(checkedCalendarSelector);
@@ -22,8 +20,6 @@ const Index = () => {
   let [nextDay, setNextDay] = useState(); //다음 해 날짜
   let [allEvent, setAllEvent] = useState(); //모든 이벤트
   let [filterEvent, setFilterEvent] = useState(); //필터된 이벤트
-  let [clickEvent, setClickEvent] = useState(); //클릭한 이벤트 index
-  let eventItem = useRef(); //이벤트 아이템
 
   useEffect(() => {
     onEvent();
@@ -33,6 +29,27 @@ const Index = () => {
     axios.post(EVENT_URL.ALL_EVENT).then(res => {
       setAllEvent(res.data);
     });
+  }
+
+  async function onClick(event) {
+    const url =
+      event.id > 0
+        ? EVENT_URL.DELETE_GROUP_EVENT
+        : EVENT_URL.DELETE_PRIVATE_EVENT;
+
+    await axios.post(url, {
+      eventId: Math.abs(event.id),
+      calendarId: -event.PrivateCalendarId || event.CalendarId,
+    });
+    const calendarId = event.PrivateCalendarId || event.CalendarId;
+    setAllEvent(events =>
+      events.filter(
+        e =>
+          (e.PrivateCalendarId || e.CalendarId) !== Math.abs(calendarId) ||
+          e.id !== Math.abs(event.id),
+      ),
+    );
+    return event.id;
   }
 
   useEffect(() => {
@@ -100,26 +117,14 @@ const Index = () => {
     });
   }
 
-  //외부 클릭시 className 제거
-  useEffect(() => {
-    document.addEventListener('mousedown', clickModalOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', clickModalOutside);
-    };
-  });
-
-  //외부 클릭시 className 제거
-  function clickModalOutside(event) {
-    if (!eventItem.current.contains(event.target)) {
-      setClickEvent(-1);
-    }
-  }
-
   return (
     <>
       {isModalShown && (
-        <EventDetailModal hideModal={hideModal} modalData={modalData} />
+        <EventDetailModal
+          hideModal={hideModal}
+          modalData={modalData}
+          onClick={onClick}
+        />
       )}
       <div className={styles.container}>
         {filterEvent && (
@@ -139,51 +144,23 @@ const Index = () => {
                     </div>
                   </div>
                   <div className={styles.wrap}>
-                    {item.map((item, index) => {
-                      return (
-                        <div
-                          key={index}
-                          ref={eventItem}
-                          className={
-                            clickEvent == item.id
-                              ? `${styles.active} ${styles.event_wrap}`
-                              : styles.event_wrap
-                          }
-                          onClick={e => {
-                            clickEventBar(e, item);
-                            setClickEvent(item.id);
-                          }}
-                        >
-                          <div className={styles.all_day}>
-                            {item.allDay == EVENT.allDay.true ||
-                            item.endTime.substr(5, 5).replace('-', '') -
-                              item.startTime.substr(5, 5).replace('-', '') >
-                              1 ? (
-                              <div>
-                                <span style={{ background: item.color }}></span>
-                                <em>종일</em>
-                              </div>
-                            ) : (
-                              <em>
-                                {item.startTime.substr(11, 5)} ~{' '}
-                                {item.endTime.substr(11, 5)}
-                              </em>
-                            )}
-                          </div>
-                          <div className={styles.content}>
-                            <p>{item.name}</p>
-                            {item.name.length == 0 ? <p>(제목 없음)</p> : null}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    <EventItem
+                      item={item}
+                      clickEventBar={clickEventBar}
+                    ></EventItem>
                   </div>
                 </li>
               );
             })}
+            {allEvent && allEvent.length >= 1 ? (
+              <em>
+                {nextDay.slice(0, 4)}년{nextDay.slice(4, 6)}월
+                {nextDay.slice(6, 8)}일까지의 일정을 표시합니다.
+              </em>
+            ) : null}
           </ul>
         )}
-        {filterEvent && filterEvent.length == 0 ? (
+        {allEvent && allEvent.length == 0 ? (
           <div className={styles.search_undefined}>
             <em>이벤트 결과가 없습니다.</em>
           </div>

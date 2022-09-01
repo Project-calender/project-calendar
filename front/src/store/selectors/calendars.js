@@ -35,7 +35,11 @@ export const calendarByEventIdsSelector = createSelector(
   [
     state => state,
     (_, events) =>
-      events.map(event => event?.PrivateCalendarId || event?.CalendarId),
+      events.map(
+        event =>
+          Math.min(event?.PrivateCalendarId, -event?.PrivateCalendarId) ||
+          event?.CalendarId,
+      ),
   ],
   (state, calendarIds) =>
     calendarIds.map(calendarId => selectCalendarById(state, calendarId)),

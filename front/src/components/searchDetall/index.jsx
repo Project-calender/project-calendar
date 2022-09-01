@@ -1,33 +1,81 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styles from './style.module.css';
+import { isCheckedCalander } from '../../store/user';
+import axios from '../../utils/token';
+import { EVENT_URL } from '../../constants/api';
+import SearchItem from './SearchItem';
 import EventDetailModal from '../../modal/component/EventDetailModal';
 import useEventModal from '../../hooks/useEventModal';
-import { EVENT } from '../../store/events';
 import { getEventDetail } from '../../store/thunk/event';
 
 const Index = () => {
-  let { isModalShown, showModal, hideModal, modalData, setModalData } =
-    useEventModal();
-  let [clickEvent, setClickEvent] = useState(); //클릭한 이벤트 index
-  let eventItem = useRef(); //이벤트 아이템
+  let [searchValue, setSearchValue] = useState();
   let [searchFilter, setSearchFilter] = useState();
+  let { isModalShown, hideModal, modalData, showModal, setModalData } =
+    useEventModal();
 
   //redux 검색 정보 상태관리
-  let searchValue = useSelector(state => {
-    return state.search.data;
+  let searchText = useSelector(state => {
+    return state.search.searchText;
   });
 
   useEffect(() => {
-    let copySearchValue = [...searchValue];
-    copySearchValue = copySearchValue.sort(function (a, b) {
-      return (
-        a.startTime.substr(0, 10).replaceAll('-', '') -
-        b.startTime.substr(0, 10).replaceAll('-', '')
-      );
-    });
+    onSearch();
+  }, [searchText]);
 
-    let event = copySearchValue?.reduce((obj, event) => {
+  useEffect(() => {
+    onFilter();
+  }, [searchValue]);
+
+  async function onClick(event) {
+    const url =
+      event.id > 0
+        ? EVENT_URL.DELETE_GROUP_EVENT
+        : EVENT_URL.DELETE_PRIVATE_EVENT;
+
+    await axios.post(url, {
+      eventId: Math.abs(event.id),
+      calendarId: -event.PrivateCalendarId || event.CalendarId,
+    });
+    const calendarId = event.PrivateCalendarId || event.CalendarId;
+    setSearchValue(events =>
+      events.filter(
+        e =>
+          (e.PrivateCalendarId || e.CalendarId) !== Math.abs(calendarId) ||
+          e.id !== Math.abs(event.id),
+      ),
+    );
+    return event.id;
+  }
+
+  //검색 정보 불러오기
+  async function onSearch() {
+    try {
+      let res = await axios.post(`${EVENT_URL.SEARCH_EVENT}`, {
+        searchWord: searchText,
+      });
+      setSearchValue(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  //검색 값 필터
+  function onFilter() {
+    let copySearchValue = searchValue && [...searchValue];
+    let newSearchValue =
+      copySearchValue &&
+      copySearchValue
+        .sort(function (a, b) {
+          return (
+            a.startTime.substr(0, 10).replaceAll('-', '') -
+            b.startTime.substr(0, 10).replaceAll('-', '')
+          );
+        })
+        .filter(isCheckedCalander);
+
+    let event = newSearchValue?.reduce((obj, event) => {
       obj[new Date(event.startTime).getTime()] =
         obj[new Date(event.startTime).getTime()] || [];
       obj[new Date(event.startTime).getTime()].push(event);
@@ -35,7 +83,7 @@ const Index = () => {
     }, {});
 
     setSearchFilter(event);
-  }, [searchValue]);
+  }
 
   //이벤트 팝업창 컨트롤
   async function clickEventBar(e, event) {
@@ -50,26 +98,14 @@ const Index = () => {
     });
   }
 
-  //외부 클릭시 className 제거
-  useEffect(() => {
-    document.addEventListener('mousedown', clickModalOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', clickModalOutside);
-    };
-  });
-
-  //외부 클릭시 className 제거
-  function clickModalOutside(event) {
-    if (!eventItem.current.contains(event.target)) {
-      setClickEvent(-1);
-    }
-  }
-
   return (
     <>
       {isModalShown && (
-        <EventDetailModal hideModal={hideModal} modalData={modalData} />
+        <EventDetailModal
+          hideModal={hideModal}
+          modalData={modalData}
+          onClick={onClick}
+        />
       )}
       <div className={styles.container}>
         {searchFilter && (
@@ -87,46 +123,13 @@ const Index = () => {
                         {new Date(+time).getMonth() + 1}월
                       </p>
                     </div>
-                  </div>
-                  <div className={styles.wrap}>
-                    {item.map((item, index) => {
-                      return (
-                        <div
-                          key={index}
-                          ref={eventItem}
-                          className={
-                            clickEvent == item.id
-                              ? `${styles.active} ${styles.event_wrap}`
-                              : styles.event_wrap
-                          }
-                          onClick={e => {
-                            clickEventBar(e, item);
-                            setClickEvent(item.id);
-                          }}
-                        >
-                          <div className={styles.all_day}>
-                            {item.allDay == EVENT.allDay.true ||
-                            item.endTime.substr(5, 5).replace('-', '') -
-                              item.startTime.substr(5, 5).replace('-', '') >
-                              1 ? (
-                              <div>
-                                <span style={{ background: item.color }}></span>
-                                <em>종일</em>
-                              </div>
-                            ) : (
-                              <em>
-                                {item.startTime.substr(11, 5)} ~{' '}
-                                {item.endTime.substr(11, 5)}
-                              </em>
-                            )}
-                          </div>
-                          <div className={styles.content}>
-                            <p>{item.name}</p>
-                            {item.name.length == 0 ? <p>(제목 없음)</p> : null}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    <div className={styles.wrap}>
+                      <SearchItem
+                        item={item}
+                        setSearchValue={setSearchValue}
+                        clickEventBar={clickEventBar}
+                      ></SearchItem>
+                    </div>
                   </div>
                 </li>
               );
