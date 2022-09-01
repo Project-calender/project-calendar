@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import styles from './style.module.css';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
 
 import Input from '../../common/Input';
 import useEventModal from '../../../hooks/useEventModal';
@@ -11,17 +12,21 @@ import { useState } from 'react';
 import Moment from '../../../utils/moment';
 import { useImperativeHandle } from 'react';
 
-const Index = React.forwardRef((props, ref) => {
+const Index = React.forwardRef(({ alert }, ref) => {
   const sendTypeModal = useEventModal();
   const dateTypeModal = useEventModal();
   const timeListModal = useEventModal();
 
   const [sendType, setSendType] = useState('알림');
-  const [dateType, setDateType] = useState('일');
-  const [dateNumber, setDateNumber] = useState(1);
+  const [dateType, setDateType] = useState(alert?.type || '일');
+  const [dateNumber, setDateNumber] = useState(alert ? alert.time : 1);
   const dateNumberRef = useRef();
   const [dateNumberErorr, setDateNumberError] = useState('');
-  const [time, setTime] = useState(new Moment().setHour(9).time);
+  const [time, setTime] = useState(
+    new Moment()
+      .setHour(alert ? alert.hour : 9)
+      .setMinute(alert ? alert.minute : 0).time,
+  );
 
   useImperativeHandle(ref, () => ({
     alert: {
@@ -168,9 +173,10 @@ const Index = React.forwardRef((props, ref) => {
             hideModal={timeListModal.hideModal}
             modalData={timeListModal.modalData}
             onClickItem={e => {
+              e.stopPropagation();
+              if (!Number(e.target.dataset.value)) return;
               setTime(+e.target.dataset.value);
               timeListModal.hideModal();
-              e.stopPropagation();
             }}
             className={styles.time_modal}
           />
@@ -181,5 +187,9 @@ const Index = React.forwardRef((props, ref) => {
 });
 
 Index.displayName = 'CustomAlertOfAllDay';
+
+Index.propTypes = {
+  alert: PropTypes.object,
+};
 
 export default Index;

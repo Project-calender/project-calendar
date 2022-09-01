@@ -27,6 +27,8 @@ import EventAttendanceButtons from './EventAttendanceButtons';
 //import { deleteEvent } from '../../../store/thunk/event';
 import { EVENT } from '../../../store/events';
 import { eventSelector } from '../../../store/selectors/events';
+import { useNavigate } from 'react-router-dom';
+import { EVENT_PATH } from '../../../constants/path';
 
 const Index = ({ modalData, hideModal, onClick = () => {} }) => {
   const { style, event } = modalData || {};
@@ -43,6 +45,7 @@ const Index = ({ modalData, hideModal, onClick = () => {} }) => {
   const groupCalendar = useSelector(state =>
     calendarByEventIdSelector(state, groupEvent),
   );
+
   useEffect(() => {
     let { top = 0, left = 0 } = style || {};
     if (top + $modal.current?.offsetHeight + 15 > window.innerHeight) {
@@ -57,6 +60,16 @@ const Index = ({ modalData, hideModal, onClick = () => {} }) => {
     setPosition({ top, left });
   }, [style]);
 
+  const navigate = useNavigate();
+  function showEditEventPage() {
+    navigate(EVENT_PATH.EDIT_EVENT, {
+      state: {
+        id: event.id,
+        PrivateCalendarId: event.PrivateCalendarId,
+        CalendarId: event.CalendarId,
+      },
+    });
+  }
   if (!event) return;
 
   return (
@@ -75,7 +88,7 @@ const Index = ({ modalData, hideModal, onClick = () => {} }) => {
           {calendar.authority >= 2 && (
             <>
               <Tooltip title="일정 수정">
-                <FontAwesomeIcon icon={faPen} />
+                <FontAwesomeIcon icon={faPen} onClick={showEditEventPage} />
               </Tooltip>
               <Tooltip title="일정 삭제">
                 <FontAwesomeIcon

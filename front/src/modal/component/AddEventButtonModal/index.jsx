@@ -7,6 +7,7 @@ import Moment from '../../../utils/moment';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   calculateCurrentTimeRange,
+  setNewEventBars,
   updateNewEventBarProperties,
 } from '../../../store/newEvent';
 import { createEventBar } from '../../../hooks/useCreateEventBar';
@@ -31,6 +32,7 @@ const Index = ({ hideModal, modalData }) => {
       standardDateTime: newEventTime,
       endDateTime: newEventTime,
     });
+
     if (e.target.innerText === '이벤트') {
       const [startTime, endTime] = calculateCurrentTimeRange(
         new Moment(new Date()).resetTime().time,
@@ -39,15 +41,17 @@ const Index = ({ hideModal, modalData }) => {
 
       dispatch(
         updateNewEventBarProperties({
-          bars: newEventBar,
           startTime,
           endTime,
           allDay: EVENT.allDay.false,
+          isCreateEvent: true,
         }),
       );
+      dispatch(setNewEventBars(newEventBar));
       hideModal();
     }
   }
+
   return (
     <div className={styles.modal_root}>
       <ListModal

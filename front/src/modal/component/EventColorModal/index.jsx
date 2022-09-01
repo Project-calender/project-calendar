@@ -18,6 +18,8 @@ const Index = () => {
     e.stopPropagation();
   }
 
+  console.log(colors);
+
   return (
     <Modal
       hideModal={hideModal}
@@ -28,7 +30,7 @@ const Index = () => {
         padding: '8px 0px 8px 8px',
       }}
     >
-      <div className={styles.color_list} style={{ width: style.width || 55 }}>
+      <div className={styles.color_list} style={{ width: style?.width || 55 }}>
         <EventColor
           colors={colors}
           selectedColor={selectedColor}

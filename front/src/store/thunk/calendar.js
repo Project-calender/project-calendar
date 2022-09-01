@@ -50,3 +50,28 @@ export const resignCalendar = createAsyncThunk(
     return calendarId;
   },
 );
+
+export const getAllCalendar = createAsyncThunk(
+  CALENDAR_URL.GET_MY_CALENDARS,
+  async () => {
+    const {
+      data: { privateCalendar, groupCalendars },
+    } = await axios.get(CALENDAR_URL.GET_MY_CALENDARS);
+
+    const calendars = [
+      {
+        ...privateCalendar,
+        id: -privateCalendar.id,
+        authority: 3,
+      },
+      ...groupCalendars.map(calendar => ({
+        id: calendar.id,
+        name: calendar.name,
+        color: calendar.color,
+        OwnerId: calendar.Owner.id,
+        authority: calendar.CalendarMember.authority,
+      })),
+    ];
+    return calendars;
+  },
+);

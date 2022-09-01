@@ -6,7 +6,7 @@ import WeekDayHeader from './WeekDayHeader';
 import CalendarBody from './CalendarBody';
 import { CreateEventModalContext } from '../../../context/EventModalContext';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useDragDate from '../../../hooks/useDragDate';
 import useCreateEventBar from '../../../hooks/useCreateEventBar';
 import {
@@ -47,9 +47,10 @@ const Index = ({ month }) => {
   const { showModal: showCreateEventModal } = useContext(
     CreateEventModalContext,
   );
+
+  const isCreateEvent = useSelector(state => state.newEvent.isCreateEvent);
   useEffect(() => {
-    if (isMouseDown || !newEventBars.length) return;
-    dispatch(setNewEventBars(newEventBars));
+    if (!isCreateEvent) return;
 
     // 위치 조정 필요 (임시)
     const dom = document.getElementsByName('new_event')[0];
@@ -66,17 +67,30 @@ const Index = ({ month }) => {
         position.left = left - 470;
       }
     }
+
     showCreateEventModal({
       style: { ...position },
     });
-  }, [dispatch, newEventBars, isMouseDown, showCreateEventModal]);
+  }, [dispatch, isCreateEvent]);
+
+  function onMouseUp(e) {
+    if (!isMouseDown) return;
+    handleMouseUp(e);
+    dispatch(updateNewEventBarProperties({ isCreateEvent: true }));
+    dispatch(setNewEventBars(newEventBars));
+  }
+
+  function onMouseDown(e) {
+    if (e.target.getAttribute('name') !== 'event-drag-space') return;
+    handleMouseDown(e);
+  }
 
   return (
     <EventBarContext.Provider value={dragContextData}>
       <table
         className={styles.calendar_table}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
         onMouseMove={isMouseDown ? handleDrag : null}
       >
         <thead>
