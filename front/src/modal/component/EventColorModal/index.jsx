@@ -1,24 +1,24 @@
 import React from 'react';
 import styles from './style.module.css';
+import PropTypes from 'prop-types';
 
 import Modal from '../../../components/common/Modal';
 import EventColor from '../../../components/calendar/EventColor';
-import { useContext } from 'react';
-import { EventColorModalContext } from '../../../context/EventModalContext';
 
-const Index = () => {
-  const { hideModal, modalData, setModalData } = useContext(
-    EventColorModalContext,
-  );
-  const { style, colors, selectedColor } = modalData;
+const Index = ({
+  colors,
+  selectedColor,
+  onClickColor,
+  hideModal,
+  modalData,
+}) => {
+  const { style } = modalData;
 
-  function onClickColor(e, color) {
-    setModalData(data => ({ ...data, color }));
+  function handleClickColor(e, color) {
+    onClickColor(e, color);
     hideModal(false);
     e.stopPropagation();
   }
-
-  console.log(colors);
 
   return (
     <Modal
@@ -34,11 +34,18 @@ const Index = () => {
         <EventColor
           colors={colors}
           selectedColor={selectedColor}
-          onClickColor={onClickColor}
+          onClickColor={handleClickColor}
         />
       </div>
     </Modal>
   );
+};
+Index.propTypes = {
+  colors: PropTypes.object,
+  selectedColor: PropTypes.string,
+  onClickColor: PropTypes.func,
+  hideModal: PropTypes.func,
+  modalData: PropTypes.object,
 };
 
 export default Index;

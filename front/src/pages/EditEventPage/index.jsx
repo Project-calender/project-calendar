@@ -41,7 +41,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
-
+  console.log(event);
   useEffect(() => {
     const calendarIndex = calendars.findIndex(
       calendar =>
@@ -278,17 +278,33 @@ const Index = () => {
               itemList={calendars.map(calendar => calendar.name)}
               selectedItem={calendars[event.calendarIndex]?.name}
               onChange={e => {
-                console.log(e.target.getAttribute('value'));
                 setEvent(event => ({
                   ...event,
                   calendarIndex: +e.target.getAttribute('value'),
+                  color: null,
                 }));
               }}
             />
             <EventColorModalContext.Provider value={eventColorModalContext}>
               <EventColorOption
-                colors={EVENT_COLOR}
-                color={event?.color || calendars[event.calendarIndex]?.color}
+                colors={
+                  Object.values(EVENT_COLOR).includes(
+                    calendars[event.calendarIndex]?.color,
+                  )
+                    ? EVENT_COLOR
+                    : {
+                        ...EVENT_COLOR,
+                        '캘린더 색상': calendars[event.calendarIndex]?.color,
+                      }
+                }
+                selectedColor={
+                  event?.color || calendars[event.calendarIndex]?.color
+                }
+                changeColor={(e, color) => {
+                  if (calendars[event.calendarIndex].color === color)
+                    setEvent(event => ({ ...event, color: null }));
+                  else setEvent(event => ({ ...event, color }));
+                }}
               />
               {eventColorModal.isModalShown && <EventColorModal />}
             </EventColorModalContext.Provider>

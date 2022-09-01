@@ -19,20 +19,26 @@ import Tooltip from '../../../components/common/Tooltip';
 import Moment from '../../../utils/moment';
 import PropTypes from 'prop-types';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 import { useEffect } from 'react';
 import EventMemberList from './EventMemberList';
 import EventAttendanceButtons from './EventAttendanceButtons';
-//import { deleteEvent } from '../../../store/thunk/event';
+import { deleteEvent } from '../../../store/thunk/event';
 import { EVENT } from '../../../store/events';
 import { eventSelector } from '../../../store/selectors/events';
 import { useNavigate } from 'react-router-dom';
 import { EVENT_PATH } from '../../../constants/path';
 
-const Index = ({ modalData, hideModal, onClick = () => {} }) => {
+const Index = ({ modalData, hideModal, onDeleteEvent = null }) => {
+  const dispatch = useDispatch();
+  if (!onDeleteEvent) {
+    onDeleteEvent = () => {
+      dispatch(deleteEvent(event));
+    };
+  }
   const { style, event } = modalData || {};
-  //const dispatch = useDispatch();
+
   const $modal = useRef();
   const [position, setPosition] = useState();
   const calendar = useSelector(state =>
@@ -94,9 +100,8 @@ const Index = ({ modalData, hideModal, onClick = () => {} }) => {
                 <FontAwesomeIcon
                   icon={faTrashCan}
                   onClick={() => {
-                    //dispatch(deleteEvent(event));
+                    onDeleteEvent(event);
                     hideModal();
-                    onClick(event);
                   }}
                 />
               </Tooltip>
@@ -220,6 +225,6 @@ function initTimeDateTitle(event) {
 Index.propTypes = {
   modalData: PropTypes.object,
   hideModal: PropTypes.func,
-  onClick: PropTypes.func,
+  onDeleteEvent: PropTypes.func,
 };
 export default Index;
