@@ -225,8 +225,3 @@ export const checkEventInvite = async ({ guestEmail, calendarId }) => {
     return { canInvite, id: guestEmail, email: guestEmail, message };
   }
 };
-
-export const inviteGroupEvent = async ({ guests }) => {
-  const res = await axios.post(EVENT_URL.INVITE_GROUP_EVENT, { guests });
-  console.log(res, guests);
-};

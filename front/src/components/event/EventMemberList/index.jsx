@@ -14,8 +14,9 @@ import {
 
 import Input from '../../common/Input';
 import Tooltip from '../../common/Tooltip';
+import { checkEventInvite } from '../../../store/thunk/event';
 
-const Index = ({ eventMembers }) => {
+const Index = ({ calendarId, eventMembers, setEventMembers }) => {
   const [helfModalPosition, setHelfModalStyle] = useState({});
 
   function moveHelfModal(e) {
@@ -57,7 +58,19 @@ const Index = ({ eventMembers }) => {
 
   return (
     <div className={styles.members_container}>
-      <Input placeholder={'참석자 추가'} className={styles.input_fill} />
+      <Input
+        placeholder={'참석자 추가'}
+        className={styles.input_fill}
+        onKeyDown={async e => {
+          if (e.key !== 'Enter') return;
+          const member = await checkEventInvite({
+            guestEmail: e.target.value,
+            calendarId,
+          });
+          console.log(member);
+          setEventMembers(members => ({ ...members, [member.email]: member }));
+        }}
+      />
       {Object.keys(eventMembers).length > 0 && (
         <p>참석자 {Object.keys(eventMembers).length}명</p>
       )}
@@ -68,7 +81,7 @@ const Index = ({ eventMembers }) => {
           <div className={styles.user_title}>
             <div className={styles.user_profile}>
               <img src={member.ProfileImages[0].src} alt="profile" />
-              {member.EventMember.state ? (
+              {member.EventMember?.state ? (
                 <FontAwesomeIcon
                   className={`${styles.user_state} ${
                     styles[EVENT_STATE_KEY[member.EventMember.state]]
@@ -83,7 +96,15 @@ const Index = ({ eventMembers }) => {
             {!member.canInvite && <em>*</em>}
           </div>
           <Tooltip title="삭제" top={0}>
-            <FontAwesomeIcon icon={faClose} className={styles.icon_delete} />
+            <FontAwesomeIcon
+              icon={faClose}
+              className={styles.icon_delete}
+              onClick={() => {
+                delete eventMembers[member.email];
+                setEventMembers({ ...eventMembers });
+                console.log(eventMembers);
+              }}
+            />
           </Tooltip>
         </div>
       ))}
@@ -117,7 +138,9 @@ const Index = ({ eventMembers }) => {
 };
 
 Index.propTypes = {
+  calendarId: PropTypes.number,
   eventMembers: PropTypes.object,
+  setEventMembers: PropTypes.func,
 };
 
 export default Index;
