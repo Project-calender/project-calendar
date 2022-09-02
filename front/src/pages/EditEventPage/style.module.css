@@ -1,4 +1,4 @@
-.date_title_conitner { display: flex; max-width: 1000px; margin-bottom: 10px; align-items: flex-start; font-size: 14px; } 
+.date_title_conitner { display: flex; max-width: 1000px;  margin-bottom: 10px; align-items: flex-start; font-size: 14px; } 
 .date_title_conitner > :nth-child(1) { margin: 15px; cursor: pointer; } 
 .date_title { width: 82%; min-width: 500px; display: flex; flex-direction: column; } 
 .date_title > div { display: flex; } 
@@ -21,7 +21,7 @@
 .allDay_title { margin: 10px 0px; } 
 .allDay_title > :nth-child(1) { margin-right: 15px; } 
 
-.edit_page_main { display: flex; max-width: 1000px; overflow: hidden; } 
+.edit_page_main { display: flex; max-width: 1000px; overflow: hidden; height: 70vh;} 
 .edit_page_main_left { width: 70%; margin-right: 25px; } 
 .edit_page_main_left svg {color: #565656;}
 .edit_page_main_left > * { margin: 10px 0px; } 
@@ -62,4 +62,5 @@
 .add_alert_button { background: white; padding: 5px; cursor: pointer; border-radius: 3px; position:relative; }
 .add_alert_button:hover { background: #f1f1f1; }
 
-
+.alerts_container { align-items: flex-start !important;} 
+.alerts_container > svg { margin-top:5px;} 

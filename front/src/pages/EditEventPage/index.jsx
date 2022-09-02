@@ -27,15 +27,13 @@ import Moment from '../../utils/moment';
 import EventColorOption from '../../components/calendar/EventColorOption';
 import EventMemberList from '../../components/event/EventMemberList';
 
-import EventColorModal from '../../modal/component/EventColorModal';
 import CustomAlertOfAllDay from '../../components/alert/CustomAlertOfAllDay';
 import CustomAlertOfNotAllDay from '../../components/alert/CustomAlertOfNotAllDay';
 import { useDispatch, useSelector } from 'react-redux';
 import { calendarsByWriteAuthoritySelector } from '../../store/selectors/calendars';
 import { getAllCalendar } from '../../store/thunk/calendar';
 import { EVENT_COLOR } from '../../styles/color';
-import useEventModal from '../../hooks/useEventModal';
-import { EventColorModalContext } from '../../context/EventModalContext.js';
+
 const Index = () => {
   const { state: eventInfo } = useLocation();
   const navigate = useNavigate();
@@ -62,49 +60,22 @@ const Index = () => {
     const eventData = await getEventDetail(event);
     eventData.EventMembers =
       eventData.EventMembers?.reduce((obj, member) => {
-        obj[member.email] = { ...member, canInvite: false };
+        obj[member.email] = { ...member, canInvite: true };
         return obj;
       }, {}) || {};
 
+    const alerts = eventData.alerts.map((alert, id) => ({ ...alert, id }));
     setEvent({
       ...event,
       ...eventData,
       alerts:
         eventData.allDay === EVENT.allDay.true
-          ? { allDay: eventData.alerts, notAllDay: [] }
-          : { allDay: [], notAllDay: eventData.alerts },
+          ? { allDay: alerts, notAllDay: [] }
+          : { allDay: [], notAllDay: alerts },
     });
-  }
-
-  const eventColorModal = useEventModal();
-  const eventColorModalContext = {
-    ...eventColorModal,
-    showModal: showEventColorModal,
-  };
-
-  function showEventColorModal(e, colorData) {
-    const { top, left } = e.currentTarget.getBoundingClientRect();
-    eventColorModal.showModal({
-      ...colorData,
-      style: { top, left },
-    });
-    e.stopPropagation();
   }
 
   if (!event || !event.id || event.calendarIndex < 0) return;
-
-  const [startDate, endDate] = [event.startTime, event.endTime].map(
-    time => new Moment(new Date(time)),
-  );
-
-  function clickAddAlert(e) {
-    e.stopPropagation();
-    if (event.allDay === EVENT.allDay.true) {
-      return { type: '일', time: 1, hour: 9, minute: 0 };
-    } else {
-      return { type: '분', time: 30 };
-    }
-  }
 
   function saveEvent() {
     const inviteMembers = Object.values(event.EventMembers).filter(
@@ -137,8 +108,45 @@ const Index = () => {
     );
   }
 
+  const [startDate, endDate] = [event.startTime, event.endTime].map(
+    time => new Moment(new Date(time)),
+  );
   const isAllDay = event.allDay === EVENT.allDay.true;
   const alerts = isAllDay ? event.alerts.allDay : event.alerts.notAllDay;
+
+  function clickAddAlert(e) {
+    e.stopPropagation();
+    if (isAllDay) {
+      const alerts = event.alerts.allDay;
+      setEvent(event => ({
+        ...event,
+        alerts: {
+          ...event.alerts,
+          allDay: alerts.concat({
+            id: (alerts[alerts.length - 1]?.id || 0) + 1,
+            type: '일',
+            time: 1,
+            hour: 9,
+            minute: 0,
+          }),
+        },
+      }));
+    } else {
+      const alerts = event.alerts.notAllDay;
+      setEvent(event => ({
+        ...event,
+        alerts: {
+          ...event.alerts,
+          notAllDay: alerts.concat({
+            id: (alerts[alerts.length - 1]?.id || 0) + 1,
+            type: '분',
+            time: 30,
+          }),
+        },
+      }));
+    }
+  }
+
   return (
     <>
       <div className={styles.date_title_conitner}>
@@ -235,28 +243,66 @@ const Index = () => {
               className={styles.input_fill}
             />
           </div>
-          <div>
+          <div className={styles.alerts_container}>
             <FontAwesomeIcon icon={faBell} />
             <div>
               {isAllDay
                 ? event.alerts.allDay.map((alert, index) => (
-                    <div key={index} className={styles.alert_item}>
-                      <CustomAlertOfAllDay alert={alert} />
+                    <div key={alert.id} className={styles.alert_item}>
+                      <CustomAlertOfAllDay
+                        alert={alert}
+                        onChange={data => {
+                          event.alerts.allDay[index] = {
+                            ...event.alerts.allDay[index],
+                            ...data,
+                          };
+                        }}
+                      />
                       <Tooltip title="알림 삭제">
                         <FontAwesomeIcon
                           icon={faClose}
                           className={styles.icon_close}
+                          onClick={() => {
+                            setEvent(event => ({
+                              ...event,
+                              alerts: {
+                                ...event.alerts,
+                                allDay: event.alerts.allDay.filter(
+                                  target => target.id !== alert.id,
+                                ),
+                              },
+                            }));
+                          }}
                         />
                       </Tooltip>
                     </div>
                   ))
                 : event.alerts.notAllDay.map((alert, index) => (
-                    <div key={index} className={styles.alert_item}>
-                      <CustomAlertOfNotAllDay alert={alert} />
+                    <div key={alert.id} className={styles.alert_item}>
+                      <CustomAlertOfNotAllDay
+                        alert={alert}
+                        onChange={data => {
+                          event.alerts.notAllDay[index] = {
+                            ...event.alerts.notAllDay[index],
+                            ...data,
+                          };
+                        }}
+                      />
                       <Tooltip title="알림 삭제">
                         <FontAwesomeIcon
                           icon={faClose}
                           className={styles.icon_close}
+                          onClick={() => {
+                            setEvent(event => ({
+                              ...event,
+                              alerts: {
+                                ...event.alerts,
+                                notAllDay: event.alerts.notAllDay.filter(
+                                  target => target.id !== alert.id,
+                                ),
+                              },
+                            }));
+                          }}
                         />
                       </Tooltip>
                     </div>
@@ -285,29 +331,26 @@ const Index = () => {
                 }));
               }}
             />
-            <EventColorModalContext.Provider value={eventColorModalContext}>
-              <EventColorOption
-                colors={
-                  Object.values(EVENT_COLOR).includes(
-                    calendars[event.calendarIndex]?.color,
-                  )
-                    ? EVENT_COLOR
-                    : {
-                        ...EVENT_COLOR,
-                        '캘린더 색상': calendars[event.calendarIndex]?.color,
-                      }
-                }
-                selectedColor={
-                  event?.color || calendars[event.calendarIndex]?.color
-                }
-                changeColor={(e, color) => {
-                  if (calendars[event.calendarIndex].color === color)
-                    setEvent(event => ({ ...event, color: null }));
-                  else setEvent(event => ({ ...event, color }));
-                }}
-              />
-              {eventColorModal.isModalShown && <EventColorModal />}
-            </EventColorModalContext.Provider>
+            <EventColorOption
+              colors={
+                Object.values(EVENT_COLOR).includes(
+                  calendars[event.calendarIndex]?.color,
+                )
+                  ? EVENT_COLOR
+                  : {
+                      ...EVENT_COLOR,
+                      '캘린더 색상': calendars[event.calendarIndex]?.color,
+                    }
+              }
+              selectedColor={
+                event?.color || calendars[event.calendarIndex]?.color
+              }
+              changeColor={(e, color) => {
+                if (calendars[event.calendarIndex].color === color)
+                  setEvent(event => ({ ...event, color: null }));
+                else setEvent(event => ({ ...event, color }));
+              }}
+            />
           </div>
           <div className={styles.busy_container}>
             <FontAwesomeIcon icon={faLock} />

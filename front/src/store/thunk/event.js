@@ -89,10 +89,10 @@ export const updateEvent = createAsyncThunk(
       eventInfo.calendarId > 0
         ? EVENT_URL.UPDATE_GROUP_EVENT
         : EVENT_URL.UPDATE_PRIVATE_EVENT;
-
-    const { data } = await axios.post(url, {
+    console.log('input ', url, {
+      eventId: Math.abs(eventInfo.id),
       calendarId: Math.abs(eventInfo.calendarId),
-      eventName: eventInfo.eventName,
+      eventName: eventInfo.name,
       color: eventInfo.color,
       permission: eventInfo.permission,
       busy: eventInfo.busy,
@@ -106,6 +106,24 @@ export const updateEvent = createAsyncThunk(
       }),
       guests: eventInfo.guests,
     });
+    const { data } = await axios.post(url, {
+      eventId: Math.abs(eventInfo.id),
+      calendarId: Math.abs(eventInfo.calendarId),
+      eventName: eventInfo.name,
+      color: eventInfo.color,
+      permission: eventInfo.permission,
+      busy: eventInfo.busy,
+      memo: eventInfo.memo,
+      allDay: eventInfo.allDay,
+      startTime: eventInfo.startTime,
+      endTime: eventInfo.endTime,
+      alerts: eventInfo.alerts.map(alert => {
+        const type = { 분: 'minute', 시간: 'hour', 일: 'day', 주: 'week' };
+        return { ...alert, type: type[alert.type] };
+      }),
+      guests: eventInfo.guests,
+    });
+    console.log(data);
 
     if (eventInfo.calendarId > 0) return data;
     return {
