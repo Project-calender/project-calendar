@@ -234,11 +234,13 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
 router.post("/editPrivateEvent", authJWT, async (req, res, next) => {
   try {
     const myEvent = await PrivateEvent.findOne({
-      id: req.body.eventId,
+      where: {
+        id: req.body.eventId,
+      },
     });
 
     if (!myEvent) {
-      res
+      return res
         .status(400)
         .json({ message: "수정할 개인이벤트의 조회 결과가 없습니다" });
     }

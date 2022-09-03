@@ -19,7 +19,7 @@ const userRouter = require("./routes/user");
 const privateEventRouter = require("./routes/privateEvent");
 const alertRouter = require("./routes/alert");
 const privateCalendar = require("./routes/privateCalendar");
-const { restartAll } = require("./realTimeAlerts");
+// const { restartAll } = require("./realTimeAlerts");
 const useSocket = require("./useSocket");
 
 //swagger
@@ -56,13 +56,13 @@ app.use(
   swaggerUi.setup(swaggerSpec, { explorer: true }) //검색 허용가능
 );
 
-restartAll()
-  .then(() => {
-    console.log("restart All alerts completely!");
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+// restartAll()
+//   .then(() => {
+//     console.log("restart All alerts completely!");
+//   })
+//   .catch((error) => {
+//     console.log(error);
+//   });
 
 app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
