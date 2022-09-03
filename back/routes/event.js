@@ -574,64 +574,83 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
 
 router.post("/inviteCheck", authJWT, async (req, res, next) => {
   try {
-    const guest = await User.findOne({
-      where: { email: req.body.guestEmail },
-      attributes: ["id", "email", "nickname"],
-      include: [
-        {
-          model: ProfileImage,
-          attributes: {
-            exclude: ["id", "UserId"],
+    var guests = [];
+    await Promise.all(
+      req.body.guests.map(async (guestEmail) => {
+        const guest = await User.findOne({
+          where: { email: guestEmail },
+          attributes: ["id", "email", "nickname"],
+          include: [
+            {
+              model: ProfileImage,
+              attributes: {
+                exclude: ["id", "UserId"],
+              },
+            },
+          ],
+        });
+
+        if (!guest) {
+          return guests.push({
+            guest: guest,
+            message: "존재하지 않는 유저입니다!",
+            canInvite: false,
+          });
+        }
+
+        const isGroupMember = await CalendarMember.findOne({
+          where: {
+            [Op.and]: { UserId: guest.id, CalendarId: req.body.calendarId },
           },
-        },
-      ],
-    });
+        });
 
-    if (!guest) {
-      return res
-        .status(400)
-        .send({ message: "존재하지 않는 유저입니다!", canInvite: false });
-    }
+        if (!isGroupMember) {
+          return guests.push({
+            guest: guest,
+            message: "그룹 캘린더에 존재하지 않는 유저입니다!",
+            canInvite: false,
+          });
+        }
 
-    const isGroupMember = await CalendarMember.findOne({
-      where: {
-        [Op.and]: { UserId: guest.id, CalendarId: req.body.calendarId },
-      },
-    });
-    if (!isGroupMember) {
-      return res.status(402).send({
-        message: "그룹 캘린더에 존재하지 않는 유저입니다!",
-        canInvite: false,
-      });
-    }
+        const groupEvent = await Event.findOne({
+          where: { id: req.body.eventId },
+        });
 
-    const groupEvent = await Event.findOne({
-      where: { id: req.body.eventId },
-    });
+        const alreadyEventMember = await EventMember.findOne({
+          where: {
+            [Op.and]: { UserId: guest.id, EventId: groupEvent.id },
+          },
+        });
+        if (alreadyEventMember) {
+          return guests.push({
+            guest: guest,
+            state: alreadyEventMember.state,
+            message: "이미 그룹 이벤트의 멤버입니다!",
+            canInvite: false,
+          });
+        }
 
-    const alreadyEventMember = await EventMember.findOne({
-      where: {
-        [Op.and]: { UserId: guest.id, EventId: groupEvent.id, state: 1 },
-      },
-    });
-    if (alreadyEventMember) {
-      return res
-        .status(403)
-        .send({ message: "이미 그룹 이벤트의 멤버입니다!", canInvite: false });
-    }
+        // const alreadyInvite = await EventMember.findOne({
+        //   where: {
+        //     [Op.and]: { UserId: guest.id, EventId: groupEvent.id },
+        //   },
+        // });
+        // if (alreadyInvite) {
+        //   return guests.push({
+        //     guest: guest,
+        //     message: "이미 초대를 보낸 사람입니다!",
+        //     canInvite: false,
+        //   });
+        // }
 
-    const alreadyInvite = await EventMember.findOne({
-      where: {
-        [Op.and]: { UserId: guest.id, EventId: groupEvent.id },
-      },
-    });
-    if (alreadyInvite) {
-      return res
-        .status(405)
-        .send({ message: "이미 초대를 보낸 사람입니다!", canInvite: false });
-    }
+        return guests.push({
+          guest: guest,
+          canInvite: true,
+        });
+      })
+    );
 
-    return res.status(200).send({ guest, canInvite: true });
+    return res.status(200).send(guests);
   } catch (error) {
     console.error(error);
     next(error);
@@ -681,58 +700,6 @@ router.post(
     }
   }
 );
-
-// router.post("/inviteGroupEvent", authJWT, async (req, res, next) => {
-//   try {
-//     const groupEvent = await Event.findOne({
-//       where: { id: req.body.eventId },
-//     });
-
-//     await sequelize.transaction(async (t) => {
-//       await Promise.all(
-//         req.body.guests.map(async (guestEmail) => {
-//           const guest = await User.findOne({
-//             where: { email: guestEmail },
-//           });
-
-//           await groupEvent.addEventMembers(guest, { transaction: t });
-
-//           const privateCalendar = await guest.getPrivateCalendar();
-//           await privateCalendar.createPrivateEvent(
-//             {
-//               name: groupEvent.name,
-//               color: groupEvent.color,
-//               busy: groupEvent.busy,
-//               memo: groupEvent.memo,
-//               allDay: groupEvent.allDay,
-//               startTime: groupEvent.startTime,
-//               endTime: groupEvent.endTime,
-//               groupEventId: groupEvent.id,
-//               state: 0,
-//             },
-//             { transaction: t }
-//           );
-
-//           await Alert.create(
-//             {
-//               UserId: guest.id,
-//               type: "event",
-//               calendarId: req.body.calendarId,
-//               eventDate: groupEvent.startTime,
-//               content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
-//             },
-//             { transaction: t }
-//           );
-//         })
-//       );
-//     });
-
-//     return res.status(200).send({ success: true });
-//   } catch (error) {
-//     console.error(error);
-//     next(error);
-//   }
-// });
 
 router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
   try {
@@ -1249,13 +1216,18 @@ router.post("/test2", async (req, res, next) => {
 
 router.post("/test", async (req, res, next) => {
   try {
-    const user = await User.findOne({
-      where: { id: 1 },
-    });
+    var test = [];
+    await Promise.all(
+      [1, 2, 3].map(async (item) => {
+        if (item === 1) {
+          return test.push(item);
+        }
 
-    const addAge = JSON.parse(JSON.stringify(user));
-    addAge["age"] = 1;
-    return res.status(200).send(addAge);
+        console.log(item);
+      })
+    );
+
+    return res.status(200).send(test);
   } catch (error) {
     console.error(error);
     next(error);
