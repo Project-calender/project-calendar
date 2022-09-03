@@ -21,8 +21,10 @@ import {
 } from '../../../../context/EventModalContext';
 
 const Index = ({ showEventInfoListModal }) => {
-  const [isDetail, setDetail] = useState(false);
   const newEvent = useSelector(newEventSelector);
+  const [isDetail, setDetail] = useState(
+    newEvent.allDay === EVENT.allDay.false ? true : false,
+  );
   const [startDate, endDate] = [newEvent.startTime, newEvent.endTime].map(
     time => new Moment(time),
   );

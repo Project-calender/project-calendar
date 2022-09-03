@@ -55,8 +55,8 @@ const Index = ({ hideModal, modalData }) => {
       .map(time => new Moment(time).time)
       .sort((a, b) => a - b);
     const eventBars = createEventBar({
-      standardDateTime: startTime,
-      endDateTime: endTime,
+      standardDateTime: new Moment(startTime).resetTime().time,
+      endDateTime: new Moment(endTime).resetTime().time,
     });
     dispatch(setNewEventBars(eventBars));
     dispatch(updateNewEventBarProperties({ startTime, endTime }));

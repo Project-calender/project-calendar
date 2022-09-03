@@ -19,6 +19,7 @@ import { selectedDateSelector } from '../../store/selectors/date';
 import { addMonth, selectDate } from '../../store/date';
 import { useState } from 'react';
 import Moment from '../../utils/moment';
+import { getAllCalendar } from '../../store/thunk/calendar';
 
 const Index = ({ isSideBarOn }) => {
   const selectedDate = useSelector(selectedDateSelector);
@@ -26,14 +27,20 @@ const Index = ({ isSideBarOn }) => {
     new Moment(selectedDate.time),
   );
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCalendar());
+  }, [dispatch]);
+
   useEffect(() => {
     setMiniCalendarDate(new Moment(selectedDate.time));
   }, [selectedDate]);
 
-  const dispatch = useDispatch();
   function onClickDate(e, date) {
     dispatch(selectDate(date));
   }
+
   return (
     <ModalLayout Modal={ResignCalendarModal} Context={ResignCalendarContext}>
       <ModalLayout Modal={CalendarOptionModal} Context={CalendarOptionContext}>

@@ -1,26 +1,21 @@
-.container{width: 100%;height: 100%;}
+.container{width: 100%; height: 94.5vh; overflow-y: auto;}
 .container ul{}
-.container ul li{width: 100%; height: 50px; display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 0 10px; box-sizing: border-box;}
+.container ul li{width: 100%; height: 100%; display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 5px 10px; box-sizing: border-box;}
+.container ul li .wrap{width: 100%; padding: 0 40px 0 0; box-sizing: border-box;}
 
-.container ul li .time{ display: flex; align-items: center;}
-.container ul li .time .day{width: 35px;height: 35px; border-radius: 50%; text-align: center; line-height: 35px; cursor: pointer;}
+.container ul li .time{ display: flex; align-items: center; width: 100%;}
+.container ul li .time .day{ border-radius: 50%; text-align: center;line-height: 35px; cursor: pointer;}
 .container ul li .time .day:hover{background: #eee;}
 .container ul li .time.today .day{background: #4285F4;}
-.container ul li .time .day em{font-size: 16px; font-weight: 500; line-height: normal;}
+.container ul li .time .day em{ display: block; width: 35px;height: 35px; font-size: 16px; font-weight: 500;}
 
 .container ul li .time .year{width: 75px; margin-left: 5px;}
 .container ul li .time .year p{font-size: 11px;font-weight: 500; color: #3c4043;}
 .container ul li .time.today .year p{color: #1a73e8;}
 
-.event_wrap{width: 100%;height: 30px; display: flex; align-items: center; margin-left: 40px; border-radius: 15px; padding: 0 10px; box-sizing: border-box; cursor: pointer;}
-.event_wrap:hover{ background: #eee;}
 
-.all_day{width: 190px;  position: relative;}
-.all_day em{margin-left: 30px; font-size: 14px;color: #3c4043;} 
-.all_day em::before{content: "";width: 12px;height: 12px;background: #039BE5; border-radius: 50%; position: absolute; top: 50%; left: 0; transform: translateY(-50%);}
-
-.content{width: 100%;}
-.content p{font-size: 14px; color: #3c4043;}
+.search_undefined{margin: 40px 0 0 60px; }
+.search_undefined em{font-size: 18px;}
 
 @media (max-width:1000px){
     .container{overflow-x: auto;}

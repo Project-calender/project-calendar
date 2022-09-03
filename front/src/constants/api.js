@@ -30,14 +30,17 @@ export const EVENT_URL = {
   UPDATE_EVENT_INVITE_STATE: '/event/changeEventInviteState',
   CREATE_GROUP_EVENT: '/event/createGroupEvent',
   DELETE_GROUP_EVENT: '/event/deleteGroupEvent',
+  UPDATE_GROUP_EVENT: '/event/editGroupEvent',
   UPDATE_GROUP_EVENT_COLOR: '/event/editGroupEventColor',
   CREATE_PRIVATE_EVENT: '/privateEvent/createPrivateEvent',
   DELETE_PRIVATE_EVENT: '/privateEvent/deletePrivateEvent',
+  UPDATE_PRIVATE_EVENT: '/privateEvent/editPrivateEvent',
   UPDATE_PRIVATE_EVENT_COLOR: '/privateEvent/editPrivateEventColor',
   SEARCH_EVENT: '/event/searchEvent',
   CHECK_EVENT_INVITE: '/event/inviteCheck',
   CHECK_CREATE_EVENT_INVITE: '/event/inviteCheckBeforeCreateEvent',
   INVITE_GROUP_EVENT: '/event/inviteGroupEvent',
+  ALL_EVENT: '/event/getAllEventForYear',
 };
 
 export const ALERT_URL = {

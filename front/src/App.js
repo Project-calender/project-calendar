@@ -11,8 +11,10 @@ import YearCalendarPage from './pages/YearCalendarPage';
 import MonthCalendarPage from './pages/MonthCalendarPage';
 import DayCalendarPage from './pages/DayCalendarPage';
 import AlertPage from './pages/AlertPage';
+import AllEvent from './pages/AllEvent';
 import Search from './components/searchDetall';
-import { CALENDAR_PATH, USER_PATH } from './constants/path';
+import EditEventPage from './pages/EditEventPage';
+import { CALENDAR_PATH, EVENT_PATH, USER_PATH } from './constants/path';
 
 function App() {
   return (
@@ -30,7 +32,10 @@ function App() {
             path={CALENDAR_PATH.YEAR}
             element={<YearCalendarPage />}
           ></Route>
-          <Route path={CALENDAR_PATH.AGENDA} element={<div>일정</div>}></Route>
+          <Route
+            path={CALENDAR_PATH.AGENDA}
+            element={<AllEvent></AllEvent>}
+          ></Route>
           <Route
             path={CALENDAR_PATH.CUSTOMDAY}
             element={<div>4일</div>}
@@ -45,6 +50,7 @@ function App() {
         <Route path={USER_PATH.JOIN} element={<Join />}></Route>
         <Route path="*" element={<Navigate to={CALENDAR_PATH.MONTH} />} />
         <Route path={USER_PATH.SETTING} element={<Setting></Setting>}></Route>
+        <Route path={EVENT_PATH.EDIT_EVENT} element={<EditEventPage />}></Route>
       </Routes>
     </div>
   );

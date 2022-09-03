@@ -13,9 +13,7 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CALENDAR_PATH } from '../../../constants/path';
-import axios from '../../../utils/token';
-import { EVENT_URL } from '../../../constants/api';
-import { addSearchData } from '../../../store/search';
+import { onSearchValue } from '../../../store/search';
 import { useDispatch } from 'react-redux';
 
 const Index = ({ setMenuActive }) => {
@@ -41,21 +39,6 @@ const Index = ({ setMenuActive }) => {
         setMenuActive(1);
       }
     }
-  }
-
-  //검색
-  function onSearch() {
-    axios
-      .post(`${EVENT_URL.SEARCH_EVENT}`, {
-        searchWord: searchValue,
-      })
-      .then(res => {
-        dispatch(addSearchData(res.data));
-        navigate(CALENDAR_PATH.SEARCH);
-      })
-      .catch(error => {
-        console.log('검색 실패', error);
-      });
   }
 
   return (
@@ -104,7 +87,8 @@ const Index = ({ setMenuActive }) => {
           <button
             onClick={e => {
               e.preventDefault();
-              onSearch();
+              dispatch(onSearchValue(searchValue));
+              navigate(CALENDAR_PATH.SEARCH);
             }}
           ></button>
         </form>
