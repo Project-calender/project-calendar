@@ -1021,6 +1021,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
           );
         }
       }
+
       await PrivateEvent.update(
         {
           name: req.body.eventName,
@@ -1038,8 +1039,8 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
               groupEventId: req.body.eventId,
             },
           },
-        },
-        { transaction: t }
+          transaction: t,
+        }
       );
 
       return res.status(200).send(groupEvent);
