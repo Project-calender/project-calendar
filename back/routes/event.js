@@ -592,7 +592,7 @@ router.post("/inviteCheck", authJWT, async (req, res, next) => {
 
         if (!guest) {
           return guests.push({
-            guest: guest,
+            guest: guestEmail,
             message: "존재하지 않는 유저입니다!",
             canInvite: false,
           });
@@ -626,7 +626,7 @@ router.post("/inviteCheck", authJWT, async (req, res, next) => {
             guest: guest,
             state: alreadyEventMember.state,
             message: "이미 그룹 이벤트의 멤버입니다!",
-            canInvite: false,
+            canInvite: true,
           });
         }
 
@@ -1019,24 +1019,23 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
           );
         }
       }
-      const me = await User.findOne({ where: { id: req.myId } });
-      const privateCalendar = await me.getPrivateCalendar();
-      const changePrivateEvent = await PrivateEvent.findOne({
+
+      const changePrivateEvent = await PrivateEvent.findAll({
         where: {
           [Op.and]: {
             groupEventId: req.body.eventId,
-            PrivateCalendarId: privateCalendar.id,
           },
         },
       });
       await changePrivateEvent.update(
         {
-          name: req.body.name,
-          color: req.body.color,
+          name: req.body.eventName,
+          color: req.body.color ? req.body.color : null,
           busy: req.body.busy,
+          permission: req.body.permission,
           memo: req.body.memo,
-          startTime: req.body.startTime,
-          endTime: req.body.endTime,
+          startTime: new Date(req.body.startTime),
+          endTime: new Date(req.body.endTime),
           allDay: req.body.allDay,
         },
         { transaction: t }
