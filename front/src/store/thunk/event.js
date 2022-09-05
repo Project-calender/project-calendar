@@ -206,7 +206,7 @@ export const getEventDetail = async event => {
   return { ...events, alerts };
 };
 
-export const checkEventInvite = async ({ guestEmail, calendarId }) => {
+export const checkCreateEventInvite = async ({ guestEmail, calendarId }) => {
   try {
     const res = await axios.post(EVENT_URL.CHECK_CREATE_EVENT_INVITE, {
       guestEmail,
@@ -224,4 +224,13 @@ export const checkEventInvite = async ({ guestEmail, calendarId }) => {
     const { canInvite, message } = error.response.data || {};
     return { canInvite, id: guestEmail, email: guestEmail, message };
   }
+};
+
+export const checkEditEventInvite = async ({ guests, calendarId, eventId }) => {
+  const { data } = await axios.post(EVENT_URL.CHECK_EDIT_EVENT_INVITE, {
+    guests,
+    calendarId,
+    eventId,
+  });
+  return data;
 };

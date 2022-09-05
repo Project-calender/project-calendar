@@ -26,12 +26,14 @@ import Moment from '../../utils/moment';
 
 import EventColorOption from '../../components/calendar/EventColorOption';
 import EventMemberList from '../../components/event/EventMemberList';
+import EventDateTitle from '../../components/event/EventDateTitle';
 
 import CustomAlertOfAllDay from '../../components/alert/CustomAlertOfAllDay';
 import CustomAlertOfNotAllDay from '../../components/alert/CustomAlertOfNotAllDay';
 import { useDispatch, useSelector } from 'react-redux';
 import { calendarsByWriteAuthoritySelector } from '../../store/selectors/calendars';
 import { getAllCalendar } from '../../store/thunk/calendar';
+import { checkEditEventInvite } from '../../store/thunk/event';
 import { EVENT_COLOR } from '../../styles/color';
 
 const Index = () => {
@@ -61,12 +63,17 @@ const Index = () => {
 
   async function initEvent(event) {
     const eventData = await getEventDetail(event);
-
     setEventMembers(
       eventData.EventMembers?.reduce((obj, member) => {
-        obj[member.email] = { ...member, canInvite: true };
+        const { id, email, nickname, ProfileImages, EventMember } = member;
+        const { state } = EventMember;
+        obj[member.email] = {
+          guest: { id, email, nickname, profileImage: ProfileImages[0].src },
+          state,
+          canInvite: true,
+        };
         return obj;
-      }, {}),
+      }, {}) || {},
     );
 
     const alerts = eventData.alerts.map((alert, id) => ({ id, ...alert }));
@@ -111,9 +118,33 @@ const Index = () => {
         endTime: new Date(event.endTime).toISOString(),
         guests: Object.values(eventMembers)
           .filter(member => member.canInvite)
-          .map(member => member.email),
+          .map(member => member.guest.email),
         alerts: newAlerts,
       }),
+    );
+  }
+
+  async function checkEventMembers(guests, calendarId, eventId) {
+    const members = await checkEditEventInvite({ guests, calendarId, eventId });
+    setEventMembers(prevMembers =>
+      members.reduce(
+        (members, member) => {
+          const profileImage = (member.guest?.ProfileImages || [])[0]?.src;
+
+          members[member.guest.email] = {
+            ...member,
+            guest: {
+              ...member.guest,
+              email: member.guest.email,
+              profileImage,
+            },
+            state: member.state || 0,
+            canInvite: member.canInvite,
+          };
+          return members;
+        },
+        { ...prevMembers },
+      ),
     );
   }
 
@@ -173,29 +204,11 @@ const Index = () => {
               추가 작업 <FontAwesomeIcon icon={faCaretDown} />
             </button>
           </div>
-          <div className={styles.event_time_container}>
-            <Input
-              value={startDate.toDateString()}
-              className={styles.input_fill}
-            />
-            {event.allDay === EVENT.allDay.false && (
-              <Input
-                value={startDate.toTimeString()}
-                className={`${styles.input_fill} ${styles.time_input}`}
-              />
-            )}
-            <em>-</em>
-            {event.allDay === EVENT.allDay.false && (
-              <Input
-                value={endDate.toTimeString()}
-                className={`${styles.input_fill} ${styles.time_input}`}
-              />
-            )}
-            <Input
-              value={endDate.toDateString()}
-              className={styles.input_fill}
-            />
-          </div>
+          <EventDateTitle
+            event={event}
+            startDate={startDate}
+            endDate={endDate}
+          />
           <div className={styles.allDay_title}>
             <CheckBox
               checked={event.allDay === EVENT.allDay.true}
@@ -321,11 +334,18 @@ const Index = () => {
               itemList={calendars.map(calendar => calendar.name)}
               selectedItem={calendars[event.calendarIndex]?.name}
               onChange={e => {
+                const calendarIndex = +e.target.getAttribute('value');
                 setEvent(event => ({
                   ...event,
-                  calendarIndex: +e.target.getAttribute('value'),
+                  calendarIndex,
                   color: null,
                 }));
+
+                checkEventMembers(
+                  Object.keys(eventMembers),
+                  calendars[calendarIndex]?.id,
+                  event.id,
+                );
               }}
             />
             <EventColorOption
@@ -398,9 +418,11 @@ const Index = () => {
             <Line />
           </div>
           <EventMemberList
+            eventId={event.id}
+            calendarId={calendars[event.calendarIndex]?.id}
             eventMembers={eventMembers}
             setEventMembers={setEventMembers}
-            calendarId={calendars[event.calendarIndex]?.id}
+            checkEventMembers={checkEventMembers}
           />
         </div>
       </div>

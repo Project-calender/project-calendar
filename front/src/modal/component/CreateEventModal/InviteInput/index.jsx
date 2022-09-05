@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 
 import Input from '../../../../components/common/Input';
-import { checkEventInvite } from '../../../../store/thunk/event';
+import { checkCreateEventInvite } from '../../../../store/thunk/event';
 import { useDispatch, useSelector } from 'react-redux';
 import { newEventSelector } from '../../../../store/selectors/newEvent';
 import { selectAllCalendar } from '../../../../store/selectors/calendars';
@@ -26,7 +26,7 @@ const Index = () => {
   async function handleInviteInput(e) {
     if (e.code !== 'Enter') return;
     const guestEmail = e.target.value;
-    const member = await checkEventInvite({
+    const member = await checkCreateEventInvite({
       guestEmail,
       calendarId: calendars[newEvent.calendarId].id,
     });

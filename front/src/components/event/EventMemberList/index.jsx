@@ -14,9 +14,14 @@ import {
 
 import Input from '../../common/Input';
 import Tooltip from '../../common/Tooltip';
-import { checkEventInvite } from '../../../store/thunk/event';
 
-const Index = ({ calendarId, eventMembers, setEventMembers }) => {
+const Index = ({
+  eventId,
+  calendarId,
+  eventMembers,
+  setEventMembers,
+  checkEventMembers,
+}) => {
   const [helfModalPosition, setHelfModalStyle] = useState({});
 
   function moveHelfModal(e) {
@@ -36,7 +41,7 @@ const Index = ({ calendarId, eventMembers, setEventMembers }) => {
   const membersByState =
     Object.values(eventMembers).reduce(
       (membersByState, member) => {
-        membersByState[EVENT_STATE_KEY[member.EventMember.state]].push(member);
+        membersByState[EVENT_STATE_KEY[member.state || 0]].push(member);
         return membersByState;
       },
       Object.keys(EVENT_STATE).reduce((membersByState, state) => {
@@ -63,46 +68,48 @@ const Index = ({ calendarId, eventMembers, setEventMembers }) => {
         className={styles.input_fill}
         onKeyDown={async e => {
           if (e.key !== 'Enter') return;
-          const member = await checkEventInvite({
-            guestEmail: e.target.value,
-            calendarId,
-          });
-          console.log(member);
-          setEventMembers(members => ({ ...members, [member.email]: member }));
+
+          const email = e.target.value;
+          checkEventMembers([email], calendarId, eventId);
+          e.target.value = '';
         }}
       />
+
       {Object.keys(eventMembers).length > 0 && (
         <p>참석자 {Object.keys(eventMembers).length}명</p>
       )}
       <em>{memberStateTitle}</em>
 
-      {Object.values(eventMembers).map(member => (
-        <div key={member.id} className={styles.member_container}>
+      {Object.values(eventMembers).map(({ guest, state, canInvite }) => (
+        <div key={guest.email} className={styles.member_container}>
           <div className={styles.user_title}>
             <div className={styles.user_profile}>
-              <img src={member.ProfileImages[0].src} alt="profile" />
-              {member.EventMember?.state ? (
+              <img
+                src={
+                  guest.profileImage ||
+                  `${process.env.PUBLIC_URL}/img/join/profile.png`
+                }
+                alt="profile"
+              />
+              {state ? (
                 <FontAwesomeIcon
                   className={`${styles.user_state} ${
-                    styles[EVENT_STATE_KEY[member.EventMember.state]]
+                    styles[EVENT_STATE_KEY[state]]
                   }`}
-                  icon={
-                    EVENT_STATE[EVENT_STATE_KEY[member.EventMember.state]].icon
-                  }
+                  icon={EVENT_STATE[EVENT_STATE_KEY[state]].icon}
                 />
               ) : null}
             </div>
-            <p>{member.email}</p>
-            {!member.canInvite && <em>*</em>}
+            <p>{guest.email}</p>
+            {!canInvite && <em>*</em>}
           </div>
           <Tooltip title="삭제" top={0}>
             <FontAwesomeIcon
               icon={faClose}
               className={styles.icon_delete}
               onClick={() => {
-                delete eventMembers[member.email];
+                delete eventMembers[guest.email];
                 setEventMembers({ ...eventMembers });
-                console.log(eventMembers);
               }}
             />
           </Tooltip>
@@ -138,9 +145,11 @@ const Index = ({ calendarId, eventMembers, setEventMembers }) => {
 };
 
 Index.propTypes = {
+  eventId: PropTypes.number,
   calendarId: PropTypes.number,
   eventMembers: PropTypes.object,
   setEventMembers: PropTypes.func,
+  checkEventMembers: PropTypes.func,
 };
 
 export default Index;

@@ -36,11 +36,6 @@
 .input_fill Input { background: #f1f3f4; padding: 10px 0px; } 
 .input_fill > :nth-child(2) { background: transparent } 
 
-.event_time_container .input_fill { width: 95px; margin-right: 8px; border-radius: 3px;}
-.event_time_container { align-items: center; }
-.event_time_container > em { margin-right: 8px; }
-.time_input { width: 65px !important; }
-
 
 .google_meet { display: flex; align-items: center; } 
 .google_meet img { height: 25px !important; object-fit: contain; position:relative; margin-top:0px !important; } 

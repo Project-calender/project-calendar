@@ -1,0 +1,9 @@
+.event_time_container .input_fill { width: 95px; margin-right: 8px; border-radius: 3px;}
+.event_time_container { align-items: center; }
+.event_time_container > em { margin-right: 8px; }
+
+.input_fill { background: #f1f3f4; padding: 0px 10px; width: 100%; } 
+.input_fill Input { background: #f1f3f4; padding: 10px 0px; width: calc(100% + 5px); } 
+.input_fill > :nth-child(2) { background: transparent } 
+
+.time_input { width: 65px !important; }
