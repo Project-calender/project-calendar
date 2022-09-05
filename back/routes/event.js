@@ -839,44 +839,46 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
               where: { email: guestEmail },
             });
 
-            const alreadyMember = await EventMember.findOne({
-              where: {
-                [Op.and]: {
-                  UserId: guest.id,
-                  EventId: req.body.eventId,
+            if (guest) {
+              const alreadyMember = await EventMember.findOne({
+                where: {
+                  [Op.and]: {
+                    UserId: guest.id,
+                    EventId: req.body.eventId,
+                  },
                 },
-              },
-            });
+              });
 
-            if (!alreadyMember) {
-              await groupEvent.addEventMembers(guest, { transaction: t });
+              if (!alreadyMember) {
+                await groupEvent.addEventMembers(guest, { transaction: t });
 
-              const privateCalendar = await guest.getPrivateCalendar();
-              await privateCalendar.createPrivateEvent(
-                {
-                  name: groupEvent.name,
-                  color: groupEvent.color,
-                  busy: groupEvent.busy,
-                  memo: groupEvent.memo,
-                  allDay: groupEvent.allDay,
-                  startTime: groupEvent.startTime,
-                  endTime: groupEvent.endTime,
-                  groupEventId: groupEvent.id,
-                  state: 0,
-                },
-                { transaction: t }
-              );
+                const privateCalendar = await guest.getPrivateCalendar();
+                await privateCalendar.createPrivateEvent(
+                  {
+                    name: groupEvent.name,
+                    color: groupEvent.color,
+                    busy: groupEvent.busy,
+                    memo: groupEvent.memo,
+                    allDay: groupEvent.allDay,
+                    startTime: groupEvent.startTime,
+                    endTime: groupEvent.endTime,
+                    groupEventId: groupEvent.id,
+                    state: 0,
+                  },
+                  { transaction: t }
+                );
 
-              await Alert.create(
-                {
-                  UserId: guest.id,
-                  type: "event",
-                  calendarId: req.body.calendarId,
-                  eventDate: groupEvent.startTime,
-                  content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
-                },
-                { transaction: t }
-              );
+                await Alert.create(
+                  {
+                    UserId: guest.id,
+                    type: "event",
+                    calendarId: req.body.calendarId,
+                    eventDate: groupEvent.startTime,
+                    content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
+                  },
+                  { transaction: t }
+                );
+              }
             }
           })
         );
@@ -1019,15 +1021,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
           );
         }
       }
-
-      const changePrivateEvent = await PrivateEvent.findAll({
-        where: {
-          [Op.and]: {
-            groupEventId: req.body.eventId,
-          },
-        },
-      });
-      await changePrivateEvent.update(
+      await PrivateEvent.update(
         {
           name: req.body.eventName,
           color: req.body.color ? req.body.color : null,
@@ -1037,6 +1031,13 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
           startTime: new Date(req.body.startTime),
           endTime: new Date(req.body.endTime),
           allDay: req.body.allDay,
+        },
+        {
+          where: {
+            [Op.and]: {
+              groupEventId: req.body.eventId,
+            },
+          },
         },
         { transaction: t }
       );
