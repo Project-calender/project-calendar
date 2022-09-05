@@ -592,7 +592,7 @@ router.post("/inviteCheck", authJWT, async (req, res, next) => {
 
         if (!guest) {
           return guests.push({
-            guest: guestEmail,
+            guest: { email: guestEmail },
             message: "존재하지 않는 유저입니다!",
             canInvite: false,
           });
