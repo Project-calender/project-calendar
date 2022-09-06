@@ -266,10 +266,12 @@ const Index = ({ children: ModalList }) => {
           </div>
         )}
         {isAddLocation && <Line />}
+
         {isAddMemo && !isAddLocation && <Line />}
         {!isAddMemo && <MemoPreviewContainer setAddMemo={setAddMemo} />}
         {isAddMemo && <MemoContainer autoFocus={isAddMemo} />}
         {isAddMemo && <Line />}
+
         {!isAddMemo && isAddCalendar && <Line />}
         <div>
           <FontAwesomeIcon icon={faCalendarDay} />

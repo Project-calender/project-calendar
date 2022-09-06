@@ -12,7 +12,7 @@ import { useState } from 'react';
 import Moment from '../../../utils/moment';
 import { useImperativeHandle } from 'react';
 
-const Index = React.forwardRef(({ alert }, ref) => {
+const Index = React.forwardRef(({ alert, onChange = () => {} }, ref) => {
   const sendTypeModal = useEventModal();
   const dateTypeModal = useEventModal();
   const timeListModal = useEventModal();
@@ -53,7 +53,29 @@ const Index = React.forwardRef(({ alert }, ref) => {
   function onChangeNumber(e) {
     const number = +e.target.value;
     checkDateNumber(number);
-    setDateNumber(+e.target.value);
+    setDateNumber(number);
+    onChange({ time: number });
+  }
+
+  function onChangeDateType(e) {
+    const type = e.target.innerText;
+    setDateType(type);
+    setDateNumber(1);
+    onChange({ type, time: 1 });
+    dateTypeModal.hideModal();
+    e.stopPropagation();
+  }
+
+  function onChangeDate(e) {
+    e.stopPropagation();
+    const time = +e.target.dataset.value;
+    if (!time) return;
+    setTime(time);
+    onChange({
+      hour: new Date(time).getHours(),
+      minute: new Date(time).getMinutes(),
+    });
+    timeListModal.hideModal();
   }
 
   function checkDateNumber(number) {
@@ -130,6 +152,7 @@ const Index = React.forwardRef(({ alert }, ref) => {
             selectedItem: dateType,
             data: ['일', '주'],
           });
+          onChange({ type: e.target.innerText });
           e.stopPropagation();
         }}
       >
@@ -140,12 +163,7 @@ const Index = React.forwardRef(({ alert }, ref) => {
           <ListModal
             hideModal={dateTypeModal.hideModal}
             modalData={dateTypeModal.modalData}
-            onClickItem={e => {
-              setDateType(e.target.innerText);
-              setDateNumber(1);
-              dateTypeModal.hideModal();
-              e.stopPropagation();
-            }}
+            onClickItem={onChangeDateType}
           />
         )}
       </div>
@@ -172,12 +190,7 @@ const Index = React.forwardRef(({ alert }, ref) => {
           <TimeListModal
             hideModal={timeListModal.hideModal}
             modalData={timeListModal.modalData}
-            onClickItem={e => {
-              e.stopPropagation();
-              if (!Number(e.target.dataset.value)) return;
-              setTime(+e.target.dataset.value);
-              timeListModal.hideModal();
-            }}
+            onClickItem={onChangeDate}
             className={styles.time_modal}
           />
         )}
@@ -190,6 +203,7 @@ Index.displayName = 'CustomAlertOfAllDay';
 
 Index.propTypes = {
   alert: PropTypes.object,
+  onChange: PropTypes.func,
 };
 
 export default Index;

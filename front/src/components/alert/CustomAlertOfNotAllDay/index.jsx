@@ -8,7 +8,7 @@ import Input from '../../common/Input';
 import useEventModal from '../../../hooks/useEventModal';
 import ListModal from '../../../modal/component/ListModal';
 
-const Index = React.forwardRef(({ alert }, ref) => {
+const Index = React.forwardRef(({ alert, onChange = () => {} }, ref) => {
   const sendTypeModal = useEventModal();
   const dateTypeModal = useEventModal();
 
@@ -40,7 +40,17 @@ const Index = React.forwardRef(({ alert }, ref) => {
   function onChangeNumber(e) {
     const number = +e.target.value;
     checkDateNumber(number);
-    setDateNumber(+e.target.value);
+    setDateNumber(number);
+    onChange({ time: number });
+  }
+
+  function onChangeDateType(e) {
+    const type = e.target.innerText;
+    setDateType(type);
+    setDateNumber(1);
+    onChange({ type, time: 1 });
+    dateTypeModal.hideModal();
+    e.stopPropagation();
   }
 
   function checkDateNumber(number) {
@@ -125,12 +135,7 @@ const Index = React.forwardRef(({ alert }, ref) => {
           <ListModal
             hideModal={dateTypeModal.hideModal}
             modalData={dateTypeModal.modalData}
-            onClickItem={e => {
-              setDateType(e.target.innerText);
-              setDateNumber(1);
-              dateTypeModal.hideModal();
-              e.stopPropagation();
-            }}
+            onClickItem={onChangeDateType}
           />
         )}
       </div>
@@ -142,6 +147,7 @@ Index.displayName = 'CustomAlertOfNotAllDay';
 
 Index.propTypes = {
   alert: PropTypes.object,
+  onChange: PropTypes.func,
 };
 
 export default Index;

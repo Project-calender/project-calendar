@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CreateEventModal from '../../component/CreateEventModal';
-import EventColorModal from '../../component/EventColorModal';
 import ListModal from '../../component/ListModal';
 import CustomAlertModal from '../../component/CustomAlertModal';
 import MiniCalendarModal from '../../component/MiniCalendarModal';
@@ -9,7 +8,6 @@ import TimeListModal from '../../component/TimeListModal';
 
 import {
   CreateEventModalContext,
-  EventColorModalContext,
   EventInfoListModalContext,
   EventCustomAlertModalContext,
   EventDateModalContext,
@@ -20,7 +18,6 @@ import { updateNewEventTime } from '../../../store/newEvent';
 
 const Index = ({ children }) => {
   const createEventModal = useEventModal();
-  const eventColorModal = useEventModal();
   const eventInfoModal = useEventModal();
   const eventCustomAlertModal = useEventModal();
   const miniCalendarModal = useEventModal();
@@ -30,25 +27,13 @@ const Index = ({ children }) => {
   function hideAllSubModal() {
     eventInfoModal.hideModal();
     eventCustomAlertModal.hideModal();
-    eventColorModal.hideModal();
     miniCalendarModal.hideModal();
     startTimeListModal.hideModal();
     endTimeListModal.hideModal();
   }
 
-  function showEventColorModal(e, colorData) {
-    const { top, left } = e.currentTarget.getBoundingClientRect();
-    eventInfoModal.hideModal();
-    eventColorModal.showModal({
-      ...colorData,
-      style: { top, left },
-    });
-    e.stopPropagation();
-  }
-
   function showEventInfoModal(e, data) {
     const { top, left } = e.currentTarget.getBoundingClientRect();
-    eventColorModal.hideModal();
     eventInfoModal.showModal({
       ...data,
       style: { top, left },
@@ -59,13 +44,7 @@ const Index = ({ children }) => {
   const createEventModalContext = {
     ...createEventModal,
   };
-  const eventColorModalContext = {
-    ...eventColorModal,
-    showModal: (e, data) => {
-      hideAllSubModal();
-      showEventColorModal(e, data);
-    },
-  };
+
   const eventInfoModalContext = {
     ...eventInfoModal,
     showModal: (e, data) => {
@@ -99,56 +78,50 @@ const Index = ({ children }) => {
   return (
     <CreateEventModalContext.Provider value={createEventModalContext}>
       {createEventModal.isModalShown && (
-        <EventColorModalContext.Provider value={eventColorModalContext}>
-          <EventInfoListModalContext.Provider value={eventInfoModalContext}>
-            <EventCustomAlertModalContext.Provider
-              value={eventCustomAlertModal}
-            >
-              <EventDateModalContext.Provider value={eventDateModalContextData}>
-                <CreateEventModal>
-                  {eventInfoModal.isModalShown && (
-                    <ListModal
-                      hideModal={eventInfoModal.hideModal}
-                      modalData={eventInfoModal.modalData}
-                    />
-                  )}
+        <EventInfoListModalContext.Provider value={eventInfoModalContext}>
+          <EventCustomAlertModalContext.Provider value={eventCustomAlertModal}>
+            <EventDateModalContext.Provider value={eventDateModalContextData}>
+              <CreateEventModal>
+                {eventInfoModal.isModalShown && (
+                  <ListModal
+                    hideModal={eventInfoModal.hideModal}
+                    modalData={eventInfoModal.modalData}
+                  />
+                )}
 
-                  {eventColorModal.isModalShown && <EventColorModal />}
+                {eventCustomAlertModal.isModalShown && (
+                  <CustomAlertModal
+                    hideModal={eventCustomAlertModal.hideModal}
+                    modalData={eventCustomAlertModal.modalData}
+                  />
+                )}
 
-                  {eventCustomAlertModal.isModalShown && (
-                    <CustomAlertModal
-                      hideModal={eventCustomAlertModal.hideModal}
-                      modalData={eventCustomAlertModal.modalData}
-                    />
-                  )}
+                {miniCalendarModal.isModalShown && (
+                  <MiniCalendarModal
+                    hideModal={miniCalendarModal.hideModal}
+                    modalData={miniCalendarModal.modalData}
+                  />
+                )}
 
-                  {miniCalendarModal.isModalShown && (
-                    <MiniCalendarModal
-                      hideModal={miniCalendarModal.hideModal}
-                      modalData={miniCalendarModal.modalData}
-                    />
-                  )}
+                {startTimeListModal.isModalShown && (
+                  <TimeListModal
+                    hideModal={startTimeListModal.hideModal}
+                    modalData={startTimeListModal.modalData}
+                    onClickItem={e => onClickTimeItem(e, 'startTime')}
+                  />
+                )}
 
-                  {startTimeListModal.isModalShown && (
-                    <TimeListModal
-                      hideModal={startTimeListModal.hideModal}
-                      modalData={startTimeListModal.modalData}
-                      onClickItem={e => onClickTimeItem(e, 'startTime')}
-                    />
-                  )}
-
-                  {endTimeListModal.isModalShown && (
-                    <TimeListModal
-                      hideModal={endTimeListModal.hideModal}
-                      modalData={endTimeListModal.modalData}
-                      onClickItem={e => onClickTimeItem(e, 'endTime')}
-                    />
-                  )}
-                </CreateEventModal>
-              </EventDateModalContext.Provider>
-            </EventCustomAlertModalContext.Provider>
-          </EventInfoListModalContext.Provider>
-        </EventColorModalContext.Provider>
+                {endTimeListModal.isModalShown && (
+                  <TimeListModal
+                    hideModal={endTimeListModal.hideModal}
+                    modalData={endTimeListModal.modalData}
+                    onClickItem={e => onClickTimeItem(e, 'endTime')}
+                  />
+                )}
+              </CreateEventModal>
+            </EventDateModalContext.Provider>
+          </EventCustomAlertModalContext.Provider>
+        </EventInfoListModalContext.Provider>
       )}
       {children}
     </CreateEventModalContext.Provider>

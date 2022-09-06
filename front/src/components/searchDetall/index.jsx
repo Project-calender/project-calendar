@@ -28,7 +28,7 @@ const Index = () => {
     onFilter();
   }, [searchValue]);
 
-  async function onClick(event) {
+  async function onDeleteEvent(event) {
     const url =
       event.id > 0
         ? EVENT_URL.DELETE_GROUP_EVENT
@@ -104,7 +104,7 @@ const Index = () => {
         <EventDetailModal
           hideModal={hideModal}
           modalData={modalData}
-          onClick={onClick}
+          onDeleteEvent={onDeleteEvent}
         />
       )}
       <div className={styles.container}>
