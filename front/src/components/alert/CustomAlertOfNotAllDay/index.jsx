@@ -8,7 +8,7 @@ import Input from '../../common/Input';
 import useEventModal from '../../../hooks/useEventModal';
 import ListModal from '../../../modal/component/ListModal';
 
-const Index = React.forwardRef(({ alert, onChange }, ref) => {
+const Index = React.forwardRef(({ alert, onChange = () => {} }, ref) => {
   const sendTypeModal = useEventModal();
   const dateTypeModal = useEventModal();
 

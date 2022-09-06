@@ -12,8 +12,8 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
-import Input from '../../common/Input';
-import Tooltip from '../../common/Tooltip';
+import Input from '../../../components/common/Input';
+import Tooltip from '../../../components/common/Tooltip';
 
 const Index = ({
   eventId,

@@ -12,7 +12,7 @@ import { useState } from 'react';
 import Moment from '../../../utils/moment';
 import { useImperativeHandle } from 'react';
 
-const Index = React.forwardRef(({ alert, onChange }, ref) => {
+const Index = React.forwardRef(({ alert, onChange = () => {} }, ref) => {
   const sendTypeModal = useEventModal();
   const dateTypeModal = useEventModal();
   const timeListModal = useEventModal();

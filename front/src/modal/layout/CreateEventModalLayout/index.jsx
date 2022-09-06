@@ -18,7 +18,6 @@ import { updateNewEventTime } from '../../../store/newEvent';
 
 const Index = ({ children }) => {
   const createEventModal = useEventModal();
-  const eventColorModal = useEventModal();
   const eventInfoModal = useEventModal();
   const eventCustomAlertModal = useEventModal();
   const miniCalendarModal = useEventModal();
@@ -28,7 +27,6 @@ const Index = ({ children }) => {
   function hideAllSubModal() {
     eventInfoModal.hideModal();
     eventCustomAlertModal.hideModal();
-    eventColorModal.hideModal();
     miniCalendarModal.hideModal();
     startTimeListModal.hideModal();
     endTimeListModal.hideModal();
@@ -36,7 +34,6 @@ const Index = ({ children }) => {
 
   function showEventInfoModal(e, data) {
     const { top, left } = e.currentTarget.getBoundingClientRect();
-    eventColorModal.hideModal();
     eventInfoModal.showModal({
       ...data,
       style: { top, left },

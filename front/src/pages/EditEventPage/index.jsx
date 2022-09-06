@@ -25,8 +25,8 @@ import Line from '../../components/common/Line';
 import Moment from '../../utils/moment';
 
 import EventColorOption from '../../components/calendar/EventColorOption';
-import EventMemberList from '../../components/event/EventMemberList';
-import EventDateTitle from '../../components/event/EventDateTitle';
+import EventMemberList from './EventMemberList';
+import EventDateTitle from './EventDateTitle';
 
 import CustomAlertOfAllDay from '../../components/alert/CustomAlertOfAllDay';
 import CustomAlertOfNotAllDay from '../../components/alert/CustomAlertOfNotAllDay';
@@ -122,6 +122,7 @@ const Index = () => {
         alerts: newAlerts,
       }),
     );
+    navigate(-1);
   }
 
   async function checkEventMembers(guests, calendarId, eventId) {
@@ -148,9 +149,6 @@ const Index = () => {
     );
   }
 
-  const [startDate, endDate] = [event.startTime, event.endTime].map(
-    time => new Moment(new Date(time)),
-  );
   const isAllDay = event.allDay === EVENT.allDay.true;
 
   function clickAddAlert(e) {
@@ -204,11 +202,7 @@ const Index = () => {
               추가 작업 <FontAwesomeIcon icon={faCaretDown} />
             </button>
           </div>
-          <EventDateTitle
-            event={event}
-            startDate={startDate}
-            endDate={endDate}
-          />
+          <EventDateTitle event={event} setEvent={setEvent} />
           <div className={styles.allDay_title}>
             <CheckBox
               checked={event.allDay === EVENT.allDay.true}
@@ -223,7 +217,10 @@ const Index = () => {
             >
               <em>종일</em>
             </CheckBox>
-            <Select name="repact" itemList={EVENT.repeat(startDate)} />
+            <Select
+              name="repact"
+              itemList={EVENT.repeat(new Moment(new Date(event.startTime)))}
+            />
           </div>
         </div>
       </div>
