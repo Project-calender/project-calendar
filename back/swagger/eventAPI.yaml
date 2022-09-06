@@ -502,8 +502,11 @@
         schema:
           type: object
           properties:
-            guestEmail:
-              type: string
+            guests:
+              type: array
+              items:
+                type: object
+                example: "minwoo@naver.com"
             calendarId:
               type: integer
             eventId:
@@ -527,49 +530,15 @@
                   properties:
                     src:
                       type: string
+            state:
+              type: integer
+              example: 이미 그룹 이벤트의 멤버인 경우만 보내줌
+            message:
+              type: string
+              example: 초대가 불가능한 경우만 이유가 메세지로 전달
             canInvite:
               type: boolean
               example: true
-      400:
-        description: 존재하지 않는 유저
-        schema:
-          properties:
-            message:
-              type: string
-              example: 존재하지 않는 유저입니다!
-            canInvite:
-              type: boolean
-              example: false
-      402:
-        description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
-        schema:
-          properties:
-            message:
-              type: string
-              example: 그룹 캘린더에 존재하지 않는 유저입니다!
-            canInvite:
-              type: boolean
-              example: false
-      403:
-        description: 이미 그룹이벤트의 이벤트에 멤버일대
-        schema:
-          properties:
-            message:
-              type: string
-              example: 이미 그룹 이벤트의 멤버입니다!
-            canInvite:
-              type: boolean
-              example: false
-      405:
-        description: 자신 포함 그룹원 내의 누군가가 이미 초대를 보낸 상태일때
-        schema:
-          properties:
-            message:
-              type: string
-              example: 이미 초대를 보낸 사람입니다!
-            canInvite:
-              type: boolean
-              example: false
       500:
         $ref: "./openapi.yaml#/serverError"
 
@@ -615,7 +584,6 @@
               type: integer
               example: 1
             alerts:
-              summary: ㅇㅇㅇ
               type: array
               items:
                 type: object
