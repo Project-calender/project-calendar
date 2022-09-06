@@ -112,8 +112,6 @@ const Index = () => {
       updateEvent({
         ...event,
         calendarId: calendars[event.calendarIndex].id,
-        color:
-          event.calendarColor === event.eventColor ? null : event.eventColor,
         startTime: new Date(event.startTime).toISOString(),
         endTime: new Date(event.endTime).toISOString(),
         guests: Object.values(eventMembers)
