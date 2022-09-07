@@ -91,8 +91,9 @@ export const updateEvent = createAsyncThunk(
         : EVENT_URL.UPDATE_PRIVATE_EVENT;
 
     const { data } = await axios.post(url, {
+      eventId: Math.abs(eventInfo.id),
       calendarId: Math.abs(eventInfo.calendarId),
-      eventName: eventInfo.eventName,
+      eventName: eventInfo.name,
       color: eventInfo.color,
       permission: eventInfo.permission,
       busy: eventInfo.busy,
@@ -188,7 +189,7 @@ export const getEventDetail = async event => {
   return { ...events, alerts };
 };
 
-export const checkEventInvite = async ({ guestEmail, calendarId }) => {
+export const checkCreateEventInvite = async ({ guestEmail, calendarId }) => {
   try {
     const res = await axios.post(EVENT_URL.CHECK_CREATE_EVENT_INVITE, {
       guestEmail,
@@ -208,7 +209,11 @@ export const checkEventInvite = async ({ guestEmail, calendarId }) => {
   }
 };
 
-export const inviteGroupEvent = async ({ guests }) => {
-  const res = await axios.post(EVENT_URL.INVITE_GROUP_EVENT, { guests });
-  console.log(res, guests);
+export const checkEditEventInvite = async ({ guests, calendarId, eventId }) => {
+  const { data } = await axios.post(EVENT_URL.CHECK_EDIT_EVENT_INVITE, {
+    guests,
+    calendarId,
+    eventId,
+  });
+  return data;
 };

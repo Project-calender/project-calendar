@@ -13,7 +13,7 @@
 
 .modal_context > div { display: flex; align-items: center; margin: 8px 0px; width: 450px; } 
 .modal_context > div > :nth-child(1) { width: 15%; } 
-.modal_context svg { width: 16px; height: 16px; color: #848484; position:relative; left: -2px; }
+.modal_context > div > svg { width: 16px; height: 16px; color: #848484; position:relative; left: -2px; }
 
 .event_title > div { margin-top:10px; width: 82%; margin-bottom: 5px; } 
 .event_title :nth-child(2) input { font-size: 22px; margin-bottom: 5px; } 

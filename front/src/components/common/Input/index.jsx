@@ -13,6 +13,7 @@ const Index = React.forwardRef(
       autoFocus = false,
       placeholder,
       onChange = () => {},
+      onClick = () => {},
       onBlur = () => {},
       onFocus = () => {},
       onKeyDown = () => {},
@@ -33,7 +34,11 @@ const Index = React.forwardRef(
     }));
 
     return (
-      <div className={`${styles.input_container} ${className}`} name="input">
+      <div
+        className={`${styles.input_container} ${className}`}
+        name="input"
+        onClick={onClick}
+      >
         <input
           ref={inputRef}
           type={type}
@@ -66,6 +71,7 @@ Index.propTypes = {
   autoFocus: PropTypes.bool,
   placeholder: PropTypes.string,
   onChange: PropTypes.func,
+  onClick: PropTypes.func,
   onBlur: PropTypes.func,
   onFocus: PropTypes.func,
   onKeyDown: PropTypes.func,

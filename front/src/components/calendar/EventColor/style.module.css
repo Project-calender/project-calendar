@@ -1,4 +1,4 @@
 .color_list_item { margin: 3px; background: #f66767; width: 18px; height: 18px; border-radius: 100%; cursor: pointer; } 
 .color_list_item:hover { transform: scale(1.1); } 
 .color_list_item:hover .icon_check { top: 3px; left: 3.5px; } 
-.icon_check { position: absolute; top:6px; left: 6.5px; color: white; cursor: pointer;} 
+.icon_check { position: absolute; top:6px; left: 6.5px; color: white !important; cursor: pointer;} 

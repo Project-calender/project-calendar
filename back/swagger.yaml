@@ -1213,7 +1213,7 @@ paths:
     post:
       tags:
         - event
-      summary: 1년 동안의 모든 이벤트 가져오기
+      summary: '1년 동안의 모든 이벤트 가져오기 (정렬은 하지 않음, 필요한 정렬 순서가 있다면 요청 )'
       parameters:
         - name: Authorization
           in: header
@@ -1600,8 +1600,11 @@ paths:
           schema:
             type: object
             properties:
-              guestEmail:
-                type: string
+              guests:
+                type: array
+                items:
+                  type: object
+                  example: minwoo@naver.com
               calendarId:
                 type: integer
               eventId:
@@ -1625,6 +1628,12 @@ paths:
                     properties:
                       src:
                         type: string
+              state:
+                type: integer
+                example: 이미 그룹 이벤트의 멤버인 경우만 보내줌
+              message:
+                type: string
+                example: 초대가 불가능한 경우만 이유가 메세지로 전달
               canInvite:
                 type: boolean
                 example: true
@@ -1712,7 +1721,6 @@ paths:
                 type: integer
                 example: 1
               alerts:
-                summary: ㅇㅇㅇ
                 type: array
                 items:
                   type: object

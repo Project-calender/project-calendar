@@ -3,34 +3,31 @@ const { RealTimeAlert, sequelize } = require("./models");
 const { Op } = require("sequelize");
 
 let alertsObject = {};
-const restartAll = async () => {
-  await RealTimeAlert.findAll({
-    where: {
-      deletedAt: null,
-    },
-  }).then(async (realTimeAlerts) => {
-    await Promise.all(
-      realTimeAlerts.map(async (realTimeAlert) => {
-        var now = new Date();
-        if (now < realTimeAlert.date) {
-          alertsObject[realTimeAlert.id] = new CronJob(
-            realTimeAlert.date,
-            async function () {
-              console.log(`${realTimeAlert.content}`);
-
-              await RealTimeAlert.destroy({
-                where: { id: realTimeAlert.id },
-                // force: true,
-              });
-            },
-            null,
-            true
-          );
-        }
-      })
-    );
-  });
-};
+// const restartAll = async () => {
+//   await RealTimeAlert.findAll({
+//     where: {
+//       deletedAt: null,
+//     },
+//   }).then(async (realTimeAlerts) => {
+//     await Promise.all(
+//       realTimeAlerts.map(async (realTimeAlert) => {
+//         var now = new Date();
+//         if (now < realTimeAlert.date) {
+//           alertsObject[realTimeAlert.id] = new CronJob(
+//             realTimeAlert.date,
+//             async function () {
+//               await RealTimeAlert.destroy({
+//                 where: { id: realTimeAlert.id },
+//               });
+//             },
+//             null,
+//             true
+//           );
+//         }
+//       })
+//     );
+//   });
+// };
 
 const addAlert = async (
   userId,
@@ -79,7 +76,6 @@ const addAlert = async (
 
             await RealTimeAlert.destroy({
               where: { id: newAlert.id },
-              // force: true,
             });
           },
           null,
@@ -133,15 +129,12 @@ const addPrivateAlert = async (
 
             await RealTimeAlert.destroy({
               where: { id: newAlert.id },
-              // force: true,
             });
           },
           null,
           true
         );
       }
-
-      console.log(alertsObject);
     });
   });
 };
@@ -161,7 +154,7 @@ const deleteAlerts = async (userId, eventId) => {
     await Promise.all(
       alerts.map((alert) => {
         alertIds.push(alert.id);
-        alertsObject[alert.id].stop();
+        alertsObject[alert.id]?.stop();
       })
     ).then(async () => {
       await RealTimeAlert.destroy({ where: { id: alertIds }, force: true });
@@ -229,7 +222,6 @@ const deleteAlertsByCalendarId = async (calendarId) => {
 };
 
 module.exports = {
-  restartAll,
   addAlert,
   addPrivateAlert,
   deleteAlerts,

@@ -15,7 +15,6 @@ import {
 
 import { useContext } from 'react';
 import {
-  EventColorModalContext,
   EventDateModalContext,
   EventInfoListModalContext,
 } from '../../../../context/EventModalContext';
@@ -88,14 +87,12 @@ const Index = ({ showEventInfoListModal }) => {
   const { hideModal: hideEventInfoListModal } = useContext(
     EventInfoListModalContext,
   );
-  const { hideModal: hideEventColorModal } = useContext(EventColorModalContext);
 
   function clickAddTime(e) {
+    e.stopPropagation();
     setDetail(true);
     handleAllDay(e, false);
     hideEventInfoListModal();
-    hideEventColorModal();
-    e.stopPropagation();
   }
 
   if (!isDetail) {

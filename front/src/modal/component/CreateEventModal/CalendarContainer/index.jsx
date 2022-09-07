@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
@@ -18,12 +18,9 @@ const Index = ({ showListModal }) => {
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
 
   const dispatch = useDispatch();
-  const changeColor = useCallback(
-    color => {
-      dispatch(updateNewEventBarProperties({ eventColor: color }));
-    },
-    [dispatch],
-  );
+  const changeColor = (e, color) => {
+    dispatch(updateNewEventBarProperties({ eventColor: color }));
+  };
 
   const colors = Object.values(EVENT_COLOR).includes(newEvent.calendarColor)
     ? EVENT_COLOR
@@ -45,8 +42,8 @@ const Index = ({ showListModal }) => {
       </h3>
       <EventColorOption
         colors={colors}
-        color={newEvent.eventColor || newEvent.calendarColor}
-        changedColor={changeColor}
+        selectedColor={newEvent.eventColor || newEvent.calendarColor}
+        changeColor={changeColor}
       />
     </div>
   );
