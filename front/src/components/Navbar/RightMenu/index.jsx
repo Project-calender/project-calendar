@@ -17,7 +17,7 @@ import {
 import Tooltip from './../../common/Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
-import { CALENDAR_PATH } from '../../../constants/path';
+import { CALENDAR_PATH, USER_PATH } from '../../../constants/path';
 import axios from '../../../utils/token';
 import { USER_URL } from '../../../constants/api';
 //import Axios from 'axios';
@@ -154,7 +154,7 @@ const Index = ({
               </li>
               <li
                 onClick={() => {
-                  navigate('/setting');
+                  navigate(USER_PATH.SETTING);
                 }}
               >
                 <FontAwesomeIcon icon={faCog} className={styles.icon} />
@@ -278,7 +278,11 @@ const Index = ({
               </div>
               <h2>{userInfo?.nickname}</h2>
               <em>{userInfo?.email}</em>
-              <button>
+              <button
+                onClick={() => {
+                  navigate(USER_PATH.CHANGE_INFO);
+                }}
+              >
                 <strong>Google</strong> 계정 관리
               </button>
             </div>

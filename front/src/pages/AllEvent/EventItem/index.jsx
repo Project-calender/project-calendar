@@ -27,60 +27,60 @@ const Index = ({ item, clickEventBar = () => {} }) => {
   }
 
   return (
-    <div>
-      {item.map((item, index) => {
-        return (
-          <div
-            key={index}
-            ref={eventItem}
-            className={
-              clickEvent == item.id
-                ? `${styles.active} ${styles.event_wrap}`
-                : styles.event_wrap
-            }
-            onClick={e => {
-              clickEventBar(e, item);
-              setClickEvent(item.id);
-            }}
-          >
-            <div className={styles.all_day}>
-              {item.allDay == EVENT.allDay.true ||
-              item.endTime.substr(5, 5).replace('-', '') -
-                item.startTime.substr(5, 5).replace('-', '') >
-                1 ? (
-                <div>
-                  <span
-                    style={{
-                      background:
-                        (item && item.color) ||
-                        (calendars && calendars[index].color),
-                    }}
-                  ></span>
-                  <em>종일</em>
-                </div>
-              ) : (
-                <div>
-                  <span
-                    style={{
-                      background:
-                        (item && item.color) ||
-                        (calendars && calendars[index].color),
-                    }}
-                  ></span>
-                  <em>
-                    {item.startTime.substr(11, 5)} ~{' '}
-                    {item.endTime.substr(11, 5)}
-                  </em>
-                </div>
-              )}
+    <div ref={eventItem}>
+      {item &&
+        item.map((item, index) => {
+          return (
+            <div
+              key={index}
+              className={
+                clickEvent == item.id
+                  ? `${styles.active} ${styles.event_wrap}`
+                  : styles.event_wrap
+              }
+              onClick={e => {
+                clickEventBar(e, item);
+                setClickEvent(item.id);
+              }}
+            >
+              <div className={styles.all_day}>
+                {item.allDay == EVENT.allDay.true ||
+                item.endTime.substr(5, 5).replace('-', '') -
+                  item.startTime.substr(5, 5).replace('-', '') >
+                  1 ? (
+                  <div>
+                    <span
+                      style={{
+                        background:
+                          (item && item.color) ||
+                          (calendars && calendars[index].color),
+                      }}
+                    ></span>
+                    <em>종일</em>
+                  </div>
+                ) : (
+                  <div>
+                    <span
+                      style={{
+                        background:
+                          (item && item.color) ||
+                          (calendars && calendars[index].color),
+                      }}
+                    ></span>
+                    <em>
+                      {item.startTime.substr(11, 5)} ~{' '}
+                      {item.endTime.substr(11, 5)}
+                    </em>
+                  </div>
+                )}
+              </div>
+              <div className={styles.content}>
+                <p>{item.name}</p>
+                {item.name.length == 0 ? <p>(제목 없음)</p> : null}
+              </div>
             </div>
-            <div className={styles.content}>
-              <p>{item.name}</p>
-              {item.name.length == 0 ? <p>(제목 없음)</p> : null}
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 };
