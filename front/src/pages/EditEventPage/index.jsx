@@ -35,6 +35,7 @@ import { calendarsByWriteAuthoritySelector } from '../../store/selectors/calenda
 import { getAllCalendar } from '../../store/thunk/calendar';
 import { checkEditEventInvite } from '../../store/thunk/event';
 import { EVENT_COLOR } from '../../styles/color';
+import { useRef } from 'react';
 
 const Index = () => {
   const { state: eventInfo } = useLocation();
@@ -50,7 +51,7 @@ const Index = () => {
     if (calendarIndex > -1) {
       setEvent(event => ({ ...event, calendarIndex }));
     }
-  }, [calendars]);
+  }, [calendars, eventInfo]);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -60,6 +61,7 @@ const Index = () => {
 
   const [eventMembers, setEventMembers] = useState([]);
   const [eventAlerts, setEventAlerts] = useState({ allDay: [], notAllDay: [] });
+  const alertsRef = useRef([]);
 
   async function initEvent(event) {
     const eventData = await getEventDetail(event);
@@ -92,10 +94,13 @@ const Index = () => {
           : { allDay: [], notAllDay: alerts },
     });
   }
-
   if (!event || !event.id || event.calendarIndex < 0) return;
 
   function saveEvent() {
+    for (const alertRef of alertsRef.current) {
+      if (alertRef && !alertRef.checkAlertTime()) return;
+    }
+
     const alerts =
       event.allDay === EVENT.allDay.true
         ? eventAlerts.allDay
@@ -267,6 +272,7 @@ const Index = () => {
                             ...data,
                           };
                         }}
+                        ref={alert => (alertsRef.current[index] = alert)}
                       />
                       <Tooltip title="알림 삭제">
                         <FontAwesomeIcon
@@ -294,6 +300,7 @@ const Index = () => {
                             ...data,
                           };
                         }}
+                        ref={alert => (alertsRef.current[index] = alert)}
                       />
                       <Tooltip title="알림 삭제">
                         <FontAwesomeIcon
