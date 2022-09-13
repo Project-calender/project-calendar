@@ -123,7 +123,9 @@ const Index = ({ toggleSideBar }) => {
             <h2>
               {state.year}년{' '}
               {url.pathname == '/year' ? null : `${state.month}월`}{' '}
-              {url.pathname == '/day' ? `${state.date}일` : null}
+              {url.pathname == '/day' || url.pathname == '/agenda'
+                ? `${state.date}일`
+                : null}
             </h2>
           </div>
         </div>
