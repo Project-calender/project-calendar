@@ -42,7 +42,7 @@ const Index = ({ date, maxHeight }) => {
 
   if (!eventBars) return;
 
-  const countEventBar = Math.floor(maxHeight / 30) - (newEventEmptyBar ? 1 : 0);
+  const countEventBar = Math.floor(maxHeight / 32) - (newEventEmptyBar ? 1 : 0);
   const previewEvent = countEventBar ? eventBars.slice(0, countEventBar) : [];
   const restEvent = eventBars.slice(countEventBar).filter(event => event);
 
