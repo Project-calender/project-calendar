@@ -4,8 +4,9 @@
 
 .time_event_calendar { background: transparent; margin: 0px 5px 0px 10px; border-radius: 100%; width: 8px; height: 8px; flex-shrink: 0; flex-wrap: nowrap; } 
 .time_event_title { width: 100%; overflow: hidden; } 
+.time_event_title > p { overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}  
 
-.refuse_text em { text-decoration: line-through; } 
+.refuse_text p { text-decoration: line-through; } 
 .event_bar_slash { background-image: linear-gradient(45deg,white,white 32%,transparent 32%,transparent 38%,white 41%,white 60%,transparent 60%,transparent 68%,white 60%,white 100%) !important; background-size: 10px 10px !important; } 
 
 .event_bar_active { z-index: 20; box-shadow: 0px 5px 11px -3px rgb(0, 0, 0, 0.7); } 

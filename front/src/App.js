@@ -14,6 +14,7 @@ import AlertPage from './pages/AlertPage';
 import AllEvent from './pages/AllEvent';
 import Search from './components/searchDetall';
 import EditEventPage from './pages/EditEventPage';
+import ChangeMemberInfo from './pages/ChangeMemberInfo';
 import { CALENDAR_PATH, EVENT_PATH, USER_PATH } from './constants/path';
 
 function App() {
@@ -51,6 +52,10 @@ function App() {
         <Route path="*" element={<Navigate to={CALENDAR_PATH.MONTH} />} />
         <Route path={USER_PATH.SETTING} element={<Setting></Setting>}></Route>
         <Route path={EVENT_PATH.EDIT_EVENT} element={<EditEventPage />}></Route>
+        <Route
+          path={USER_PATH.CHANGE_INFO}
+          element={<ChangeMemberInfo></ChangeMemberInfo>}
+        ></Route>
       </Routes>
     </div>
   );

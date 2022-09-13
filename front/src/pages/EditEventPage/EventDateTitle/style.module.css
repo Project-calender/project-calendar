@@ -1,0 +1,17 @@
+.event_time_container .input_fill { width: fit-content; margin-right: 8px; border-radius: 3px;}
+.event_time_container { align-items: center; }
+.input_fill {max-width: 106px;}
+.event_time_container > em { margin-right: 8px; }
+
+.input_fill { background: #f1f3f4; padding: 0px 10px;   } 
+.input_fill Input { background: #f1f3f4; padding: 10px 0px;  } 
+.input_fill > :nth-child(2) { background: transparent } 
+
+.time_input { width: 65px !important; }
+
+.error_input { background: #ffe7e7 !important; } 
+.error_input input { background: #ffe7e7; } 
+
+.input_container { position: relative ;}
+.error_message { width: 200px !important; font-size:12px; position: absolute;  word-break: break-all; top: -38px; left: 0px; width: 150px; z-index: 2; background: #454545; color: white; padding: 8px 10px; box-shadow: 0px 2px 8px 0px rgb(0, 0, 0, 0.5);} 
+.square { position: absolute; top: 31px; left: 8px; width: 0; height: 0;  border: 7px solid transparent; border-top: 7px solid #454545; } 

@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { isCheckedCalander } from '../../store/user';
 import { EVENT_URL } from '../../constants/api';
 import EventItem from './EventItem';
+import { selectedDateSelector } from '../../store/selectors/date';
 
 const Index = () => {
   let calendarCheck = useSelector(checkedCalendarSelector);
@@ -20,10 +21,14 @@ const Index = () => {
   let [nextDay, setNextDay] = useState(); //다음 해 날짜
   let [allEvent, setAllEvent] = useState(); //모든 이벤트
   let [filterEvent, setFilterEvent] = useState(); //필터된 이벤트
+  let date = useSelector(selectedDateSelector); //날짜 가지고 오기
+  const year = date.year;
+  const month = ('0' + date.month).slice(-2);
+  const day = ('0' + date.date).slice(-2);
 
   useEffect(() => {
     onEvent();
-  }, [calendarCheck]);
+  }, [calendarCheck, date]);
 
   function onEvent() {
     axios.post(EVENT_URL.ALL_EVENT).then(res => {
@@ -31,40 +36,13 @@ const Index = () => {
     });
   }
 
-  async function onClick(event) {
-    const url =
-      event.id > 0
-        ? EVENT_URL.DELETE_GROUP_EVENT
-        : EVENT_URL.DELETE_PRIVATE_EVENT;
-
-    await axios.post(url, {
-      eventId: Math.abs(event.id),
-      calendarId: -event.PrivateCalendarId || event.CalendarId,
-    });
-    const calendarId = event.PrivateCalendarId || event.CalendarId;
-    setAllEvent(events =>
-      events.filter(
-        e =>
-          (e.PrivateCalendarId || e.CalendarId) !== Math.abs(calendarId) ||
-          e.id !== Math.abs(event.id),
-      ),
-    );
-    return event.id;
-  }
-
   useEffect(() => {
-    eventFilter();
-    let date = new Date();
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
     const dateStr = year + month + day;
-    const nextYear = year + 1;
-    const nextDay = nextYear + month + day;
-
+    const nextDay = year + 1 + month + day;
     setToDay(dateStr); //오늘 날짜 저장
     setNextDay(nextDay); //오늘 날짜 기준 다음 년 날짜 저장
-  }, [allEvent]);
+    eventFilter();
+  }, [allEvent, date]);
 
   function eventFilter() {
     let copyAllEvent = allEvent && [...allEvent];
@@ -117,16 +95,42 @@ const Index = () => {
     });
   }
 
+  async function onDeleteEvent(event) {
+    const url =
+      event.id > 0
+        ? EVENT_URL.DELETE_GROUP_EVENT
+        : EVENT_URL.DELETE_PRIVATE_EVENT;
+
+    await axios.post(url, {
+      eventId: Math.abs(event.id),
+      calendarId: -event.PrivateCalendarId || event.CalendarId,
+    });
+    const calendarId = event.PrivateCalendarId || event.CalendarId;
+    setAllEvent(events =>
+      events.filter(
+        e =>
+          (e.PrivateCalendarId || e.CalendarId) !== Math.abs(calendarId) ||
+          e.id !== Math.abs(event.id),
+      ),
+    );
+    return event.id;
+  }
+
   return (
     <>
       {isModalShown && (
         <EventDetailModal
           hideModal={hideModal}
           modalData={modalData}
-          onClick={onClick}
+          onDeleteEvent={onDeleteEvent}
         />
       )}
       <div className={styles.container}>
+        {filterEvent && Object.keys(filterEvent).length == 0 ? (
+          <div className={styles.search_undefined}>
+            <em>이벤트 결과가 없습니다.</em>
+          </div>
+        ) : null}
         {filterEvent && (
           <ul>
             {Object.entries(filterEvent).map(function ([time, item], index) {
@@ -152,19 +156,12 @@ const Index = () => {
                 </li>
               );
             })}
-            {allEvent && allEvent.length >= 1 ? (
-              <em>
-                {nextDay.slice(0, 4)}년{nextDay.slice(4, 6)}월
-                {nextDay.slice(6, 8)}일까지의 일정을 표시합니다.
-              </em>
-            ) : null}
+            <em>
+              {nextDay.slice(0, 4)}년{nextDay.slice(4, 6)}월
+              {nextDay.slice(6, 8)}일까지의 일정을 표시합니다.
+            </em>
           </ul>
         )}
-        {allEvent && allEvent.length == 0 ? (
-          <div className={styles.search_undefined}>
-            <em>이벤트 결과가 없습니다.</em>
-          </div>
-        ) : null}
       </div>
     </>
   );

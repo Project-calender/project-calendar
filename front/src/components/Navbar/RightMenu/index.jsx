@@ -17,7 +17,7 @@ import {
 import Tooltip from './../../common/Tooltip';
 import { useEffect } from 'react';
 import { useRef } from 'react';
-import { CALENDAR_PATH } from '../../../constants/path';
+import { CALENDAR_PATH, USER_PATH } from '../../../constants/path';
 import axios from '../../../utils/token';
 import { USER_URL } from '../../../constants/api';
 //import Axios from 'axios';
@@ -43,6 +43,22 @@ const Index = ({
   let change = useLocation(); //url 주소 가지고 오기
   let userImg = localStorage.getItem('userImg'); //사용자 프로필 이미지 가지고 오기
   userImg = userImg.replace(/"/g, ''); //프로필 이미지 "" 제거
+  let getRefuseCheck = localStorage.getItem('refuseCheck'); //로컬스토리지에서 거절일정 가지고 오기
+  getRefuseCheck = JSON.parse(getRefuseCheck);
+  let [refuseCheck, setRefuseCheck] = useState(getRefuseCheck); //거절 일정 true,false 저장
+
+  console.log(getRefuseCheck);
+
+  //거절 일정 클릭시 true,false 변경
+  function rejectionScheduleCheck() {
+    if (getRefuseCheck == true) {
+      setRefuseCheck(false);
+      localStorage.setItem('refuseCheck', JSON.stringify(false));
+    } else {
+      setRefuseCheck(true);
+      localStorage.setItem('refuseCheck', JSON.stringify(true));
+    }
+  }
 
   //url 변경에 따른 changeDate 변경
   useEffect(() => {
@@ -154,7 +170,7 @@ const Index = ({
               </li>
               <li
                 onClick={() => {
-                  navigate('/setting');
+                  navigate(USER_PATH.SETTING);
                 }}
               >
                 <FontAwesomeIcon icon={faCog} className={styles.icon} />
@@ -242,12 +258,19 @@ const Index = ({
               <span className={styles.line}></span>
               <div className={styles.option_check}>
                 <ul>
-                  <li>
-                    <FontAwesomeIcon icon={faCheck} className={styles.icon} />
-                    <em>주말 표시</em>
-                  </li>
-                  <li>
-                    <FontAwesomeIcon icon={faCheck} className={styles.icon} />
+                  <li
+                    onClick={() => {
+                      rejectionScheduleCheck();
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faCheck}
+                      className={
+                        refuseCheck == true
+                          ? `${styles.icon} ${styles.active}`
+                          : styles.icon
+                      }
+                    />
                     <em>거절한 일정 표시</em>
                   </li>
                 </ul>
@@ -278,7 +301,11 @@ const Index = ({
               </div>
               <h2>{userInfo?.nickname}</h2>
               <em>{userInfo?.email}</em>
-              <button>
+              <button
+                onClick={() => {
+                  navigate(USER_PATH.CHANGE_INFO);
+                }}
+              >
                 <strong>Google</strong> 계정 관리
               </button>
             </div>

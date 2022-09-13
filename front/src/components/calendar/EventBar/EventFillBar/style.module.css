@@ -8,7 +8,7 @@
 .event_bar { width: 100%; height: 100%; } 
 .event_bar_calendar { position: absolute; flex-shrink: 0; z-index: 4; width: 4px !important; height: 100%; border-top-left-radius: 3px; border-bottom-left-radius: 3px; } 
 .event_bar_main { position: relative; width: 100%; height: 100%; display: flex; border-radius: 3px; align-items: center; cursor: pointer; z-index: 3; word-break: break-all; } 
-.event_bar_main > em { width: 90%; font-size: 0.75rem; padding-left: 8px; vertical-align: middle; text-align: left; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
+.event_bar_main > p { width: 90%; font-size: 0.75rem; padding-left: 8px; vertical-align: middle; text-align: left; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
 .refuse_text { text-decoration: line-through; } 
 
 .none_left_border { border-top-left-radius : 0px; border-bottom-left-radius : 0px; } 
@@ -26,6 +26,6 @@
 
 @media (max-height: 500px){
  .event_container { height:1rem; } 
- .event_bar > em { font-size: 0.65rem; } 
+ .event_bar > p { font-size: 0.65rem; } 
  }
  

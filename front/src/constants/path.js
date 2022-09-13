@@ -16,6 +16,7 @@ export const USER_PATH = {
   LOGIN: '/login',
   JOIN: '/join',
   SETTING: '/setting',
+  CHANGE_INFO: '/changeInfo',
 };
 
 export const EVENT_PATH = {

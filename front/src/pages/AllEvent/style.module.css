@@ -16,7 +16,7 @@
 .container ul li .time.today .year p{color: #1a73e8;}
 
 
-.search_undefined{margin: 40px 0 0 60px; }
+.search_undefined{margin: 40px 0 0 0; }
 .search_undefined em{font-size: 18px;}
 
 @media (max-width:1000px){
