@@ -25,8 +25,8 @@ import Line from '../../components/common/Line';
 import Moment from '../../utils/moment';
 
 import EventColorOption from '../../components/calendar/EventColorOption';
-import EventMemberList from './EventMemberList';
-import EventDateTitle from './EventDateTitle';
+import EventMemberList from '../../components/EditEvent/EventMemberList';
+import EventDateTitle from '../../components/EditEvent/EventDateTitle';
 
 import CustomAlertOfAllDay from '../../components/alert/CustomAlertOfAllDay';
 import CustomAlertOfNotAllDay from '../../components/alert/CustomAlertOfNotAllDay';
@@ -57,7 +57,7 @@ const Index = () => {
   useEffect(() => {
     dispatch(getAllCalendar());
     initEvent(eventInfo);
-  }, []);
+  }, [dispatch, eventInfo]);
 
   const [eventMembers, setEventMembers] = useState([]);
   const [eventAlerts, setEventAlerts] = useState({ allDay: [], notAllDay: [] });

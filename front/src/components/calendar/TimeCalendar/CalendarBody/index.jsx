@@ -5,7 +5,7 @@ import { useState } from 'react';
 import styles from './style.module.css';
 import useDragDate from '../../../../hooks/useDragDate';
 
-const Index = ({ state }) => {
+const Index = ({ date }) => {
   const {
     handleMouseDown,
     handleMouseUp,
@@ -13,13 +13,13 @@ const Index = ({ state }) => {
     isMouseDown,
     // selectedDateRange,
   } = useDragDate();
-  let [timeTable, setTimeTable] = useState({}); //현재 날짜 저장 및 시간 저장
-  let time = new Date().getTime();
+  const [timeTable, setTimeTable] = useState({}); //현재 날짜 저장 및 시간 저장
+  const time = new Date().getTime();
 
   //오전,오후 시간 생성
   useEffect(() => {
-    let morningTime = [];
-    let afternoonTime = [];
+    const morningTime = [];
+    const afternoonTime = [];
     for (let i = 0; i <= 11; i++) {
       morningTime.push(`오전 ${i}시`);
     }
@@ -27,12 +27,12 @@ const Index = ({ state }) => {
       afternoonTime.push(`오후 ${i}시`);
     }
     setTimeTable({
-      year: state.year,
-      month: state.month,
-      date: state.date,
+      year: date.year,
+      month: date.month,
+      date: date.date,
       time: [...morningTime, '오후 12시', ...afternoonTime],
     });
-  }, [state]);
+  }, [date]);
 
   return (
     <div className={styles.today_talbe}>
@@ -61,7 +61,7 @@ const Index = ({ state }) => {
   );
 };
 Index.propTypes = {
-  state: PropTypes.object,
+  date: PropTypes.object,
 };
 
 export default Index;

@@ -1,0 +1,7 @@
+
+.title { width: 220px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; } 
+.title em { font-size: 11px; font-weight: 500; color: #676767;} 
+.title p { display: inline-block; width: 45px; color: #424242; height: 45px; font-size: 25px; font-weight: 400; border-radius: 100%; text-align: center; line-height: 40px; } 
+
+.today em { color: #1a73e8; }
+.today p { background: #1a73e8; color: #fff; }
