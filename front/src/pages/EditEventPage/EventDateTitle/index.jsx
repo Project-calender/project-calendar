@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
@@ -9,16 +9,35 @@ import useEventModal from '../../../hooks/useEventModal';
 import Input from '../../../components/common/Input';
 import MiniCalendarModal from '../MiniCalendarModal';
 import TimeListModal from '../../../modal/component/TimeListModal';
+import { useImperativeHandle } from 'react';
 
-const Index = ({ event, setEvent }) => {
+const Index = React.forwardRef(({ event, setEvent }, ref) => {
   const [startDate, endDate] = [event.startTime, event.endTime].map(
     time => new Moment(new Date(time)),
   );
+
+  useImperativeHandle(ref, () => ({
+    checkEndDate: endDate => checkEndDate(endDate, setEndDateError),
+    setEndDateError,
+  }));
 
   const startMiniCalendarModal = useEventModal();
   const endMiniCalendarModal = useEventModal();
   const startTimeListModal = useEventModal();
   const endTimeListModal = useEventModal();
+
+  const [endDateErorr, setEndDateError] = useState('');
+  const [endDateTimeErorr, setEndDateTimeError] = useState('');
+
+  function checkEndDate(endDate, setError) {
+    if (endDate.time < startDate.time) {
+      const message = '일정 종료는 시작 시간 이후여야 합니다.';
+      setError(message);
+      return false;
+    }
+    setError('');
+    return true;
+  }
 
   function onClickTimeItem(e, type) {
     const date = new Date(+e.target.dataset.value);
@@ -37,13 +56,17 @@ const Index = ({ event, setEvent }) => {
   }
 
   function onClickStartDate(e, date) {
-    const newDate = new Moment(date.time)
+    const diffDate = startDate.resetTime().calculateDateDiff(date.time);
+
+    const nextStartDate = new Moment(date.time)
       .setHour(startDate.hour)
       .setMinute(startDate.minute);
+    const nextEndDate = endDate.addDate(diffDate);
 
     setEvent(event => ({
       ...event,
-      startTime: new Date(newDate.time).toISOString(),
+      startTime: new Date(nextStartDate.time).toISOString(),
+      endTime: new Date(nextEndDate.time).toISOString(),
     }));
 
     startMiniCalendarModal.hideModal();
@@ -127,18 +150,41 @@ const Index = ({ event, setEvent }) => {
       )}
       <em>-</em>
       {event.allDay === EVENT.allDay.false && (
-        <Input
-          value={endDate.toTimeString()}
-          className={`${styles.input_fill} ${styles.time_input}`}
-          onClick={handleEndTimeList}
-        />
+        <div className={styles.input_container}>
+          {endDateTimeErorr && (
+            <div className={styles.error_message}>
+              <p>{endDateTimeErorr}</p>
+              <div className={styles.square} />
+            </div>
+          )}
+          <Input
+            value={endDate.toTimeString()}
+            className={`${styles.input_fill} ${styles.time_input} ${
+              endDate.time < startDate.time ? styles.error_input : ''
+            }`}
+            onClick={handleEndTimeList}
+            onFocus={() => checkEndDate(endDate, setEndDateTimeError)}
+            onBlur={() => setEndDateTimeError('')}
+          />
+        </div>
       )}
-
-      <Input
-        value={endDate.toDateString()}
-        className={styles.input_fill}
-        onClick={e => handleEndMiniCalendar(e, { endDate })}
-      />
+      <div className={styles.input_container}>
+        {endDateErorr && (
+          <div className={styles.error_message}>
+            <p>{endDateErorr}</p>
+            <div className={styles.square} />
+          </div>
+        )}
+        <Input
+          value={endDate.toDateString()}
+          className={`${styles.input_fill} ${
+            endDate.time < startDate.time ? styles.error_input : ''
+          }`}
+          onClick={e => handleEndMiniCalendar(e, { endDate })}
+          onFocus={() => checkEndDate(endDate, setEndDateError)}
+          onBlur={() => setEndDateError('')}
+        />
+      </div>
       {startMiniCalendarModal.isModalShown && (
         <MiniCalendarModal
           hideModal={startMiniCalendarModal.hideModal}
@@ -169,10 +215,13 @@ const Index = ({ event, setEvent }) => {
       )}
     </div>
   );
-};
+});
+
 Index.propTypes = {
   event: PropTypes.object,
   setEvent: PropTypes.func,
 };
+
+Index.displayName = 'EventDateTitle';
 
 export default Index;

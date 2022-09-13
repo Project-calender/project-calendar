@@ -61,7 +61,8 @@ const Index = () => {
 
   const [eventMembers, setEventMembers] = useState([]);
   const [eventAlerts, setEventAlerts] = useState({ allDay: [], notAllDay: [] });
-  const alertsRef = useRef([]);
+  const alertRefs = useRef([]);
+  const dateRef = useRef([]);
 
   async function initEvent(event) {
     const eventData = await getEventDetail(event);
@@ -97,7 +98,14 @@ const Index = () => {
   if (!event || !event.id || event.calendarIndex < 0) return;
 
   function saveEvent() {
-    for (const alertRef of alertsRef.current) {
+    if (!dateRef.current.checkEndDate(new Moment(new Date(event.endTime)))) {
+      setTimeout(() => {
+        dateRef.current.setEndDateError('');
+      }, 1000);
+      return;
+    }
+
+    for (const alertRef of alertRefs.current) {
       if (alertRef && !alertRef.checkAlertTime()) return;
     }
 
@@ -205,7 +213,7 @@ const Index = () => {
               추가 작업 <FontAwesomeIcon icon={faCaretDown} />
             </button>
           </div>
-          <EventDateTitle event={event} setEvent={setEvent} />
+          <EventDateTitle event={event} setEvent={setEvent} ref={dateRef} />
           <div className={styles.allDay_title}>
             <CheckBox
               checked={event.allDay === EVENT.allDay.true}
@@ -272,7 +280,7 @@ const Index = () => {
                             ...data,
                           };
                         }}
-                        ref={alert => (alertsRef.current[index] = alert)}
+                        ref={alert => (alertRefs.current[index] = alert)}
                       />
                       <Tooltip title="알림 삭제">
                         <FontAwesomeIcon
@@ -300,7 +308,7 @@ const Index = () => {
                             ...data,
                           };
                         }}
-                        ref={alert => (alertsRef.current[index] = alert)}
+                        ref={alert => (alertRefs.current[index] = alert)}
                       />
                       <Tooltip title="알림 삭제">
                         <FontAwesomeIcon
