@@ -35,6 +35,7 @@ import { calendarsByWriteAuthoritySelector } from '../../store/selectors/calenda
 import { getAllCalendar } from '../../store/thunk/calendar';
 import { checkEditEventInvite } from '../../store/thunk/event';
 import { EVENT_COLOR } from '../../styles/color';
+import { useRef } from 'react';
 
 const Index = () => {
   const { state: eventInfo } = useLocation();
@@ -50,7 +51,7 @@ const Index = () => {
     if (calendarIndex > -1) {
       setEvent(event => ({ ...event, calendarIndex }));
     }
-  }, [calendars]);
+  }, [calendars, eventInfo]);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -60,6 +61,8 @@ const Index = () => {
 
   const [eventMembers, setEventMembers] = useState([]);
   const [eventAlerts, setEventAlerts] = useState({ allDay: [], notAllDay: [] });
+  const alertRefs = useRef([]);
+  const dateRef = useRef([]);
 
   async function initEvent(event) {
     const eventData = await getEventDetail(event);
@@ -92,10 +95,20 @@ const Index = () => {
           : { allDay: [], notAllDay: alerts },
     });
   }
-
   if (!event || !event.id || event.calendarIndex < 0) return;
 
   function saveEvent() {
+    if (!dateRef.current.checkEndDate(new Moment(new Date(event.endTime)))) {
+      setTimeout(() => {
+        dateRef.current.setEndDateError('');
+      }, 1000);
+      return;
+    }
+
+    for (const alertRef of alertRefs.current) {
+      if (alertRef && !alertRef.checkAlertTime()) return;
+    }
+
     const alerts =
       event.allDay === EVENT.allDay.true
         ? eventAlerts.allDay
@@ -200,7 +213,7 @@ const Index = () => {
               추가 작업 <FontAwesomeIcon icon={faCaretDown} />
             </button>
           </div>
-          <EventDateTitle event={event} setEvent={setEvent} />
+          <EventDateTitle event={event} setEvent={setEvent} ref={dateRef} />
           <div className={styles.allDay_title}>
             <CheckBox
               checked={event.allDay === EVENT.allDay.true}
@@ -267,6 +280,7 @@ const Index = () => {
                             ...data,
                           };
                         }}
+                        ref={alert => (alertRefs.current[index] = alert)}
                       />
                       <Tooltip title="알림 삭제">
                         <FontAwesomeIcon
@@ -294,6 +308,7 @@ const Index = () => {
                             ...data,
                           };
                         }}
+                        ref={alert => (alertRefs.current[index] = alert)}
                       />
                       <Tooltip title="알림 삭제">
                         <FontAwesomeIcon

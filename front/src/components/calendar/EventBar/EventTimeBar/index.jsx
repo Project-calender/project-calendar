@@ -46,11 +46,11 @@ const Index = ({
           event?.state === EVENT.state.refuse ? styles.refuse_text : ''
         }`}
       >
-        <em>
+        <p>
           {new Moment(event.startTime || eventBar.startTime).getTimeType()}{' '}
-          {new Moment(event.startTime || eventBar.startTime).getSimpleTime()}
-        </em>
-        <em> {event?.name || eventBar?.eventName || '(제목 없음)'} </em>
+          {new Moment(event.startTime || eventBar.startTime).getSimpleTime()}{' '}
+          {event?.name || eventBar?.eventName || '(제목 없음)'}{' '}
+        </p>
       </div>
     </div>
   );
