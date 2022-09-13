@@ -2,7 +2,7 @@
 .input_container :nth-child(2) { text-align: center; } 
 .input_container input { position: relative; width: 100%; height: 100%; border: none; } 
 
-.input_line { position: absolute; bottom: -6px; left: 50%; width: 0px; border: none; height: 2px; background-color: #e4e4e4; transition: all 0.3s; z-index: 1; } 
+.input_line { position: absolute; bottom: -7px; left: 50%; width: 0px; border: none; height: 2px; background-color: #e4e4e4; transition: all 0.3s; z-index: 1; } 
 .input_line:nth-child(3) { background-color: #1967d2; z-index: 2; } 
 
 .line_active { width: 100%; left: 0; } 

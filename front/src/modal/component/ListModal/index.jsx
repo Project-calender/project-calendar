@@ -17,13 +17,14 @@ const Index = ({ hideModal, modalData, onClickItem }) => {
   const selectedItemRef = useRef();
   useEffect(() => {
     if (!selectedItemRef.current) return;
-    setTimeout(() => {
+    const initList = setTimeout(() => {
       selectedItemRef.current.scrollIntoView({
         block: 'center',
         inline: 'start',
       });
       selectedItemRef.current.style.background = '#e6e8ec';
     }, 50);
+    return () => clearTimeout(initList);
   });
 
   return (

@@ -35,13 +35,13 @@ const Index = ({
           style={eventBarStyle.main}
           name="event_bar"
         >
-          <em className={eventBarClass.text}>
+          <p className={eventBarClass.text}>
             {event.allDay === EVENT.allDay.false &&
               new Moment(event.startTime).toTimeString() + ' '}
             {eventBar.allDay === EVENT.allDay.false &&
               new Moment(eventBar.startTime).toTimeString() + ' '}
             {event?.name || eventBar.eventName || '(제목 없음)'}
-          </em>
+          </p>
         </div>
       </div>
 
