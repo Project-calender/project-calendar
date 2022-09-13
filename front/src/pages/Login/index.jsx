@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
 import { CALENDAR_PATH } from './../../constants/path';
-
 import Axios from 'axios';
 import { BASE_URL, USER_URL } from '../../constants/api';
 
@@ -32,6 +31,7 @@ const Index = () => {
     Axios.post(`${BASE_URL}${USER_URL.LOGIN}`, loginData) //aws 사용시 http://localhost:80/api 삭제
       .then(res => {
         console.log('성공', res);
+        localStorage.setItem('refuseCheck', JSON.stringify(true)); //로컬스토리지에 일정 거절 저장
         saveWebStorage(res);
         navigate(`${CALENDAR_PATH.MAIN}`);
       })
