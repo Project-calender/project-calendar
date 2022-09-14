@@ -2,12 +2,12 @@ import Axios from 'axios';
 import { BASE_URL } from '../constants/api';
 
 const axios = Axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL, //API기본 주소
 });
 
 axios.interceptors.request.use(
   function (config) {
-    const accessToken = sessionStorage.getItem('accessToken'); // access 토큰을 가져오는 변수
+    const accessToken = sessionStorage.getItem('accessToken'); // 세션스토리지에 있는 accessToken 토큰을 가지고 오기
     if (accessToken) {
       config.headers.Authorization = accessToken;
     }
@@ -25,18 +25,15 @@ axios.interceptors.response.use(
   },
   async function (err) {
     const originalConfig = err.config;
-
-    //조건문 상태코드 확인 필요함
     if (err.response.status === 401) {
       try {
         if (err.response.data.message === 'accessToken이 지급되지 않았습니다') {
           throw Error('새로고침 필요');
         }
-
-        let accessToken = sessionStorage.getItem('accessToken');
-        let refreshToken = localStorage.getItem('refreshToken');
+        let accessToken = sessionStorage.getItem('accessToken'); // 세션스토리지에 있는 accessToken 토큰을 가지고 오기
+        let refreshToken = localStorage.getItem('refreshToken'); // 로컬스토리지에 있는 refreshToken 토큰을 가지고 오기
         const data = await Axios({
-          url: `http://158.247.214.79/api/user/refresh`, //aws url http://158.247.214.79 요청
+          url: `http://158.247.214.79/api/auth/refresh`, //refreshToken 토큰 요청하는 API주소
           method: 'GET',
           headers: {
             authorization: accessToken,
@@ -44,6 +41,7 @@ axios.interceptors.response.use(
           },
         });
         if (data) {
+          console.log(data.data.data.accessToken);
           sessionStorage.setItem(
             'accessToken',
             JSON.stringify(data.data.data.accessToken),
@@ -58,7 +56,6 @@ axios.interceptors.response.use(
       }
       return Promise.reject(err);
     }
-
     return Promise.reject(err);
   },
 );
