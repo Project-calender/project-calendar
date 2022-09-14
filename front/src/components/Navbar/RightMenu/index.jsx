@@ -47,8 +47,6 @@ const Index = ({
   getRefuseCheck = JSON.parse(getRefuseCheck);
   let [refuseCheck, setRefuseCheck] = useState(getRefuseCheck); //거절 일정 true,false 저장
 
-  console.log(getRefuseCheck);
-
   //거절 일정 클릭시 true,false 변경
   function rejectionScheduleCheck() {
     if (getRefuseCheck == true) {

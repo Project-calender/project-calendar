@@ -94,18 +94,35 @@ const Index = () => {
               >
                 Login
               </button>
-              <div className={styles.line_wrpa}>
+              <div className={styles.line_wrap}>
                 <span></span>
                 <em>OR</em>
                 <span></span>
               </div>
-              <button className={styles.google_btt}>
-                <img
-                  src={`${process.env.PUBLIC_URL}/img/login/google_logo.png`}
-                  alt="google_icon"
-                />
-                Login with Google
-              </button>
+              <div className={styles.social_login}>
+                <button className={styles.social_login_btt}>
+                  <img
+                    src={`${process.env.PUBLIC_URL}/img/login/google_logo.png`}
+                    alt="google_icon"
+                  />
+                  <em>Login with Kakao</em>
+                </button>
+                <button className={styles.social_login_btt}>
+                  <img
+                    src={`${process.env.PUBLIC_URL}/img/login/google_logo.png`}
+                    alt="google_icon"
+                  />
+                  <em>Login with Naver</em>
+                </button>
+                <button className={styles.social_login_btt}>
+                  <img
+                    src={`${process.env.PUBLIC_URL}/img/login/google_logo.png`}
+                    alt="google_icon"
+                  />
+                  <em>Login with Google</em>
+                </button>
+              </div>
+
               <div className={styles.tooltip}>
                 <p>Forgot my password</p>
                 <span></span>
