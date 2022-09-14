@@ -15,7 +15,7 @@ module.exports = () => {
       {
         clientID: `${process.env.NAVER_CLIENT_ID}`, // 카카오 로그인에서 발급받은 REST API 키
         clientSecret: `${process.env.NAVER_CLIENT_SECRET}`,
-        callbackURL: "http://localhost:80/api/auth/naver/callback", // 카카오 로그인 Redirect URI 경로
+        callbackURL: "http://158.247.214.79/api/auth/naver/callback", // 카카오 로그인 Redirect URI 경로
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log("naver profile", profile);
