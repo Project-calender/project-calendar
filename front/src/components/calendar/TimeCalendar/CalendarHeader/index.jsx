@@ -8,7 +8,7 @@ const Index = ({ dates = [], events = [] }) => {
   const isToday = date => date.time === new Moment().time;
 
   return (
-    <thead className={styles.title}>
+    <thead className={styles.title_container}>
       <tr>
         <th>GMT+09</th>
       </tr>

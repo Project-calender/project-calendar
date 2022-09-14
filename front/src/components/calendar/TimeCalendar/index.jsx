@@ -11,11 +11,13 @@ const Index = ({ dates, events = [] }) => {
   const notAllDayEvents = events;
 
   return (
-    <table className={styles.calendar_container}>
+    <table className={styles.calendar_table}>
       <CalendarHeader dates={dates} events={allDayEvents} />
-      <tbody>
-        <CalendarAxis />
-        <CalendarBody dates={dates} events={notAllDayEvents} />
+      <tbody className={styles.calendar_body}>
+        <tr>
+          <CalendarAxis />
+          <CalendarBody dates={dates} events={notAllDayEvents} />
+        </tr>
       </tbody>
     </table>
   );
