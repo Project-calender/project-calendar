@@ -13,10 +13,15 @@ module.exports = class User extends Model {
         nickname: {
           type: DataTypes.STRING(100),
           allowNull: false,
-          unique: true,
         },
         password: {
           type: DataTypes.STRING(200),
+        },
+        snsId: {
+          type: DataTypes.STRING(100),
+        },
+        provider: {
+          type: DataTypes.STRING(20),
           allowNull: false,
         },
         checkedCalendar: {

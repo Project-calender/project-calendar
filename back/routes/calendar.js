@@ -8,7 +8,7 @@ const { Invite } = require("../models");
 const { Alert } = require("../models");
 const router = express.Router();
 const { Op } = require("sequelize");
-const authJWT = require("../utils/authJWT");
+const { authJWT } = require("../middlewares/auth");
 const { deleteAlertsByCalendarId } = require("../realTimeAlerts");
 
 router.get("/getMyCalendars", authJWT, async (req, res, next) => {

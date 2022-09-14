@@ -129,10 +129,10 @@ const Index = ({
 
   //로그아웃
   function logout() {
-    let accessToken = sessionStorage.getItem('accessToken');
+    let accessToken = JSON.parse(sessionStorage.getItem('accessToken'));
     axios
-      .post(`${USER_URL.LOGOUT}`, {
-        Authorization: accessToken,
+      .get(`${USER_URL.LOGOUT}`, {
+        authorization: accessToken,
       })
       .then(res => {
         console.log('로그아웃 성공', res);

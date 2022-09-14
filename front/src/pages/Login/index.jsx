@@ -8,6 +8,7 @@ import { BASE_URL, USER_URL } from '../../constants/api';
 
 const Index = () => {
   let navigate = useNavigate();
+  localStorage.setItem('refuseCheck', JSON.stringify(true)); //로컬스토리지에 일정 거절 저장
 
   //로그인 input 값 저장
   const [inputValue, setInputValue] = useState({
@@ -31,7 +32,6 @@ const Index = () => {
     Axios.post(`${BASE_URL}${USER_URL.LOGIN}`, loginData) //aws 사용시 http://localhost:80/api 삭제
       .then(res => {
         console.log('성공', res);
-        localStorage.setItem('refuseCheck', JSON.stringify(true)); //로컬스토리지에 일정 거절 저장
         saveWebStorage(res);
         navigate(`${CALENDAR_PATH.MAIN}`);
       })
@@ -40,7 +40,7 @@ const Index = () => {
         if (error.response.status == 401) {
           alert(`존재하지 않는 유저 입니다. 아이디를 확인해주세요.`);
         } else if (error.response.status == 402) {
-          alert(` 비밀번호가 일치하지 않습니다. 비밀번호를 확인해주세요.`);
+          alert(`비밀번호가 일치하지 않습니다. 비밀번호를 확인해주세요.`);
         }
       });
   }
@@ -57,6 +57,10 @@ const Index = () => {
     localStorage.setItem('userImg', ProfileImages[0].src);
   }
 
+  const KAKAO_AUTH_URL = `http://158.247.214.79/api/auth/kakao`;
+  const NAVER_AUTH_URL = `http://158.247.214.79/api/auth/naver`;
+  const GOOGLE_AUTH_URL = `http://158.247.214.79/api/auth/google`;
+
   return (
     <div>
       <section className={styles.section}>
@@ -64,7 +68,7 @@ const Index = () => {
           <div className={styles.login}>
             <h2>Login</h2>
             <p>If You Are Already aA Member, Easily Log In</p>
-            <form>
+            <div>
               <div className={`${styles.id} ${styles.login_input_box}`}>
                 <input
                   type="text"
@@ -102,27 +106,34 @@ const Index = () => {
               <div className={styles.social_login}>
                 <button className={styles.social_login_btt}>
                   <img
-                    src={`${process.env.PUBLIC_URL}/img/login/google_logo.png`}
-                    alt="google_icon"
+                    src={`${process.env.PUBLIC_URL}/img/login/kakao_logo.png`}
+                    alt="kakao_icon"
                   />
-                  <em>Login with Kakao</em>
+                  <a id="kakao" href={KAKAO_AUTH_URL}>
+                    <em>Login with Kakao</em>
+                  </a>
+                </button>
+                <button className={styles.social_login_btt}>
+                  <img
+                    src={`${process.env.PUBLIC_URL}/img/login/naver_logo.png`}
+                    alt="naver_icon"
+                  />
+                  <a href={NAVER_AUTH_URL}>
+                    <em>Login with Naver</em>
+                  </a>
                 </button>
                 <button className={styles.social_login_btt}>
                   <img
                     src={`${process.env.PUBLIC_URL}/img/login/google_logo.png`}
                     alt="google_icon"
                   />
-                  <em>Login with Naver</em>
-                </button>
-                <button className={styles.social_login_btt}>
-                  <img
-                    src={`${process.env.PUBLIC_URL}/img/login/google_logo.png`}
-                    alt="google_icon"
-                  />
-                  <em>Login with Google</em>
+                  <div>
+                    <a href={GOOGLE_AUTH_URL}>
+                      <em>Login with Google</em>
+                    </a>
+                  </div>
                 </button>
               </div>
-
               <div className={styles.tooltip}>
                 <p>Forgot my password</p>
                 <span></span>
@@ -134,7 +145,7 @@ const Index = () => {
                   If You Don’t Have An Account, Create
                 </p>
               </div>
-            </form>
+            </div>
           </div>
           <div className={styles.login_img}>
             <img

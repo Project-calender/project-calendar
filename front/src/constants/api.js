@@ -1,11 +1,11 @@
 export const BASE_URL = 'http://158.247.214.79/api';
 
 export const USER_URL = {
-  LOGIN: '/user/signin',
-  SINGUP: '/user/signup',
-  LOGOUT: '/user/logout',
-  CHECK_CALENDAR: '/user/checkedCalendar',
-  USER_PROFILE_IMAGE: '/user/setUserProfileImage',
+  LOGIN: '/auth/signin',
+  SINGUP: '/auth/signup',
+  LOGOUT: '/auth/logout',
+  CHECK_CALENDAR: '/auth/checkedCalendar',
+  USER_PROFILE_IMAGE: '/auth/setUserProfileImage',
 };
 
 export const CALENDAR_URL = {

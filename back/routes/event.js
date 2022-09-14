@@ -21,7 +21,7 @@ const {
 
 const router = express.Router();
 const { Op } = require("sequelize");
-const authJWT = require("../utils/authJWT");
+const { authJWT } = require("../middlewares/auth");
 
 router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
   try {
