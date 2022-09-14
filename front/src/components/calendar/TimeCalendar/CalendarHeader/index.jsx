@@ -12,12 +12,15 @@ const Index = ({ dates = [], events = [] }) => {
       <tr>
         <th>GMT+09</th>
       </tr>
+      <tr />
       {dates.map(date => (
         <tr key={date.time}>
           <th className={`${isToday(date) ? styles.today : ''}`}>
             <em>{date.weekDay}</em>
             <p>{date.date}</p>
-            <div className={styles.title_events}>
+          </th>
+          <th className={styles.event_list_container}>
+            <div>
               {events.map(event => (
                 <div key={event.id}>{event.name}</div>
               ))}

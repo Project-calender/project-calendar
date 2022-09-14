@@ -1,12 +1,18 @@
 .title { display: flex; }
-.title tr { min-width: 80px; flex-grow: 1; flex-shrink: 0; position:relative; }
-.title th { height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; } 
+.title tr { min-width: 80px; flex-grow: 1; flex-shrink: 0; position:relative; display: flex; flex-direction: column; justify-content: flex-start;}
+.title tr > :first-child{ position: relative; top: 10px; }
+.title th { height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; } 
 .title th > em { font-size: 11px; font-weight: 500; color: #676767;} 
 .title th > p { display: inline-block; width: 45px; color: #585858; height: 45px; font-size: 25px; font-weight: 400; border-radius: 100%; text-align: center; line-height: 42px; } 
 
-.title >:first-child { background-color: red; width: 30px; font-size: 11px; border-bottom: 1px solid #e6e6e6; height: 80px !important; justify-content: end; align-items: baseline; }
+.title >:first-child { flex-grow: 0; min-width: 50px; width: 50px; font-size: 10px;   }
+.title >:nth-child(2) { min-width: 10px; width: 10px; flex-grow: 0; border-bottom: 1px solid #e6e6e6; }
+.title >:first-child th { justify-content: end; align-items: baseline; font-weight: 500 !important; }
 
 .today em { color: #1a73e8; }
 .today p { background: #1a73e8; color: #fff !important; }
 
-.title_events { border: 1px solid #e6e6e6; border-top: none; border-right: none; min-height: 20px; width: 100%; position: absolute; top: 60px;}
+.event_list_container { height: fit-content !important; min-height: 15px; border-radius: 0%; border-bottom: 1px solid #e6e6e6; border-right: 1px solid #e6e6e6;}
+
+.title >:nth-child(3) > :last-child { border-left: 1px solid #e6e6e6;}
+.title >:last-child > :last-child { border-right: none;}
