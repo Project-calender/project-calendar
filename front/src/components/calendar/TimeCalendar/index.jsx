@@ -3,6 +3,7 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
 import CalendarHeader from './CalendarHeader';
+import CalendarAxis from './CalendarAxis';
 import CalendarBody from './CalendarBody';
 
 const Index = ({ dates, events = [] }) => {
@@ -12,7 +13,10 @@ const Index = ({ dates, events = [] }) => {
   return (
     <table className={styles.calendar_container}>
       <CalendarHeader dates={dates} events={allDayEvents} />
-      <CalendarBody dates={dates} events={notAllDayEvents} />
+      <tbody>
+        <CalendarAxis />
+        <CalendarBody dates={dates} events={notAllDayEvents} />
+      </tbody>
     </table>
   );
 };

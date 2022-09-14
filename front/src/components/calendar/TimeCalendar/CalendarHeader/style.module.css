@@ -1,8 +1,10 @@
 .title { display: flex; }
 .title tr { min-width: 80px; flex-grow: 1; flex-shrink: 0; position:relative; }
-.title th {  height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; } 
+.title th { height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; } 
 .title th > em { font-size: 11px; font-weight: 500; color: #676767;} 
 .title th > p { display: inline-block; width: 45px; color: #585858; height: 45px; font-size: 25px; font-weight: 400; border-radius: 100%; text-align: center; line-height: 42px; } 
+
+.title >:first-child { background-color: red; width: 30px; font-size: 11px; border-bottom: 1px solid #e6e6e6; height: 80px !important; justify-content: end; align-items: baseline; }
 
 .today em { color: #1a73e8; }
 .today p { background: #1a73e8; color: #fff !important; }

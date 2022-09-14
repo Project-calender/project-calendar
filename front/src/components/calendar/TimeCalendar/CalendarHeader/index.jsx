@@ -9,6 +9,9 @@ const Index = ({ dates = [], events = [] }) => {
 
   return (
     <thead className={styles.title}>
+      <tr>
+        <th>GMT+09</th>
+      </tr>
       {dates.map(date => (
         <tr key={date.time}>
           <th className={`${isToday(date) ? styles.today : ''}`}>
