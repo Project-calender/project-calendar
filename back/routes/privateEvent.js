@@ -12,7 +12,7 @@ const {
   Event,
 } = require("../models");
 const router = express.Router();
-const authJWT = require("../utils/authJWT");
+const { authJWT } = require("../middlewares/auth");
 const { addPrivateAlert, deletePrivateAlerts } = require("../realTimeAlerts");
 
 router.post("/getPrivateEvent", authJWT, async (req, res, next) => {

@@ -1,62 +1,77 @@
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-
-const { Strategy: LocalStrategy } = require("passport-local");
-const { ExtractJwt, Strategy: JWTStrategy } = require("passport-jwt");
-const { User } = require("../models");
+const LocalStrategy = require("passport-local").Strategy;
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+const { redisClient } = require("../redis");
+const { User, ProfileImage } = require("../models");
+dotenv.config();
 
 module.exports = () => {
   passport.use(
-    "signin",
     new LocalStrategy(
       {
-        usernameField: "email",
-        passwordField: "password",
+        usernameField: "email", // req.body.email
+        passwordField: "password", // req.body.password
       },
       async (email, password, done) => {
         try {
-          const user = await User.findOne({
-            where: { email },
+          const exUser = await User.findOne({
+            where: { email: email, provider: "local" },
+            include: [
+              {
+                model: ProfileImage,
+                attributes: {
+                  exclude: ["id", "UserId"],
+                },
+              },
+            ],
           });
-          if (!user) {
-            return done(null, false, { reason: "존재하지 않는 아이디입니다!" });
+
+          if (exUser) {
+            const result = await bcrypt.compare(password, exUser.password);
+
+            if (result) {
+              const accessToken = jwt.sign(
+                { id: exUser.id },
+                "jwt-secret-key",
+                {
+                  algorithm: "HS256",
+                  expiresIn: "20s",
+                }
+              );
+              const refreshToken = jwt.sign(
+                { id: exUser.id },
+                "jwt-secret-key",
+                {
+                  algorithm: "HS256",
+                  expiresIn: "14d",
+                }
+              );
+
+              var user = {
+                id: exUser.id,
+                email: exUser.email,
+                nickname: exUser.nickname,
+                ProfileImages: exUser.ProfileImages.src,
+                checkedCalendar: exUser.checkedCalendar,
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+              };
+
+              await redisClient.set(`${exUser.id}`, refreshToken);
+              done(null, user);
+            } else {
+              done(null, false, { message: "비밀번호가 일치하지 않습니다." });
+            }
+          } else {
+            done(null, false, { message: "존재하지 않는 유저입니다." });
           }
-          const result = await bcrypt.compare(password, user.password);
-          if (result) {
-            return done(null, user);
-          }
-          return done(null, false, { reason: "비밀번호가 틀렸습니다" });
         } catch (error) {
-          return done(error);
+          console.error(error);
+          done(error);
         }
       }
     )
   );
-
-  // passport.use(
-  //   "jwt",
-  //   new JWTStrategy(
-  //     {
-  //       jwtFromRequest: ExtractJwt.fromHeader("authorization"),
-  //       secretOrKey: "jwt-secret-key",
-  //     },
-  //     async (jwtPayload, done) => {
-  //       try {
-  //         console.log("here");
-  //         const user = await User.findOne({
-  //           where: {
-  //             email: jwtPayload.email,
-  //           },
-  //         });
-
-  //         if (user) {
-  //           done(null, user);
-  //         }
-  //       } catch (error) {
-  //         console.error(error);
-  //         return done(error);
-  //       }
-  //     }
-  //   )
-  // );
 };

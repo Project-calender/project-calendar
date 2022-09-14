@@ -119,7 +119,6 @@ router.post("/signin", async (req, res, next) => {
 
 router.post("/signup", async (req, res, next) => {
   try {
-    console.log(req.body);
     const exUser = await User.findOne({
       where: {
         email: req.body.email,
@@ -127,15 +126,6 @@ router.post("/signup", async (req, res, next) => {
     });
     if (exUser) {
       return res.status(401).send({ message: "이미 사용중인 아이디입니다!" });
-    }
-
-    const exNickname = await User.findOne({
-      where: {
-        nickname: req.body.nickname,
-      },
-    });
-    if (exNickname) {
-      return res.status(402).send({ message: "이미 사용중인 닉네임입니다!" });
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 12);

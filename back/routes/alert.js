@@ -3,7 +3,7 @@ const express = require("express");
 const { sequelize } = require("../models");
 const { Alert } = require("../models");
 const router = express.Router();
-const authJWT = require("../utils/authJWT");
+const { authJWT } = require("../middlewares/auth");
 const { Op } = require("sequelize");
 
 router.post("/getAlerts", authJWT, async (req, res, next) => {

@@ -40,7 +40,7 @@ const Index = () => {
         if (error.response.status == 401) {
           alert(`존재하지 않는 유저 입니다. 아이디를 확인해주세요.`);
         } else if (error.response.status == 402) {
-          alert(` 비밀번호가 일치하지 않습니다. 비밀번호를 확인해주세요.`);
+          alert(`비밀번호가 일치하지 않습니다. 비밀번호를 확인해주세요.`);
         }
       });
   }
@@ -56,6 +56,10 @@ const Index = () => {
     localStorage.setItem('checkedCalendar', checkedCalendar);
     localStorage.setItem('userImg', ProfileImages[0].src);
   }
+
+  const KAKAO_AUTH_URL = `http://localhost:80/api/auth/kakao`;
+  const NAVER_AUTH_URL = `http://localhost:80/api/auth/naver`;
+  const GOOGLE_AUTH_URL = `http://localhost:80/api/auth/google`;
 
   return (
     <div>
@@ -106,6 +110,22 @@ const Index = () => {
                 />
                 Login with Google
               </button>
+
+              <div>
+                <div>
+                  <a id="kakao" href={KAKAO_AUTH_URL}>
+                    카카오톡 로그인
+                  </a>
+                </div>
+
+                <div>
+                  <a href={NAVER_AUTH_URL}>네이버 로그인</a>
+                </div>
+
+                <div>
+                  <a href={GOOGLE_AUTH_URL}>구글 로그인</a>
+                </div>
+              </div>
               <div className={styles.tooltip}>
                 <p>Forgot my password</p>
                 <span></span>
