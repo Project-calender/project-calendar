@@ -4,24 +4,30 @@ import styles from './style.module.css';
 
 import Moment from '../../../../utils/moment';
 
-const Index = ({ date = new Moment(), events = [] }) => {
-  const isToday = date.time === new Moment().time;
+const Index = ({ dates = [], events = [] }) => {
+  const isToday = date => date.time === new Moment().time;
 
   return (
-    <div className={`${styles.title} ${isToday ? styles.today : ''}`}>
-      <em>{date.weekDay}</em>
-      <p>{date.date}</p>
-      <div>
-        {events.map(event => (
-          <div key={event.id}>{event.name}</div>
-        ))}
-      </div>
-    </div>
+    <thead className={styles.title}>
+      {dates.map(date => (
+        <tr key={date.time}>
+          <th className={`${isToday(date) ? styles.today : ''}`}>
+            <em>{date.weekDay}</em>
+            <p>{date.date}</p>
+            <div className={styles.title_events}>
+              {events.map(event => (
+                <div key={event.id}>{event.name}</div>
+              ))}
+            </div>
+          </th>
+        </tr>
+      ))}
+    </thead>
   );
 };
 
 Index.propTypes = {
-  date: PropTypes.object,
+  dates: PropTypes.array,
   events: PropTypes.array,
 };
 

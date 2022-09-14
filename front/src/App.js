@@ -10,6 +10,7 @@ import Setting from './pages/Setting';
 import YearCalendarPage from './pages/YearCalendarPage';
 import MonthCalendarPage from './pages/MonthCalendarPage';
 import DayCalendarPage from './pages/DayCalendarPage';
+import WeekCalendarPage from './pages/WeekCalendarPage';
 import AlertPage from './pages/AlertPage';
 import AllEvent from './pages/AllEvent';
 import Search from './components/searchDetall';
@@ -24,7 +25,10 @@ function App() {
         <Route path={CALENDAR_PATH.MAIN} element={<Main />}>
           <Route index element={<Navigate to={CALENDAR_PATH.MONTH} />}></Route>
           <Route path={CALENDAR_PATH.DAY} element={<DayCalendarPage />}></Route>
-          <Route path={CALENDAR_PATH.WEEK} element={<div>주</div>}></Route>
+          <Route
+            path={CALENDAR_PATH.WEEK}
+            element={<WeekCalendarPage />}
+          ></Route>
           <Route
             path={CALENDAR_PATH.MONTH}
             element={<MonthCalendarPage />}

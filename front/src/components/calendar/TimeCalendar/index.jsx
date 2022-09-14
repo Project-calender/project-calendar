@@ -5,20 +5,20 @@ import PropTypes from 'prop-types';
 import CalendarHeader from './CalendarHeader';
 import CalendarBody from './CalendarBody';
 
-const Index = ({ date, events = [] }) => {
+const Index = ({ dates, events = [] }) => {
   const allDayEvents = events;
   const notAllDayEvents = events;
 
   return (
-    <div className={styles}>
-      <CalendarHeader date={date} events={allDayEvents} />
-      <CalendarBody date={date} events={notAllDayEvents} />
-    </div>
+    <table className={styles.calendar_container}>
+      <CalendarHeader dates={dates} events={allDayEvents} />
+      <CalendarBody dates={dates} events={notAllDayEvents} />
+    </table>
   );
 };
 
 Index.propTypes = {
-  date: PropTypes.object,
+  dates: PropTypes.array,
   events: PropTypes.array,
 };
 
