@@ -10,13 +10,14 @@
 .login .login_btt{color: #fff; border: 1px solid #b6c4df; background: #445279;}
 
 .login .social_login{}
-.login .social_login .social_login_btt{display: flex; align-items: center;position: relative;  border: 1px solid rgba(0, 0, 0, 0); background: #fff;}
+.login .social_login .social_login_btt{display: flex; align-items: center; text-align: left; position: relative;  border: 1px solid rgba(0, 0, 0, 0); background: #fff; overflow: hidden;}
 .login .social_login .social_login_btt:nth-child(1){background: #fae100;}
 .login .social_login .social_login_btt:nth-child(2){background: #1ec800;}
 .login .social_login .social_login_btt:nth-child(2) img{width: 40px;height: 40px; left: 13px;}
 .login .social_login .social_login_btt:nth-child(3) img{width: 25px;height: 25px;}
-.login .social_login .social_login_btt img{width: 30px;height: 30px; margin: 0 10px 0 0px; position: absolute; top: 50%;left: 20px; transform: translateY(-50%);}
-.login .social_login .social_login_btt em{color: #262e49; margin-left: 90px;}
+.login .social_login .social_login_btt > a{width: 100%; height: 100%;}
+.login .social_login .social_login_btt img{width: 30px;height: 30px; position: absolute; top: 50%;left: 20px; transform: translateY(-50%);}
+.login .social_login .social_login_btt em{width: 100%; color: #262e49; margin-left: 90px; position: absolute; top: 50%;left: 0; transform: translateY(-50%);}
 .login .social_login .social_login_btt:nth-child(2) em{color: #fff;}
 
 .login .line_wrap{display: flex; align-items: center;}
