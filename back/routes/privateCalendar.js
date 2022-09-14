@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { sequelize, PrivateCalendar, Calendar } = require("../models");
-const authJWT = require("../utils/authJWT");
+const { authJWT } = require("../middlewares/auth");
 
 router.post("/editPrivateCalendar", authJWT, async (req, res, next) => {
   try {

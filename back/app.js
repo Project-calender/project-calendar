@@ -10,6 +10,7 @@ const helmet = require("helmet");
 const { createServer } = require("http");
 const httpServer = createServer(app);
 const path = require("path");
+const passport = require("passport");
 
 //내부모듈
 const db = require("./models");
@@ -19,9 +20,13 @@ const userRouter = require("./routes/user");
 const privateEventRouter = require("./routes/privateEvent");
 const alertRouter = require("./routes/alert");
 const privateCalendar = require("./routes/privateCalendar");
+const authRouter = require("./routes/auth");
+
 // const { restartAll } = require("./realTimeAlerts");
 const useSocket = require("./useSocket");
+const { startRedis } = require("./redis");
 
+const passportConfig = require("./passport");
 //swagger
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
@@ -29,6 +34,7 @@ const swaggerSpec = YAML.load(path.join(__dirname, "swagger.yaml"));
 
 //서버 가동
 dotenv.config();
+passportConfig();
 db.sequelize
   .sync()
   .then(() => {
@@ -48,6 +54,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(passport.initialize());
 
 //라우터
 app.use(
@@ -70,6 +77,7 @@ app.use("/api/event", eventRouter);
 app.use("/api/privateEvent", privateEventRouter);
 app.use("/api/alert", alertRouter);
 app.use("/api/privateCalendar", privateCalendar);
+app.use("/api/auth", authRouter);
 
 app.use(function (error, req, res, next) {
   res.json({ message: error.message });
@@ -83,3 +91,5 @@ useSocket(httpServer, app);
 
 //포트 설정
 httpServer.listen(80);
+
+startRedis();
