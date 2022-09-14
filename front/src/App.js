@@ -16,7 +16,6 @@ import Search from './components/searchDetall';
 import EditEventPage from './pages/EditEventPage';
 import ChangeMemberInfo from './pages/ChangeMemberInfo';
 import LoginSuccess from './pages/LoginSuccess';
-import LoginFinal from './pages/LoginFinal';
 
 import { CALENDAR_PATH, EVENT_PATH, USER_PATH } from './constants/path';
 
@@ -52,7 +51,6 @@ function App() {
         </Route>
         <Route path={USER_PATH.LOGIN} element={<Login />}></Route>
         <Route path={USER_PATH.LOGINSUCCESS} element={<LoginSuccess />}></Route>
-        <Route path={USER_PATH.LOGINFINAL} element={<LoginFinal />}></Route>
         <Route path={USER_PATH.JOIN} element={<Join />}></Route>
         <Route path="*" element={<Navigate to={CALENDAR_PATH.MONTH} />} />
         <Route path={USER_PATH.SETTING} element={<Setting></Setting>}></Route>
