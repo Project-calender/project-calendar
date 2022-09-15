@@ -89,7 +89,7 @@ const Index = () => {
           obj[date.time] = obj[date.time] || [];
           obj[date.time].push({
             ...event,
-            name: `${event.name} (${index}/${
+            nameType: `(${index}/${
               startDate.calculateDateDiff(endDate.time) + 1
             }일)`,
           });
