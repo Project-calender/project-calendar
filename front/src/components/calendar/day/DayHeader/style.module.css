@@ -1,5 +1,0 @@
-
-.today{ width: 220px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-.today em{font-size: 11px;font-weight: 500;color: #1a73e8;}
-.today p{display: inline-block; width: 45px;height: 45px; font-size: 25px;font-weight: 400; color: #000;  border-radius: 50%; text-align: center; line-height: 45px;}
-.today p.active{background: #1a73e8; color: #fff;}

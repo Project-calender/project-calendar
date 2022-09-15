@@ -32,6 +32,7 @@ const Index = ({ toggleSideBar }) => {
     url.pathname == '/month' ? dispatch(addMonth(1)) : null;
     url.pathname == '/year' ? dispatch(addMonth(12)) : null;
     url.pathname == '/agenda' ? dispatch(addDate(1)) : null;
+    url.pathname == '/customday' ? dispatch(addDate(4)) : null;
   }
 
   //이전 버튼 클릭시 일 변경
@@ -41,6 +42,7 @@ const Index = ({ toggleSideBar }) => {
     url.pathname == '/month' ? dispatch(addMonth(-1)) : null;
     url.pathname == '/year' ? dispatch(addMonth(-12)) : null;
     url.pathname == '/agenda' ? dispatch(addDate(-1)) : null;
+    url.pathname == '/customday' ? dispatch(addDate(-4)) : null;
   }
 
   //이전,다음 버튼 툴팁 변경
@@ -60,6 +62,9 @@ const Index = ({ toggleSideBar }) => {
     } else if (url.pathname == '/agenda') {
       setNextText('다음날');
       setPreviText('전날');
+    } else if (url.pathname == '/customday') {
+      setNextText('다음 기간');
+      setPreviText('이전 기간');
     }
   }, [url.pathname]);
 

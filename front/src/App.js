@@ -6,10 +6,12 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Main from './pages/Main';
 import Login from './pages/Login';
 import Join from './pages/Join';
-import Setting from './pages/Setting';
+import CalendarSetupPage from './pages/CalendarSetupPage';
 import YearCalendarPage from './pages/YearCalendarPage';
 import MonthCalendarPage from './pages/MonthCalendarPage';
 import DayCalendarPage from './pages/DayCalendarPage';
+import WeekCalendarPage from './pages/WeekCalendarPage';
+import FourDaysCalendarPage from './pages/FourDaysCalendarPage';
 import AlertPage from './pages/AlertPage';
 import AllEvent from './pages/AllEvent';
 import Search from './components/searchDetall';
@@ -26,7 +28,10 @@ function App() {
         <Route path={CALENDAR_PATH.MAIN} element={<Main />}>
           <Route index element={<Navigate to={CALENDAR_PATH.MONTH} />}></Route>
           <Route path={CALENDAR_PATH.DAY} element={<DayCalendarPage />}></Route>
-          <Route path={CALENDAR_PATH.WEEK} element={<div>주</div>}></Route>
+          <Route
+            path={CALENDAR_PATH.WEEK}
+            element={<WeekCalendarPage />}
+          ></Route>
           <Route
             path={CALENDAR_PATH.MONTH}
             element={<MonthCalendarPage />}
@@ -35,29 +40,26 @@ function App() {
             path={CALENDAR_PATH.YEAR}
             element={<YearCalendarPage />}
           ></Route>
-          <Route
-            path={CALENDAR_PATH.AGENDA}
-            element={<AllEvent></AllEvent>}
-          ></Route>
+          <Route path={CALENDAR_PATH.AGENDA} element={<AllEvent />}></Route>
           <Route
             path={CALENDAR_PATH.CUSTOMDAY}
-            element={<div>4일</div>}
+            element={<FourDaysCalendarPage />}
           ></Route>
-          <Route
-            path={CALENDAR_PATH.SEARCH}
-            element={<Search></Search>}
-          ></Route>
+          <Route path={CALENDAR_PATH.SEARCH} element={<Search />}></Route>
           <Route path={CALENDAR_PATH.ALERT} element={<AlertPage />}></Route>
         </Route>
         <Route path={USER_PATH.LOGIN} element={<Login />}></Route>
         <Route path={USER_PATH.LOGINSUCCESS} element={<LoginSuccess />}></Route>
         <Route path={USER_PATH.JOIN} element={<Join />}></Route>
         <Route path="*" element={<Navigate to={CALENDAR_PATH.MONTH} />} />
-        <Route path={USER_PATH.SETTING} element={<Setting></Setting>}></Route>
+        <Route
+          path={CALENDAR_PATH.SETTING}
+          element={<CalendarSetupPage />}
+        ></Route>
         <Route path={EVENT_PATH.EDIT_EVENT} element={<EditEventPage />}></Route>
         <Route
           path={USER_PATH.CHANGE_INFO}
-          element={<ChangeMemberInfo></ChangeMemberInfo>}
+          element={<ChangeMemberInfo />}
         ></Route>
       </Routes>
     </div>

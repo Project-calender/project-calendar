@@ -10,12 +10,12 @@ export const CALENDAR_PATH = {
   CUSTOMDAY: '/customday',
   SEARCH: '/search',
   ALERT: '/alert/:page',
+  SETTING: '/setting',
 };
 
 export const USER_PATH = {
   LOGIN: '/login',
   JOIN: '/join',
-  SETTING: '/setting',
   CHANGE_INFO: '/changeInfo',
   LOGINSUCCESS: '/loginSuccess',
   LOGINFINAL: '/loginFinal',
