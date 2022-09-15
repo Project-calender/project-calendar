@@ -105,33 +105,31 @@ const Index = () => {
               </div>
               <div className={styles.social_login}>
                 <button className={styles.social_login_btt}>
-                  <img
-                    src={`${process.env.PUBLIC_URL}/img/login/kakao_logo.png`}
-                    alt="kakao_icon"
-                  />
                   <a id="kakao" href={KAKAO_AUTH_URL}>
+                    <img
+                      src={`${process.env.PUBLIC_URL}/img/login/kakao_logo.png`}
+                      alt="kakao_icon"
+                    />
                     <em>Login with Kakao</em>
                   </a>
                 </button>
                 <button className={styles.social_login_btt}>
-                  <img
-                    src={`${process.env.PUBLIC_URL}/img/login/naver_logo.png`}
-                    alt="naver_icon"
-                  />
                   <a href={NAVER_AUTH_URL}>
+                    <img
+                      src={`${process.env.PUBLIC_URL}/img/login/naver_logo.png`}
+                      alt="naver_icon"
+                    />
                     <em>Login with Naver</em>
                   </a>
                 </button>
                 <button className={styles.social_login_btt}>
-                  <img
-                    src={`${process.env.PUBLIC_URL}/img/login/google_logo.png`}
-                    alt="google_icon"
-                  />
-                  <div>
-                    <a href={GOOGLE_AUTH_URL}>
-                      <em>Login with Google</em>
-                    </a>
-                  </div>
+                  <a href={GOOGLE_AUTH_URL}>
+                    <img
+                      src={`${process.env.PUBLIC_URL}/img/login/google_logo.png`}
+                      alt="google_icon"
+                    />
+                    <em>Login with Google</em>
+                  </a>
                 </button>
               </div>
               <div className={styles.tooltip}>
