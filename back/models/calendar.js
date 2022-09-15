@@ -29,9 +29,8 @@ module.exports = class Calendar extends Model {
     db.Calendar.belongsToMany(db.User, {
       through: db.CalendarMember,
       as: "CalendarMembers",
-      onDelete: "CASCADE",
     });
-    db.Calendar.belongsTo(db.User, { as: "Owner", onDelete: "CASCADE" });
+    db.Calendar.belongsTo(db.User, { as: "Owner" });
     db.Calendar.hasMany(db.Invite, {
       as: "HostCalendar",
       foreignKey: "HostCalendarId",

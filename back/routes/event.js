@@ -25,9 +25,13 @@ const { authJWT } = require("../middlewares/auth");
 
 router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
   try {
+    //시작 날짜 받고 그날 부터 일년 시작날짜 기준
     const me = await User.findOne({ where: { id: req.myId } });
-    const now = new Date();
-    const beforeYear = now.setFullYear(now.getFullYear() - 1);
+
+    var startDate = new Date(req.body.startTime);
+    var endDate = new Date(startDate);
+    endDate.setFullYear(endDate.getFullYear() - 1);
+
     var events = [];
     const groupCalendars = await me.getGroupCalendars({
       attributes: [],
@@ -37,22 +41,30 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
           as: "GroupEvents",
           where: {
             [Op.or]: {
-              startTime: {
-                [Op.gte]: beforeYear,
+              [Op.or]: {
+                startTime: {
+                  [Op.and]: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate,
+                  },
+                },
+                endTime: {
+                  [Op.and]: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate,
+                  },
+                },
               },
 
               [Op.and]: {
-                startTime: {
-                  [Op.lte]: beforeYear,
-                },
-                endTime: {
-                  [Op.gte]: beforeYear,
-                },
+                startTime: { [Op.lte]: startDate },
+                endTime: { [Op.gte]: endDate },
               },
             },
           },
         },
       ],
+      // order: [["GroupEvents", "startTime", "ASC"]],
       joinTableAttributes: [],
     });
 
@@ -69,28 +81,42 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
           model: PrivateEvent,
           where: {
             [Op.or]: {
-              startTime: {
-                [Op.gte]: beforeYear,
+              [Op.or]: {
+                startTime: {
+                  [Op.and]: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate,
+                  },
+                },
+                endTime: {
+                  [Op.and]: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate,
+                  },
+                },
               },
 
               [Op.and]: {
-                startTime: {
-                  [Op.lte]: beforeYear,
-                },
-                endTime: {
-                  [Op.gte]: beforeYear,
-                },
+                startTime: { [Op.lte]: startDate },
+                endTime: { [Op.gte]: endDate },
               },
             },
           },
         },
       ],
+      // order: [[PrivateEvent, "startTime", "ASC"]],
     });
 
     events = events?.flat();
     if (privateEvents) {
       events = events.concat(privateEvents?.PrivateEvents);
     }
+
+    events = events.sort((a, b) => {
+      var a = new Date(a.startTime);
+      var b = new Date(b.startTime);
+      return a - b;
+    });
     return res.status(200).send(events);
   } catch (error) {
     console.error(error);
@@ -210,17 +236,17 @@ router.post("/getGroupEvent", authJWT, async (req, res, next) => {
         "memo",
         "startTime",
         "endTime",
-        "EventHostId",
+        "eventHostEmail",
         "CalendarId",
       ],
       include: [
-        {
-          model: User,
-          as: "EventHost",
-          attributes: {
-            exclude: ["password", "checkedCalendar"],
-          },
-        },
+        // {
+        //   model: User,
+        //   as: "EventHost",
+        //   attributes: {
+        //     exclude: ["password", "checkedCalendar"],
+        //   },
+        // },
         {
           model: User,
           as: "EventMembers",
@@ -360,6 +386,11 @@ router.post("/getEventByDate", authJWT, async (req, res, next) => {
 
 router.post("/createGroupEvent", authJWT, async (req, res, next) => {
   try {
+    const me = await User.findOne({
+      where: {
+        id: req.myId,
+      },
+    });
     const isGroupMember = await CalendarMember.findOne({
       where: {
         [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
@@ -383,7 +414,8 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
           startTime: req.body.startTime,
           endTime: req.body.endTime,
           allDay: req.body.allDay,
-          EventHostId: req.myId,
+          // EventHostId: req.myId,
+          eventHostEmail: me.email,
           CalendarId: req.body.calendarId,
         },
         { transaction: t }

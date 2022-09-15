@@ -11,6 +11,7 @@ module.exports = {
         email: faker.internet.email(),
         nickname: faker.name.findName(),
         password: await bcrypt.hash("1234", 12),
+        provider: "local",
       });
 
       dummyProfiles.push({
