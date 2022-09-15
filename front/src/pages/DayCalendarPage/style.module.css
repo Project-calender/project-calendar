@@ -1,0 +1,2 @@
+.day_calendar { width: 100%; } 
+.day_calendar > table > thead > :last-child > th { width: 80px; } 
