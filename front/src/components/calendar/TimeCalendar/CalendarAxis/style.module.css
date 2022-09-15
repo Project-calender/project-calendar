@@ -1,4 +1,4 @@
 .calendar_axis { display: flex; flex-direction: column; } 
-.calendar_axis > div {  border-right: none !important; border-bottom: 1px solid transparent !important; display: flex; align-items: flex-end;}
-.calendar_axis > div > em { font-size: 10px; position: relative; top: 7px;} 
+.calendar_axis > div {  border-right: none !important; border-bottom: 1px solid transparent !important; display: flex; align-items: flex-end; justify-content: right;}
+.calendar_axis > div > em { font-size: 10px; position: relative; top: 7px; margin-right: 5px;}  
 .calendar_axis_line { min-width: 10px; width: 10px; flex-grow: 0 !important; border-bottom: 1px solid #e6e6e6; } 
