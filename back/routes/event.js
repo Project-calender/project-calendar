@@ -30,7 +30,7 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
 
     var startDate = new Date(req.body.startTime);
     var endDate = new Date(startDate);
-    endDate.setFullYear(endDate.getFullYear() - 1);
+    endDate.setFullYear(endDate.getFullYear() + 1);
 
     var events = [];
     const groupCalendars = await me.getGroupCalendars({
