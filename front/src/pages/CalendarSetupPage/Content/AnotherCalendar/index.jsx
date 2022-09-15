@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './style.module.css';
-import ChangeName from './../MyCalendar/ChangeName';
+import ChangeName from '../MyCalendar/ChangeName';
 import Subscribe from './Subscribe';
 
 const Index = ({
