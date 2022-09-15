@@ -16,7 +16,6 @@ const passport = require("passport");
 const db = require("./models");
 const calendarRouter = require("./routes/calendar");
 const eventRouter = require("./routes/event");
-const userRouter = require("./routes/user");
 const privateEventRouter = require("./routes/privateEvent");
 const alertRouter = require("./routes/alert");
 const privateCalendar = require("./routes/privateCalendar");
@@ -71,7 +70,6 @@ app.use(
 //     console.log(error);
 //   });
 
-app.use("/api/user", userRouter);
 app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/privateEvent", privateEventRouter);
