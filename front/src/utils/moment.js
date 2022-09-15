@@ -115,7 +115,7 @@ class Moment {
   getSimpleTime() {
     const date = new Date(this.time);
     const [hour, mimute] = [date.getHours(), date.getMinutes()];
-    const hourText = (hour > 12 ? hour % 12 : hour) || 12;
+    const hourText = hour % 12 || 12;
     return `${hourText}:${mimute.toString().padStart(2, '0')}`;
   }
 }

@@ -9,6 +9,8 @@ import EventColor from '../../../components/calendar/EventColor';
 import { CALENDAR_COLOR } from '../../../styles/color.js';
 import { updateCheckedCalendar } from '../../../store/thunk/user';
 import { updateCalendar } from '../../../store/thunk/calendar';
+import { useNavigate } from 'react-router-dom';
+import { CALENDAR_PATH } from '../../../constants/path';
 
 const Index = () => {
   const { hideModal, modalData } = useContext(CalendarOptionContext);
@@ -30,7 +32,10 @@ const Index = () => {
     dispatch(updateCheckedCalendar({ checkedList: [calendar.id] }));
     hideModal();
   }
-
+  const navigate = useNavigate();
+  function clickCalendarSetup() {
+    navigate(CALENDAR_PATH.SETTING);
+  }
   return (
     <Modal
       hideModal={hideModal}
@@ -41,7 +46,7 @@ const Index = () => {
         <ul>
           <li onClick={checkOnlyOneCalendar}>이 항목만 표시</li>
           {calendar.id > 0 && <li>목록에서 숨기기</li>}
-          <li>설정 및 공유</li>
+          <li onClick={clickCalendarSetup}>설정 및 공유</li>
         </ul>
         <hr />
         <div className={styles.color_list}>
