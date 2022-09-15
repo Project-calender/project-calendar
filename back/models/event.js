@@ -32,6 +32,10 @@ module.exports = class Event extends Model {
         allDay: {
           type: DataTypes.INTEGER,
         },
+        eventHostEmail: {
+          type: DataTypes.STRING(30),
+          allowNull: false,
+        },
       },
       {
         modelName: "Events",
@@ -49,7 +53,7 @@ module.exports = class Event extends Model {
       through: db.EventMember,
       as: "EventMembers",
     });
-    db.Event.belongsTo(db.User, { as: "EventHost" });
+    // db.Event.belongsTo(db.User, { as: "EventHost" });
 
     db.Event.belongsTo(db.Calendar);
   }

@@ -73,7 +73,7 @@ router.post("/signin", async (req, res, next) => {
 
     const accessToken = jwt.sign({ id: exUser.id }, "jwt-secret-key", {
       algorithm: "HS256",
-      expiresIn: "20s",
+      expiresIn: "1d",
     });
     const refreshToken = jwt.sign({ id: exUser.id }, "jwt-secret-key", {
       algorithm: "HS256",
@@ -101,6 +101,7 @@ router.post("/signin", async (req, res, next) => {
       userData,
       refreshToken,
       accessToken,
+      local: true,
     });
   } catch (error) {
     console.error(error);
@@ -211,6 +212,7 @@ router.get(
       email: userData.email,
       profileImage: userData.ProfileImages,
       checkedCalendar: userData.checkedCalendar,
+      local: false,
     });
     res.redirect("http://localhost:3000/calendar/loginSuccess?" + query);
   }
@@ -237,6 +239,7 @@ router.get(
       email: userData.email,
       profileImage: userData.ProfileImages,
       checkedCalendar: userData.checkedCalendar,
+      local: false,
     });
     res.redirect("http://localhost:3000/calendar/loginSuccess?" + query);
   }
@@ -266,6 +269,7 @@ router.get(
       email: userData.email,
       profileImage: userData.ProfileImages,
       checkedCalendar: userData.checkedCalendar,
+      local: false,
     });
     res.redirect("http://localhost:3000/calendar/loginSuccess?" + query);
   }
@@ -286,12 +290,152 @@ router.get("/logout", authJWT, async (req, res, next) => {
   }
 });
 
-router.post("/tokenValidTest", authJWT, async (req, res, next) => {
+router.post("/changeNickname", authJWT, async (req, res, next) => {
   try {
-    console.log(req.myId);
-    return res.status(200).send({ message: "유효한 토큰" });
+    const me = await User.findOne({
+      where: { id: req.myId },
+    });
+
+    await sequelize.transaction(async (t) => {
+      await me.update(
+        {
+          nickname: req.body.nickname,
+        },
+        { transaction: t }
+      );
+    });
+
+    const userData = await User.findOne({
+      where: { id: req.myId },
+      include: [
+        {
+          model: ProfileImage,
+          attributes: {
+            exclude: ["id", "UserId"],
+          },
+        },
+      ],
+      attributes: {
+        exclude: ["password"],
+      },
+    });
+
+    return res.status(200).send(userData);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/changePassword", authJWT, async (req, res, next) => {
+  try {
+    const me = await User.findOne({
+      where: { id: req.myId },
+    });
+
+    await sequelize.transaction(async (t) => {
+      const hashedPassword = await bcrypt.hash(req.body.password, 12);
+
+      await me.update(
+        {
+          password: hashedPassword,
+        },
+        { transaction: t }
+      );
+    });
+
+    return res.status(200).send({ succes: true });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/changeProfileImage", authJWT, async (req, res, next) => {
+  try {
+    await sequelize.transaction(async (t) => {
+      await ProfileImage.update(
+        {
+          src: req.body.profileImageSrc,
+        },
+        {
+          where: { UserId: req.myId },
+          transaction: t,
+        }
+      );
+    });
+
+    const userData = await User.findOne({
+      where: { id: req.myId },
+      include: [
+        {
+          model: ProfileImage,
+          attributes: {
+            exclude: ["id", "UserId"],
+          },
+        },
+      ],
+      attributes: {
+        exclude: ["password"],
+      },
+    });
+
+    return res.status(200).send(userData);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/deleteProfileImage", authJWT, async (req, res, next) => {
+  try {
+    await sequelize.transaction(async (t) => {
+      await ProfileImage.update(
+        {
+          src: BASIC_IMG_SRC,
+        },
+        {
+          where: { UserId: req.myId },
+          transaction: t,
+        }
+      );
+    });
+
+    const userData = await User.findOne({
+      where: { id: req.myId },
+      include: [
+        {
+          model: ProfileImage,
+          attributes: {
+            exclude: ["id", "UserId"],
+          },
+        },
+      ],
+      attributes: {
+        exclude: ["password"],
+      },
+    });
+
+    return res.status(200).send(userData);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/resign", authJWT, async (req, res, next) => {
+  try {
+    await redisClient.get(`${req.myId}`).then(() => {
+      redisClient.del(`${req.myId}`);
+    });
+
+    await sequelize.transaction(async (t) => {
+      await User.destroy({ where: { id: req.myId }, transaction: t });
+    });
+
+    return res.status(200).send({ success: true });
+  } catch (error) {
+    console.error(error);
     next(error);
   }
 });

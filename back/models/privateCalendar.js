@@ -27,6 +27,6 @@ module.exports = class PrivateCalendar extends Model {
   }
   static associate(db) {
     db.PrivateCalendar.belongsTo(db.User);
-    db.PrivateCalendar.hasMany(db.PrivateEvent);
+    db.PrivateCalendar.hasMany(db.PrivateEvent, { onDelete: "CASCADE" });
   }
 };
