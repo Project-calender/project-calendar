@@ -45,17 +45,23 @@ module.exports = class User extends Model {
       through: db.CalendarMember,
       as: "GroupCalendars",
     });
-    db.User.hasMany(db.Calendar, { as: "Owner", foreignKey: "OwnerId" });
+    db.User.hasMany(db.Calendar, {
+      as: "Owner",
+      foreignKey: "OwnerId",
+    });
 
     //Event
     db.User.belongsToMany(db.Event, {
       through: db.EventMember,
       as: "GroupEvents",
     });
-    db.User.hasMany(db.Event, { as: "EventHost", foreignKey: "EventHostId" });
+    // db.User.hasMany(db.Event, {
+    //   as: "EventHost",
+    //   foreignKey: "EventHostId",
+    // });
 
     //private
-    db.User.hasOne(db.PrivateCalendar);
+    db.User.hasOne(db.PrivateCalendar, { onDelete: "CASCADE" });
 
     //User
     db.User.belongsToMany(db.User, {
@@ -70,9 +76,9 @@ module.exports = class User extends Model {
     });
 
     //ProfileImage
-    db.User.hasMany(db.ProfileImage);
+    db.User.hasMany(db.ProfileImage, { onDelete: "CASCADE" });
 
     //Alert
-    db.User.hasMany(db.Alert);
+    db.User.hasMany(db.Alert, { onDelete: "CASCADE" });
   }
 };

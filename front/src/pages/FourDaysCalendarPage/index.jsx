@@ -1,17 +1,15 @@
 import React from 'react';
-import styles from './style.module.css';
+
 import { useSelector } from 'react-redux';
 import TimeCalendar from '../../components/calendar/TimeCalendar';
+import Moment from '../../utils/moment';
 
 const Index = () => {
   const selectedDate = useSelector(state => state.date.selectedDate);
-  const dates = [selectedDate];
+  const date = new Moment(selectedDate);
+  const dates = Array.from(Array(4), (_, i) => date.addDate(i));
 
-  return (
-    <div className={styles.day_calendar}>
-      <TimeCalendar dates={dates} />
-    </div>
-  );
+  return <TimeCalendar dates={dates} />;
 };
 
 export default Index;

@@ -1,0 +1,10 @@
+.calendar_table { width: 100%; padding-right: 10px; display: flex; flex-direction: column; } 
+
+.calendar_body { height: 86vh; overflow-x: hidden; overflow-y: overlay; } 
+.calendar_body > tr { display: flex; } 
+.calendar_body > tr > td { flex-grow: 1; } 
+.calendar_body > tr > :first-child { flex-grow: 0; min-width: 50px; width: 50px; font-size: 10px; } 
+.calendar_body > tr > td > div { height: 50px; border-right: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; } 
+.calendar_body > tr > :nth-child(2) > div { border-right: none; } 
+.calendar_body > tr > :nth-child(3) > div { border-left: 1px solid #e6e6e6; } 
+.calendar_body > tr > :last-child > div { border-right: none; } 

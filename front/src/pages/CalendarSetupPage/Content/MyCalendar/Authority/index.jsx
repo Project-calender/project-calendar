@@ -9,8 +9,8 @@ import {
   faCaretDown,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
-import Invite from './../../Invite';
-import Tooltip from './../../../../../components/common/Tooltip';
+import Invite from '../../Invite';
+import Tooltip from '../../../../../components/common/Tooltip';
 
 const Index = ({
   targetItem,

@@ -51,9 +51,7 @@ const Index = ({ item, clickEventBar = () => {} }) => {
                   <div>
                     <span
                       style={{
-                        background:
-                          (item && item.color) ||
-                          (calendars && calendars[index].color),
+                        background: item?.color || calendars[index]?.color,
                       }}
                     ></span>
                     <em>종일</em>
@@ -75,8 +73,9 @@ const Index = ({ item, clickEventBar = () => {} }) => {
                 )}
               </div>
               <div className={styles.content}>
-                <p>{item.name}</p>
-                {item.name.length == 0 ? <p>(제목 없음)</p> : null}
+                <p>
+                  {item.name || '(제목 없음)'} {item.nameType}
+                </p>
               </div>
             </div>
           );

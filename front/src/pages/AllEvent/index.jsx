@@ -12,6 +12,7 @@ import { isCheckedCalander } from '../../store/user';
 import { EVENT_URL } from '../../constants/api';
 import EventItem from './EventItem';
 import { selectedDateSelector } from '../../store/selectors/date';
+import Moment from '../../utils/moment';
 
 const Index = () => {
   let calendarCheck = useSelector(checkedCalendarSelector);
@@ -62,7 +63,7 @@ const Index = () => {
       newAllEvent &&
       newAllEvent
         .filter(a => {
-          let date = new Date(a.startTime);
+          let date = new Date(a.endTime);
           const year = date.getFullYear();
           const month = ('0' + (date.getMonth() + 1)).slice(-2);
           const day = ('0' + date.getDate()).slice(-2);
@@ -73,9 +74,27 @@ const Index = () => {
         .filter(isCheckedCalander); //캘린더에 체크된 이벤트만 필터
 
     let event = newAllEvent?.reduce((obj, event) => {
-      obj[new Date(event.startTime).getTime()] =
-        obj[new Date(event.startTime).getTime()] || [];
-      obj[new Date(event.startTime).getTime()].push(event);
+      const startDate = new Moment(new Date(event.startTime));
+      const endDate = new Moment(new Date(event.endTime));
+
+      if (startDate.resetTime().time === endDate.resetTime().time) {
+        obj[startDate.time] = obj[startDate.time] || [];
+        obj[startDate.time].push(event);
+      } else {
+        for (
+          let date = startDate, index = 1;
+          date.time <= endDate.time;
+          date = date.addDate(1), index++
+        ) {
+          obj[date.time] = obj[date.time] || [];
+          obj[date.time].push({
+            ...event,
+            nameType: `(${index}/${
+              startDate.calculateDateDiff(endDate.time) + 1
+            }일)`,
+          });
+        }
+      }
       return obj;
     }, {});
 
@@ -134,6 +153,7 @@ const Index = () => {
         {filterEvent && (
           <ul>
             {Object.entries(filterEvent).map(function ([time, item], index) {
+              if (+time < date.time) return;
               return (
                 <li key={index}>
                   <div className={styles.time}>
