@@ -1,0 +1,14 @@
+/* 이미지 변경 */
+.profile_img{width: 50%;height: 100%; background: #eee; position: relative;}
+.profile_img img{width: 100%;height: 100%; object-fit: cover;}
+.file_wrap{position: absolute; bottom: 0;right: 0;}
+.file_wrap .file_upload{}
+
+.profile_put{width: 50px;height: 50px; border-radius: 50%; position: absolute; bottom: 20px; right: 20px; background: #fff; overflow: hidden; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;}
+.profile_put input[type="file"] { width: 100%;height: 100%; padding: 50px; opacity: 1; cursor: pointer; position: relative; z-index: 100;}
+.profile_put .icon{position: absolute; top: 50%;left: 50%; transform: translate(-50%,-50%);  font-size: 30px; z-index: 10;}
+.profile_put:hover .icon{color: #1F8CE6;}
+
+@media (max-width:1023px){
+    .profile_img{width: 400px; height: 400px;}
+}

@@ -96,10 +96,10 @@ const Index = ({
 
     //소유자와 그룹원 중복 제거
     let privateFilter = privateCalendar.filter(e => {
-      return e.id == targetItem.id;
+      return e.id == targetItem?.id;
     });
 
-    let groupArray = privateFilter[0].CalendarMembers;
+    let groupArray = privateFilter[0]?.CalendarMembers;
 
     let groupFilter =
       groupArray &&

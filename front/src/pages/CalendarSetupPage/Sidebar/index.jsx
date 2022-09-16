@@ -18,9 +18,9 @@ const Index = ({
   setItem,
   privateActive,
   setPrivateActive,
+  groupActive,
+  setGroupActive,
 }) => {
-
-  let [groupActive, setGroupActive] = useState(-1); // 다른 캘린더의 설정 className 추가
   let [privateListActive, setPrivateListActive] = useState(1); //내 캘린더 목록의 리스트 목록에게 className 추가
   let [groupListActive, setGroupListActive] = useState(1); //다른 캘린더 목록의 리스트 목록에게 className 추가
 
@@ -32,9 +32,7 @@ const Index = ({
 
   //첫 페이지 캘린더 이름 저장
   function onDefaultName() {
-    privateCalendar && privateCalendar
-      ? setDefaultName(privateCalendar[0].name)
-      : null;
+    setDefaultName(privateCalendar[0]?.name);
   }
 
   useEffect(() => {
@@ -158,6 +156,7 @@ const Index = ({
                       <em>{item.name}</em>
                     </div>
                     <ul className={`${styles.setting_list} ${styles.b}`}>
+                      {/* 
                       <li
                         className={
                           groupListActive == 1 ? `${styles.active}` : null
@@ -173,9 +172,10 @@ const Index = ({
                           </em>
                         </Link>
                       </li>
+                      */}
                       <li
                         className={
-                          groupListActive == 2 ? `${styles.active}` : null
+                          groupListActive == 1 ? `${styles.active}` : null
                         }
                       >
                         <Link to="5" spy={true} smooth={true}>
@@ -212,6 +212,8 @@ Index.propTypes = {
   setItem: PropTypes.func,
   privateActive: PropTypes.number,
   setPrivateActive: PropTypes.func,
+  groupActive: PropTypes.number,
+  setGroupActive: PropTypes.func,
 };
 
 export default Index;

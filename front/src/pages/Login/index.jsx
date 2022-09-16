@@ -55,6 +55,7 @@ const Index = () => {
     localStorage.setItem('userInfo', JSON.stringify({ email, id, nickname }));
     localStorage.setItem('checkedCalendar', checkedCalendar);
     localStorage.setItem('userImg', ProfileImages[0].src);
+    localStorage.setItem('local', JSON.stringify(res.data.local));
   }
 
   const KAKAO_AUTH_URL = `http://158.247.214.79/api/auth/kakao`;

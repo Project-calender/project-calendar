@@ -46,6 +46,8 @@ const Index = ({
   let getRefuseCheck = localStorage.getItem('refuseCheck'); //로컬스토리지에서 거절일정 가지고 오기
   getRefuseCheck = JSON.parse(getRefuseCheck);
   let [refuseCheck, setRefuseCheck] = useState(getRefuseCheck); //거절 일정 true,false 저장
+  let local = localStorage.getItem('local');
+  local = JSON.parse(local);
 
   //거절 일정 클릭시 true,false 변경
   function rejectionScheduleCheck() {
@@ -299,13 +301,15 @@ const Index = ({
               </div>
               <h2>{userInfo?.nickname}</h2>
               <em>{userInfo?.email}</em>
-              <button
-                onClick={() => {
-                  navigate(USER_PATH.CHANGE_INFO);
-                }}
-              >
-                <strong>Google</strong> 계정 관리
-              </button>
+              {local == true ? (
+                <button
+                  onClick={() => {
+                    navigate(USER_PATH.CHANGE_INFO);
+                  }}
+                >
+                  <strong>Google</strong> 계정 관리
+                </button>
+              ) : null}
             </div>
             <div className={styles.account}>
               <ul>

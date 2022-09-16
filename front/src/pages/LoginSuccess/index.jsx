@@ -26,6 +26,7 @@ const Index = () => {
     localStorage.setItem('userInfo', JSON.stringify({ email, id, nickname }));
     localStorage.setItem('checkedCalendar', userData.checkedCalendar);
     localStorage.setItem('userImg', userData.image);
+    localStorage.setItem('local', JSON.stringify(false));
   };
 
   useEffect(() => {

@@ -8,6 +8,7 @@ import SearchItem from './SearchItem';
 import EventDetailModal from '../../modal/component/EventDetailModal';
 import useEventModal from '../../hooks/useEventModal';
 import { getEventDetail } from '../../store/thunk/event';
+import Moment from '../../utils/moment';
 
 const Index = () => {
   let [searchValue, setSearchValue] = useState();
@@ -76,9 +77,27 @@ const Index = () => {
         .filter(isCheckedCalander);
 
     let event = newSearchValue?.reduce((obj, event) => {
-      obj[new Date(event.startTime).getTime()] =
-        obj[new Date(event.startTime).getTime()] || [];
-      obj[new Date(event.startTime).getTime()].push(event);
+      const startDate = new Moment(new Date(event.startTime));
+      const endDate = new Moment(new Date(event.endTime));
+
+      if (startDate.resetTime().time === endDate.resetTime().time) {
+        obj[startDate.time] = obj[startDate.time] || [];
+        obj[startDate.time].push(event);
+      } else {
+        for (
+          let date = startDate, index = 1;
+          date.time <= endDate.time;
+          date = date.addDate(1), index++
+        ) {
+          obj[date.time] = obj[date.time] || [];
+          obj[date.time].push({
+            ...event,
+            nameType: `(${index}/${
+              startDate.calculateDateDiff(endDate.time) + 1
+            }일)`,
+          });
+        }
+      }
       return obj;
     }, {});
 
