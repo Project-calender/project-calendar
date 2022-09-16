@@ -120,6 +120,15 @@
       - name: Authorization
         in: header
         required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            startTime:
+              type: string
+              example: "2022-08-01"
     responses:
       200:
         description: 성공
@@ -199,15 +208,9 @@
                   type: integer
                 CalendarId:
                   type: integer
-                EventHost:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    email:
-                      type: string
-                    nickname:
-                      type: string
+                eventHostEmail:
+                  type: string
+                  example: "minwoo@naver.com"
                 EventMembers:
                   type: array
                   items:

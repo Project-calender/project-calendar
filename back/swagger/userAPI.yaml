@@ -1,4 +1,4 @@
-/api/user/signup:
+/api/auth/signup:
   post:
     tags:
       - user
@@ -38,7 +38,7 @@
       500:
         $ref: "./openapi.yaml#/serverError"
 
-/api/user/signin:
+/api/auth/signin:
   post:
     tags:
       - user
@@ -97,7 +97,7 @@
       500:
         $ref: "./openapi.yaml#/serverError"
 
-/api/user/logout:
+/api/auth/logout:
   post:
     tags:
       - user
@@ -110,7 +110,152 @@
       200:
         $ref: "./openapi.yaml#/success"
 
-/api/user/refresh:
+/api/auth/setUserProfileImage:
+  post:
+    tags:
+      - user
+    summary: 회원가입 시 프로필 사진 등록
+    consumes:
+      - multipart/form-data
+    parameters:
+      - in: formData
+        name: upfile
+        type: file
+        description: The file to upload.
+    responses:
+      200:
+        description: 성공
+        schema:
+          properties:
+            src:
+              type: string
+              example: "./filepath"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/auth/changeNickname:
+  post:
+    tags:
+      - user
+    summary: 닉네임 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            nickname:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/returnUser"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/auth/changePassword:
+  post:
+    tags:
+      - user
+    summary: 비밀번호 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            password:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/auth/changeProfileImage:
+  post:
+    tags:
+      - user
+    summary: 프로필 이미지 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            profileImageSrc:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/returnUser"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/auth/deleteProfileImage:
+  post:
+    tags:
+      - user
+    summary: 프로필 이미지 삭제 ( 삭제시 기본이미지로 변경됨 )
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+    responses:
+      200:
+        $ref: "./openapi.yaml#/returnUser"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/auth/resign:
+  post:
+    tags:
+      - user
+    summary: 회원 탈퇴
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/auth/checkedCalendar:
+  post:
+    tags:
+      - user
+    summary: 달력 체킹 수정
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            checkedList:
+              type: string
+    responses:
+      200:
+        $ref: "./openapi.yaml#/success"
+      500:
+        $ref: "./openapi.yaml#/serverError"
+
+/api/auth/refresh:
   get:
     tags:
       - user
@@ -162,98 +307,5 @@
               example: accessToken이 지급되지 않았습니다
       500:
         $ref: "./openapi.yaml#/serverError"
-
-/api/user/setUserProfileImage:
-  post:
-    tags:
-      - user
-    summary: 회원가입 시 프로필 사진 등록
-    consumes:
-      - multipart/form-data
-    parameters:
-      - in: formData
-        name: upfile
-        type: file
-        description: The file to upload.
-    responses:
-      200:
-        description: 성공
-        schema:
-          properties:
-            src:
-              type: string
-              example: "./filepath"
-      500:
-        $ref: "./openapi.yaml#/serverError"
-/api/user/checkedCalendar:
-  post:
-    tags:
-      - user
-    summary: 달력 체킹 수정
-    parameters:
-      - name: Authorization
-        in: header
-        required: true
-      - name: body
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            checkedList:
-              type: string
-    responses:
-      200:
-        $ref: "./openapi.yaml#/success"
-      500:
-        $ref: "./openapi.yaml#/serverError"
-/tokenError:
-  post:
-    tags:
-      - user
-    summary: 토큰 에러
-    responses:
-      401:
-        description: 토큰이 지급되지 않을 경우
-        schema:
-          properties:
-            success:
-              type: string
-              example: accessToken이 지급되지 않았습니다
-      402:
-        description: 토큰이 검증에 실패했거나 만료됐을 경우
-        schema:
-          properties:
-            success:
-              type: string
-              example: jwt expired
-      403:
-        description: refresh 토큰 발급 도중 access token, refresh token이 모두 헤더에 없는 경우
-        schema:
-          properties:
-            success:
-              type: string
-              example: Access token and refresh token are need for refresh!
-      405:
-        description: refresh 토큰 발급 도중 토큰에 유저 정보가 없을 경우
-        schema:
-          properties:
-            success:
-              type: string
-              example: No authorized!
-      406:
-        description: refresh 토큰 발급 도중 토큰이 지급되지 않을 경우
-        schema:
-          properties:
-            success:
-              type: string
-              example: accessToken이 지급되지 않았습니다
-      407:
-        description: refresh 토큰 발급 도중 access 토큰이 만료되지 않았을경우
-        schema:
-          properties:
-            success:
-              type: string
-              example: Access token is not expired!
 
 $ref: "./privateCalendarAPI.yaml"
