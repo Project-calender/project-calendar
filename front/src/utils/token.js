@@ -41,7 +41,6 @@ axios.interceptors.response.use(
           },
         });
         if (data) {
-          console.log(data.data.data.accessToken);
           sessionStorage.setItem(
             'accessToken',
             JSON.stringify(data.data.data.accessToken),

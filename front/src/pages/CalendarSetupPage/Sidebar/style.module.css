@@ -23,3 +23,5 @@
 .calendar > ul > li.active .setting_list{height: 132px; opacity: 1;}
 .calendar > ul > li:nth-child(1).active .setting_list{height: 44px; opacity: 1;}
 .calendar > ul > li.active .setting_list.b{height: 88px; opacity: 1;}
+
+.another_calendar > ul > li:nth-child(1).active .setting_list{height: 44px; opacity: 1;}

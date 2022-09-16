@@ -68,15 +68,22 @@ const Index = ({ item, clickEventBar = () => {} }) => {
                       }}
                     ></span>
                     <em>
+                      {/*
                       {item.startTime.substr(11, 5)} ~{' '}
                       {item.endTime.substr(11, 5)}
+                      */}
+                      {new Date(item.startTime).getHours()}:{' '}
+                      {new Date(item.startTime).getMinutes()} ~{' '}
+                      {new Date(item.endTime).getHours()}:{' '}
+                      {new Date(item.endTime).getMinutes()}
                     </em>
                   </div>
                 )}
               </div>
               <div className={styles.content}>
-                <p>{item.name}</p>
-                {item.name.length == 0 ? <p>(제목 없음)</p> : null}
+                <p>
+                  {item.name || '(제목 없음)'} {item.nameType}
+                </p>
               </div>
             </div>
           );
