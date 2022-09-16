@@ -25,6 +25,21 @@ tags:
 paths:
   $ref: "./userAPI.yaml"
 
+returnUser:
+  description: 성공
+  schema:
+    properties:
+      id:
+        type: integer
+      email:
+        type: string
+      nickname:
+        type: string
+      ProfileImages:
+        type: object
+        properties:
+          src:
+            type: string
 returnCalendar:
   description: 성공
   schema:

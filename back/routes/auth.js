@@ -311,7 +311,7 @@ router.post("/changeNickname", authJWT, async (req, res, next) => {
         {
           model: ProfileImage,
           attributes: {
-            exclude: ["id", "UserId"],
+            exclude: ["id", "UserId", "checkedCalendar"],
           },
         },
       ],
@@ -371,7 +371,7 @@ router.post("/changeProfileImage", authJWT, async (req, res, next) => {
         {
           model: ProfileImage,
           attributes: {
-            exclude: ["id", "UserId"],
+            exclude: ["id", "UserId", "checkedCalendar"],
           },
         },
       ],
@@ -407,7 +407,7 @@ router.post("/deleteProfileImage", authJWT, async (req, res, next) => {
         {
           model: ProfileImage,
           attributes: {
-            exclude: ["id", "UserId"],
+            exclude: ["id", "UserId", "checkedCalendar"],
           },
         },
       ],
