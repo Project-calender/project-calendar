@@ -402,11 +402,19 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
         .status(400)
         .send({ message: "그룹원의 멤버만 이벤트를 생성할 수 있습니다." });
     }
-
-    var startTime = new Date(req.body.startTime);
-    startTime.setHours(startTime.getHours() + 9);
-    var endTime = new Date(req.body.endTime);
-    endTime.setHours(endTime.getHours() + 9);
+    var startTime;
+    var endTime;
+    if (req.body.allDay === 1) {
+      startTime = new Date(req.body.startTime);
+      startTime.setHours(startTime.getHours() + 9);
+      endTime = new Date(req.body.endTime);
+      endTime.setHours(endTime.getHours() + 9);
+    } else {
+      startTime = new Date(req.body.startTime);
+      startTime.setHours(startTime.getHours() + 9);
+      endTime = new Date(req.body.endTime);
+      endTime.setHours(endTime.getHours() + 9);
+    }
 
     await sequelize.transaction(async (t) => {
       const groupEvent = await Event.create(
