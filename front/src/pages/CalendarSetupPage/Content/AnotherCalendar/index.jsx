@@ -1,20 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './style.module.css';
-import ChangeName from '../MyCalendar/ChangeName';
+//import ChangeName from '../MyCalendar/ChangeName';
 import Subscribe from './Subscribe';
 
 const Index = ({
   targetItem,
   calendarData,
-  defaultName,
-  setDefaultName,
-  changeName,
-  setChangeName,
+  //defaultName,
+  //setDefaultName,
+  //changeName,
+  //setChangeName,
 }) => {
   return (
     <article className={styles.content}>
-      <ChangeName
+      {/*
+        <ChangeName
         targetItem={targetItem}
         calendarData={calendarData}
         defaultName={defaultName}
@@ -22,6 +23,8 @@ const Index = ({
         changeName={changeName}
         setChangeName={setChangeName}
       ></ChangeName>
+       */}
+
       <Subscribe
         targetItem={targetItem}
         calendarData={calendarData}

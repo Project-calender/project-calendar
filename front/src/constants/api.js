@@ -6,6 +6,10 @@ export const USER_URL = {
   LOGOUT: '/auth/logout',
   CHECK_CALENDAR: '/auth/checkedCalendar',
   USER_PROFILE_IMAGE: '/auth/setUserProfileImage',
+  USER_CHANGE_NAME: '/auth/changeNickname',
+  USER_CHANGE_PASSWORD: '/auth/changePassword',
+  USER_CHANGE_PROFILE_IMAGE: '/auth/changeProfileImage',
+  USER_DELETE: '/auth/resign',
 };
 
 export const CALENDAR_URL = {

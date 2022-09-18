@@ -66,8 +66,10 @@ const Index = ({ item, clickEventBar = () => {} }) => {
                       }}
                     ></span>
                     <em>
-                      {item.startTime.substr(11, 5)} ~{' '}
-                      {item.endTime.substr(11, 5)}
+                      {new Date(item.startTime).getHours()} :{' '}
+                      {new Date(item.startTime).getMinutes()} ~{' '}
+                      {new Date(item.endTime).getHours()} :{' '}
+                      {new Date(item.endTime).getMinutes()}
                     </em>
                   </div>
                 )}

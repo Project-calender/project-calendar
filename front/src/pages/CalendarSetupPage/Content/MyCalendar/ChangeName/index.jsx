@@ -11,7 +11,6 @@ const Index = ({
   changeName,
   setChangeName,
   calendarData,
-  privateCalendar,
 }) => {
   let calendarName = useRef(); //calendarName 선택
   let [nameClassActive, setNameClassActive] = useState(0);
@@ -37,11 +36,16 @@ const Index = ({
 
   function onChangeName() {
     axios
-      .post(`${CALENDAR_URL.UPDATE_GROUP_CALENDAR}`, {
-        calendarId: targetItem.id,
-        calendarName: changeName,
-        calendarColor: targetItem.color,
-      })
+      .post(
+        targetItem.UserId
+          ? CALENDAR_URL.UPDATE_PRIVATE_CALENDAR
+          : CALENDAR_URL.UPDATE_GROUP_CALENDAR,
+        {
+          calendarId: targetItem.id,
+          calendarName: changeName,
+          calendarColor: targetItem.color,
+        },
+      )
       .then(res => {
         calendarData();
         setChangeName(res.data.name);
@@ -73,9 +77,7 @@ const Index = ({
           <input
             type="text"
             placeholder={defaultName}
-            value={
-              changeName || (privateCalendar && privateCalendar[0].name) || ''
-            }
+            value={changeName || ''}
             onChange={e => {
               setChangeName(e.target.value);
             }}

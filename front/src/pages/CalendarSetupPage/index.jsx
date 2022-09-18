@@ -7,18 +7,62 @@ import Sidebar from './Sidebar';
 import Content from './Content';
 import axios from '../../utils/token';
 import { CALENDAR_URL } from '../../constants/api';
+import { useLocation } from 'react-router-dom';
 
 const Index = () => {
   let [MenuActive, setMenuActive] = useState(1); //Navbar 변경 / 1 = 기본, 2 = 검색, 3 = 설정
-  let [privateCalendar, setPrivateCalendar] = useState(); // 내 캘린더 목록
-  let [groupCalendars, setGroupCalendars] = useState(); // 다른 캘린더 목록
+  let [privateCalendar, setPrivateCalendar] = useState([]); // 내 캘린더 목록
+  let [groupCalendars, setGroupCalendars] = useState([]); // 다른 캘린더 목록
   let [targetItem, setTargetItem] = useState(); //선택된 캘린더 목록
   let [defaultItem, setDefaultItem] = useState(false); //개인 캘린더 여부 확인
   let [calendarSetting, setCalendarSetting] = useState(0); //내 캘린더의 설정 or 다른 캘린더의 설정 여부 확인
   let [defaultName, setDefaultName] = useState(); //첫 페이지 캘린더 이름 저장
   let [changeName, setChangeName] = useState(''); //캘린더 변경된 이름 저장
   let [item, setItem] = useState();
-  let [privateActive, setPrivateActive] = useState(0); // 내 캘린더의 설정 className 추가
+  let [privateActive, setPrivateActive] = useState(1); // 내 캘린더의 설정 className 추가
+  let [groupActive, setGroupActive] = useState(-1); // 다른 캘린더의 설정 className 추가
+  const { state } = useLocation();
+
+  //캘린더 목록에서 설정 변경시 targetItem 변경
+  function onChangeTargetItem() {
+    if (!state?.calendar) {
+      setTargetItem(privateCalendar[0]);
+      setPrivateActive(0);
+      setDefaultItem(false);
+      return;
+    }
+
+    let myCalendar = privateCalendar.findIndex(item => {
+      if (state.calendar.UserId) return item.UserId;
+      return Math.abs(state.calendar.id) === item.id;
+    });
+
+    let anotherCalendar = groupCalendars.findIndex(item => {
+      return Math.abs(state.calendar.id) === item.id;
+    });
+
+    if (myCalendar != -1) {
+      if (state.calendar.UserId) {
+        setDefaultItem(false);
+      } else {
+        setDefaultItem(true);
+      }
+      setTargetItem(privateCalendar[myCalendar]);
+      setPrivateActive(myCalendar);
+    }
+
+    if (anotherCalendar != -1) {
+      setTargetItem(groupCalendars[anotherCalendar]);
+      setGroupActive(anotherCalendar);
+      setPrivateActive(-1);
+      setDefaultItem(true);
+      setCalendarSetting(1);
+    }
+  }
+
+  useEffect(() => {
+    onChangeTargetItem();
+  }, [privateCalendar]);
 
   //setting 페이지로 이동시 Navbar 3(설정)으로 변경
   useEffect(() => {
@@ -70,6 +114,8 @@ const Index = () => {
             setItem={setItem}
             privateActive={privateActive}
             setPrivateActive={setPrivateActive}
+            groupActive={groupActive}
+            setGroupActive={setGroupActive}
           ></Sidebar>
         </div>
         <div className={styles.content}>

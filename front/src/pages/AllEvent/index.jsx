@@ -18,7 +18,7 @@ const Index = () => {
   let calendarCheck = useSelector(checkedCalendarSelector);
   let { isModalShown, showModal, hideModal, modalData, setModalData } =
     useEventModal();
-  let [toDay, setToDay] = useState(); //오늘 날짜
+  //let [toDay, setToDay] = useState(); //오늘 날짜
   let [nextDay, setNextDay] = useState(); //다음 해 날짜
   let [allEvent, setAllEvent] = useState(); //모든 이벤트
   let [filterEvent, setFilterEvent] = useState(); //필터된 이벤트
@@ -32,23 +32,29 @@ const Index = () => {
   }, [calendarCheck, date]);
 
   function onEvent() {
-    axios.post(EVENT_URL.ALL_EVENT).then(res => {
-      setAllEvent(res.data);
-    });
+    axios
+      .post(EVENT_URL.ALL_EVENT, {
+        startTime: `${year}-${month}-${day}`,
+      })
+      .then(res => {
+        setAllEvent(res.data);
+      });
   }
 
   useEffect(() => {
-    const dateStr = year + month + day;
+    //const dateStr = year + month + day;
     const nextDay = year + 1 + month + day;
-    setToDay(dateStr); //오늘 날짜 저장
+    //setToDay(dateStr); //오늘 날짜 저장
     setNextDay(nextDay); //오늘 날짜 기준 다음 년 날짜 저장
     eventFilter();
   }, [allEvent, date]);
 
   function eventFilter() {
-    let copyAllEvent = allEvent && [...allEvent];
+    //let copyAllEvent = allEvent && [...allEvent];
+    let newAllEvent = allEvent && [...allEvent];
 
     //날짜 순으로 정렬
+    /*
     let newAllEvent =
       allEvent &&
       copyAllEvent.sort(function (a, b) {
@@ -59,6 +65,7 @@ const Index = () => {
       });
 
     // 현재 날짜 기준으로 필터
+
     newAllEvent =
       newAllEvent &&
       newAllEvent
@@ -71,7 +78,8 @@ const Index = () => {
 
           return dateStr >= toDay && dateStr <= nextDay;
         })
-        .filter(isCheckedCalander); //캘린더에 체크된 이벤트만 필터
+        */
+    newAllEvent = newAllEvent && newAllEvent.filter(isCheckedCalander); //캘린더에 체크된 이벤트만 필터
 
     let event = newAllEvent?.reduce((obj, event) => {
       const startDate = new Moment(new Date(event.startTime));
