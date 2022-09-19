@@ -31,6 +31,9 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
 
     var startDate = new Date(req.body.startTime);
     var endDate = new Date(startDate);
+
+    startDate.setHours(startDate.getHours() - 9);
+    endDate.setHours(endDate.getHours() - 9);
     endDate.setFullYear(endDate.getFullYear() + 1);
 
     var events = [];
@@ -125,23 +128,23 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
   }
 });
 
+// 10월 1일자 이벤트를 만들었는데
 router.post("/getAllEvent", authJWT, async (req, res, next) => {
   try {
     const me = await User.findOne({ where: { id: req.myId } });
     var startDate = new Date(req.body.startDate);
     var endDate = new Date(req.body.endDate);
-
-    console.log("req.body.startDate:", startDate);
-    console.log("req.body.endDate:", endDate);
+    console.log(startDate);
+    console.log(endDate);
 
     startDate.setHours(startDate.getHours() - 9);
     endDate.setHours(endDate.getHours() - 9);
-
-    console.log("minus9 startDate:", startDate);
-    console.log("minus9 endDate:", endDate);
-    // endDate.setDate(endDate.getDate() + 1);
-
     console.log(startDate);
+    console.log(endDate);
+
+    endDate.setDate(endDate.getDate() + 1);
+    console.log(startDate);
+    console.log(endDate);
 
     const privateEvents = await me.getPrivateCalendar({
       include: [
@@ -727,9 +730,7 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
     }
 
     var startTime = new Date(req.body.startTime);
-    startTime.setHours(startTime.getHours() + 9);
     var endTime = new Date(req.body.endTime);
-    endTime.setHours(endTime.getHours() + 9);
 
     await groupEvent.update(
       {
