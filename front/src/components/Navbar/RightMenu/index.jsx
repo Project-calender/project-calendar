@@ -11,7 +11,6 @@ import {
   faCaretDown,
   faList,
   faCheck,
-  faUserPlus,
   faBell,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import Tooltip from './../../common/Tooltip';
@@ -297,7 +296,13 @@ const Index = ({
           <div className={styles.user_inpo}>
             <div className={styles.user_profile}>
               <div className={styles.user_img}>
-                <img src={userImg} alt="" />
+                <img
+                  src={userImg}
+                  alt=""
+                  onClick={() => {
+                    navigate(USER_PATH.CHANGE_INFO);
+                  }}
+                />
               </div>
               <h2>{userInfo?.nickname}</h2>
               <em>{userInfo?.email}</em>
@@ -311,26 +316,7 @@ const Index = ({
                 </button>
               ) : null}
             </div>
-            <div className={styles.account}>
-              <ul>
-                <li>
-                  <div className={styles.account_img}>
-                    <img
-                      src={`${process.env.PUBLIC_URL}/img/join/profile.png`}
-                      alt=""
-                    />
-                  </div>
-                  <div className={styles.account_text}>
-                    <p>userName</p>
-                    <p>userEmail@gmail.com</p>
-                  </div>
-                </li>
-              </ul>
-              <div className={styles.user_add}>
-                <FontAwesomeIcon icon={faUserPlus} className={styles.icon} />
-                <p>다른계정 추가</p>
-              </div>
-            </div>
+            <div className={styles.line}></div>
             <div className={styles.all_logout}>
               <button
                 onClick={() => {
