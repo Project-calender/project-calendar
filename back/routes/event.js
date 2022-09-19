@@ -62,7 +62,6 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
           },
         },
       ],
-      // order: [["GroupEvents", "startTime", "ASC"]],
       joinTableAttributes: [],
     });
 
@@ -661,44 +660,49 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
-    if (groupEvent.CalendarId !== req.body.calendarId) {
-      var members = await groupEvent.getEventMembers();
+    //먼저 캘린더가 바뀌었는지 확인하고 -> 캘린더 수정
 
-      await Promise.all(
-        members.map(async (member) => {
-          console.log(member.id);
+    //기존 참석자 삭제 후 참석자 다시 초대(따라 올 수 있는 친구들만)
+    // permission 2짜리를 옮겻는데 나는 바뀐 캘린더에선 권한이 1이다
+    // 캘린더에 없거나, 그 캘린더에 대한 권한이 낮거나
+    // if (groupEvent.CalendarId !== req.body.calendarId) {
+    //   var members = await groupEvent.getEventMembers();
 
-          const isCalendarMember = await CalendarMember.findOne({
-            where: {
-              [Op.and]: {
-                UserId: member.id,
-                CalendarId: req.body.calendarId,
-              },
-            },
-          });
+    //   await Promise.all(
+    //     members.map(async (member) => {
+    //       console.log(member.id);
 
-          if (!isCalendarMember) {
-            await EventMember.destroy({
-              where: {
-                [Op.and]: {
-                  UserId: member.id,
-                  EventId: groupEvent.id,
-                },
-              },
-            });
-          }
-        })
-      );
-    } else {
-      const hasAuthority = await CalendarMember.findOne({
-        where: {
-          [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
-        },
-      });
+    //       const isCalendarMember = await CalendarMember.findOne({
+    //         where: {
+    //           [Op.and]: {
+    //             UserId: member.id,
+    //             CalendarId: req.body.calendarId,
+    //           },
+    //         },
+    //       });
 
-      if (hasAuthority.authority < 2) {
-        return res.status(403).send({ message: "수정 권한이 없습니다!" });
-      }
+    //       if (!isCalendarMember) {
+    //         await EventMember.destroy({
+    //           where: {
+    //             [Op.and]: {
+    //               UserId: member.id,
+    //               EventId: groupEvent.id,
+    //             },
+    //           },
+    //         });
+    //       }
+    //     })
+    //   );
+    // }
+
+    const hasAuthority = await CalendarMember.findOne({
+      where: {
+        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+      },
+    });
+
+    if (hasAuthority.authority < 2) {
+      return res.status(403).send({ message: "수정 권한이 없습니다!" });
     }
 
     var startTime = new Date(req.body.startTime);
