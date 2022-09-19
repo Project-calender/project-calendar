@@ -22,7 +22,7 @@ tags:
   - name: alert
     description: API about alert
 paths:
-  /api/user/signup:
+  /api/auth/signup:
     post:
       tags:
         - user
@@ -61,7 +61,7 @@ paths:
                 example: 이미 사용중인 닉네임 입니다!
         '500':
           $ref: '#/serverError'
-  /api/user/signin:
+  /api/auth/signin:
     post:
       tags:
         - user
@@ -119,7 +119,7 @@ paths:
                 example: 패스워드가 일치하지 않습니다!
         '500':
           $ref: '#/serverError'
-  /api/user/logout:
+  /api/auth/logout:
     post:
       tags:
         - user
@@ -131,7 +131,145 @@ paths:
       responses:
         '200':
           $ref: '#/success'
-  /api/user/refresh:
+  /api/auth/setUserProfileImage:
+    post:
+      tags:
+        - user
+      summary: 회원가입 시 프로필 사진 등록
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: upfile
+          type: file
+          description: The file to upload.
+      responses:
+        '200':
+          description: 성공
+          schema:
+            properties:
+              src:
+                type: string
+                example: ./filepath
+        '500':
+          $ref: '#/serverError'
+  /api/auth/changeNickname:
+    post:
+      tags:
+        - user
+      summary: 닉네임 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              nickname:
+                type: string
+      responses:
+        '200':
+          $ref: '#/returnUser'
+        '500':
+          $ref: '#/serverError'
+  /api/auth/changePassword:
+    post:
+      tags:
+        - user
+      summary: 비밀번호 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              password:
+                type: string
+      responses:
+        '200':
+          $ref: '#/success'
+        '500':
+          $ref: '#/serverError'
+  /api/auth/changeProfileImage:
+    post:
+      tags:
+        - user
+      summary: 프로필 이미지 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              profileImageSrc:
+                type: string
+      responses:
+        '200':
+          $ref: '#/returnUser'
+        '500':
+          $ref: '#/serverError'
+  /api/auth/deleteProfileImage:
+    post:
+      tags:
+        - user
+      summary: 프로필 이미지 삭제 ( 삭제시 기본이미지로 변경됨 )
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+      responses:
+        '200':
+          $ref: '#/returnUser'
+        '500':
+          $ref: '#/serverError'
+  /api/auth/resign:
+    post:
+      tags:
+        - user
+      summary: 회원 탈퇴
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+      responses:
+        '200':
+          $ref: '#/success'
+        '500':
+          $ref: '#/serverError'
+  /api/auth/checkedCalendar:
+    post:
+      tags:
+        - user
+      summary: 달력 체킹 수정
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              checkedList:
+                type: string
+      responses:
+        '200':
+          $ref: '#/success'
+        '500':
+          $ref: '#/serverError'
+  /api/auth/refresh:
     get:
       tags:
         - user
@@ -183,98 +321,6 @@ paths:
                 example: accessToken이 지급되지 않았습니다
         '500':
           $ref: '#/serverError'
-  /api/user/setUserProfileImage:
-    post:
-      tags:
-        - user
-      summary: 회원가입 시 프로필 사진 등록
-      consumes:
-        - multipart/form-data
-      parameters:
-        - in: formData
-          name: upfile
-          type: file
-          description: The file to upload.
-      responses:
-        '200':
-          description: 성공
-          schema:
-            properties:
-              src:
-                type: string
-                example: ./filepath
-        '500':
-          $ref: '#/serverError'
-  /api/user/checkedCalendar:
-    post:
-      tags:
-        - user
-      summary: 달력 체킹 수정
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              checkedList:
-                type: string
-      responses:
-        '200':
-          $ref: '#/success'
-        '500':
-          $ref: '#/serverError'
-  /tokenError:
-    post:
-      tags:
-        - user
-      summary: 토큰 에러
-      responses:
-        '401':
-          description: 토큰이 지급되지 않을 경우
-          schema:
-            properties:
-              success:
-                type: string
-                example: accessToken이 지급되지 않았습니다
-        '402':
-          description: 토큰이 검증에 실패했거나 만료됐을 경우
-          schema:
-            properties:
-              success:
-                type: string
-                example: jwt expired
-        '403':
-          description: 'refresh 토큰 발급 도중 access token, refresh token이 모두 헤더에 없는 경우'
-          schema:
-            properties:
-              success:
-                type: string
-                example: Access token and refresh token are need for refresh!
-        '405':
-          description: refresh 토큰 발급 도중 토큰에 유저 정보가 없을 경우
-          schema:
-            properties:
-              success:
-                type: string
-                example: No authorized!
-        '406':
-          description: refresh 토큰 발급 도중 토큰이 지급되지 않을 경우
-          schema:
-            properties:
-              success:
-                type: string
-                example: accessToken이 지급되지 않았습니다
-        '407':
-          description: refresh 토큰 발급 도중 access 토큰이 만료되지 않았을경우
-          schema:
-            properties:
-              success:
-                type: string
-                example: Access token is not expired!
   /api/privateCalendar/editPrivateCalendar:
     post:
       tags:
@@ -1218,6 +1264,15 @@ paths:
         - name: Authorization
           in: header
           required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              startTime:
+                type: string
+                example: '2022-08-01'
       responses:
         '200':
           description: 성공
@@ -1297,15 +1352,9 @@ paths:
                     type: integer
                   CalendarId:
                     type: integer
-                  EventHost:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      email:
-                        type: string
-                      nickname:
-                        type: string
+                  eventHostEmail:
+                    type: string
+                    example: minwoo@naver.com
                   EventMembers:
                     type: array
                     items:
@@ -1637,46 +1686,6 @@ paths:
               canInvite:
                 type: boolean
                 example: true
-        '400':
-          description: 존재하지 않는 유저
-          schema:
-            properties:
-              message:
-                type: string
-                example: 존재하지 않는 유저입니다!
-              canInvite:
-                type: boolean
-                example: false
-        '402':
-          description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
-          schema:
-            properties:
-              message:
-                type: string
-                example: 그룹 캘린더에 존재하지 않는 유저입니다!
-              canInvite:
-                type: boolean
-                example: false
-        '403':
-          description: 이미 그룹이벤트의 이벤트에 멤버일대
-          schema:
-            properties:
-              message:
-                type: string
-                example: 이미 그룹 이벤트의 멤버입니다!
-              canInvite:
-                type: boolean
-                example: false
-        '405':
-          description: 자신 포함 그룹원 내의 누군가가 이미 초대를 보낸 상태일때
-          schema:
-            properties:
-              message:
-                type: string
-                example: 이미 초대를 보낸 사람입니다!
-              canInvite:
-                type: boolean
-                example: false
         '500':
           $ref: '#/serverError'
   /api/event/editGroupEvent:
@@ -1980,6 +1989,21 @@ paths:
           $ref: '#/success'
         '500':
           $ref: '#/serverError'
+returnUser:
+  description: 성공
+  schema:
+    properties:
+      id:
+        type: integer
+      email:
+        type: string
+      nickname:
+        type: string
+      ProfileImages:
+        type: object
+        properties:
+          src:
+            type: string
 returnCalendar:
   description: 성공
   schema:

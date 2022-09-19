@@ -41,7 +41,7 @@ const Index = ({
   let userInfo = JSON.parse(localStorage.getItem('userInfo'));
   let change = useLocation(); //url 주소 가지고 오기
   let userImg = localStorage.getItem('userImg'); //사용자 프로필 이미지 가지고 오기
-  userImg = userImg.replace(/"/g, ''); //프로필 이미지 "" 제거
+  userImg = userImg?.replace(/"/g, ''); //프로필 이미지 "" 제거
   let getRefuseCheck = localStorage.getItem('refuseCheck'); //로컬스토리지에서 거절일정 가지고 오기
   getRefuseCheck = JSON.parse(getRefuseCheck);
   let [refuseCheck, setRefuseCheck] = useState(getRefuseCheck); //거절 일정 true,false 저장
@@ -290,14 +290,14 @@ const Index = ({
             }}
           >
             <Tooltip title="Google 계정">
-              <img src={userImg} alt="" />
+              <img src={userImg && userImg} alt="" />
             </Tooltip>
           </div>
           <div className={styles.user_inpo}>
             <div className={styles.user_profile}>
               <div className={styles.user_img}>
                 <img
-                  src={userImg}
+                  src={userImg && userImg}
                   alt=""
                   onClick={() => {
                     navigate(USER_PATH.CHANGE_INFO);

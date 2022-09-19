@@ -9,8 +9,8 @@ module.exports = {
 
     for (var i = 20; i < 50; i++) {
       var startTime = faker.date.between(
-        "2022-07-01T00:00:00.000Z",
-        "2022-08-30T00:00:00.000Z"
+        "2021-01-01T00:00:00.000Z",
+        "2022-12-30T00:00:00.000Z"
       );
       var endDate = new Date(startTime);
       endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 5));

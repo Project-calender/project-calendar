@@ -8,10 +8,10 @@ module.exports = {
 
     var allDays = [true, false, false, false, false, false];
 
-    for (var i = 0; i < 20; i++) {
+    for (var i = 0; i < 1000; i++) {
       var startTime = faker.date.between(
-        "2022-07-01T00:00:00.000Z",
-        "2022-08-30T00:00:00.000Z"
+        "2021-01-01T00:00:00.000Z",
+        "2022-12-30T00:00:00.000Z"
       );
       var endDate = new Date(startTime);
       endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 5));
@@ -25,7 +25,7 @@ module.exports = {
         startTime: startTime,
         endTime: endDate,
         allDay: allDays[Math.floor(Math.random() * 6)],
-        EventHostId: 1,
+        eventHostEmail: "test@naver.com",
         CalendarId: Math.floor(Math.random() * 5) + 1,
       };
       dummyEvents.push(dummyEvent);
