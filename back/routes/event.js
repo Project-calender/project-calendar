@@ -46,24 +46,17 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
           as: "GroupEvents",
           where: {
             [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
                 },
               },
-
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
+                },
               },
             },
           },
@@ -86,24 +79,17 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
           model: PrivateEvent,
           where: {
             [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
                 },
               },
-
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
+                },
               },
             },
           },
@@ -146,24 +132,17 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
           model: PrivateEvent,
           where: {
             [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
                 },
               },
-
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
+                },
               },
             },
           },
@@ -188,26 +167,25 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
               where: {
                 [Op.and]: {
                   [Op.or]: {
-                    [Op.or]: {
-                      startTime: {
-                        [Op.and]: {
-                          [Op.gte]: startDate,
-                          [Op.lte]: endDate,
-                        },
-                      },
-                      endTime: {
-                        [Op.and]: {
-                          [Op.gte]: startDate,
-                          [Op.lte]: endDate,
-                        },
+                    startTime: {
+                      [Op.and]: {
+                        [Op.gte]: startDate,
+                        [Op.lt]: endDate,
                       },
                     },
-
-                    [Op.and]: {
-                      startTime: { [Op.lte]: startDate },
-                      endTime: { [Op.gte]: endDate },
+                    endTime: {
+                      [Op.and]: {
+                        [Op.gte]: startDate,
+                        [Op.lt]: endDate,
+                      },
                     },
                   },
+
+                  //   [Op.and]: {
+                  //     startTime: { [Op.lte]: startDate },
+                  //     endTime: { [Op.gte]: endDate },
+                  //   },
+                  // },
 
                   permission: { [Op.lte]: groupCalendar.authority },
                 },
