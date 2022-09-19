@@ -130,9 +130,15 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
     const me = await User.findOne({ where: { id: req.myId } });
     var startDate = new Date(req.body.startDate);
     var endDate = new Date(req.body.endDate);
-    startDate.setHours(startDate.getHours() + 9);
-    endDate.setHours(endDate.getHours() + 9);
 
+    console.log("req.body.startDate:", startDate);
+    console.log("req.body.endDate:", endDate);
+
+    startDate.setHours(startDate.getHours() - 9);
+    endDate.setHours(endDate.getHours() - 9);
+
+    console.log("minus9 startDate:", startDate);
+    console.log("minus9 endDate:", endDate);
     // endDate.setDate(endDate.getDate() + 1);
 
     console.log(startDate);
