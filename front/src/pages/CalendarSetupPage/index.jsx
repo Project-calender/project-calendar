@@ -7,9 +7,10 @@ import Sidebar from './Sidebar';
 import Content from './Content';
 import axios from '../../utils/token';
 import { CALENDAR_URL } from '../../constants/api';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Index = () => {
+  let navigate = useNavigate();
   let [MenuActive, setMenuActive] = useState(1); //Navbar 변경 / 1 = 기본, 2 = 검색, 3 = 설정
   let [privateCalendar, setPrivateCalendar] = useState([]); // 내 캘린더 목록
   let [groupCalendars, setGroupCalendars] = useState([]); // 다른 캘린더 목록
@@ -22,6 +23,13 @@ const Index = () => {
   let [privateActive, setPrivateActive] = useState(1); // 내 캘린더의 설정 className 추가
   let [groupActive, setGroupActive] = useState(-1); // 다른 캘린더의 설정 className 추가
   const { state } = useLocation();
+  let userImg = localStorage.getItem('userImg'); //사용자 프로필 이미지 가지고 오기
+
+  /*
+  if (userImg == undefined) {
+    navigate('/login');
+  }
+  */
 
   //캘린더 목록에서 설정 변경시 targetItem 변경
   function onChangeTargetItem() {
@@ -68,6 +76,9 @@ const Index = () => {
   useEffect(() => {
     setMenuActive(3);
     calendarData();
+    if (userImg == null) {
+      navigate('/login');
+    }
   }, []);
 
   function calendarData() {
