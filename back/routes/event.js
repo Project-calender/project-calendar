@@ -35,6 +35,7 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
     startDate.setHours(startDate.getHours() - 9);
     endDate.setHours(endDate.getHours() - 9);
     endDate.setFullYear(endDate.getFullYear() + 1);
+    endDate.setDate(endDate.getDate() + 1);
 
     var events = [];
     const groupCalendars = await me.getGroupCalendars({
@@ -134,17 +135,10 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
     const me = await User.findOne({ where: { id: req.myId } });
     var startDate = new Date(req.body.startDate);
     var endDate = new Date(req.body.endDate);
-    console.log(startDate);
-    console.log(endDate);
 
     startDate.setHours(startDate.getHours() - 9);
     endDate.setHours(endDate.getHours() - 9);
-    console.log(startDate);
-    console.log(endDate);
-
     endDate.setDate(endDate.getDate() + 1);
-    console.log(startDate);
-    console.log(endDate);
 
     const privateEvents = await me.getPrivateCalendar({
       include: [
