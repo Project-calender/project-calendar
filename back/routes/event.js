@@ -130,6 +130,7 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
     const me = await User.findOne({ where: { id: req.myId } });
     var startDate = new Date(req.body.startDate);
     var endDate = new Date(req.body.endDate);
+
     console.log("req.body.startDate:", startDate);
     console.log("req.body.endDate:", endDate);
 
@@ -138,7 +139,6 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
 
     console.log("minus9 startDate:", startDate);
     console.log("minus9 endDate:", endDate);
-
     // endDate.setDate(endDate.getDate() + 1);
 
     console.log(startDate);
