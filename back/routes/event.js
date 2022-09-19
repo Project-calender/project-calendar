@@ -130,10 +130,12 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
     const me = await User.findOne({ where: { id: req.myId } });
     var startDate = new Date(req.body.startDate);
     var endDate = new Date(req.body.endDate);
-    startTime.setHours(startTime.getHours() + 9);
-    endTime.setHours(endTime.getHours() + 9);
+    startDate.setHours(startDate.getHours() + 9);
+    endDate.setHours(endDate.getHours() + 9);
 
     // endDate.setDate(endDate.getDate() + 1);
+
+    console.log(startDate);
 
     const privateEvents = await me.getPrivateCalendar({
       include: [
