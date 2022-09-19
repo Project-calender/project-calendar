@@ -86,6 +86,20 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
     });
     const privateCalendar = await me.getPrivateCalendar();
 
+    var startTime;
+    var endTime;
+    if (req.body.allDay === 1) {
+      startTime = new Date(req.body.startTime);
+      startTime.setHours(startTime.getHours() + 9);
+      endTime = new Date(req.body.endTime);
+      endTime.setHours(endTime.getHours() + 9);
+    } else {
+      startTime = new Date(req.body.startTime);
+      startTime.setHours(startTime.getHours() + 9);
+      endTime = new Date(req.body.endTime);
+      endTime.setHours(endTime.getHours() + 9);
+    }
+
     await sequelize.transaction(async (t) => {
       const privateEvent = await privateCalendar.createPrivateEvent(
         {
@@ -94,8 +108,8 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
           busy: req.body.busy,
           memo: req.body.memo,
           allDay: req.body.allDay,
-          startTime: req.body.startTime,
-          endTime: req.body.endTime,
+          startTime: startTime,
+          endTime: endTime,
         },
         { transaction: t }
       );
