@@ -53,53 +53,82 @@ const inviteGuestsWhileEdit = async (
   calendarId,
   t
 ) => {
+  var members = [];
+
+  await EventMember.findAll({
+    where: {
+      EventId: eventId,
+    },
+  }).then((membersInfo) => {
+    membersInfo.map((member) => {
+      members.push(member.UserId);
+    });
+  });
+
+  var newMembers = guests.filter((x) => !members.includes(x));
+  var outMembers = members.filter((x) => !guests.includes(x));
+
   await Promise.all(
-    guests.map(async (guestEmail) => {
+    newMembers.map(async (newMemberId) => {
       const guest = await User.findOne({
-        where: { email: guestEmail },
+        where: { id: newMemberId },
       });
 
       if (guest) {
-        const alreadyMember = await EventMember.findOne({
-          where: {
-            [Op.and]: {
-              UserId: guest.id,
-              EventId: eventId,
-            },
+        await groupEvent.addEventMembers(guest, { transaction: t });
+
+        const privateCalendar = await guest.getPrivateCalendar();
+        await privateCalendar.createPrivateEvent(
+          {
+            name: groupEvent.name,
+            color: groupEvent.color,
+            busy: groupEvent.busy,
+            memo: groupEvent.memo,
+            allDay: groupEvent.allDay,
+            startTime: groupEvent.startTime,
+            endTime: groupEvent.endTime,
+            groupEventId: groupEvent.id,
+            state: 0,
           },
-        });
+          { transaction: t }
+        );
 
-        if (!alreadyMember) {
-          await groupEvent.addEventMembers(guest, { transaction: t });
-
-          const privateCalendar = await guest.getPrivateCalendar();
-          await privateCalendar.createPrivateEvent(
-            {
-              name: groupEvent.name,
-              color: groupEvent.color,
-              busy: groupEvent.busy,
-              memo: groupEvent.memo,
-              allDay: groupEvent.allDay,
-              startTime: groupEvent.startTime,
-              endTime: groupEvent.endTime,
-              groupEventId: groupEvent.id,
-              state: 0,
-            },
-            { transaction: t }
-          );
-
-          await Alert.create(
-            {
-              UserId: guest.id,
-              type: "event",
-              calendarId: calendarId,
-              eventDate: groupEvent.startTime,
-              content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
-            },
-            { transaction: t }
-          );
-        }
+        await Alert.create(
+          {
+            UserId: guest.id,
+            type: "event",
+            calendarId: calendarId,
+            eventDate: groupEvent.startTime,
+            content: `${groupEvent.name} 이벤트에 초대되었습니다!`,
+          },
+          { transaction: t }
+        );
       }
+    })
+  );
+
+  await Promise.all(
+    outMembers.map(async (outMemberId) => {
+      await EventMember.destroy({
+        where: {
+          [Op.and]: {
+            UserId: outMemberId,
+            EventId: eventId,
+          },
+        },
+        force: true,
+      });
+
+      await Alert.create(
+        {
+          UserId: outMemberId,
+          type: "event",
+          calendarId: calendarId,
+          eventDate: groupEvent.startTime,
+          content: `${groupEvent.name} 이벤트에서 강퇴되셨습니다!`,
+        },
+        { transaction: t }
+      );
     })
   );
 };
