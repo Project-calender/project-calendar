@@ -6,3 +6,7 @@
 .today em { color: #1a73e8; }
 .today p { background: #1a73e8; color: #fff !important; }
 
+.calendar_header_date { cursor: pointer; }
+.calendar_header_date:hover { background: #f2f2f2; }
+.today p:hover { background: #1263ce;  }
+
