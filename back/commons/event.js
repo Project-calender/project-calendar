@@ -1,4 +1,4 @@
-const { User, Alert, EventMember } = require("../models");
+const { User, Alert, EventMember, PrivateEvent } = require("../models");
 const { Op } = require("sequelize");
 const changeCalendar = async () => {
   // 우선 이벤트 참여자들을 모두 가져온다
@@ -10,7 +10,7 @@ const inviteGuests = async (guests, groupEvent, calendarId, t) => {
   await Promise.all(
     guests.map(async (guestEmail) => {
       const guest = await User.findOne({
-        where: { email: guestEmail },
+        where: { id: guestEmail },
         transaction: t,
       });
 
@@ -109,26 +109,46 @@ const inviteGuestsWhileEdit = async (
 
   await Promise.all(
     outMembers.map(async (outMemberId) => {
-      await EventMember.destroy({
-        where: {
-          [Op.and]: {
-            UserId: outMemberId,
-            EventId: eventId,
-          },
-        },
-        force: true,
+      const guest = await User.findOne({
+        where: { id: outMemberId },
       });
 
-      await Alert.create(
-        {
-          UserId: outMemberId,
-          type: "event",
-          calendarId: calendarId,
-          eventDate: groupEvent.startTime,
-          content: `${groupEvent.name} 이벤트에서 강퇴되셨습니다!`,
-        },
-        { transaction: t }
-      );
+      if (guest) {
+        await EventMember.destroy({
+          where: {
+            [Op.and]: {
+              UserId: outMemberId,
+              EventId: eventId,
+            },
+          },
+          transaction: t,
+          force: true,
+        });
+
+        const privateCalendar = await guest.getPrivateCalendar();
+
+        await PrivateEvent.destroy({
+          where: {
+            [Op.and]: {
+              groupEventId: eventId,
+              PrivateCalendarId: privateCalendar.id,
+            },
+          },
+          transaction: t,
+          force: true,
+        });
+
+        await Alert.create(
+          {
+            UserId: outMemberId,
+            type: "event",
+            calendarId: calendarId,
+            eventDate: groupEvent.startTime,
+            content: `${groupEvent.name} 이벤트에서 강퇴되셨습니다!`,
+          },
+          { transaction: t }
+        );
+      }
     })
   );
 };
