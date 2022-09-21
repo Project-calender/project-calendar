@@ -9,8 +9,8 @@ export const getAllCalendarAndEvent = createAsyncThunk(
   EVENT_URL.GET_ALL_CALENDAR_AND_EVENT,
   async ({ startTime, endTime }) => {
     const { data } = await axios.post(EVENT_URL.GET_ALL_CALENDAR_AND_EVENT, {
-      startDate: `${new Moment(startTime).toSimpleDateString()} 00:00:00`,
-      endDate: `${new Moment(endTime).toSimpleDateString()} 00:00:00`,
+      startDate: new Moment(startTime).toSimpleDateString(),
+      endDate: new Moment(endTime).toSimpleDateString(),
     });
 
     const privateCalendar = {

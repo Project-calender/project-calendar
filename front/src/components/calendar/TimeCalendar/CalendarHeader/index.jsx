@@ -8,19 +8,14 @@ const Index = ({ dates = [] }) => {
   const isToday = date => date.time === new Moment().time;
 
   return (
-    <thead className={styles.title_container}>
-      <tr />
+    <div className={styles.calendar_header}>
       {dates.map(date => (
-        <>
-          <tr key={date.time}>
-            <th className={`${isToday(date) ? styles.today : ''}`}>
-              <em>{date.weekDay}</em>
-              <p>{date.date}</p>
-            </th>
-          </tr>
-        </>
+        <div key={date.time} className={`${isToday(date) ? styles.today : ''}`}>
+          <em>{date.weekDay}</em>
+          <p>{date.date}</p>
+        </div>
       ))}
-    </thead>
+    </div>
   );
 };
 
