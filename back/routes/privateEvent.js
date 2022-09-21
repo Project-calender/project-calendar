@@ -90,14 +90,14 @@ router.post("/createPrivateEvent", authJWT, async (req, res, next) => {
     var endTime;
     if (req.body.allDay === 1) {
       startTime = new Date(req.body.startTime);
-      startTime.setHours(startTime.getHours() + 9);
+      // startTime.setHours(startTime.getHours() + 9);
       endTime = new Date(req.body.endTime);
-      endTime.setHours(endTime.getHours() + 9);
+      // endTime.setHours(endTime.getHours() + 9);
     } else {
       startTime = new Date(req.body.startTime);
-      startTime.setHours(startTime.getHours() + 9);
+      // startTime.setHours(startTime.getHours() + 9);
       endTime = new Date(req.body.endTime);
-      endTime.setHours(endTime.getHours() + 9);
+      // endTime.setHours(endTime.getHours() + 9);
     }
 
     await sequelize.transaction(async (t) => {

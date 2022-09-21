@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 import Date from './Date';
@@ -11,6 +11,9 @@ import {
 } from '../../../../store/newEvent';
 import { CreateEventModalContext } from '../../../../context/EventModalContext';
 import { EventBarContext } from '../../../../context/EventBarContext';
+import Tooltip from '../../../common/Tooltip';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
 
 const Index = ({ dates, events }) => {
   const dispatch = useDispatch();
@@ -82,6 +85,7 @@ const Index = ({ dates, events }) => {
     handleMouseDown(e);
   }
 
+  const [readMore, setReadMore] = useState(false);
   return (
     <EventBarContext.Provider value={dragContextData}>
       <div
@@ -92,12 +96,19 @@ const Index = ({ dates, events }) => {
       >
         <div className={styles.calendar_axis_text}>
           <em>GMT+09</em>
+          {!readMore && (
+            <Tooltip title="종일 섹션 펼치기">
+              <button onClick={() => {}} className={styles.angle_icon}>
+                <FontAwesomeIcon icon={faAngleUp} />
+              </button>
+            </Tooltip>
+          )}
         </div>
         <div className={styles.calendar_dates}>
           <div className={styles.calendar_axis_line} />
           {dates.map(date => (
             <div key={date.time}>
-              <Date date={date} events={events} />
+              <Date date={date} events={events} setReadMore={setReadMore} />
             </div>
           ))}
         </div>

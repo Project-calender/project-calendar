@@ -12,6 +12,9 @@ import Moment from '../../../utils/moment';
 import { EVENT } from '../../../store/events';
 import CreateEventMaodalLayout from '../../../modal/layout/CreateEventModalLayout';
 import EventDetailModalLayout from '../../../modal/layout/EventDetailModalLayout';
+import ModalLayout from '../../../modal/layout/ModalLayout';
+import SimpleEventOptionModal from '../../../modal/component/SimpleEventOptionModal';
+import { SimpleEventOptionModalContext } from '../../../context/EventModalContext';
 
 const Index = ({ dates }) => {
   const events = useSelector(allEventSelector);
@@ -30,14 +33,19 @@ const Index = ({ dates }) => {
   return (
     <CreateEventMaodalLayout>
       <EventDetailModalLayout>
-        <div className={styles.calendar_container}>
-          <CalendarHeader dates={dates} />
-          <AllDayEventList dates={dates} events={allDayEvents} />
-          <div className={styles.calendar_context}>
-            <CalendarAxis />
-            <CalendarBody dates={dates} events={notAllDayEvents} />
+        <ModalLayout
+          Modal={SimpleEventOptionModal}
+          Context={SimpleEventOptionModalContext}
+        >
+          <div className={styles.calendar_container}>
+            <CalendarHeader dates={dates} />
+            <AllDayEventList dates={dates} events={allDayEvents} />
+            <div className={styles.calendar_context}>
+              <CalendarAxis />
+              <CalendarBody dates={dates} events={notAllDayEvents} />
+            </div>
           </div>
-        </div>
+        </ModalLayout>
       </EventDetailModalLayout>
     </CreateEventMaodalLayout>
   );

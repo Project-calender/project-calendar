@@ -1,3 +1,11 @@
 .calendar_container { width: 100%; } 
 .calendar_container > div { margin-right: 5px; } 
-.calendar_context { display: flex; height: 82vh; overflow-y: auto; overflow-x: hidden; } 
+.calendar_context { display: flex; height: 82vh; overflow-y: auto; overflow-x: hidden; }
+
+
+.calendar_container {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none
+}
