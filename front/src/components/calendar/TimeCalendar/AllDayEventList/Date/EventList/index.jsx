@@ -1,73 +1,49 @@
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
-import EventBar from '../../../../EventBar';
+
 import ReadMoreTitle from './ReadMoreTitle';
 import Moment from '../../../../../../utils/moment';
 
 import { useSelector } from 'react-redux';
-import {
-  eventsByDateSelector,
-  eventsByEventIdsSelector,
-} from '../../../../../../store/selectors/events';
-import {
-  EventDetailModalContext,
-  SimpleEventOptionModalContext,
-} from '../../../../../../context/EventModalContext';
-import { calendarByEventIdsSelector } from '../../../../../../store/selectors/calendars';
-import { newEventEmptyBarByTimeSelector } from '../../../../../../store/selectors/newEvent';
+import { eventsByEventIdsSelector } from '../../../../../../store/selectors/events';
+
 import { EVENT } from '../../../../../../store/events';
+import AllDayEvent from './AllDayEvent';
+import EventBar from '../../../../EventBar';
+import { useEffect } from 'react';
 
-const Index = ({ date }) => {
-  const { showModal: showEventDetailModal, hideModal: hideEventDetailModal } =
-    useContext(EventDetailModalContext);
+const Index = ({
+  date,
+  eventBars,
+  newEventEmptyBar,
+  readMore,
+  setReadMore,
+}) => {
   const $eventList = useRef();
-  const {
-    showModal: showSimpleEventOptionModal,
-    hideModal: hideSimpleEventOptionModal,
-  } = useContext(SimpleEventOptionModalContext);
 
-  const eventBars = useSelector(state => eventsByDateSelector(state, date));
-  const calendars = useSelector(state =>
-    calendarByEventIdsSelector(state, eventBars || []),
-  );
   const events = useSelector(state =>
     eventsByEventIdsSelector(state, eventBars || []),
-  );
+  ).filter(isAllDay);
 
-  const newEventEmptyBar = useSelector(state =>
-    newEventEmptyBarByTimeSelector(state, date.time),
-  );
+  useEffect(() => {
+    if (!readMore && events.length > 3) {
+      setReadMore(false);
+    }
+  }, [events]);
 
-  if (!eventBars) return;
-
-  const restEvent = eventBars.slice(3).filter(event => event);
-
-  function clickReadMore(e) {
-    hideEventDetailModal();
-    e.stopPropagation();
+  function clickReadMore() {
+    setReadMore(true);
   }
 
-  function handleEventDetailMadal(e) {
-    showEventDetailModal();
-    hideSimpleEventOptionModal();
-    e.stopPropagation();
-
-    return { offsetTop: 25 };
+  function isAllDay(event) {
+    return (
+      event.allDay === EVENT.allDay.true ||
+      new Moment(event.startTime)
+        .resetTime()
+        .calculateDateDiff(new Moment(event.endTime).resetTime().time) !== 0
+    );
   }
-
-  function handleSimpleEventOptionModal(e, event) {
-    const { pageX, pageY } = e;
-    showSimpleEventOptionModal({ style: { top: pageY, left: pageX }, event });
-    hideEventDetailModal();
-    e.preventDefault();
-  }
-
-  const isAllDay = event =>
-    event.allDay === EVENT.allDay.true ||
-    new Moment(event.startTime)
-      .resetTime()
-      .calculateDateDiff(new Moment(event.endTime).resetTime().time) !== 0;
 
   return (
     <div
@@ -76,25 +52,20 @@ const Index = ({ date }) => {
       data-drag-date={date.time}
     >
       {newEventEmptyBar && <EventBar />}
-      {eventBars.map(
-        (eventBar, index) =>
-          isAllDay(events[index]) && (
-            <EventBar
-              key={index}
-              event={events[index]}
-              calendar={calendars[index]}
-              eventBar={eventBar}
-              handleEventDetailMadal={handleEventDetailMadal}
-              onContextMenu={
-                calendars[index]?.authority >= 2
-                  ? handleSimpleEventOptionModal
-                  : null
-              }
-            />
-          ),
-      )}
-      {restEvent.length > 0 && (
-        <ReadMoreTitle events={restEvent} clickReadMore={clickReadMore} />
+      {(readMore
+        ? events
+        : events.length > 3
+        ? events.slice(0, 2)
+        : events.slice(0, 3)
+      ).map((event, index) => (
+        <AllDayEvent
+          key={index}
+          event={event}
+          eventBar={eventBars.find(eventBar => eventBar.id === event.id)}
+        />
+      ))}
+      {events.length > 3 && readMore === false && (
+        <ReadMoreTitle events={events.slice(2)} clickReadMore={clickReadMore} />
       )}
     </div>
   );
@@ -102,7 +73,10 @@ const Index = ({ date }) => {
 
 Index.propTypes = {
   date: PropTypes.object,
-  maxHeight: PropTypes.number,
+  eventBars: PropTypes.array,
+  newEventEmptyBar: PropTypes.bool,
+  readMore: PropTypes.bool,
+  setReadMore: PropTypes.func,
 };
 
 export default Index;

@@ -6,7 +6,7 @@ export const { selectById: selectEventById, selectAll: allEventSelector } =
 
 export const eventsByDateSelector = createSelector(
   [state => state.events.byDate, (_, date) => date.time],
-  (byDate, dateTime) => byDate[dateTime],
+  (byDate, dateTime) => byDate[dateTime] || [],
 );
 
 export const eventSelector = createSelector(

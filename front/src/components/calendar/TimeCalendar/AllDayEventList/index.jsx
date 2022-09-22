@@ -13,9 +13,9 @@ import { CreateEventModalContext } from '../../../../context/EventModalContext';
 import { EventBarContext } from '../../../../context/EventBarContext';
 import Tooltip from '../../../common/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 
-const Index = ({ dates, events }) => {
+const Index = ({ dates }) => {
   const dispatch = useDispatch();
   const {
     handleMouseDown,
@@ -85,7 +85,7 @@ const Index = ({ dates, events }) => {
     handleMouseDown(e);
   }
 
-  const [readMore, setReadMore] = useState(false);
+  const [readMore, setReadMore] = useState(null);
   return (
     <EventBarContext.Provider value={dragContextData}>
       <div
@@ -96,10 +96,19 @@ const Index = ({ dates, events }) => {
       >
         <div className={styles.calendar_axis_text}>
           <em>GMT+09</em>
-          {!readMore && (
-            <Tooltip title="종일 섹션 펼치기">
-              <button onClick={() => {}} className={styles.angle_icon}>
-                <FontAwesomeIcon icon={faAngleUp} />
+          {readMore !== null && (
+            <Tooltip title={`종일 섹션 ${readMore ? '접기' : '펼치기'}`}>
+              <button
+                onClick={() => {
+                  setReadMore(readMore => !readMore);
+                }}
+                className={styles.angle_icon}
+              >
+                {readMore ? (
+                  <FontAwesomeIcon icon={faAngleUp} />
+                ) : (
+                  <FontAwesomeIcon icon={faAngleDown} />
+                )}
               </button>
             </Tooltip>
           )}
@@ -108,7 +117,7 @@ const Index = ({ dates, events }) => {
           <div className={styles.calendar_axis_line} />
           {dates.map(date => (
             <div key={date.time}>
-              <Date date={date} events={events} setReadMore={setReadMore} />
+              <Date date={date} readMore={readMore} setReadMore={setReadMore} />
             </div>
           ))}
         </div>
@@ -119,7 +128,6 @@ const Index = ({ dates, events }) => {
 
 Index.propTypes = {
   dates: PropTypes.array,
-  events: PropTypes.array,
 };
 
 export default Index;
