@@ -109,6 +109,15 @@
 .acceptInvite {
 }
 
+.notice_check{
+  font-size: 16px; text-align: center;   
+  padding: 3px 7px;
+  border-radius: 8px;
+  border: solid;
+  border-width: 2.5px;
+  border-color: rgb(80, 204, 212);
+}
+
 
 
 @media (max-width:1200px){

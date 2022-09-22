@@ -124,7 +124,7 @@ const Index = ({
             <li>
               <div className={styles.user}>
                 <div className={styles.user_img}>
-                  <img src={owner && owner.ProfileImages[0].src} alt="" />
+                  <img src={owner && owner.ProfileImages[0]?.src} alt="" />
                 </div>
                 <div className={styles.user_info}>
                   <p>{owner && owner.nickname}(소유자)</p>
@@ -139,7 +139,7 @@ const Index = ({
                 <li key={index}>
                   <div className={styles.user}>
                     <div className={styles.user_img}>
-                      <img src={item.ProfileImages[0].src} alt="" />
+                      <img src={item.ProfileImages[0]?.src} alt="" />
                     </div>
                     <div className={styles.user_info}>
                       <p>{item.nickname}</p>
