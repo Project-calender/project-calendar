@@ -1,0 +1,11 @@
+.title { width: calc(100% + 2px - 8px); height:1.3rem; overflow: hidden; cursor: pointer; display: flex; align-items: center; border-radius: 3px; } 
+.title:hover { background: #e8e8e8; } 
+.title > em { display: inline-block; width: 90%; font-size: 0.72rem; margin-left: 10px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.5s; } 
+
+@media (max-height: 510px){
+ .title > em { position: relative; bottom: 0.2rem; } 
+ }
+
+@media (max-height: 300px){
+ .title > em { bottom: 0.2rem; font-size: 0.5rem; } 
+ }
