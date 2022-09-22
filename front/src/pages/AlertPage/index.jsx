@@ -64,6 +64,9 @@ const Index = ({ setNotice }) => {
     <div ref={notice} className={styles.container}>
       <div className={styles.content}>
         <div className={styles.events}>
+          {totalPage == 0 ? (
+            <p className={styles.notice_check}>알림이 없습니다.</p>
+          ) : null}
           {alerts &&
             alerts.map(alert => (
               <div
