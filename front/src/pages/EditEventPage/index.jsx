@@ -129,7 +129,7 @@ const Index = () => {
         endTime: new Date(event.endTime).toISOString(),
         guests: Object.values(eventMembers)
           .filter(member => member.canInvite)
-          .map(member => member.guest.email),
+          .map(member => member.guest.id),
         alerts: newAlerts,
       }),
     );

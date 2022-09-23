@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
@@ -9,18 +9,14 @@ import EventColorOption from '../../../components/calendar/EventColorOption';
 import { useDispatch, useSelector } from 'react-redux';
 import { userEmailSelector } from '../../../store/selectors/user';
 import { useContext } from 'react';
-import {
-  CreateCalendarModalContext,
-  EventColorModalContext,
-} from '../../../context/EventModalContext';
+import { CreateCalendarModalContext } from '../../../context/EventModalContext';
 import { CALENDAR_COLOR } from '../../../styles/color';
 import { useRef } from 'react';
 import { createCalendar } from '../../../store/thunk/calendar';
 
 const Index = ({ children: ModalList }) => {
   const { hideModal, modalData } = useContext(CreateCalendarModalContext);
-  const { modalData: eventColorModaldata } = useContext(EventColorModalContext);
-  const { color = CALENDAR_COLOR['토마토'] } = eventColorModaldata;
+  const [calendarColor, setCalendarColor] = useState(CALENDAR_COLOR['토마토']);
 
   const userEmail = useSelector(userEmailSelector);
   const $calendarName = useRef();
@@ -36,7 +32,7 @@ const Index = ({ children: ModalList }) => {
     dispatch(
       createCalendar({
         calendarName: $calendarName.current.value,
-        calendarColor: color,
+        calendarColor,
       }),
     );
     hideModal();
@@ -57,7 +53,11 @@ const Index = ({ children: ModalList }) => {
         <h1>새 캘린더 만들기</h1>
         <div className={styles.calendar_info}>
           <TextField label={'캘린더 이름'} autoFocus ref={$calendarName} />
-          <EventColorOption colors={CALENDAR_COLOR} color={color} />
+          <EventColorOption
+            colors={CALENDAR_COLOR}
+            selectedColor={calendarColor}
+            changeColor={(e, color) => setCalendarColor(color)}
+          />
         </div>
         <div className={styles.calendar_owner}>
           <em>소유자</em>

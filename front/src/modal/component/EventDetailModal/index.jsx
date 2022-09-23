@@ -171,7 +171,9 @@ const Index = ({ modalData, hideModal, onDeleteEvent = null }) => {
             <FontAwesomeIcon icon={faCalendarDay} />
             <div>
               <h3>{groupCalendar?.name || calendar.name}</h3>
-              {event.EventHost && <p>만든 사용자: {event.EventHost.email}</p>}
+              {event.eventHostEmail && (
+                <p>만든 사용자: {event.eventHostEmail}</p>
+              )}
             </div>
           </div>
 

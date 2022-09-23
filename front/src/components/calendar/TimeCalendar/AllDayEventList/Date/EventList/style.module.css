@@ -1,0 +1,6 @@
+.event_list {
+    width: 100%;
+    height: fit-content;
+    /* position: absolute; */
+    text-align: left;
+}

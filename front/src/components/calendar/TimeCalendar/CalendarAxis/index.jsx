@@ -8,7 +8,7 @@ const Index = () => {
 
   useEffect(() => {
     const moment = new Moment();
-    const times = [];
+    const times = [''];
     for (let hour = 1; hour < 24; hour++) {
       times.push(moment.setHour(hour));
     }
@@ -16,22 +16,19 @@ const Index = () => {
   }, []);
 
   return (
-    <>
-      <td className={styles.calendar_axis}>
-        {timeLabels.map((time, index) => (
-          <div key={index}>
-            <em>
-              {time.getTimeType()} {time.hour % 12 || 12}시
-            </em>
+    <div>
+      {timeLabels.map((time, index) => (
+        <div key={index} className={styles.calendar_axis}>
+          <div className={styles.calendar_axis_text}>
+            {time && (
+              <em>
+                {time.getTimeType()} {time.hour % 12 || 12}시
+              </em>
+            )}
           </div>
-        ))}
-      </td>
-      <td className={styles.calendar_axis_line}>
-        {[...Array(24)].map((_, index) => (
-          <div key={index} />
-        ))}
-      </td>
-    </>
+        </div>
+      ))}
+    </div>
   );
 };
 
