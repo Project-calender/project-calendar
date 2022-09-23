@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './style.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import axios from '../../../../utils/token';
 import { CALENDAR_URL } from '../../../../constants/api';
+import usePopupClose from '../../../../hooks/usePopupClose';
 
 const Index = ({ targetItem, setInvitePopup }) => {
   let popup = useRef(); //팝업창 dom
@@ -16,6 +17,7 @@ const Index = ({ targetItem, setInvitePopup }) => {
   const userEmailCheck = userEmail.includes('@') && userEmail.includes('.'); //초대 받는 유저 이메일 체크 /이메일 @와 .이 들어가는지 체크
   let [authority, setAuthority] = useState(3); //권한 저장
   let [authorityText, setAuthorityText] = useState(`모든 일정 세부정보 보기`);
+  let popupClose = usePopupClose(popup);
 
   //사용자 그룹 캘린더 초대
   function onInvite() {
@@ -48,26 +50,13 @@ const Index = ({ targetItem, setInvitePopup }) => {
       });
   }
 
-  //권한 설정 외부 클릭시 className 제거
-  function clickModalOutside(event) {
-    if (!popup.current.contains(event.target)) {
-      setInvitePopup(false);
-    }
-    if (!authorityList.current.contains(event.target)) {
-      setAuthorityActive(false);
-    }
-  }
-
-  useEffect(() => {
-    document.addEventListener('mousedown', clickModalOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', clickModalOutside);
-    };
-  });
-
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      onClick={() => {
+        setInvitePopup(popupClose);
+      }}
+    >
       <div className={styles.invite_popup} ref={popup}>
         <h2>특정 사용자와 공유</h2>
         <form
@@ -137,9 +126,11 @@ const Index = ({ targetItem, setInvitePopup }) => {
           <div className={styles.btt_wrap}>
             <button
               className={styles.close}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 setInvitePopup(false);
               }}
+              type="button"
             >
               취소
             </button>

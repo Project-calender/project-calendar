@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import styles from './style.module.css';
 import { CALENDAR_URL } from '../../../../../../constants/api';
 import axios from '../../../../../../utils/token';
 import { useNavigate } from 'react-router-dom';
+import usePopupClose from '../../../../../../hooks/usePopupClose';
 
 const Index = ({
   targetItem,
@@ -17,6 +18,7 @@ const Index = ({
 }) => {
   let popup = useRef();
   let navigate = useNavigate();
+  let popupClose = usePopupClose(popup);
 
   function deleteCalendar() {
     axios
@@ -46,21 +48,13 @@ const Index = ({
       });
   }
 
-  //팝업창 외부 클릭시 className 제거
-  function clickModalOutside(event) {
-    if (!popup.current.contains(event.target)) {
-      setPopUpActive(false);
-    }
-  }
-  useEffect(() => {
-    document.addEventListener('mousedown', clickModalOutside);
-    return () => {
-      document.removeEventListener('mousedown', clickModalOutside);
-    };
-  });
-
   return (
-    <div className={styles.popup}>
+    <div
+      className={styles.popup}
+      onClick={() => {
+        setPopUpActive(popupClose);
+      }}
+    >
       <div ref={popup}>
         <div className={styles.popup_content}>
           <p>
@@ -70,7 +64,8 @@ const Index = ({
           <div className={styles.btt_wrap}>
             <button
               className={styles.close}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 setPopUpActive(false);
               }}
             >
