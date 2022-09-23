@@ -43,7 +43,7 @@ const Index = ({
   const eventBarColor = event?.color || eventBar?.eventColor || calendarColor;
   const isSelected = eventDetailModalData.event?.id === event?.id;
 
-  if (!eventBar || !eventBar.scale) {
+  if (!eventBar?.scale) {
     return <div className={styles.empty_event_bar} />;
   }
 

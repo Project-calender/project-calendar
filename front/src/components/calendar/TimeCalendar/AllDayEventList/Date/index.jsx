@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styles from './style.module.css';
 
@@ -10,9 +10,8 @@ import {
   newEventBarByTimeSelector,
   newEventEmptyBarByTimeSelector,
 } from '../../../../../store/selectors/newEvent';
-import { eventsByDateSelector } from '../../../../../store/selectors/events';
 
-const Index = ({ date, readMore, setReadMore }) => {
+const Index = ({ dateId, date, events, eventBars, readMore, setReadMore }) => {
   const newEventBar = useSelector(state =>
     newEventBarByTimeSelector(state, date.time),
   );
@@ -21,7 +20,9 @@ const Index = ({ date, readMore, setReadMore }) => {
     newEventEmptyBarByTimeSelector(state, date.time),
   );
 
-  const eventBars = useSelector(state => eventsByDateSelector(state, date));
+  useEffect(() => {
+    if (dateId === 0) setReadMore(null);
+  }, [setReadMore, dateId]);
 
   return (
     <div
@@ -32,6 +33,7 @@ const Index = ({ date, readMore, setReadMore }) => {
       {newEventBar && <NewEvent eventBar={newEventBar} />}
       <EventList
         date={date}
+        events={events}
         eventBars={eventBars}
         newEventEmptyBar={newEventEmptyBar}
         readMore={readMore}
@@ -43,7 +45,10 @@ const Index = ({ date, readMore, setReadMore }) => {
 };
 
 Index.propTypes = {
+  dateId: PropTypes.number,
   date: PropTypes.object,
+  events: PropTypes.object,
+  eventBars: PropTypes.array,
   readMore: PropTypes.bool,
   setReadMore: PropTypes.func,
 };

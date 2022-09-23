@@ -3,18 +3,13 @@ import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
 import ReadMoreTitle from './ReadMoreTitle';
-import Moment from '../../../../../../utils/moment';
-
-import { useSelector } from 'react-redux';
-import { eventsByEventIdsSelector } from '../../../../../../store/selectors/events';
-
-import { EVENT } from '../../../../../../store/events';
 import AllDayEvent from './AllDayEvent';
 import EventBar from '../../../../EventBar';
 import { useEffect } from 'react';
 
 const Index = ({
   date,
+  events,
   eventBars,
   newEventEmptyBar,
   readMore,
@@ -22,28 +17,25 @@ const Index = ({
 }) => {
   const $eventList = useRef();
 
-  const events = useSelector(state =>
-    eventsByEventIdsSelector(state, eventBars || []),
-  ).filter(isAllDay);
-
   useEffect(() => {
-    if (!readMore && events.length > 3) {
+    if (!readMore && eventBars.length > 3) {
       setReadMore(false);
     }
-  }, [events]);
+  }, [eventBars]);
 
   function clickReadMore() {
     setReadMore(true);
   }
 
-  function isAllDay(event) {
-    return (
-      event.allDay === EVENT.allDay.true ||
-      new Moment(event.startTime)
-        .resetTime()
-        .calculateDateDiff(new Moment(event.endTime).resetTime().time) !== 0
-    );
-  }
+  const previewEventBars = readMore
+    ? eventBars
+    : eventBars.length > 3
+    ? eventBars.slice(0, 3)
+    : eventBars;
+
+  const resetEventBars = eventBars
+    .slice(previewEventBars.length)
+    .filter(eventBar => eventBar);
 
   return (
     <div
@@ -52,20 +44,15 @@ const Index = ({
       data-drag-date={date.time}
     >
       {newEventEmptyBar && <EventBar />}
-      {(readMore
-        ? events
-        : events.length > 3
-        ? events.slice(0, 2)
-        : events.slice(0, 3)
-      ).map((event, index) => (
+      {previewEventBars.map((eventBar, index) => (
         <AllDayEvent
           key={index}
-          event={event}
-          eventBar={eventBars.find(eventBar => eventBar.id === event.id)}
+          eventBar={eventBar}
+          event={events[eventBar?.id]}
         />
       ))}
-      {events.length > 3 && readMore === false && (
-        <ReadMoreTitle events={events.slice(2)} clickReadMore={clickReadMore} />
+      {eventBars.length > 3 && readMore === false && (
+        <ReadMoreTitle events={resetEventBars} clickReadMore={clickReadMore} />
       )}
     </div>
   );
@@ -73,6 +60,7 @@ const Index = ({
 
 Index.propTypes = {
   date: PropTypes.object,
+  events: PropTypes.object,
   eventBars: PropTypes.array,
   newEventEmptyBar: PropTypes.bool,
   readMore: PropTypes.bool,
