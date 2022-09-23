@@ -61,11 +61,7 @@ const Index = () => {
           <Outlet></Outlet>
           <SideNav></SideNav>
         </article>
-        {notice == true ? (
-          <div className={styles.AlertPage}>
-            <AlertPage setNotice={setNotice}></AlertPage>
-          </div>
-        ) : null}
+        {notice == true ? <AlertPage setNotice={setNotice}></AlertPage> : null}
       </section>
     </div>
   );

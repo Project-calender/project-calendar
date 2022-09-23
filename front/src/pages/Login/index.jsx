@@ -70,35 +70,37 @@ const Index = () => {
             <h2>Login</h2>
             <p>If You Are Already aA Member, Easily Log In</p>
             <div>
-              <div className={`${styles.id} ${styles.login_input_box}`}>
-                <input
-                  type="text"
-                  placeholder="User Email"
-                  name="email"
-                  onChange={e => {
-                    handleInput(e);
+              <form>
+                <div className={`${styles.id} ${styles.login_input_box}`}>
+                  <input
+                    type="text"
+                    placeholder="User Email"
+                    name="email"
+                    onChange={e => {
+                      handleInput(e);
+                    }}
+                  />
+                </div>
+                <div className={`${styles.password} ${styles.login_input_box}`}>
+                  <input
+                    type="password"
+                    placeholder="User Password"
+                    name="password"
+                    onChange={e => {
+                      handleInput(e);
+                    }}
+                  />
+                </div>
+                <button
+                  className={styles.login_btt}
+                  onClick={e => {
+                    e.preventDefault();
+                    sendLoginForm();
                   }}
-                />
-              </div>
-              <div className={`${styles.password} ${styles.login_input_box}`}>
-                <input
-                  type="password"
-                  placeholder="User Password"
-                  name="password"
-                  onChange={e => {
-                    handleInput(e);
-                  }}
-                />
-              </div>
-              <button
-                className={styles.login_btt}
-                onClick={e => {
-                  e.preventDefault();
-                  sendLoginForm();
-                }}
-              >
-                Login
-              </button>
+                >
+                  Login
+                </button>
+              </form>
               <div className={styles.line_wrap}>
                 <span></span>
                 <em>OR</em>

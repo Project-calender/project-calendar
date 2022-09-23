@@ -46,30 +46,22 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
           as: "GroupEvents",
           where: {
             [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
                 },
               },
-
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
+                },
               },
             },
           },
         },
       ],
-      // order: [["GroupEvents", "startTime", "ASC"]],
       joinTableAttributes: [],
     });
 
@@ -86,24 +78,17 @@ router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
           model: PrivateEvent,
           where: {
             [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
                 },
               },
-
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
+                },
               },
             },
           },
@@ -146,24 +131,17 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
           model: PrivateEvent,
           where: {
             [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
+              startTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
                 },
               },
-
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
+              endTime: {
+                [Op.and]: {
+                  [Op.gte]: startDate,
+                  [Op.lt]: endDate,
+                },
               },
             },
           },
@@ -188,26 +166,25 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
               where: {
                 [Op.and]: {
                   [Op.or]: {
-                    [Op.or]: {
-                      startTime: {
-                        [Op.and]: {
-                          [Op.gte]: startDate,
-                          [Op.lte]: endDate,
-                        },
-                      },
-                      endTime: {
-                        [Op.and]: {
-                          [Op.gte]: startDate,
-                          [Op.lte]: endDate,
-                        },
+                    startTime: {
+                      [Op.and]: {
+                        [Op.gte]: startDate,
+                        [Op.lt]: endDate,
                       },
                     },
-
-                    [Op.and]: {
-                      startTime: { [Op.lte]: startDate },
-                      endTime: { [Op.gte]: endDate },
+                    endTime: {
+                      [Op.and]: {
+                        [Op.gte]: startDate,
+                        [Op.lt]: endDate,
+                      },
                     },
                   },
+
+                  //   [Op.and]: {
+                  //     startTime: { [Op.lte]: startDate },
+                  //     endTime: { [Op.gte]: endDate },
+                  //   },
+                  // },
 
                   permission: { [Op.lte]: groupCalendar.authority },
                 },
@@ -683,44 +660,14 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
-    if (groupEvent.CalendarId !== req.body.calendarId) {
-      var members = await groupEvent.getEventMembers();
+    const hasAuthority = await CalendarMember.findOne({
+      where: {
+        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+      },
+    });
 
-      await Promise.all(
-        members.map(async (member) => {
-          console.log(member.id);
-
-          const isCalendarMember = await CalendarMember.findOne({
-            where: {
-              [Op.and]: {
-                UserId: member.id,
-                CalendarId: req.body.calendarId,
-              },
-            },
-          });
-
-          if (!isCalendarMember) {
-            await EventMember.destroy({
-              where: {
-                [Op.and]: {
-                  UserId: member.id,
-                  EventId: groupEvent.id,
-                },
-              },
-            });
-          }
-        })
-      );
-    } else {
-      const hasAuthority = await CalendarMember.findOne({
-        where: {
-          [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
-        },
-      });
-
-      if (hasAuthority.authority < 2) {
-        return res.status(403).send({ message: "수정 권한이 없습니다!" });
-      }
+    if (hasAuthority.authority < 2) {
+      return res.status(403).send({ message: "수정 권한이 없습니다!" });
     }
 
     var startTime = new Date(req.body.startTime);
@@ -741,15 +688,13 @@ router.post("/editGroupEvent", authJWT, async (req, res, next) => {
       { transaction: t }
     );
 
-    if (req.body.guests.length > 0) {
-      await inviteGuestsWhileEdit(
-        req.body.guests,
-        groupEvent,
-        req.body.eventId,
-        req.body.calendarId,
-        t
-      );
-    }
+    await inviteGuestsWhileEdit(
+      req.body.guests,
+      groupEvent,
+      req.body.eventId,
+      req.body.calendarId,
+      t
+    );
 
     // await deleteAlerts(req.myId, req.body.eventId);
 
