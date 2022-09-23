@@ -84,7 +84,7 @@ const events = createSlice({
 export const { resetEventState, updateEventBar } = events.actions;
 export default events.reducer;
 
-function classifyEventsByDate(events) {
+export function classifyEventsByDate(events) {
   return events.reduce((byDate, event) => {
     if (!isCheckedCalander(event)) return byDate;
 

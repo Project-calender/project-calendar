@@ -14,8 +14,9 @@ import { EventBarContext } from '../../../../context/EventBarContext';
 import Tooltip from '../../../common/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
+import { classifyEventsByDate } from '../../../../store/events';
 
-const Index = ({ dates }) => {
+const Index = ({ dates, events }) => {
   const dispatch = useDispatch();
   const {
     handleMouseDown,
@@ -85,7 +86,13 @@ const Index = ({ dates }) => {
     handleMouseDown(e);
   }
 
+  const eventBars = classifyEventsByDate(events);
+  const eventsById = events.reduce((obj, event) => {
+    obj[event.id] = event;
+    return obj;
+  }, {});
   const [readMore, setReadMore] = useState(null);
+
   return (
     <EventBarContext.Provider value={dragContextData}>
       <div
@@ -115,9 +122,16 @@ const Index = ({ dates }) => {
         </div>
         <div className={styles.calendar_dates}>
           <div className={styles.calendar_axis_line} />
-          {dates.map(date => (
+          {dates.map((date, index) => (
             <div key={date.time}>
-              <Date date={date} readMore={readMore} setReadMore={setReadMore} />
+              <Date
+                dateId={index}
+                date={date}
+                events={eventsById}
+                eventBars={eventBars[date.time] || []}
+                readMore={readMore}
+                setReadMore={setReadMore}
+              />
             </div>
           ))}
         </div>
@@ -128,6 +142,7 @@ const Index = ({ dates }) => {
 
 Index.propTypes = {
   dates: PropTypes.array,
+  events: PropTypes.array,
 };
 
 export default Index;
