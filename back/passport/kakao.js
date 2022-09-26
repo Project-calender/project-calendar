@@ -4,8 +4,10 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { redisClient } = require("../redis");
 const { sequelize, User } = require("../models");
+const axios = require("axios");
 dotenv.config();
 
+//req.flash를 통해 값을 전달해 줄 수 있다.
 module.exports = () => {
   passport.use(
     new KakaoStrategy(
@@ -15,6 +17,29 @@ module.exports = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
+          const response = await axios({
+            url: `https://kapi.kakao.com/v2/user/scopes?target_id_type=user_id&target_id=${profile.id}`, //refreshToken 토큰 요청하는 API주소
+            method: "GET",
+            headers: {
+              Authorization: `KakaoAK ${process.env.KAKAO_APP_ADMIN_KEY}`,
+            },
+          });
+
+          if (response.data.scopes[2].agreed !== true) {
+            const result = await axios({
+              url: `https://kapi.kakao.com/v1/user/unlink?target_id_type=user_id&target_id=${profile.id}`, //refreshToken 토큰 요청하는 API주소
+              method: "GET",
+              headers: {
+                Authorization: `KakaoAK ${process.env.KAKAO_APP_ADMIN_KEY}`,
+              },
+            });
+
+            if (result) {
+              var mesaage = { agreed: false };
+              return done(null, false, mesaage);
+            }
+          }
+
           const exUser = await User.findOne({
             where: { snsId: profile.id, provider: "kakao" },
           });
@@ -75,6 +100,7 @@ module.exports = () => {
                 }
               );
 
+              // 이메일 동의 안하면 다시 reset해주기
               var user = {
                 id: newUser.id,
                 email: profile._json.kakao_account.email,
