@@ -16,7 +16,7 @@ import ModalLayout from '../../../modal/layout/ModalLayout';
 import SimpleEventOptionModal from '../../../modal/component/SimpleEventOptionModal';
 import { SimpleEventOptionModalContext } from '../../../context/EventModalContext';
 
-const Index = ({ dates }) => {
+const Index = ({ dates, unitWeekDay }) => {
   const events = useSelector(allEventSelector);
   const allDayEvents = events.filter(isAllDay);
   const notAllDayEvents = events.filter(event => !isAllDay(event));
@@ -39,7 +39,11 @@ const Index = ({ dates }) => {
         >
           <div className={styles.calendar_container}>
             <CalendarHeader dates={dates} />
-            <AllDayEventList dates={dates} events={allDayEvents} />
+            <AllDayEventList
+              dates={dates}
+              events={allDayEvents}
+              unitWeekDay={unitWeekDay}
+            />
             <div className={styles.calendar_context}>
               <CalendarAxis />
               <CalendarBody dates={dates} events={notAllDayEvents} />
@@ -53,6 +57,7 @@ const Index = ({ dates }) => {
 
 Index.propTypes = {
   dates: PropTypes.array,
+  unitWeekDay: PropTypes.number,
 };
 
 export default Index;

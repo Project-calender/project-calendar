@@ -84,16 +84,24 @@ const events = createSlice({
 export const { resetEventState, updateEventBar } = events.actions;
 export default events.reducer;
 
-export function classifyEventsByDate(events) {
+export function classifyEventsByDate(
+  events,
+  unitWeekDay = 7,
+  firstStandardDate = null,
+) {
   return events.reduce((byDate, event) => {
     if (!isCheckedCalander(event)) return byDate;
 
     const endDate = new Moment(new Date(event.endTime)).resetTime();
     const startDate = new Moment(new Date(event.startTime)).resetTime();
-    const eventBars = createEventBar({
-      standardDateTime: startDate.time,
-      endDateTime: endDate.time,
-    });
+    const eventBars = createEventBar(
+      {
+        standardDateTime: startDate.time,
+        endDateTime: endDate.time,
+      },
+      unitWeekDay,
+      firstStandardDate,
+    );
 
     eventBars.forEach(eventBar => {
       const key = eventBar.time;
