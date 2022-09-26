@@ -194,11 +194,17 @@ router.post("/checkedCalendar", authJWT, async (req, res, next) => {
   }
 });
 
+router.get("/kakaoFail", (req, res, next) => {
+  res.send(
+    "<script>alert('이메일 사용에 동의하셔야 로그인이 가능합니다!');location.href='http://localhost:3000/calendar';</script>"
+  );
+});
+
 router.get("/kakao", passport.authenticate("kakao", { session: false }));
 router.get(
   "/kakao/callback",
   passport.authenticate("kakao", {
-    failureRedirect: "/",
+    failureRedirect: "/api/auth/kakaoFail",
     session: false,
   }),
   (req, res) => {

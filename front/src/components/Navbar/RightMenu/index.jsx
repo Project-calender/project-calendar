@@ -11,7 +11,6 @@ import {
   faCaretDown,
   faList,
   faCheck,
-  faUserPlus,
   faBell,
 } from '@fortawesome/free-solid-svg-icons'; //폰트어썸
 import Tooltip from './../../common/Tooltip';
@@ -42,7 +41,7 @@ const Index = ({
   let userInfo = JSON.parse(localStorage.getItem('userInfo'));
   let change = useLocation(); //url 주소 가지고 오기
   let userImg = localStorage.getItem('userImg'); //사용자 프로필 이미지 가지고 오기
-  userImg = userImg.replace(/"/g, ''); //프로필 이미지 "" 제거
+  userImg = userImg?.replace(/"/g, ''); //프로필 이미지 "" 제거
   let getRefuseCheck = localStorage.getItem('refuseCheck'); //로컬스토리지에서 거절일정 가지고 오기
   getRefuseCheck = JSON.parse(getRefuseCheck);
   let [refuseCheck, setRefuseCheck] = useState(getRefuseCheck); //거절 일정 true,false 저장
@@ -291,13 +290,19 @@ const Index = ({
             }}
           >
             <Tooltip title="Google 계정">
-              <img src={userImg} alt="" />
+              <img src={userImg && userImg} alt="" />
             </Tooltip>
           </div>
           <div className={styles.user_inpo}>
             <div className={styles.user_profile}>
               <div className={styles.user_img}>
-                <img src={userImg} alt="" />
+                <img
+                  src={userImg && userImg}
+                  alt=""
+                  onClick={() => {
+                    navigate(USER_PATH.CHANGE_INFO);
+                  }}
+                />
               </div>
               <h2>{userInfo?.nickname}</h2>
               <em>{userInfo?.email}</em>
@@ -311,26 +316,7 @@ const Index = ({
                 </button>
               ) : null}
             </div>
-            <div className={styles.account}>
-              <ul>
-                <li>
-                  <div className={styles.account_img}>
-                    <img
-                      src={`${process.env.PUBLIC_URL}/img/join/profile.png`}
-                      alt=""
-                    />
-                  </div>
-                  <div className={styles.account_text}>
-                    <p>userName</p>
-                    <p>userEmail@gmail.com</p>
-                  </div>
-                </li>
-              </ul>
-              <div className={styles.user_add}>
-                <FontAwesomeIcon icon={faUserPlus} className={styles.icon} />
-                <p>다른계정 추가</p>
-              </div>
-            </div>
+            <div className={styles.line}></div>
             <div className={styles.all_logout}>
               <button
                 onClick={() => {

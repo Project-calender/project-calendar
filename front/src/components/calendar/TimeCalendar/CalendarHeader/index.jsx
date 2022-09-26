@@ -3,24 +3,26 @@ import PropTypes from 'prop-types';
 import styles from './style.module.css';
 
 import Moment from '../../../../utils/moment';
-
+import useNavigateDayCalendar from '../../../../hooks/useNavigateDayCalendar';
 const Index = ({ dates = [] }) => {
   const isToday = date => date.time === new Moment().time;
-
+  const { moveDayCalendar } = useNavigateDayCalendar();
   return (
-    <thead className={styles.title_container}>
-      <tr />
+    <div className={styles.calendar_header}>
       {dates.map(date => (
-        <>
-          <tr key={date.time}>
-            <th className={`${isToday(date) ? styles.today : ''}`}>
-              <em>{date.weekDay}</em>
-              <p>{date.date}</p>
-            </th>
-          </tr>
-        </>
+        <div key={date.time} className={`${isToday(date) ? styles.today : ''}`}>
+          <em>{date.weekDay}</em>
+          <p
+            className={styles.calendar_header_date}
+            onClick={() => {
+              moveDayCalendar(date);
+            }}
+          >
+            {date.date}
+          </p>
+        </div>
       ))}
-    </thead>
+    </div>
   );
 };
 
