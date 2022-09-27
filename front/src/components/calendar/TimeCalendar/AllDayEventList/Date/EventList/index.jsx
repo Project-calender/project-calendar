@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 
 const Index = ({
   date,
+  dates,
   events,
   eventBars,
   newEventEmptyBar,
@@ -47,6 +48,7 @@ const Index = ({
       {previewEventBars.map((eventBar, index) => (
         <AllDayEvent
           key={index}
+          dates={dates}
           eventBar={eventBar}
           event={events[eventBar?.id]}
         />
@@ -60,6 +62,7 @@ const Index = ({
 
 Index.propTypes = {
   date: PropTypes.object,
+  dates: PropTypes.array,
   events: PropTypes.object,
   eventBars: PropTypes.array,
   newEventEmptyBar: PropTypes.bool,

@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Date from '../Date';
 
-const Index = ({ week }) => {
+const Index = ({ week, month }) => {
   return (
     <tr>
       {week.map((date, index) => (
-        <Date key={index} date={date} />
+        <Date key={index} date={date} month={month} />
       ))}
     </tr>
   );
@@ -14,6 +14,7 @@ const Index = ({ week }) => {
 
 Index.propTypes = {
   week: PropTypes.array,
+  month: PropTypes.array,
 };
 
 export default Index;

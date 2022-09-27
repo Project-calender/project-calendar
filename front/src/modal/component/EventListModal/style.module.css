@@ -3,6 +3,7 @@
 .modal_container > h1 { font-size: 20px; margin-top:3px; margin-bottom: 10px; } 
 
 .modal_container > div { height: 20px; } 
+.modal_container [name="event-right"], .modal_container [name="event-right-line"], .modal_container [name="event-left"] { border-top-width: 11px; border-bottom-width: 11px; } 
 
 .event_bar_active { z-index: 20; } 
 .event_bar_active[name="event_bar"], .event_bar_active [name="event_bar"] { 

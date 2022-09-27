@@ -8,7 +8,7 @@ const Index = ({ month }) => {
   return (
     <>
       {month.map((week, index) => (
-        <Week key={index} week={week} />
+        <Week key={index} week={week} month={month} />
       ))}
     </>
   );

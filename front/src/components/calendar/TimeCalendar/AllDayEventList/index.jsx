@@ -131,6 +131,7 @@ const Index = ({ dates, events, unitWeekDay }) => {
               <Date
                 dateId={index}
                 date={date}
+                dates={dates}
                 events={eventsById}
                 eventBars={eventBars[date.time] || []}
                 readMore={readMore}
