@@ -24,16 +24,17 @@ export function createEventBar(
   if (!minDateTime || !maxDateTime) return [];
 
   const eventBars = [];
-  let start = new Moment(new Date(minDateTime));
-  const end = new Moment(new Date(maxDateTime));
+  let start = new Moment(new Date(minDateTime)).resetTime();
+  const end = new Moment(new Date(maxDateTime)).resetTime();
 
-  let standardDate = new Moment(start.time);
+  let standardDate = null;
   if (firstStandardDate) {
-    while (firstStandardDate.day !== standardDate.day)
-      standardDate = standardDate.addDate(1);
+    standardDate = new Moment(firstStandardDate.time);
+    while (standardDate.addDate(-unitWeekDay).time > start.time)
+      standardDate = standardDate.addDate(-unitWeekDay);
 
-    if (start.resetTime().time < standardDate.addDate(-(unitWeekDay - 1)).time)
-      start = standardDate.addDate(-(unitWeekDay - 1));
+    const firstDate = standardDate.addDate(-(unitWeekDay - 1));
+    if (start.time < firstDate.time) start = firstDate;
   } else standardDate = start.addDate(unitWeekDay - start.day - 1);
 
   while (start.time <= end.time) {
