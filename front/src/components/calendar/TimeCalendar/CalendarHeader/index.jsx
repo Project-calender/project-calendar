@@ -15,7 +15,7 @@ const Index = ({ dates = [] }) => {
           <p
             className={styles.calendar_header_date}
             onClick={() => {
-              moveDayCalendar(date);
+              moveDayCalendar(date.toObject());
             }}
           >
             {date.date}
