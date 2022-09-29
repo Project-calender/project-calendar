@@ -55,7 +55,6 @@ module.exports = class Event extends Model {
     });
 
     db.Event.belongsTo(db.Calendar);
-    db.Event.belongsTo(db.PrivateCalendar);
 
     db.Event.hasMany(db.ChildEvent, {
       onDelete: "CASCADE",

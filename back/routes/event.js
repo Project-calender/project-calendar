@@ -411,9 +411,7 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
     }
 
     var startTime = new Date(req.body.startTime);
-    // startTime.setHours(startTime.getHours() + 9);
     var endTime = new Date(req.body.endTime);
-    // endTime.setHours(endTime.getHours() + 9);
 
     const groupEvent = await Event.create(
       {
@@ -494,6 +492,7 @@ router.post("/inviteCheck", authJWT, async (req, res, next) => {
             [Op.and]: { UserId: guest.id, EventId: groupEvent.id },
           },
         });
+
         if (alreadyEventMember) {
           return guests.push({
             guest: guest,
@@ -502,19 +501,6 @@ router.post("/inviteCheck", authJWT, async (req, res, next) => {
             canInvite: true,
           });
         }
-
-        // const alreadyInvite = await EventMember.findOne({
-        //   where: {
-        //     [Op.and]: { UserId: guest.id, EventId: groupEvent.id },
-        //   },
-        // });
-        // if (alreadyInvite) {
-        //   return guests.push({
-        //     guest: guest,
-        //     message: "이미 초대를 보낸 사람입니다!",
-        //     canInvite: false,
-        //   });
-        // }
 
         return guests.push({
           guest: guest,

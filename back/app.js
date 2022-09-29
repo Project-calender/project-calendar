@@ -20,6 +20,7 @@ const eventRouter = require("./routes/event");
 const alertRouter = require("./routes/alert");
 const privateCalendar = require("./routes/privateCalendar");
 const authRouter = require("./routes/auth");
+const testRouter = require("./routes/test");
 
 // const { restartAll } = require("./realTimeAlerts");
 const useSocket = require("./useSocket");
@@ -75,6 +76,7 @@ app.use("/api/event", eventRouter);
 app.use("/api/alert", alertRouter);
 app.use("/api/privateCalendar", privateCalendar);
 app.use("/api/auth", authRouter);
+app.use("/api/test", testRouter);
 
 app.use(function (error, req, res, next) {
   res.json({ message: error.message });

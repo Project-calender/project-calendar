@@ -3,7 +3,7 @@ const querystring = require("querystring");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const { redisClient } = require("../redis");
-const { sequelize, User, ProfileImage } = require("../models");
+const { sequelize, User, ProfileImage, CalendarMember } = require("../models");
 const { authJWT, refresh } = require("../middlewares/auth");
 const router = express.Router();
 const dotenv = require("dotenv");
@@ -157,13 +157,24 @@ router.post("/signup", async (req, res, next) => {
         await newUser.addProfileImage(profileImage, { transaction: t });
       }
 
-      await newUser.createPrivateCalendar(
+      const myCalendar = await newUser.createCalendar(
         {
           name: newUser.nickname,
+          color: "#dddddd",
+          private: true,
+        },
+        { transaction: t }
+      );
+
+      await CalendarMember.create(
+        {
+          UserId: newUser.id,
+          CalendarId: myCalendar.id,
         },
         { transaction: t }
       );
     });
+
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);

@@ -13,6 +13,11 @@ module.exports = class Calendar extends Model {
           type: DataTypes.STRING(20),
           allowNull: false,
         },
+        private: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
       },
       {
         modelName: "Calendar",
@@ -36,6 +41,8 @@ module.exports = class Calendar extends Model {
       foreignKey: "HostCalendarId",
       onDelete: "CASCADE",
     });
-    db.Calendar.hasMany(db.Event, { as: "GroupEvents", onDelete: "CASCADE" });
+
+    db.Calendar.hasMany(db.ChildEvent, { onDelete: "CASCADE" });
+    db.Calendar.hasMany(db.Event, { onDelete: "CASCADE" });
   }
 };

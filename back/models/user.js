@@ -50,12 +50,7 @@ module.exports = class User extends Model {
     //Event
     db.User.belongsToMany(db.Event, {
       through: db.EventMember,
-      as: "GroupEvents",
     });
-    // db.User.hasMany(db.Event, { onDelete: "CASCADE" });
-
-    //private
-    db.User.hasOne(db.PrivateCalendar, { onDelete: "CASCADE" });
 
     //User
     db.User.belongsToMany(db.User, {
