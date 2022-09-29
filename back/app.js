@@ -16,7 +16,7 @@ const passport = require("passport");
 const db = require("./models");
 const calendarRouter = require("./routes/calendar");
 const eventRouter = require("./routes/event");
-const privateEventRouter = require("./routes/privateEvent");
+
 const alertRouter = require("./routes/alert");
 const privateCalendar = require("./routes/privateCalendar");
 const authRouter = require("./routes/auth");
@@ -72,7 +72,6 @@ app.use(
 
 app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);
-app.use("/api/privateEvent", privateEventRouter);
 app.use("/api/alert", alertRouter);
 app.use("/api/privateCalendar", privateCalendar);
 app.use("/api/auth", authRouter);

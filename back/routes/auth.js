@@ -52,6 +52,7 @@ router.post(
   }
 );
 
+//local
 router.post("/signin", async (req, res, next) => {
   try {
     const exUser = await User.findOne({
@@ -194,13 +195,9 @@ router.post("/checkedCalendar", authJWT, async (req, res, next) => {
   }
 });
 
-router.get("/kakaoFail", (req, res, next) => {
-  res.send(
-    "<script>alert('이메일 사용에 동의하셔야 로그인이 가능합니다!');location.href='http://localhost:3000/calendar';</script>"
-  );
-});
-
+//kakao
 router.get("/kakao", passport.authenticate("kakao", { session: false }));
+
 router.get(
   "/kakao/callback",
   passport.authenticate("kakao", {
@@ -224,14 +221,22 @@ router.get(
   }
 );
 
+router.get("/kakaoFail", (req, res, next) => {
+  res.send(
+    "<script>alert('이메일 사용에 동의하셔야 로그인이 가능합니다!');location.href='http://localhost:3000/calendar';</script>"
+  );
+});
+
+//naver
 router.get(
   "/naver",
   passport.authenticate("naver", { session: false, authType: "reprompt" })
 );
+
 router.get(
   "/naver/callback",
   passport.authenticate("naver", {
-    failureRedirect: "/", // kakaoStrategy에서 실패한다면 실행
+    failureRedirect: "/api/auth/naverFail", // kakaoStrategy에서 실패한다면 실행
     session: false,
   }),
   (req, res) => {
@@ -251,6 +256,11 @@ router.get(
   }
 );
 
+router.get("/naverFail", (req, res, next) => {
+  return res.redirect("http://localhost:3000/calendar");
+});
+
+//google
 router.get(
   "/google",
   passport.authenticate("google", {
@@ -258,6 +268,7 @@ router.get(
     session: false,
   })
 );
+
 router.get(
   "/google/callback",
   passport.authenticate("google", {

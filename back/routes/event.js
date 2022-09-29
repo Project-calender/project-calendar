@@ -15,7 +15,6 @@ const {
   PrivateCalendar,
   CalendarMember,
   EventMember,
-  PrivateEvent,
   RealTimeAlert,
 } = require("../models");
 
