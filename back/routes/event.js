@@ -840,7 +840,7 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
   }
 });
 
-// 자신이 참여하지 않은 이벤트도 검색되게하고, 개인 이벤트도 검색되게하기
+// 자신이 참여하지 않은 이벤트도 검색되게하고, 개인 이벤트도 검색되게하기 ss
 router.post("/searchEvent", authJWT, async (req, res, next) => {
   try {
     const searchWord = req.body.searchWord;
