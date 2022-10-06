@@ -46,7 +46,11 @@ const Index = ({ dates, unitWeekDay }) => {
             />
             <div className={styles.calendar_context}>
               <CalendarAxis />
-              <CalendarBody dates={dates} events={notAllDayEvents} />
+              <CalendarBody
+                dates={dates}
+                events={notAllDayEvents}
+                unitWeekDay={unitWeekDay}
+              />
             </div>
           </div>
         </ModalLayout>

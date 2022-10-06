@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './style.module.css';
+import { createTimeEventBar } from '../../../../hooks/useCreateTimeEventBar';
 
-const Index = ({ dates }) => {
+const Index = ({ dates, events }) => {
   const times = [...Array(24)].map((_, i) => i);
+  const eventBars = createTimeEventBar(events);
+  console.log('bar', eventBars);
+
   return (
     <div className={styles.calendar_body}>
       <div>
@@ -23,6 +27,7 @@ const Index = ({ dates }) => {
 };
 Index.propTypes = {
   dates: PropTypes.array,
+  events: PropTypes.array,
 };
 
 export default Index;
