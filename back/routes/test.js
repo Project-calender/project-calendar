@@ -22,7 +22,117 @@ const {
 const router = express.Router();
 const { Op } = require("sequelize");
 const { authJWT } = require("../middlewares/auth");
-const { inviteGuests, inviteGuestsWhileEdit } = require("../commons/event");
+
+router.post("/getAllEvent", authJWT, async (req, res, next) => {
+  try {
+    var startDate = new Date(req.body.startDate);
+    var endDate = new Date(req.body.endDate);
+
+    startDate.setHours(startDate.getHours() - 9);
+    endDate.setHours(endDate.getHours() - 9);
+    endDate.setDate(endDate.getDate() + 1);
+
+    const calendars = await CalendarMember.findAll({
+      where: { UserId: req.myId },
+    });
+
+    const myCalendar = await Calendar.findOne({
+      where: {
+        [Op.and]: {
+          private: true,
+          OwnerId: req.myId,
+        },
+      },
+    });
+
+    var Events = [];
+    await Promise.all(
+      calendars.map(async (calendar) => {
+        var event = await Calendar.findAll({
+          where: { id: calendar.CalendarId },
+          include: [
+            {
+              model: Event,
+              include: [
+                {
+                  model: ChildEvent,
+                  where: {
+                    CalendarId: myCalendar.id,
+                  },
+                },
+              ],
+              where: {
+                [Op.and]: {
+                  [Op.or]: {
+                    [Op.or]: {
+                      startTime: {
+                        [Op.and]: {
+                          [Op.gte]: startDate,
+                          [Op.lt]: endDate,
+                        },
+                      },
+                      endTime: {
+                        [Op.and]: {
+                          [Op.gte]: startDate,
+                          [Op.lt]: endDate,
+                        },
+                      },
+                    },
+
+                    [Op.and]: {
+                      startTime: { [Op.lte]: startDate },
+                      endTime: { [Op.gte]: endDate },
+                    },
+                  },
+                  permission: { [Op.lte]: calendar.authority },
+                },
+              },
+              separate: true,
+            },
+          ],
+        });
+
+        event.push({ authority: calendar.authority });
+        Events.push(event);
+      })
+    );
+
+    return res.status(200).send(Events);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/getEvent", authJWT, async (req, res, next) => {
+  try {
+    const events = await Event.findOne({
+      where: { id: req.body.eventId },
+      include: [
+        {
+          model: User,
+          as: "EventMembers",
+          attributes: ["id", "email", "nickname"],
+          include: [
+            {
+              model: ProfileImage,
+              attributes: ["src"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!events) {
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다" });
+    }
+
+    return res.status(200).send(events);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 
 router.post("/createEvent", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
@@ -117,6 +227,168 @@ router.post("/createEvent", authJWT, async (req, res, next) => {
     }
     await t.commit();
     return res.status(200).send(newEvent);
+  } catch (error) {
+    if (t) await t.rollback();
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/editEvent", authJWT, async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    const event = await Event.findOne({
+      where: { id: req.body.eventId },
+    });
+
+    if (!event) {
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
+    }
+
+    const hasAuthority = await CalendarMember.findOne({
+      where: {
+        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+      },
+    });
+
+    if (hasAuthority.authority < 2) {
+      return res.status(403).send({ message: "수정 권한이 없습니다!" });
+    }
+
+    var startTime = new Date(req.body.startTime);
+    var endTime = new Date(req.body.endTime);
+
+    await event.update(
+      {
+        name: req.body.eventName,
+        color: req.body.color ? req.body.color : null,
+        busy: req.body.busy,
+        permission: req.body.permission,
+        memo: req.body.memo,
+        startTime: startTime,
+        endTime: endTime,
+        allDay: req.body.allDay,
+        CalendarId: req.body.calendarId,
+      },
+      { transaction: t }
+    );
+
+    if (req.body.guests.length > 0) {
+      var members = [];
+
+      await EventMember.findAll({
+        where: {
+          EventId: event.eventId,
+        },
+      }).then((membersInfo) => {
+        membersInfo.map((member) => {
+          member.push(member.UserId);
+        });
+      });
+
+      var newMembers = req.body.guests.filter((x) => !members.includes(x));
+      var outMembers = members.filter((x) => !guests.includes(x));
+
+      await Promise.all(
+        newMembers.map(async (newMemberId) => {
+          const guest = await User.findOne({
+            where: { id: newMemberId },
+          });
+
+          if (guest) {
+            const guestCalendar = await Calendar.findOne({
+              where: {
+                [Op.and]: {
+                  private: true,
+                  OwnerId: newMemberId,
+                },
+              },
+            });
+
+            await ChildEvent.create(
+              {
+                name: newEvent.name,
+                color: newEvent.color,
+                busy: newEvent.busy,
+                memo: newEvent.memo,
+                allDay: newEvent.allDay,
+                startTime: newEvent.startTime,
+                endTime: newEvent.endTime,
+                ParentEventId: event.id,
+                CalendarId: guestCalendar.id,
+                state: 0,
+              },
+              { transaction: t }
+            );
+
+            if (newMemberId !== req.myId) {
+              await Alert.create(
+                {
+                  UserId: newMemberId,
+                  type: "event",
+                  calendarId: req.body.calendarId,
+                  eventDate: event.startTime,
+                  content: `${event.name} 이벤트에 초대되었습니다!`,
+                },
+                { transaction: t }
+              );
+            }
+          }
+        })
+      );
+
+      await Promise.all(
+        outMembers.map(async (outMemberId) => {
+          const outMember = await User.findOne({
+            where: { id: outMemberId },
+          });
+
+          if (outMember) {
+            await EventMember.destroy({
+              where: {
+                [Op.and]: {
+                  UserId: outMemberId,
+                  EventId: eventId,
+                },
+              },
+              transaction: t,
+              force: true,
+            });
+
+            const guestCalendar = await Calendar.findOne({
+              where: {
+                [Op.and]: {
+                  private: true,
+                  OwnerId: guestId,
+                },
+              },
+            });
+
+            await ChildEvent.destroy({
+              where: {
+                [Op.and]: {
+                  ParentEventId: eventId,
+                  CalendarId: guestCalendar.id,
+                },
+              },
+            });
+
+            await Alert.create(
+              {
+                UserId: outMemberId,
+                type: "event",
+                calendarId: req.body.calendarId,
+                eventDate: event.startTime,
+                content: `${event.name} 이벤트에서 강퇴되셨습니다!`,
+              },
+              { transaction: t }
+            );
+          }
+        })
+      );
+    }
+    await t.commit();
+    return res.status(200).send(event);
   } catch (error) {
     if (t) await t.rollback();
     console.error(error);
@@ -345,6 +617,36 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
     console.error(error);
     next(error);
   }
+});
+
+router.post("/deleteEvent", authJWT, async (req, res, next) => {
+  const event = await Event.findOne({
+    where: { id: req.body.eventId },
+  });
+
+  if (!event) {
+    return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
+  }
+
+  const hasAuthority = await CalendarMember.findOne({
+    where: {
+      [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+    },
+  });
+
+  if (hasAuthority.authority < 2) {
+    return res.status(403).send({ message: "삭제 권한이 없습니다!" });
+  }
+
+  await sequelize.transaction(async (t) => {
+    await Event.destroy({
+      where: { id: req.body.eventId },
+      force: true,
+      transaction: t,
+    });
+  });
+
+  return res.status(200).send({ success: true });
 });
 
 module.exports = router;

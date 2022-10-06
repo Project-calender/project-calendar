@@ -170,6 +170,7 @@ router.post("/signup", async (req, res, next) => {
         {
           UserId: newUser.id,
           CalendarId: myCalendar.id,
+          authority: 3,
         },
         { transaction: t }
       );
