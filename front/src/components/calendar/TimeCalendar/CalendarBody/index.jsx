@@ -16,7 +16,8 @@ const Index = ({ dates, events }) => {
         ))}
       </div>
       {dates.map(date => (
-        <div key={date.time}>
+        <div key={date.time} className={styles.calendar_event_container}>
+          <div className={styles.calendar_event_list} />
           {times.map(i => (
             <div key={i} />
           ))}
