@@ -1,9 +1,4 @@
 const express = require("express");
-const {
-  addAlert,
-  deleteAlerts,
-  deleteAlertsByEventId,
-} = require("../realTimeAlerts");
 
 const {
   sequelize,
@@ -204,7 +199,8 @@ router.post("/createEvent", authJWT, async (req, res, next) => {
               startTime: newEvent.startTime,
               endTime: newEvent.endTime,
               ParentEventId: newEvent.id,
-              CalendarId: guestCalendar.id,
+              privateCalendarId: guestCalendar.id,
+              originCalendarId: newEvent.CalendarId,
               state: 0,
             },
             { transaction: t }
@@ -288,6 +284,47 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
 
       var newMembers = req.body.guests.filter((x) => !members.includes(x));
       var outMembers = members.filter((x) => !guests.includes(x));
+      var originMembers = 0;
+
+      // 기존 멤버들은 childEvent를 업데이트 시켜주어야함
+      await Promise.all(
+        originMembers.map(async (originMemberId) => {
+          const guest = await User.findOne({
+            where: { id: originMemberId },
+          });
+
+          if (guest) {
+            const memberCalendar = await Calendar.findOne({
+              where: {
+                [Op.and]: {
+                  private: true,
+                  OwnerId: originMemberId,
+                },
+              },
+            });
+            await ChildEvent.update(
+              {
+                name: req.body.eventName,
+                color: req.body.color ? req.body.color : null,
+                busy: req.body.busy,
+                memo: req.body.memo,
+                startTime: startTime,
+                endTime: endTime,
+                allDay: req.body.allDay,
+                originCalendarId: req.body.calendarId,
+              },
+              {
+                where: {
+                  [Op.and]: {
+                    privateCalendarId: memberCalendar.id,
+                    ParentEventId: event.id,
+                  },
+                },
+              }
+            );
+          }
+        })
+      );
 
       await Promise.all(
         newMembers.map(async (newMemberId) => {
@@ -307,15 +344,16 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
 
             await ChildEvent.create(
               {
-                name: newEvent.name,
-                color: newEvent.color,
-                busy: newEvent.busy,
-                memo: newEvent.memo,
-                allDay: newEvent.allDay,
-                startTime: newEvent.startTime,
-                endTime: newEvent.endTime,
+                name: event.name,
+                color: event.color,
+                busy: event.busy,
+                memo: event.memo,
+                allDay: event.allDay,
+                startTime: event.startTime,
+                endTime: event.endTime,
                 ParentEventId: event.id,
-                CalendarId: guestCalendar.id,
+                privateCalendarId: guestCalendar.id,
+                originCalendarId: event.CalendarId,
                 state: 0,
               },
               { transaction: t }
@@ -348,7 +386,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
               where: {
                 [Op.and]: {
                   UserId: outMemberId,
-                  EventId: eventId,
+                  EventId: event.id,
                 },
               },
               transaction: t,
@@ -367,7 +405,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
             await ChildEvent.destroy({
               where: {
                 [Op.and]: {
-                  ParentEventId: eventId,
+                  ParentEventId: event.id,
                   CalendarId: guestCalendar.id,
                 },
               },

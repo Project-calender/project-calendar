@@ -47,8 +47,8 @@ module.exports = class ChildEvent extends Model {
     );
   }
   static associate(db) {
-    db.ChildEvent.belongsTo(db.Calendar);
-
+    db.ChildEvent.belongsTo(db.Calendar, { as: "privateCalendar" });
+    db.ChildEvent.belongsTo(db.Calendar, { as: "originCalendar" });
     db.ChildEvent.belongsTo(db.Event, {
       as: "ParentEvent",
     });

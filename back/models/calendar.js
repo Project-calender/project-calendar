@@ -42,7 +42,16 @@ module.exports = class Calendar extends Model {
       onDelete: "CASCADE",
     });
 
-    db.Calendar.hasMany(db.ChildEvent, { onDelete: "CASCADE" });
+    db.Calendar.hasMany(db.ChildEvent, {
+      as: "privateCalendar",
+      foreignKey: "privateCalendarId",
+      onDelete: "CASCADE",
+    });
+    db.Calendar.hasMany(db.ChildEvent, {
+      as: "originCalendar",
+      foreignKey: "originCalendarId",
+      onDelete: "CASCADE",
+    });
     db.Calendar.hasMany(db.Event, { onDelete: "CASCADE" });
   }
 };
