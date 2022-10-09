@@ -1168,45 +1168,7 @@ paths:
           description: 성공
           schema:
             properties:
-              privateEvents:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  color:
-                    type: string
-                  UserId:
-                    type: string
-                  privateEvents:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        color:
-                          type: string
-                        priority:
-                          type: integer
-                        memo:
-                          type: string
-                        startTime:
-                          type: string
-                        endTime:
-                          type: string
-                        groupEventId:
-                          type: integer
-                        state:
-                          type: integer
-                        allDay:
-                          type: boolean
-                        privateCalendarId:
-                          type: integer
-              groupEvents:
+              events:
                 type: array
                 items:
                   type: object
@@ -1218,17 +1180,8 @@ paths:
                     color:
                       type: string
                     OwnerId:
-                      type: integer
-                    CalendarMember:
-                      type: object
-                      properties:
-                        authority:
-                          type: integer
-                        UserId:
-                          type: integer
-                        CalendarId:
-                          type: integer
-                    GroupEvents:
+                      type: string
+                    Events:
                       type: array
                       items:
                         type: object
@@ -1239,7 +1192,7 @@ paths:
                             type: string
                           color:
                             type: string
-                          priority:
+                          permission:
                             type: integer
                           memo:
                             type: string
@@ -1248,11 +1201,32 @@ paths:
                           endTime:
                             type: string
                           allDay:
-                            type: integer
-                          EventHostId:
-                            type: integer
-                          CalendarId:
-                            type: integer
+                            type: boolean
+                          eventHostEmail:
+                            type: string
+                          ChildEvents:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                type: object
+                                properties:
+                                  id:
+                                    type: integer
+                                  name:
+                                    type: string
+                                  color:
+                                    type: string
+                                  permission:
+                                    type: integer
+                                  memo:
+                                    type: string
+                                  startTime:
+                                    type: string
+                                  endTime:
+                                    type: string
+                                  allDay:
+                                    type: boolean
         '500':
           $ref: '#/serverError'
   /api/event/getAllEventForYear:

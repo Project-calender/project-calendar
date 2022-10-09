@@ -48,11 +48,19 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
           include: [
             {
               model: Event,
+              attributes: { exclude: ["CalendarId"] },
               include: [
                 {
                   model: ChildEvent,
+                  attributes: {
+                    exclude: [
+                      "privateCalendarId",
+                      "originCalendarId",
+                      "ParentEventId",
+                    ],
+                  },
                   where: {
-                    CalendarId: myCalendar.id,
+                    privateCalendarId: myCalendar.id,
                   },
                 },
               ],
@@ -92,7 +100,7 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
       })
     );
 
-    return res.status(200).send(Events);
+    return res.status(200).send({ events: Events });
   } catch (error) {
     console.error(error);
     next(error);
@@ -284,7 +292,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
 
       var newMembers = req.body.guests.filter((x) => !members.includes(x));
       var outMembers = members.filter((x) => !guests.includes(x));
-      var originMembers = 0;
+      var originMembers = members.filter((x) => !outMembers.includes(x));
 
       // 기존 멤버들은 childEvent를 업데이트 시켜주어야함
       await Promise.all(
@@ -429,6 +437,73 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
     return res.status(200).send(event);
   } catch (error) {
     if (t) await t.rollback();
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/editChildEvent", authJWT, async (req, res, next) => {
+  try {
+    const childEvent = await ChildEvent.findOne({
+      where: { id: req.body.eventId },
+    });
+
+    if (!childEvent) {
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
+    }
+
+    await sequelize.transaction(async (t) => {
+      await childEvent.update(
+        {
+          name: req.body.name,
+          color: req.body.color,
+          busy: req.body.busy,
+          memo: req.body.memo,
+          allDay: req.body.allDay,
+          startTime: req.body.startTime,
+          endTime: req.body.endTime,
+        },
+        { transaction: t }
+      );
+    });
+
+    return res.status(200).send(childEvent);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/editEventColor", authJWT, async (req, res, next) => {
+  try {
+    const event = await Event.findOne({
+      where: { id: req.body.eventId },
+    });
+
+    if (!event) {
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
+    }
+
+    const hasAuthority = await CalendarMember.findOne({
+      where: {
+        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+      },
+    });
+
+    if (hasAuthority.authority < 2) {
+      return res.status(402).send({ message: "수정 권한이 없습니다!" });
+    }
+    await sequelize.transaction(async (t) => {
+      await groupEvent.update(
+        {
+          color: req.body.color ? req.body.color : null,
+        },
+        { transaction: t }
+      );
+    });
+
+    return res.status(200).send(event);
+  } catch (error) {
     console.error(error);
     next(error);
   }
