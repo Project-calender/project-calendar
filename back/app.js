@@ -16,12 +16,8 @@ const passport = require("passport");
 const db = require("./models");
 const calendarRouter = require("./routes/calendar");
 const eventRouter = require("./routes/event");
-
 const alertRouter = require("./routes/alert");
-const privateCalendar = require("./routes/privateCalendar");
 const authRouter = require("./routes/auth");
-const testRouter = require("./routes/test");
-const testCalendarRouter = require("./routes/testCalendar");
 
 // const { restartAll } = require("./realTimeAlerts");
 const useSocket = require("./useSocket");
@@ -64,21 +60,10 @@ app.use(
   swaggerUi.setup(swaggerSpec, { explorer: true }) //검색 허용가능
 );
 
-// restartAll()
-//   .then(() => {
-//     console.log("restart All alerts completely!");
-//   })
-//   .catch((error) => {
-//     console.log(error);
-//   });
-
 app.use("/api/calendar", calendarRouter);
 app.use("/api/event", eventRouter);
 app.use("/api/alert", alertRouter);
-app.use("/api/privateCalendar", privateCalendar);
 app.use("/api/auth", authRouter);
-app.use("/api/test", testRouter);
-app.use("/api/test", testCalendarRouter);
 
 app.use(function (error, req, res, next) {
   res.json({ message: error.message });
