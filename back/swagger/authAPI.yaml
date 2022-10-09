@@ -1,7 +1,7 @@
 /api/auth/signup:
   post:
     tags:
-      - user
+      - auth
     summary: 회원가입
     parameters:
       - name: body
@@ -41,7 +41,7 @@
 /api/auth/signin:
   post:
     tags:
-      - user
+      - auth
     summary: 로그인
     parameters:
       - name: body
@@ -100,7 +100,7 @@
 /api/auth/logout:
   post:
     tags:
-      - user
+      - auth
     summary: 로그아웃
     parameters:
       - name: Authorization
@@ -113,7 +113,7 @@
 /api/auth/setUserProfileImage:
   post:
     tags:
-      - user
+      - auth
     summary: 회원가입 시 프로필 사진 등록
     consumes:
       - multipart/form-data
@@ -136,7 +136,7 @@
 /api/auth/changeNickname:
   post:
     tags:
-      - user
+      - auth
     summary: 닉네임 수정
     parameters:
       - name: Authorization
@@ -159,7 +159,7 @@
 /api/auth/changePassword:
   post:
     tags:
-      - user
+      - auth
     summary: 비밀번호 수정
     parameters:
       - name: Authorization
@@ -182,7 +182,7 @@
 /api/auth/changeProfileImage:
   post:
     tags:
-      - user
+      - auth
     summary: 프로필 이미지 수정
     parameters:
       - name: Authorization
@@ -205,7 +205,7 @@
 /api/auth/deleteProfileImage:
   post:
     tags:
-      - user
+      - auth
     summary: 프로필 이미지 삭제 ( 삭제시 기본이미지로 변경됨 )
     parameters:
       - name: Authorization
@@ -220,7 +220,7 @@
 /api/auth/resign:
   post:
     tags:
-      - user
+      - auth
     summary: 회원 탈퇴
     parameters:
       - name: Authorization
@@ -235,7 +235,7 @@
 /api/auth/checkedCalendar:
   post:
     tags:
-      - user
+      - auth
     summary: 달력 체킹 수정
     parameters:
       - name: Authorization
@@ -258,7 +258,7 @@
 /api/auth/refresh:
   get:
     tags:
-      - user
+      - auth
     summary: 토큰 refresh
     parameters:
       - name: Authorization
@@ -308,4 +308,4 @@
       500:
         $ref: "./openapi.yaml#/serverError"
 
-$ref: "./privateCalendarAPI.yaml"
+$ref: "./calendarAPI.yaml"

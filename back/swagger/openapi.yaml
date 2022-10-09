@@ -9,12 +9,8 @@ info:
     - description: GoogleCalendar-Clone dev
       url: http://localhost:80/
 tags:
-  - name: user
-    description: API about user
-  - name: privateCalendar
-    description: API about privateCalendar
-  - name: privateEvent
-    description: API about privateEvent
+  - name: auth
+    description: API about auth
   - name: calendar
     description: API about calendar
   - name: event
@@ -23,7 +19,7 @@ tags:
     description: API about alert
 
 paths:
-  $ref: "./userAPI.yaml"
+  $ref: "./authAPI.yaml"
 
 returnUser:
   description: 성공
@@ -77,10 +73,30 @@ returnEvent:
       allDay:
         type: boolean
         example: true
-      EventHostId:
+      eventHostEmail:
         type: integer
       CalendarId:
         type: integer
+returnChildEvent:
+  description: 성공
+  schema:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      color:
+        type: string
+      permission:
+        type: integer
+      memo:
+        type: string
+      startTime:
+        type: string
+      endTime:
+        type: string
+      allDay:
+        type: boolean
 returnPrivateEvent:
   description: 성공
   schema:

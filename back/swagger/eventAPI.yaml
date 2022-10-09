@@ -23,116 +23,6 @@
       200:
         description: 성공
         schema:
-          properties:
-            privateEvents:
-              type: object
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
-                color:
-                  type: string
-                UserId:
-                  type: string
-                privateEvents:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      color:
-                        type: string
-                      priority:
-                        type: integer
-                      memo:
-                        type: string
-                      startTime:
-                        type: string
-                      endTime:
-                        type: string
-                      groupEventId:
-                        type: integer
-                      state:
-                        type: integer
-                      allDay:
-                        type: boolean
-                      privateCalendarId:
-                        type: integer
-            groupEvents:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  color:
-                    type: string
-                  OwnerId:
-                    type: integer
-                  CalendarMember:
-                    type: object
-                    properties:
-                      authority:
-                        type: integer
-                      UserId:
-                        type: integer
-                      CalendarId:
-                        type: integer
-                  GroupEvents:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        color:
-                          type: string
-                        priority:
-                          type: integer
-                        memo:
-                          type: string
-                        startTime:
-                          type: string
-                        endTime:
-                          type: string
-                        allDay:
-                          type: integer
-                        EventHostId:
-                          type: integer
-                        CalendarId:
-                          type: integer
-      500:
-        $ref: "./openapi.yaml#/serverError"
-/api/event/getAllEventForYear:
-  post:
-    tags:
-      - event
-    summary: 1년 동안의 모든 이벤트 가져오기 (정렬은 하지 않음, 필요한 정렬 순서가 있다면 요청 )
-    parameters:
-      - name: Authorization
-        in: header
-        required: true
-      - name: body
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            startTime:
-              type: string
-              example: "2022-08-01"
-    responses:
-      200:
-        description: 성공
-        schema:
           type: array
           items:
             type: object
@@ -143,31 +33,113 @@
                 type: string
               color:
                 type: string
-              memo:
+              private:
+                type: boolean
+              OwnerId:
                 type: string
-              startTime:
-                type: string
-              endTime:
-                type: string
-              allDay:
-                type: integer
-              busy:
-                type: integer
-              permission:
-                type: integer
-                example: 1 그룹 캘린더 전용
-              EventHostId:
-                type: integer
-                example: 1 그룹 캘린더 전용
-              CalendarId:
-                type: integer
-                example: 1 그룹 캘린더 전용
-              PrivateCalendarId:
-                type: integer
-                example: 1 개인 캘린더 전용
+              Events:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    color:
+                      type: string
+                    permission:
+                      type: integer
+                    memo:
+                      type: string
+                    startTime:
+                      type: string
+                    endTime:
+                      type: string
+                    allDay:
+                      type: boolean
+                    eventHostEmail:
+                      type: string
+                    ChildEvents:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          color:
+                            type: string
+                          permission:
+                            type: integer
+                          memo:
+                            type: string
+                          startTime:
+                            type: string
+                          endTime:
+                            type: string
+                          allDay:
+                            type: boolean
       500:
         $ref: "./openapi.yaml#/serverError"
-/api/event/getGroupEvent:
+# /api/event/getAllEventForYear:
+#   post:
+#     tags:
+#       - event
+#     summary: 1년 동안의 모든 이벤트 가져오기 (정렬은 하지 않음, 필요한 정렬 순서가 있다면 요청 )
+#     parameters:
+#       - name: Authorization
+#         in: header
+#         required: true
+#       - name: body
+#         in: body
+#         required: true
+#         schema:
+#           type: object
+#           properties:
+#             startTime:
+#               type: string
+#               example: "2022-08-01"
+#     responses:
+#       200:
+#         description: 성공
+#         schema:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               id:
+#                 type: integer
+#               name:
+#                 type: string
+#               color:
+#                 type: string
+#               memo:
+#                 type: string
+#               startTime:
+#                 type: string
+#               endTime:
+#                 type: string
+#               allDay:
+#                 type: integer
+#               busy:
+#                 type: integer
+#               permission:
+#                 type: integer
+#                 example: 1 그룹 캘린더 전용
+#               EventHostId:
+#                 type: integer
+#                 example: 1 그룹 캘린더 전용
+#               CalendarId:
+#                 type: integer
+#                 example: 1 그룹 캘린더 전용
+#               PrivateCalendarId:
+#                 type: integer
+#                 example: 1 개인 캘린더 전용
+#       500:
+#         $ref: "./openapi.yaml#/serverError"
+/api/event/getEvent:
   post:
     tags:
       - event
@@ -253,113 +225,11 @@
                   example: 1 (allDay)
       500:
         $ref: "./openapi.yaml#/serverError"
-/api/event/getEventByDate:
+/api/event/inviteCheckBeforeCreate:
   post:
     tags:
       - event
-    summary: 특정 날짜의 이벤트들 모두 가져오기
-    parameters:
-      - name: Authorization
-        in: header
-        required: true
-      - name: body
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            startDate:
-              type: string
-              example: "2022-08-20"
-            endDate:
-              type: string
-              example: "2022-08-22"
-    responses:
-      200:
-        description: 성공
-        schema:
-          properties:
-            privateEvents:
-              type: object
-              properties:
-                id:
-                  type: integer
-                privateEvents:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      color:
-                        type: string
-                      priority:
-                        type: integer
-                      memo:
-                        type: string
-                      startTime:
-                        type: string
-                      endTime:
-                        type: string
-                      groupEventId:
-                        type: integer
-                      state:
-                        type: integer
-                      allDay:
-                        type: integer
-                        example: 1
-                      privateCalendarId:
-                        type: integer
-            groupEvents:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  CalendarMember:
-                    type: object
-                    properties:
-                      authority:
-                        type: integer
-                      UserId:
-                        type: integer
-                      CalendarId:
-                        type: integer
-                  GroupEvents:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        color:
-                          type: string
-                        priority:
-                          type: integer
-                        memo:
-                          type: string
-                        startTime:
-                          type: string
-                        endTime:
-                          type: string
-                        allDay:
-                          type: integer
-                        EventHostId:
-                          type: integer
-                        CalendarId:
-                          type: integer
-      500:
-        $ref: "./openapi.yaml#/serverError"
-/api/event/inviteCheckBeforeCreateEvent:
-  post:
-    tags:
-      - event
-    summary: 그룹 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전 inviteCheckBeforeCreateEvent -> createGroupEvent )
+    summary: 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전 inviteCheckBeforeCreateEvent -> createGroupEvent )
     parameters:
       - name: Authorization
         in: header
@@ -418,11 +288,11 @@
               example: false
       500:
         $ref: "./openapi.yaml#/serverError"
-/api/event/createGroupEvent:
+/api/event/createEvent:
   post:
     tags:
       - event
-    summary: 그룹 이벤트 생성하기 permission 1 or 2 / busy 0 or 1
+    summary: 이벤트 생성하기 permission 1 or 2 / busy 0 or 1 ( alert지금은 막아놨어요 alert다시 완벽하게 만들어 놓을게요 ㅠ)
     parameters:
       - name: Authorization
         in: header
@@ -456,7 +326,6 @@
               type: integer
               example: 1
             alerts:
-              summary: ㅇㅇㅇ
               type: array
               items:
                 type: object
@@ -476,25 +345,35 @@
             guests:
               type: array
               items:
-                type: object
-                example: "minwoo@naver.com"
+                type: integer
+                example: 1
     responses:
       200:
         $ref: "./openapi.yaml#/returnEvent"
+      402:
+        description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
+        schema:
+          properties:
+            message:
+              type: string
+              example: 그룹 캘린더에 존재하지 않는 유저입니다!
+            canInvite:
+              type: boolean
+              example: false
       400:
         description: 그룹원이 아닌 사람이 이벤트를 생성하려 할때
         schema:
           properties:
             message:
               type: string
-              example: 그룹원의 멤버만 이벤트를 생성할 수 있습니다.
+              example: 캘린더의 멤버만 이벤트를 생성할 수 있습니다.
       500:
         $ref: "./openapi.yaml#/serverError"
 /api/event/inviteCheck:
   post:
     tags:
       - event
-    summary: 그룹 이벤트에 초대 가능한지 확인하기 ( 이미 존재하는 이벤트에 초대 체크 inviteCheck -> editGroupEvent )
+    summary: 이벤트에 초대 가능한지 확인하기 ( 이미 존재하는 이벤트에 초대 체크 )
     parameters:
       - name: Authorization
         in: header
@@ -533,23 +412,13 @@
                   properties:
                     src:
                       type: string
-            state:
-              type: integer
-              example: 이미 그룹 이벤트의 멤버인 경우만 보내줌
-            message:
-              type: string
-              example: 초대가 불가능한 경우만 이유가 메세지로 전달
-            canInvite:
-              type: boolean
-              example: true
       500:
         $ref: "./openapi.yaml#/serverError"
-
-/api/event/editGroupEvent:
+/api/event/editEvent:
   post:
     tags:
       - event
-    summary: 그룹 이벤트 수정하기 permission 1 or 2 / busy 0 or 1
+    summary: 이벤트 수정하기 permission 1 or 2 / busy 0 or 1
     parameters:
       - name: Authorization
         in: header
@@ -607,7 +476,7 @@
               type: array
               items:
                 type: object
-                example: "minwoo@naver.com"
+                example: 1
     responses:
       200:
         $ref: "./openapi.yaml#/returnEvent"
@@ -627,12 +496,11 @@
               example: 수정 권한이 없습니다!
       500:
         $ref: "./openapi.yaml#/serverError"
-
-/api/event/editGroupEventColor:
+/api/event/editEventColor:
   post:
     tags:
       - event
-    summary: 그룹 이벤트 색상 변경하기
+    summary: 이벤트 색상 변경하기
     parameters:
       - name: Authorization
         in: header
@@ -667,11 +535,11 @@
               example: 수정 권한이 없습니다!
       500:
         $ref: "./openapi.yaml#/serverError"
-/api/event/deleteGroupEvent:
+/api/event/deleteEvent:
   post:
     tags:
       - event
-    summary: 그룹 이벤트 삭제하기
+    summary: 이벤트 삭제하기
     parameters:
       - name: Authorization
         in: header
@@ -707,7 +575,6 @@
               example: 삭제 권한이 없습니다!
       500:
         $ref: "./openapi.yaml#/serverError"
-
 /api/event/changeEventInviteState:
   post:
     tags:
@@ -741,11 +608,50 @@
               example: 존재하지 않는 이벤트 입니다!
       500:
         $ref: "./openapi.yaml#/serverError"
-/api/event/searchEvent:
+# /api/event/searchEvent:
+#   post:
+#     tags:
+#       - event
+#     summary: 이벤트 이름으로 검색하기
+#     parameters:
+#       - name: Authorization
+#         in: header
+#         required: true
+#       - name: body
+#         in: body
+#         required: true
+#         schema:
+#           type: object
+#           properties:
+#             searchWord:
+#               type: string
+#     responses:
+#       200:
+#         description: 성공
+#         schema:
+#           type: array
+#           items:
+#             type: object
+#             properties:
+#               id:
+#                 type: integer
+#               name:
+#                 type: string
+#               startTime:
+#                 type: string
+#               endTime:
+#                 type: string
+#               allDay:
+#                 type: boolean
+#               CalendarId:
+#                 type: integer
+#       500:
+#         $ref: "./openapi.yaml#/serverError"
+/api/event/editChildEvent:
   post:
     tags:
       - event
-    summary: 이벤트 이름으로 검색하기
+    summary: 딸림 이벤트 수정하기 ( 부모이벤트가 수정되거나 삭제되면, 동시에 수정 삭제 )
     parameters:
       - name: Authorization
         in: header
@@ -756,29 +662,56 @@
         schema:
           type: object
           properties:
-            searchWord:
+            eventId:
+              type: integer
+              example: 1
+            eventName:
               type: string
+            color:
+              type: integer
+              example: "#0e0e0e"
+            busy:
+              type: integer
+            memo:
+              type: string
+            allDay:
+              type: integer
+              example: 1
+            startTime:
+              type: string
+              example: "2022-06-02T00:00:00"
+            endTime:
+              type: string
+              example: "2022-06-02T00:00:00"
+    responses:
+      400:
+        description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
+        schema:
+          properties:
+            message:
+              type: string
+              example: 존재하지 않는 이벤트 입니다!
+      200:
+        $ref: "./openapi.yaml#/returnChildEvent"
+/api/event/deleteChildEvent:
+  post:
+    tags:
+      - event
+    summary: 딸림 이벤트 삭제하기 ( 부모이벤트가 수정되거나 삭제되면, 동시에 수정 삭제 )
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            eventId:
+              type: integer
+              example: 1
     responses:
       200:
-        description: 성공
-        schema:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-              startTime:
-                type: string
-              endTime:
-                type: string
-              allDay:
-                type: boolean
-              CalendarId:
-                type: integer
-      500:
-        $ref: "./openapi.yaml#/serverError"
-
+        $ref: "./openapi.yaml#/success"
 $ref: "./alertAPI.yaml"
