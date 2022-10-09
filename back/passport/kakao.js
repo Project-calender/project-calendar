@@ -79,9 +79,23 @@ module.exports = () => {
                 checkedCalendar: "",
               });
 
-              await newUser.createPrivateCalendar({
-                name: newUser.nickname,
-              });
+              const myCalendar = await newUser.createCalendar(
+                {
+                  name: newUser.nickname,
+                  color: "#dddddd",
+                  private: true,
+                },
+                { transaction: t }
+              );
+
+              await CalendarMember.create(
+                {
+                  UserId: newUser.id,
+                  CalendarId: myCalendar.id,
+                  authority: 3,
+                },
+                { transaction: t }
+              );
 
               const accessToken = jwt.sign(
                 { id: newUser.id },
