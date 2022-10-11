@@ -1,5 +1,5 @@
 const express = require("express");
-
+const short = require("short-uuid");
 const {
   sequelize,
   User,
@@ -285,7 +285,7 @@ router.post("/createEvent", authJWT, async (req, res, next) => {
       where: {
         [Op.and]: {
           id: req.body.calendarId,
-          priavte: 1,
+          private: 1,
           OwnerId: req.myId,
         },
       },
@@ -328,6 +328,7 @@ router.post("/createEvent", authJWT, async (req, res, next) => {
 
           await ChildEvent.create(
             {
+              id: short.generate(),
               name: newEvent.name,
               color: newEvent.color,
               busy: newEvent.busy,
@@ -481,6 +482,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
 
             await ChildEvent.create(
               {
+                id: short.generate(),
                 name: event.name,
                 color: event.color,
                 busy: event.busy,
