@@ -9,12 +9,8 @@ info:
     - description: GoogleCalendar-Clone dev
       url: 'http://localhost:80/'
 tags:
-  - name: user
-    description: API about user
-  - name: privateCalendar
-    description: API about privateCalendar
-  - name: privateEvent
-    description: API about privateEvent
+  - name: auth
+    description: API about auth
   - name: calendar
     description: API about calendar
   - name: event
@@ -25,7 +21,7 @@ paths:
   /api/auth/signup:
     post:
       tags:
-        - user
+        - auth
       summary: 회원가입
       parameters:
         - name: body
@@ -64,7 +60,7 @@ paths:
   /api/auth/signin:
     post:
       tags:
-        - user
+        - auth
       summary: 로그인
       parameters:
         - name: body
@@ -122,7 +118,7 @@ paths:
   /api/auth/logout:
     post:
       tags:
-        - user
+        - auth
       summary: 로그아웃
       parameters:
         - name: Authorization
@@ -134,7 +130,7 @@ paths:
   /api/auth/setUserProfileImage:
     post:
       tags:
-        - user
+        - auth
       summary: 회원가입 시 프로필 사진 등록
       consumes:
         - multipart/form-data
@@ -156,7 +152,7 @@ paths:
   /api/auth/changeNickname:
     post:
       tags:
-        - user
+        - auth
       summary: 닉네임 수정
       parameters:
         - name: Authorization
@@ -178,7 +174,7 @@ paths:
   /api/auth/changePassword:
     post:
       tags:
-        - user
+        - auth
       summary: 비밀번호 수정
       parameters:
         - name: Authorization
@@ -200,7 +196,7 @@ paths:
   /api/auth/changeProfileImage:
     post:
       tags:
-        - user
+        - auth
       summary: 프로필 이미지 수정
       parameters:
         - name: Authorization
@@ -222,7 +218,7 @@ paths:
   /api/auth/deleteProfileImage:
     post:
       tags:
-        - user
+        - auth
       summary: 프로필 이미지 삭제 ( 삭제시 기본이미지로 변경됨 )
       parameters:
         - name: Authorization
@@ -236,7 +232,7 @@ paths:
   /api/auth/resign:
     post:
       tags:
-        - user
+        - auth
       summary: 회원 탈퇴
       parameters:
         - name: Authorization
@@ -250,7 +246,7 @@ paths:
   /api/auth/checkedCalendar:
     post:
       tags:
-        - user
+        - auth
       summary: 달력 체킹 수정
       parameters:
         - name: Authorization
@@ -272,7 +268,7 @@ paths:
   /api/auth/refresh:
     get:
       tags:
-        - user
+        - auth
       summary: 토큰 refresh
       parameters:
         - name: Authorization
@@ -321,364 +317,6 @@ paths:
                 example: accessToken이 지급되지 않았습니다
         '500':
           $ref: '#/serverError'
-  /api/privateCalendar/editPrivateCalendar:
-    post:
-      tags:
-        - privateCalendar
-      summary: 개인 캘린더 수정
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              calendarId:
-                type: integer
-              calendarName:
-                type: string
-              calendarColor:
-                type: string
-      responses:
-        '200':
-          description: 성공
-          schema:
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-              color:
-                type: string
-              UserId:
-                type: integer
-        '400':
-          description: 개인 캘린더 조회 결과가 없는 경우
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: 개인 캘린더 조회 결과가 없습니다 입력값을 다시 확인해주세요
-        '402':
-          description: 수정 시도한 유저가 개인 캘린더 주인이 아닐 경우
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
-        '500':
-          $ref: '#/serverError'
-  /api/privateCalendar/editPrivateCalendarColor:
-    post:
-      tags:
-        - privateCalendar
-      summary: 개인 캘린더 수정
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              calendarId:
-                type: integer
-              calendarColor:
-                type: string
-      responses:
-        '200':
-          description: 성공
-          schema:
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-              color:
-                type: string
-              UserId:
-                type: integer
-        '400':
-          description: 개인 캘린더 조회 결과가 없는 경우
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: 개인 캘린더 조회 결과가 없습니다 입력값을 다시 확인해주세요
-        '402':
-          description: 수정 시도한 유저가 개인 캘린더 주인이 아닐 경우
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: 수정 시도하는 유저가 개인 캘린더의 주인이 아닙니다
-        '500':
-          $ref: '#/serverError'
-  /api/privateEvent/getGroupEvent:
-    post:
-      tags:
-        - privateEvent
-      summary: 특정 개인 이벤트의 모든 정보 가져오기
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              eventId:
-                type: integer
-      responses:
-        '200':
-          description: 성공
-          schema:
-            properties:
-              events:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  color:
-                    type: string
-                  priority:
-                    type: string
-                  memo:
-                    type: string
-                  startTime:
-                    type: string
-                  endTime:
-                    type: string
-                  groupEventId:
-                    type: integer
-                  PrivateCalendarId:
-                    type: integer
-                  EventHost:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      email:
-                        type: string
-                      nickname:
-                        type: string
-                  EventMembers:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                        email:
-                          type: string
-                        nickname:
-                          type: string
-                        ProfileImages:
-                          type: object
-                          properties:
-                            src:
-                              type: integer
-                        EventMember:
-                          type: object
-                          properties:
-                            state:
-                              type: integer
-                            UserId:
-                              type: integer
-                            EventId:
-                              type: integer
-              realTimeAlert:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    example: 'minute, hour, day, week / day, week (allDay)'
-                  time:
-                    type: integer
-                    example: 1
-                  hour:
-                    type: integer
-                    example: 1 (allDay)
-                  minute:
-                    type: integer
-                    example: 1 (allDay)
-        '500':
-          $ref: '#/serverError'
-  /api/privateEvent/createPrivateEvent:
-    post:
-      tags:
-        - privateEvent
-      summary: 개인 이벤트 만들기
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              eventId:
-                type: integer
-                example: 1
-              eventName:
-                type: string
-              color:
-                type: integer
-                example: '#0e0e0e'
-              busy:
-                type: integer
-              memo:
-                type: string
-              startTime:
-                type: string
-                example: '2022-06-02T00:00:00'
-              endTime:
-                type: string
-                example: '2022-06-02T00:00:00'
-              allDay:
-                type: integer
-                example: 1
-              alerts:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type:
-                      type: string
-                      example: minute / hour / day / week
-                    time:
-                      type: integer
-      responses:
-        '200':
-          $ref: '#/returnPrivateEvent'
-        '500':
-          $ref: '#/serverError'
-  /api/privateEvent/editPrivateEvent:
-    post:
-      tags:
-        - privateEvent
-      summary: 개인 이벤트 수정
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              eventId:
-                type: integer
-                example: 1
-              eventName:
-                type: string
-              color:
-                type: integer
-                example: '#0e0e0e'
-              busy:
-                type: integer
-              memo:
-                type: string
-              startTime:
-                type: string
-                example: '2022-06-02T00:00:00'
-              endTime:
-                type: string
-                example: '2022-06-02T00:00:00'
-              allDay:
-                type: integer
-                example: 1
-              alerts:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type:
-                      type: string
-                      example: minute / hour / day / week
-                    time:
-                      type: integer
-      responses:
-        '200':
-          $ref: '#/returnPrivateEvent'
-        '400':
-          description: 수정할 개인 이벤트 조회 결과가 없을 경우
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: 수정할 개인이벤트의 조회 결과가 없습니다
-        '500':
-          $ref: '#/serverError'
-  /api/privateEvent/editPrivateEventColor:
-    post:
-      tags:
-        - privateEvent
-      summary: 개인 이벤트 색상 수정
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              eventId:
-                type: integer
-              color:
-                type: string
-      responses:
-        '200':
-          $ref: '#/returnPrivateEvent'
-        '400':
-          description: 수정할 개인 이벤트 조회 결과가 없을 경우
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: 수정할 개인이벤트의 조회 결과가 없습니다
-        '500':
-          $ref: '#/serverError'
-  /api/privateEvent/deletePrivateEvent:
-    post:
-      tags:
-        - privateEvent
-      summary: 개인 이벤트 삭제
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              eventId:
-                type: integer
-      responses:
-        '200':
-          $ref: '#/success'
-        '500':
-          $ref: '#/serverError'
   /api/calendar/getMyCalendars:
     post:
       tags:
@@ -693,18 +331,7 @@ paths:
           description: 성공
           schema:
             properties:
-              privateCalendar:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  color:
-                    type: string
-                  UserId:
-                    type: string
-              groupCalendars:
+              calendars:
                 type: array
                 items:
                   type: object
@@ -781,11 +408,11 @@ paths:
           $ref: '#/returnCalendar'
         '500':
           $ref: '#/serverError'
-  /api/calendar/editGroupCalendar:
+  /api/calendar/editCalendar:
     post:
       tags:
         - calendar
-      summary: 그룹캘린더 수정
+      summary: 그룹캘린더나 개인캘린더 수정
       parameters:
         - name: Authorization
           in: header
@@ -836,20 +463,21 @@ paths:
         '200':
           $ref: '#/success'
         '400':
-          description: 권한을 부여하는 유저가 권한이 3 미만인 경우
+          description: 개인 캘린더를 삭제하려는 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 개인 캘린더는 삭제할 수 없습니다!
+        '402':
+          description: 캘린더를 삭제하려는 유저가 권한이 3 미만인 경우
           schema:
             type: object
             properties:
               message:
                 type: string
                 example: 권한이 없습니다!
-        '402':
-          description: 삭제하려는 캘린더가 존재하지 않는 경우
-          schema:
-            properties:
-              message:
-                type: string
-                example: 삭제하려는 캘린더를 찾을 수 없습니다 입력값을 다시 확인해주세요
         '500':
           $ref: '#/serverError'
   /api/calendar/inviteGroupCalendar:
@@ -908,6 +536,14 @@ paths:
               message:
                 type: string
                 example: 이미 캘린더의 그룹원 입니다!
+        '406':
+          description: 개인 캘린더에 초대하려고 할 경우
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 개인 캘린더에는 초대불가능 합니다!
         '500':
           $ref: '#/serverError'
   /api/calendar/acceptCalendarInvite:
@@ -1010,7 +646,7 @@ paths:
     post:
       tags:
         - calendar
-      summary: 캘린더 탈퇴하기
+      summary: 그룹 캘린더 탈퇴하기
       parameters:
         - name: Authorization
           in: header
@@ -1034,6 +670,14 @@ paths:
               message:
                 type: string
                 example: 존재하지 않는 캘린더 입니다!
+        '402':
+          description: 개인 캘린더를 탈퇴하려 할 때
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 개인 캘린더는 탈퇴 할 수 없습니다!
         '500':
           $ref: '#/serverError'
   /api/calendar/sendOutUser:
@@ -1167,116 +811,6 @@ paths:
         '200':
           description: 성공
           schema:
-            properties:
-              privateEvents:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  color:
-                    type: string
-                  UserId:
-                    type: string
-                  privateEvents:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        color:
-                          type: string
-                        priority:
-                          type: integer
-                        memo:
-                          type: string
-                        startTime:
-                          type: string
-                        endTime:
-                          type: string
-                        groupEventId:
-                          type: integer
-                        state:
-                          type: integer
-                        allDay:
-                          type: boolean
-                        privateCalendarId:
-                          type: integer
-              groupEvents:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-                    color:
-                      type: string
-                    OwnerId:
-                      type: integer
-                    CalendarMember:
-                      type: object
-                      properties:
-                        authority:
-                          type: integer
-                        UserId:
-                          type: integer
-                        CalendarId:
-                          type: integer
-                    GroupEvents:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          name:
-                            type: string
-                          color:
-                            type: string
-                          priority:
-                            type: integer
-                          memo:
-                            type: string
-                          startTime:
-                            type: string
-                          endTime:
-                            type: string
-                          allDay:
-                            type: integer
-                          EventHostId:
-                            type: integer
-                          CalendarId:
-                            type: integer
-        '500':
-          $ref: '#/serverError'
-  /api/event/getAllEventForYear:
-    post:
-      tags:
-        - event
-      summary: '1년 동안의 모든 이벤트 가져오기 (정렬은 하지 않음, 필요한 정렬 순서가 있다면 요청 )'
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              startTime:
-                type: string
-                example: '2022-08-01'
-      responses:
-        '200':
-          description: 성공
-          schema:
             type: array
             items:
               type: object
@@ -1287,31 +821,57 @@ paths:
                   type: string
                 color:
                   type: string
-                memo:
+                private:
+                  type: boolean
+                OwnerId:
                   type: string
-                startTime:
-                  type: string
-                endTime:
-                  type: string
-                allDay:
-                  type: integer
-                busy:
-                  type: integer
-                permission:
-                  type: integer
-                  example: 1 그룹 캘린더 전용
-                EventHostId:
-                  type: integer
-                  example: 1 그룹 캘린더 전용
-                CalendarId:
-                  type: integer
-                  example: 1 그룹 캘린더 전용
-                PrivateCalendarId:
-                  type: integer
-                  example: 1 개인 캘린더 전용
+                Events:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      color:
+                        type: string
+                      permission:
+                        type: integer
+                      memo:
+                        type: string
+                      startTime:
+                        type: string
+                      endTime:
+                        type: string
+                      allDay:
+                        type: boolean
+                      eventHostEmail:
+                        type: string
+                      ChildEvents:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            color:
+                              type: string
+                            permission:
+                              type: integer
+                            memo:
+                              type: string
+                            startTime:
+                              type: string
+                            endTime:
+                              type: string
+                            allDay:
+                              type: boolean
         '500':
           $ref: '#/serverError'
-  /api/event/getGroupEvent:
+  /api/event/getEvent:
     post:
       tags:
         - event
@@ -1397,113 +957,11 @@ paths:
                     example: 1 (allDay)
         '500':
           $ref: '#/serverError'
-  /api/event/getEventByDate:
+  /api/event/inviteCheckBeforeCreate:
     post:
       tags:
         - event
-      summary: 특정 날짜의 이벤트들 모두 가져오기
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-        - name: body
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              startDate:
-                type: string
-                example: '2022-08-20'
-              endDate:
-                type: string
-                example: '2022-08-22'
-      responses:
-        '200':
-          description: 성공
-          schema:
-            properties:
-              privateEvents:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  privateEvents:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        color:
-                          type: string
-                        priority:
-                          type: integer
-                        memo:
-                          type: string
-                        startTime:
-                          type: string
-                        endTime:
-                          type: string
-                        groupEventId:
-                          type: integer
-                        state:
-                          type: integer
-                        allDay:
-                          type: integer
-                          example: 1
-                        privateCalendarId:
-                          type: integer
-              groupEvents:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    CalendarMember:
-                      type: object
-                      properties:
-                        authority:
-                          type: integer
-                        UserId:
-                          type: integer
-                        CalendarId:
-                          type: integer
-                    GroupEvents:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          name:
-                            type: string
-                          color:
-                            type: string
-                          priority:
-                            type: integer
-                          memo:
-                            type: string
-                          startTime:
-                            type: string
-                          endTime:
-                            type: string
-                          allDay:
-                            type: integer
-                          EventHostId:
-                            type: integer
-                          CalendarId:
-                            type: integer
-        '500':
-          $ref: '#/serverError'
-  /api/event/inviteCheckBeforeCreateEvent:
-    post:
-      tags:
-        - event
-      summary: 그룹 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전 inviteCheckBeforeCreateEvent -> createGroupEvent )
+      summary: 이벤트에 초대 가능한지 확인하기 (이벤트 생성 전 inviteCheckBeforeCreateEvent -> createGroupEvent )
       parameters:
         - name: Authorization
           in: header
@@ -1562,11 +1020,11 @@ paths:
                 example: false
         '500':
           $ref: '#/serverError'
-  /api/event/createGroupEvent:
+  /api/event/createEvent:
     post:
       tags:
         - event
-      summary: 그룹 이벤트 생성하기 permission 1 or 2 / busy 0 or 1
+      summary: 이벤트 생성하기 permission 1 or 2 / busy 0 or 1 ( alert지금은 막아놨어요 alert다시 완벽하게 만들어 놓을게요 ㅠ)
       parameters:
         - name: Authorization
           in: header
@@ -1600,7 +1058,6 @@ paths:
                 type: integer
                 example: 1
               alerts:
-                summary: ㅇㅇㅇ
                 type: array
                 items:
                   type: object
@@ -1620,8 +1077,8 @@ paths:
               guests:
                 type: array
                 items:
-                  type: object
-                  example: minwoo@naver.com
+                  type: integer
+                  example: 1
       responses:
         '200':
           $ref: '#/returnEvent'
@@ -1631,14 +1088,24 @@ paths:
             properties:
               message:
                 type: string
-                example: 그룹원의 멤버만 이벤트를 생성할 수 있습니다.
+                example: 캘린더의 멤버만 이벤트를 생성할 수 있습니다.
+        '402':
+          description: 존재하는 유저지만 그룹캘린더에는 초대되지 않은 유저
+          schema:
+            properties:
+              message:
+                type: string
+                example: 그룹 캘린더에 존재하지 않는 유저입니다!
+              canInvite:
+                type: boolean
+                example: false
         '500':
           $ref: '#/serverError'
   /api/event/inviteCheck:
     post:
       tags:
         - event
-      summary: 그룹 이벤트에 초대 가능한지 확인하기 ( 이미 존재하는 이벤트에 초대 체크 inviteCheck -> editGroupEvent )
+      summary: 이벤트에 초대 가능한지 확인하기 ( 이미 존재하는 이벤트에 초대 체크 )
       parameters:
         - name: Authorization
           in: header
@@ -1677,22 +1144,13 @@ paths:
                     properties:
                       src:
                         type: string
-              state:
-                type: integer
-                example: 이미 그룹 이벤트의 멤버인 경우만 보내줌
-              message:
-                type: string
-                example: 초대가 불가능한 경우만 이유가 메세지로 전달
-              canInvite:
-                type: boolean
-                example: true
         '500':
           $ref: '#/serverError'
-  /api/event/editGroupEvent:
+  /api/event/editEvent:
     post:
       tags:
         - event
-      summary: 그룹 이벤트 수정하기 permission 1 or 2 / busy 0 or 1
+      summary: 이벤트 수정하기 permission 1 or 2 / busy 0 or 1
       parameters:
         - name: Authorization
           in: header
@@ -1750,7 +1208,7 @@ paths:
                 type: array
                 items:
                   type: object
-                  example: minwoo@naver.com
+                  example: 1
       responses:
         '200':
           $ref: '#/returnEvent'
@@ -1770,11 +1228,11 @@ paths:
                 example: 수정 권한이 없습니다!
         '500':
           $ref: '#/serverError'
-  /api/event/editGroupEventColor:
+  /api/event/editEventColor:
     post:
       tags:
         - event
-      summary: 그룹 이벤트 색상 변경하기
+      summary: 이벤트 색상 변경하기
       parameters:
         - name: Authorization
           in: header
@@ -1809,11 +1267,11 @@ paths:
                 example: 수정 권한이 없습니다!
         '500':
           $ref: '#/serverError'
-  /api/event/deleteGroupEvent:
+  /api/event/deleteEvent:
     post:
       tags:
         - event
-      summary: 그룹 이벤트 삭제하기
+      summary: 이벤트 삭제하기
       parameters:
         - name: Authorization
           in: header
@@ -1882,11 +1340,11 @@ paths:
                 example: 존재하지 않는 이벤트 입니다!
         '500':
           $ref: '#/serverError'
-  /api/event/searchEvent:
+  /api/event/editChildEvent:
     post:
       tags:
         - event
-      summary: 이벤트 이름으로 검색하기
+      summary: '딸림 이벤트 수정하기 ( 부모이벤트가 수정되거나 삭제되면, 동시에 수정 삭제 )'
       parameters:
         - name: Authorization
           in: header
@@ -1897,30 +1355,58 @@ paths:
           schema:
             type: object
             properties:
-              searchWord:
+              eventId:
+                type: integer
+                example: 1
+              eventName:
                 type: string
+              color:
+                type: integer
+                example: '#0e0e0e'
+              busy:
+                type: integer
+              memo:
+                type: string
+              allDay:
+                type: integer
+                example: 1
+              startTime:
+                type: string
+                example: '2022-06-02T00:00:00'
+              endTime:
+                type: string
+                example: '2022-06-02T00:00:00'
       responses:
         '200':
-          description: 성공
+          $ref: '#/returnChildEvent'
+        '400':
+          description: 존재하지 않는 이벤트 (삭제되었거나 달력이 없어진 경우)
           schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
-                startTime:
-                  type: string
-                endTime:
-                  type: string
-                allDay:
-                  type: boolean
-                CalendarId:
-                  type: integer
-        '500':
-          $ref: '#/serverError'
+            properties:
+              message:
+                type: string
+                example: 존재하지 않는 이벤트 입니다!
+  /api/event/deleteChildEvent:
+    post:
+      tags:
+        - event
+      summary: '딸림 이벤트 삭제하기 ( 부모이벤트가 수정되거나 삭제되면, 동시에 수정 삭제 )'
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              eventId:
+                type: integer
+                example: 1
+      responses:
+        '200':
+          $ref: '#/success'
   /api/alert/getAlerts:
     post:
       tags:
@@ -2041,10 +1527,30 @@ returnEvent:
       allDay:
         type: boolean
         example: true
-      EventHostId:
+      eventHostEmail:
         type: integer
       CalendarId:
         type: integer
+returnChildEvent:
+  description: 성공
+  schema:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      color:
+        type: string
+      permission:
+        type: integer
+      memo:
+        type: string
+      startTime:
+        type: string
+      endTime:
+        type: string
+      allDay:
+        type: boolean
 returnPrivateEvent:
   description: 성공
   schema:

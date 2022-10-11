@@ -1,7 +1,7 @@
 const DataTypes = require("sequelize");
 const { Model } = DataTypes;
 
-module.exports = class PrivateEvent extends Model {
+module.exports = class ChildEvent extends Model {
   static init(sequelize) {
     return super.init(
       {
@@ -27,20 +27,17 @@ module.exports = class PrivateEvent extends Model {
           type: DataTypes.DATE,
           allowNull: false,
         },
-        groupEventId: {
+        allDay: {
           type: DataTypes.INTEGER,
         },
         state: {
           type: DataTypes.INTEGER,
           default: 0,
         },
-        allDay: {
-          type: DataTypes.INTEGER,
-        },
       },
       {
-        modelName: "PrivateEvent",
-        tableName: "PrivateEvents",
+        modelName: "ChildEvent",
+        tableName: "ChildEvents",
         paranoid: true,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -50,6 +47,10 @@ module.exports = class PrivateEvent extends Model {
     );
   }
   static associate(db) {
-    db.PrivateEvent.belongsTo(db.PrivateCalendar);
+    db.ChildEvent.belongsTo(db.Calendar, { as: "privateCalendar" });
+    db.ChildEvent.belongsTo(db.Calendar, { as: "originCalendar" });
+    db.ChildEvent.belongsTo(db.Event, {
+      as: "ParentEvent",
+    });
   }
 };

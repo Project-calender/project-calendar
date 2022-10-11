@@ -1,9 +1,4 @@
 const express = require("express");
-const {
-  addAlert,
-  deleteAlerts,
-  deleteAlertsByEventId,
-} = require("../realTimeAlerts");
 
 const {
   sequelize,
@@ -15,123 +10,120 @@ const {
   PrivateCalendar,
   CalendarMember,
   EventMember,
-  PrivateEvent,
+  ChildEvent,
   RealTimeAlert,
 } = require("../models");
 
 const router = express.Router();
 const { Op } = require("sequelize");
 const { authJWT } = require("../middlewares/auth");
-const { inviteGuests, inviteGuestsWhileEdit } = require("../commons/event");
 
-router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
-  try {
-    //시작 날짜 받고 그날 부터 일년 시작날짜 기준
-    const me = await User.findOne({ where: { id: req.myId } });
+// router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
+//   try {
+//     //시작 날짜 받고 그날 부터 일년 시작날짜 기준
+//     const me = await User.findOne({ where: { id: req.myId } });
 
-    var startDate = new Date(req.body.startTime);
-    var endDate = new Date(startDate);
+//     var startDate = new Date(req.body.startTime);
+//     var endDate = new Date(startDate);
 
-    startDate.setHours(startDate.getHours() - 9);
-    endDate.setHours(endDate.getHours() - 9);
-    endDate.setFullYear(endDate.getFullYear() + 1);
-    endDate.setDate(endDate.getDate() + 1);
+//     startDate.setHours(startDate.getHours() - 9);
+//     endDate.setHours(endDate.getHours() - 9);
+//     endDate.setFullYear(endDate.getFullYear() + 1);
+//     endDate.setDate(endDate.getDate() + 1);
 
-    var events = [];
-    const groupCalendars = await me.getGroupCalendars({
-      attributes: [],
-      include: [
-        {
-          model: Event,
-          as: "GroupEvents",
-          where: {
-            [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lt]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lt]: endDate,
-                  },
-                },
-              },
+//     var events = [];
+//     const groupCalendars = await me.getGroupCalendars({
+//       attributes: [],
+//       include: [
+//         {
+//           model: Event,
+//           as: "GroupEvents",
+//           where: {
+//             [Op.or]: {
+//               [Op.or]: {
+//                 startTime: {
+//                   [Op.and]: {
+//                     [Op.gte]: startDate,
+//                     [Op.lt]: endDate,
+//                   },
+//                 },
+//                 endTime: {
+//                   [Op.and]: {
+//                     [Op.gte]: startDate,
+//                     [Op.lt]: endDate,
+//                   },
+//                 },
+//               },
 
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
-              },
-            },
-          },
-        },
-      ],
-      joinTableAttributes: [],
-    });
+//               [Op.and]: {
+//                 startTime: { [Op.lte]: startDate },
+//                 endTime: { [Op.gte]: endDate },
+//               },
+//             },
+//           },
+//         },
+//       ],
+//       joinTableAttributes: [],
+//     });
 
-    await Promise.all(
-      groupCalendars.map(async (groupCalendar) => {
-        events.push(groupCalendar.GroupEvents);
-      })
-    );
+//     await Promise.all(
+//       groupCalendars.map(async (groupCalendar) => {
+//         events.push(groupCalendar.GroupEvents);
+//       })
+//     );
 
-    const privateEvents = await me.getPrivateCalendar({
-      attributes: [],
-      include: [
-        {
-          model: PrivateEvent,
-          where: {
-            [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lt]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lt]: endDate,
-                  },
-                },
-              },
+//     const privateEvents = await me.getPrivateCalendar({
+//       attributes: [],
+//       include: [
+//         {
+//           model: PrivateEvent,
+//           where: {
+//             [Op.or]: {
+//               [Op.or]: {
+//                 startTime: {
+//                   [Op.and]: {
+//                     [Op.gte]: startDate,
+//                     [Op.lt]: endDate,
+//                   },
+//                 },
+//                 endTime: {
+//                   [Op.and]: {
+//                     [Op.gte]: startDate,
+//                     [Op.lt]: endDate,
+//                   },
+//                 },
+//               },
 
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
-              },
-            },
-          },
-        },
-      ],
-      // order: [[PrivateEvent, "startTime", "ASC"]],
-    });
+//               [Op.and]: {
+//                 startTime: { [Op.lte]: startDate },
+//                 endTime: { [Op.gte]: endDate },
+//               },
+//             },
+//           },
+//         },
+//       ],
+//       // order: [[PrivateEvent, "startTime", "ASC"]],
+//     });
 
-    events = events?.flat();
-    if (privateEvents) {
-      events = events.concat(privateEvents?.PrivateEvents);
-    }
+//     events = events?.flat();
+//     if (privateEvents) {
+//       events = events.concat(privateEvents?.PrivateEvents);
+//     }
 
-    events = events.sort((a, b) => {
-      var a = new Date(a.startTime);
-      var b = new Date(b.startTime);
-      return a - b;
-    });
-    return res.status(200).send(events);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
+//     events = events.sort((a, b) => {
+//       var a = new Date(a.startTime);
+//       var b = new Date(b.startTime);
+//       return a - b;
+//     });
+//     return res.status(200).send(events);
+//   } catch (error) {
+//     console.error(error);
+//     next(error);
+//   }
+// });
 
-// 10월 1일자 이벤트를 만들었는데
 router.post("/getAllEvent", authJWT, async (req, res, next) => {
   try {
-    const me = await User.findOne({ where: { id: req.myId } });
     var startDate = new Date(req.body.startDate);
     var endDate = new Date(req.body.endDate);
 
@@ -139,51 +131,43 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
     endDate.setHours(endDate.getHours() - 9);
     endDate.setDate(endDate.getDate() + 1);
 
-    const privateEvents = await me.getPrivateCalendar({
-      include: [
-        {
-          model: PrivateEvent,
-          where: {
-            [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lt]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lt]: endDate,
-                  },
-                },
-              },
-
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
-              },
-            },
-          },
-          separate: true,
-        },
-      ],
-    });
-
-    const groupCalendars = await CalendarMember.findAll({
+    const calendars = await CalendarMember.findAll({
       where: { UserId: req.myId },
     });
 
-    var groupEvents = [];
+    const myCalendar = await Calendar.findOne({
+      where: {
+        [Op.and]: {
+          private: true,
+          OwnerId: req.myId,
+        },
+      },
+    });
+
+    var Events = [];
     await Promise.all(
-      groupCalendars.map(async (groupCalendar) => {
-        var groupEvent = await Calendar.findAll({
-          where: { id: groupCalendar.CalendarId },
+      calendars.map(async (calendar) => {
+        var event = await Calendar.findAll({
+          where: { id: calendar.CalendarId },
           include: [
             {
               model: Event,
-              as: "GroupEvents",
+              attributes: { exclude: ["CalendarId"] },
+              include: [
+                {
+                  model: ChildEvent,
+                  attributes: {
+                    exclude: [
+                      "privateCalendarId",
+                      "originCalendarId",
+                      "ParentEventId",
+                    ],
+                  },
+                  where: {
+                    privateCalendarId: myCalendar.id,
+                  },
+                },
+              ],
               where: {
                 [Op.and]: {
                   [Op.or]: {
@@ -207,7 +191,7 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
                       endTime: { [Op.gte]: endDate },
                     },
                   },
-                  permission: { [Op.lte]: groupCalendar.authority },
+                  permission: { [Op.lte]: calendar.authority },
                 },
               },
               separate: true,
@@ -215,45 +199,23 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
           ],
         });
 
-        groupEvent.push({ authority: groupCalendar.authority });
-        groupEvents.push(groupEvent);
+        event.push({ authority: calendar.authority });
+        Events.push(event);
       })
     );
 
-    return res
-      .status(200)
-      .send({ privateEvents: privateEvents, groupEvents: groupEvents });
+    return res.status(200).send(Events);
   } catch (error) {
     console.error(error);
     next(error);
   }
 });
 
-router.post("/getGroupEvent", authJWT, async (req, res, next) => {
+router.post("/getEvent", authJWT, async (req, res, next) => {
   try {
     const events = await Event.findOne({
       where: { id: req.body.eventId },
-      attributes: [
-        "id",
-        "name",
-        "color",
-        "allDay",
-        "permission",
-        "busy",
-        "memo",
-        "startTime",
-        "endTime",
-        "eventHostEmail",
-        "CalendarId",
-      ],
       include: [
-        // {
-        //   model: User,
-        //   as: "EventHost",
-        //   attributes: {
-        //     exclude: ["password", "checkedCalendar"],
-        //   },
-        // },
         {
           model: User,
           as: "EventMembers",
@@ -268,130 +230,18 @@ router.post("/getGroupEvent", authJWT, async (req, res, next) => {
       ],
     });
 
-    const realTimeAlert = await RealTimeAlert.findAll({
-      where: {
-        [Op.and]: {
-          UserId: req.myId,
-          EventId: req.body.eventId,
-        },
-      },
-      paranoid: false,
-      attributes:
-        events.allDay === 1
-          ? ["type", "time", "hour", "minute"]
-          : ["type", "time"],
-    });
-    return res
-      .status(200)
-      .send({ event: events, realTimeAlert: realTimeAlert });
+    if (!events) {
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다" });
+    }
+
+    return res.status(200).send(events);
   } catch (error) {
     console.error(error);
     next(error);
   }
 });
 
-router.post("/getEventByDate", authJWT, async (req, res, next) => {
-  try {
-    const me = await User.findOne({ where: { id: req.myId } });
-    var startDate = new Date(req.body.startDate);
-    var endDate = new Date(req.body.endDate);
-    endDate.setDate(endDate.getDate() + 1);
-
-    const privateEvents = await me.getPrivateCalendar({
-      attributes: {
-        exclude: ["name", "color", "UserId"],
-      },
-      include: [
-        {
-          model: PrivateEvent,
-          where: {
-            [Op.or]: {
-              [Op.or]: {
-                startTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
-                },
-                endTime: {
-                  [Op.and]: {
-                    [Op.gte]: startDate,
-                    [Op.lte]: endDate,
-                  },
-                },
-              },
-
-              [Op.and]: {
-                startTime: { [Op.lte]: startDate },
-                endTime: { [Op.gte]: endDate },
-              },
-            },
-          },
-          separate: true,
-        },
-      ],
-    });
-
-    const groupCalendars = await CalendarMember.findAll({
-      where: { UserId: req.myId },
-    });
-
-    var groupEvents = [];
-    await Promise.all(
-      groupCalendars.map(async (groupCalendar) => {
-        var groupEvent = await Calendar.findAll({
-          where: { id: groupCalendar.CalendarId },
-          include: [
-            {
-              model: Event,
-              as: "GroupEvents",
-              where: {
-                [Op.and]: {
-                  [Op.or]: {
-                    [Op.or]: {
-                      startTime: {
-                        [Op.and]: {
-                          [Op.gte]: startDate,
-                          [Op.lte]: endDate,
-                        },
-                      },
-                      endTime: {
-                        [Op.and]: {
-                          [Op.gte]: startDate,
-                          [Op.lte]: endDate,
-                        },
-                      },
-                    },
-
-                    [Op.and]: {
-                      startTime: { [Op.lte]: startDate },
-                      endTime: { [Op.gte]: endDate },
-                    },
-                  },
-
-                  permission: { [Op.lte]: groupCalendar.authority },
-                },
-              },
-            },
-          ],
-        });
-
-        if (groupEvent.length !== 0) {
-          groupEvents.push(groupEvent);
-        }
-      })
-    );
-
-    return res
-      .status(200)
-      .send({ privateEvents: privateEvents, groupEvents: groupEvents });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-router.post("/createGroupEvent", authJWT, async (req, res, next) => {
+router.post("/createEvent", authJWT, async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     const me = await User.findOne({
@@ -399,6 +249,8 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
         id: req.myId,
       },
     });
+
+    // 자신의 캘린더거나, 그룹 캘린더에 속해 있는지 확인
     const isGroupMember = await CalendarMember.findOne({
       where: {
         [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
@@ -408,15 +260,136 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
     if (!isGroupMember) {
       return res
         .status(400)
-        .send({ message: "그룹원의 멤버만 이벤트를 생성할 수 있습니다." });
+        .send({ message: "캘린더의 멤버만 이벤트를 생성할 수 있습니다." });
+    }
+
+    const newEvent = await Event.create(
+      {
+        name: req.body.eventName,
+        color: req.body.color ? req.body.color : null,
+        busy: req.body.busy,
+        permission: req.body.permission ? req.body.permission : 0,
+        memo: req.body.memo,
+        startTime: new Date(req.body.startTime),
+        endTime: new Date(req.body.endTime),
+        allDay: req.body.allDay,
+        eventHostEmail: me.email,
+        CalendarId: req.body.calendarId,
+      },
+      { transaction: t }
+    );
+
+    const isPrivateEvent = await Calendar.findOne({
+      where: {
+        [Op.and]: {
+          id: req.body.calendarId,
+          priavte: 1,
+          OwnerId: req.myId,
+        },
+      },
+    });
+
+    if (isPrivateEvent) {
+      // 개인 이벤트인 경우 자신은 바로 참여
+      await EventMember.create(
+        {
+          UserId: req.myId,
+          EventId: newEvent.id,
+        },
+        {
+          transaction: t,
+        }
+      );
+    }
+
+    if (req.body.guests.length > 0) {
+      await Promise.all(
+        req.body.guests.map(async (guestId) => {
+          await EventMember.create(
+            {
+              UserId: guestId,
+              EventId: newEvent.id,
+            },
+            {
+              transaction: t,
+            }
+          );
+
+          const guestCalendar = await Calendar.findOne({
+            where: {
+              [Op.and]: {
+                private: true,
+                OwnerId: guestId,
+              },
+            },
+          });
+
+          await ChildEvent.create(
+            {
+              name: newEvent.name,
+              color: newEvent.color,
+              busy: newEvent.busy,
+              memo: newEvent.memo,
+              allDay: newEvent.allDay,
+              startTime: newEvent.startTime,
+              endTime: newEvent.endTime,
+              ParentEventId: newEvent.id,
+              privateCalendarId: guestCalendar.id,
+              originCalendarId: newEvent.CalendarId,
+              state: 0,
+            },
+            { transaction: t }
+          );
+
+          if (guestId !== req.myId) {
+            await Alert.create(
+              {
+                UserId: guestId,
+                type: "event",
+                calendarId: req.body.calendarId,
+                eventDate: newEvent.startTime,
+                content: `${newEvent.name} 이벤트에 초대되었습니다!`,
+              },
+              { transaction: t }
+            );
+          }
+        })
+      );
+    }
+    await t.commit();
+    return res.status(200).send(newEvent);
+  } catch (error) {
+    if (t) await t.rollback();
+    console.error(error);
+    next(error);
+  }
+});
+
+router.post("/editEvent", authJWT, async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    const event = await Event.findOne({
+      where: { id: req.body.eventId },
+    });
+
+    if (!event) {
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
+    }
+
+    const hasAuthority = await CalendarMember.findOne({
+      where: {
+        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+      },
+    });
+
+    if (hasAuthority.authority < 2) {
+      return res.status(403).send({ message: "수정 권한이 없습니다!" });
     }
 
     var startTime = new Date(req.body.startTime);
-    // startTime.setHours(startTime.getHours() + 9);
     var endTime = new Date(req.body.endTime);
-    // endTime.setHours(endTime.getHours() + 9);
 
-    const groupEvent = await Event.create(
+    await event.update(
       {
         name: req.body.eventName,
         color: req.body.color ? req.body.color : null,
@@ -426,19 +399,169 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
         startTime: startTime,
         endTime: endTime,
         allDay: req.body.allDay,
-        eventHostEmail: me.email,
         CalendarId: req.body.calendarId,
       },
       { transaction: t }
     );
 
     if (req.body.guests.length > 0) {
-      await inviteGuests(req.body.guests, groupEvent, req.body.calendarId, t);
+      var members = [];
+
+      await EventMember.findAll({
+        where: {
+          EventId: event.eventId,
+        },
+      }).then((membersInfo) => {
+        membersInfo.map((member) => {
+          member.push(member.UserId);
+        });
+      });
+
+      var newMembers = req.body.guests.filter((x) => !members.includes(x));
+      var outMembers = members.filter((x) => !guests.includes(x));
+      var originMembers = members.filter((x) => !outMembers.includes(x));
+
+      // 기존 멤버들은 childEvent를 업데이트 시켜주어야함
+      await Promise.all(
+        originMembers.map(async (originMemberId) => {
+          const guest = await User.findOne({
+            where: { id: originMemberId },
+          });
+
+          if (guest) {
+            const memberCalendar = await Calendar.findOne({
+              where: {
+                [Op.and]: {
+                  private: true,
+                  OwnerId: originMemberId,
+                },
+              },
+            });
+            await ChildEvent.update(
+              {
+                name: req.body.eventName,
+                color: req.body.color ? req.body.color : null,
+                busy: req.body.busy,
+                memo: req.body.memo,
+                startTime: startTime,
+                endTime: endTime,
+                allDay: req.body.allDay,
+                originCalendarId: req.body.calendarId,
+              },
+              {
+                where: {
+                  [Op.and]: {
+                    privateCalendarId: memberCalendar.id,
+                    ParentEventId: event.id,
+                  },
+                },
+              }
+            );
+          }
+        })
+      );
+
+      await Promise.all(
+        newMembers.map(async (newMemberId) => {
+          const guest = await User.findOne({
+            where: { id: newMemberId },
+          });
+
+          if (guest) {
+            const guestCalendar = await Calendar.findOne({
+              where: {
+                [Op.and]: {
+                  private: true,
+                  OwnerId: newMemberId,
+                },
+              },
+            });
+
+            await ChildEvent.create(
+              {
+                name: event.name,
+                color: event.color,
+                busy: event.busy,
+                memo: event.memo,
+                allDay: event.allDay,
+                startTime: event.startTime,
+                endTime: event.endTime,
+                ParentEventId: event.id,
+                privateCalendarId: guestCalendar.id,
+                originCalendarId: event.CalendarId,
+                state: 0,
+              },
+              { transaction: t }
+            );
+
+            if (newMemberId !== req.myId) {
+              await Alert.create(
+                {
+                  UserId: newMemberId,
+                  type: "event",
+                  calendarId: req.body.calendarId,
+                  eventDate: event.startTime,
+                  content: `${event.name} 이벤트에 초대되었습니다!`,
+                },
+                { transaction: t }
+              );
+            }
+          }
+        })
+      );
+
+      await Promise.all(
+        outMembers.map(async (outMemberId) => {
+          const outMember = await User.findOne({
+            where: { id: outMemberId },
+          });
+
+          if (outMember) {
+            await EventMember.destroy({
+              where: {
+                [Op.and]: {
+                  UserId: outMemberId,
+                  EventId: event.id,
+                },
+              },
+              transaction: t,
+              force: true,
+            });
+
+            const guestCalendar = await Calendar.findOne({
+              where: {
+                [Op.and]: {
+                  private: true,
+                  OwnerId: guestId,
+                },
+              },
+            });
+
+            await ChildEvent.destroy({
+              where: {
+                [Op.and]: {
+                  ParentEventId: event.id,
+                  CalendarId: guestCalendar.id,
+                },
+              },
+            });
+
+            await Alert.create(
+              {
+                UserId: outMemberId,
+                type: "event",
+                calendarId: req.body.calendarId,
+                eventDate: event.startTime,
+                content: `${event.name} 이벤트에서 강퇴되셨습니다!`,
+              },
+              { transaction: t }
+            );
+          }
+        })
+      );
     }
-
     await t.commit();
-
-    return res.status(200).send(groupEvent);
+    return res.status(200).send(event);
   } catch (error) {
     if (t) await t.rollback();
     console.error(error);
@@ -446,8 +569,47 @@ router.post("/createGroupEvent", authJWT, async (req, res, next) => {
   }
 });
 
+router.post("/editEventColor", authJWT, async (req, res, next) => {
+  try {
+    const event = await Event.findOne({
+      where: { id: req.body.eventId },
+    });
+
+    if (!event) {
+      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
+    }
+
+    const hasAuthority = await CalendarMember.findOne({
+      where: {
+        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+      },
+    });
+
+    if (hasAuthority.authority < 2) {
+      return res.status(402).send({ message: "수정 권한이 없습니다!" });
+    }
+    await sequelize.transaction(async (t) => {
+      await groupEvent.update(
+        {
+          color: req.body.color ? req.body.color : null,
+        },
+        { transaction: t }
+      );
+    });
+
+    return res.status(200).send(event);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/inviteCheck", authJWT, async (req, res, next) => {
   try {
+    const calendar = await Calendar.findOne({
+      where: { id: req.body.calendarId },
+    });
+
     var guests = [];
     await Promise.all(
       req.body.guests.map(async (guestEmail) => {
@@ -472,50 +634,41 @@ router.post("/inviteCheck", authJWT, async (req, res, next) => {
           });
         }
 
-        const isGroupMember = await CalendarMember.findOne({
-          where: {
-            [Op.and]: { UserId: guest.id, CalendarId: req.body.calendarId },
-          },
-        });
-
-        if (!isGroupMember) {
-          return guests.push({
-            guest: guest,
-            message: "그룹 캘린더에 존재하지 않는 유저입니다!",
-            canInvite: false,
+        // 그룹 캘린더의 이벤트인 경우
+        if (!calendar.private) {
+          const isGroupMember = await CalendarMember.findOne({
+            where: {
+              [Op.and]: { UserId: guest.id, CalendarId: req.body.calendarId },
+            },
           });
+
+          if (!isGroupMember) {
+            return guests.push({
+              guest: guest,
+              message: "그룹 캘린더에 존재하지 않는 유저입니다!",
+              canInvite: false,
+            });
+          }
         }
 
-        const groupEvent = await Event.findOne({
+        const event = await Event.findOne({
           where: { id: req.body.eventId },
         });
 
         const alreadyEventMember = await EventMember.findOne({
           where: {
-            [Op.and]: { UserId: guest.id, EventId: groupEvent.id },
+            [Op.and]: { UserId: guest.id, EventId: event.id },
           },
         });
+
         if (alreadyEventMember) {
           return guests.push({
             guest: guest,
             state: alreadyEventMember.state,
-            message: "이미 그룹 이벤트의 멤버입니다!",
+            message: "이미 이벤트의 멤버입니다!",
             canInvite: true,
           });
         }
-
-        // const alreadyInvite = await EventMember.findOne({
-        //   where: {
-        //     [Op.and]: { UserId: guest.id, EventId: groupEvent.id },
-        //   },
-        // });
-        // if (alreadyInvite) {
-        //   return guests.push({
-        //     guest: guest,
-        //     message: "이미 초대를 보낸 사람입니다!",
-        //     canInvite: false,
-        //   });
-        // }
 
         return guests.push({
           guest: guest,
@@ -531,101 +684,105 @@ router.post("/inviteCheck", authJWT, async (req, res, next) => {
   }
 });
 
-router.post(
-  "/inviteCheckBeforeCreateEvent",
-  authJWT,
-  async (req, res, next) => {
-    try {
-      const guest = await User.findOne({
-        where: { email: req.body.guestEmail },
-        attributes: ["id", "email", "nickname"],
-        include: [
-          {
-            model: ProfileImage,
-            attributes: {
-              exclude: ["id", "UserId"],
-            },
+router.post("/inviteCheckBeforeCreate", authJWT, async (req, res, next) => {
+  try {
+    const guest = await User.findOne({
+      where: { email: req.body.guestEmail },
+      attributes: ["id", "email", "nickname"],
+      include: [
+        {
+          model: ProfileImage,
+          attributes: {
+            exclude: ["id", "UserId"],
           },
-        ],
-      });
+        },
+      ],
+    });
 
-      if (!guest) {
-        return res
-          .status(400)
-          .send({ message: "존재하지 않는 유저입니다!", canInvite: false });
-      }
+    if (!guest) {
+      return res
+        .status(400)
+        .send({ message: "존재하지 않는 유저입니다!", canInvite: false });
+    }
 
+    const calendar = await Calendar.findOne({
+      where: { id: req.body.calendarId },
+    });
+
+    // 그룹 캘린더의 이벤트인 경우
+    if (!calendar.private) {
       const isGroupMember = await CalendarMember.findOne({
         where: {
           [Op.and]: { UserId: guest.id, CalendarId: req.body.calendarId },
         },
       });
       if (!isGroupMember) {
-        return res.status(402).send({
+        return res.status(400).send({
           message: "그룹 캘린더에 존재하지 않는 유저입니다!",
           canInvite: false,
         });
       }
-
-      return res.status(200).send({ guest, canInvite: true });
-    } catch (error) {
-      console.error(error);
-      next(error);
     }
+
+    return res.status(200).send({ guest, canInvite: true });
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
-);
+});
 
 router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
   try {
     const me = await User.findOne({ where: { id: req.myId } });
 
-    const invitedEvent = await Event.findOne({
+    const groupEvent = await Event.findOne({
       where: { id: req.body.eventId },
     });
 
-    if (!invitedEvent) {
+    if (!groupEvent) {
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
-    const changeState = await EventMember.findOne({
-      where: {
-        [Op.and]: {
-          UserId: req.myId,
-          EventId: invitedEvent.id,
-        },
-      },
-    });
-
     await sequelize.transaction(async (t) => {
-      await changeState.update(
+      await EventMember.update(
+        { state: req.body.state },
         {
-          state: req.body.state,
-        },
-        {
+          where: {
+            [Op.and]: {
+              UserId: req.myId,
+              EventId: invitedEvent.id,
+            },
+          },
           transaction: t,
         }
       );
 
-      const privateCalendar = await me.getPrivateCalendar();
-      const copiedPrivateEvent = await PrivateEvent.findOne({
+      const myCalendar = await Calendar.findOne({
         where: {
           [Op.and]: {
-            PrivateCalendarId: privateCalendar.id,
-            groupEventId: req.body.eventId,
+            private: true,
+            OwnerId: req.myId,
           },
         },
       });
-      await copiedPrivateEvent.update(
+
+      await ChildEvent.update(
         {
           state: req.body.state,
         },
         {
+          where: {
+            [Op.and]: {
+              privateCalendarId: myCalendar.id,
+              ParentEventId: req.body.eventId,
+            },
+          },
           transaction: t,
         }
       );
 
       //자기한테까지 알림 가는거 막기
-      const members = await invitedEvent.getEventMembers();
+      const members = await Event.getEventMembers();
       if (req.body.state === 1) {
         await Promise.all(
           members.map(async (member) => {
@@ -634,9 +791,9 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
                 {
                   UserId: member.id,
                   type: "event",
-                  calendarId: invitedEvent.CalendarId,
-                  eventDate: invitedEvent.startTime,
-                  content: `${me.nickname}님이 ${invitedEvent.name}이벤트에 참여했어요!`,
+                  calendarId: groupEvent.CalendarId,
+                  eventDate: groupEvent.startTime,
+                  content: `${me.nickname}님이 ${groupEvent.name}이벤트에 참여했어요!`,
                 },
                 { transaction: t }
               );
@@ -651,9 +808,9 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
                 {
                   UserId: member.id,
                   type: "event",
-                  calendarId: invitedEvent.CalendarId,
-                  eventDate: invitedEvent.startTime,
-                  content: `${me.nickname}님이 ${invitedEvent.name}이벤트에서 탈퇴했어요!!`,
+                  calendarId: groupEvent.CalendarId,
+                  eventDate: groupEvent.startTime,
+                  content: `${me.nickname}님이 ${groupEvent.name}이벤트 참여를 취소했어요!!`,
                 },
                 { transaction: t }
               );
@@ -670,182 +827,83 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
   }
 });
 
-router.post("/editGroupEvent", authJWT, async (req, res, next) => {
-  const t = await sequelize.transaction();
-  try {
-    const groupEvent = await Event.findOne({
-      where: { id: req.body.eventId },
-    });
+router.post("/deleteEvent", authJWT, async (req, res, next) => {
+  const event = await Event.findOne({
+    where: { id: req.body.eventId },
+  });
 
-    if (!groupEvent) {
-      return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
-    }
-
-    const hasAuthority = await CalendarMember.findOne({
-      where: {
-        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
-      },
-    });
-
-    if (hasAuthority.authority < 2) {
-      return res.status(403).send({ message: "수정 권한이 없습니다!" });
-    }
-
-    var startTime = new Date(req.body.startTime);
-    var endTime = new Date(req.body.endTime);
-
-    await groupEvent.update(
-      {
-        name: req.body.eventName,
-        color: req.body.color ? req.body.color : null,
-        busy: req.body.busy,
-        permission: req.body.permission,
-        memo: req.body.memo,
-        startTime: startTime,
-        endTime: endTime,
-        allDay: req.body.allDay,
-        CalendarId: req.body.calendarId,
-      },
-      { transaction: t }
-    );
-
-    await inviteGuestsWhileEdit(
-      req.body.guests,
-      groupEvent,
-      req.body.eventId,
-      req.body.calendarId,
-      t
-    );
-
-    // await deleteAlerts(req.myId, req.body.eventId);
-
-    await PrivateEvent.update(
-      {
-        name: req.body.eventName,
-        color: req.body.color ? req.body.color : null,
-        busy: req.body.busy,
-        permission: req.body.permission,
-        memo: req.body.memo,
-        startTime: startTime,
-        endTime: endTime,
-        allDay: req.body.allDay,
-      },
-      {
-        where: {
-          [Op.and]: {
-            groupEventId: req.body.eventId,
-          },
-        },
-        transaction: t,
-      }
-    );
-
-    await t.commit();
-    return res.status(200).send(groupEvent);
-  } catch (error) {
-    if (t) await t.rollback();
-    console.error(error);
-    next(error);
+  if (!event) {
+    return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
   }
+
+  const hasAuthority = await CalendarMember.findOne({
+    where: {
+      [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+    },
+  });
+
+  if (hasAuthority.authority < 2) {
+    return res.status(403).send({ message: "삭제 권한이 없습니다!" });
+  }
+
+  await sequelize.transaction(async (t) => {
+    await Event.destroy({
+      where: { id: req.body.eventId },
+      force: true,
+      transaction: t,
+    });
+  });
+
+  return res.status(200).send({ success: true });
 });
 
-router.post("/editGroupEventColor", authJWT, async (req, res, next) => {
+router.post("/editChildEvent", authJWT, async (req, res, next) => {
   try {
-    const groupEvent = await Event.findOne({
+    const childEvent = await ChildEvent.findOne({
       where: { id: req.body.eventId },
     });
 
-    if (!groupEvent) {
+    if (!childEvent) {
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
-    const hasAuthority = await CalendarMember.findOne({
-      where: {
-        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
-      },
-    });
-
-    if (hasAuthority.authority < 2) {
-      return res.status(402).send({ message: "수정 권한이 없습니다!" });
-    }
     await sequelize.transaction(async (t) => {
-      //'2022-07-26 07:00:18'
-      await groupEvent.update(
+      await childEvent.update(
         {
-          color: req.body.color ? req.body.color : null,
+          name: req.body.eventName,
+          color: req.body.color,
+          busy: req.body.busy,
+          memo: req.body.memo,
+          allDay: req.body.allDay,
+          startTime: req.body.startTime,
+          endTime: req.body.endTime,
         },
         { transaction: t }
       );
     });
 
-    return res.status(200).send(groupEvent);
+    return res.status(200).send(childEvent);
   } catch (error) {
     console.error(error);
     next(error);
   }
 });
 
-router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
+router.post("/deleteChildEvent", authJWT, async (req, res, next) => {
   try {
-    const me = await User.findOne({ where: { id: req.myId } });
-    const groupEvent = await Event.findOne({
+    const childEvent = await ChildEvent.findOne({
       where: { id: req.body.eventId },
     });
 
-    if (!groupEvent) {
+    if (!childEvent) {
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
 
-    const hasAuthority = await CalendarMember.findOne({
-      where: {
-        [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
-      },
-    });
-
-    if (hasAuthority.authority < 2) {
-      return res.status(400).send({ message: "삭제 권한이 없습니다!" });
-    }
-
     await sequelize.transaction(async (t) => {
-      const gruopEventName = groupEvent.name;
-
-      await deleteAlertsByEventId(req.body.eventId);
-
-      await Event.destroy({
+      await ChildEvent.destroy({
         where: { id: req.body.eventId },
-        force: true,
         transaction: t,
       });
-
-      await deleteAlerts(req.myId, groupEvent.id);
-
-      // const privateCalendar = await me.getPrivateCalendar();
-      await PrivateEvent.destroy({
-        where: {
-          [Op.and]: {
-            groupEventId: req.body.eventId,
-            // PrivateCalendarId: privateCalendar.id,
-          },
-        },
-        force: true,
-        transaction: t,
-      });
-
-      const members = await groupEvent.getEventMembers();
-      await Promise.all(
-        members.map(async (member) => {
-          if (member.id !== req.myId) {
-            await Alert.create(
-              {
-                UserId: member.id,
-                type: "eventRemoved",
-                content: `${gruopEventName} 이벤트가 삭제되었어요!`,
-              },
-              { transaction: t }
-            );
-          }
-        })
-      );
     });
 
     return res.status(200).send({ success: true });
@@ -855,7 +913,6 @@ router.post("/deleteGroupEvent", authJWT, async (req, res, next) => {
   }
 });
 
-// 자신이 참여하지 않은 이벤트도 검색되게하고, 개인 이벤트도 검색되게하기
 router.post("/searchEvent", authJWT, async (req, res, next) => {
   try {
     const searchWord = req.body.searchWord;
@@ -896,37 +953,6 @@ router.post("/searchEvent", authJWT, async (req, res, next) => {
       events = events.concat(privateEvents?.PrivateEvents);
     }
     return res.status(200).send(events);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-router.post("/test2", async (req, res, next) => {
-  try {
-    const now = new Date();
-
-    return res.status(200).send(now);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-router.post("/test", async (req, res, next) => {
-  try {
-    var test = [];
-    await Promise.all(
-      [1, 2, 3].map(async (item) => {
-        if (item === 1) {
-          return test.push(item);
-        }
-
-        console.log(item);
-      })
-    );
-
-    return res.status(200).send(test);
   } catch (error) {
     console.error(error);
     next(error);
