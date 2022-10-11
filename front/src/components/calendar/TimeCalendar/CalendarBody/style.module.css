@@ -7,4 +7,4 @@
 .calendar_axis_line { width: 10px; border-right: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; } 
 
 .calendar_event_container { position: relative; } 
-.calendar_event_list { border:none !important; position: absolute; width: 88%; height: calc(24 * 50px) !important } 
+.calendar_event_container > :first-child { border:none !important; position: absolute; width: 88%; height: calc(24 * 50px) !important } 

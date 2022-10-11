@@ -30,11 +30,9 @@ export function createTimeEventBar(events) {
 
       const eventBar = {
         event,
-        top: calculateEventBarTop({
-          standardDateTime: startDate.time,
-          endDateTime: endDate.time,
-        }),
+        top: calculateEventBarTop(startDate),
         left: calculateEventBarLeft(byDate[key], event),
+        scale: calculateEventBarScale(startDate, endDate),
       };
       byDate[key].push(eventBar);
 
@@ -50,14 +48,12 @@ export function calculateEventBarLeft(eventBars, event) {
   return 0;
 }
 
-export function calculateEventBarTop(dateRange) {
-  let [minDateTime, maxDateTime] = Object.values(dateRange).sort(ASC_NUMBER);
-  if (!minDateTime || !maxDateTime) return [];
-
-  const start = new Moment(new Date(minDateTime));
-  const end = new Moment(new Date(maxDateTime));
-
-  return (end.hour - start.hour) * 60 + end.minute - start.minute;
+export function calculateEventBarTop(startDate) {
+  return startDate.hour * 60 + startDate.minute;
 }
 
-const ASC_NUMBER = (a, b) => a - b;
+export function calculateEventBarScale(startDate, endDate) {
+  return (
+    (endDate.hour - startDate.hour) * 60 + endDate.minute - startDate.minute
+  );
+}

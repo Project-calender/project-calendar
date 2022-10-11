@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './style.module.css';
 import { createTimeEventBar } from '../../../../hooks/useCreateTimeEventBar';
+import NotAllDayEventList from '../NotAllDayEventList';
 
 const Index = ({ dates, events }) => {
   const times = [...Array(24)].map((_, i) => i);
@@ -17,7 +18,8 @@ const Index = ({ dates, events }) => {
       </div>
       {dates.map(date => (
         <div key={date.time} className={styles.calendar_event_container}>
-          <div className={styles.calendar_event_list} />
+          <NotAllDayEventList eventBars={eventBars[date.time]} />
+
           {times.map(i => (
             <div key={i} />
           ))}
@@ -26,6 +28,7 @@ const Index = ({ dates, events }) => {
     </div>
   );
 };
+
 Index.propTypes = {
   dates: PropTypes.array,
   events: PropTypes.array,
