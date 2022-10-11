@@ -147,7 +147,7 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
     var Events = [];
     await Promise.all(
       calendars.map(async (calendar) => {
-        var event = await Calendar.findOne({
+        var event = await Calendar.findAll({
           where: { id: calendar.CalendarId },
           include: [
             {
@@ -199,7 +199,8 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
           ],
         });
 
-        event["authority"] = calendar.authority;
+        event.push({ authority: calendar.authority });
+
         Events.push(event);
       })
     );
