@@ -20,7 +20,7 @@ const Index = () => {
     );
   }, [dispatch, dates]);
 
-  return <TimeCalendar dates={dates} />;
+  return <TimeCalendar dates={dates} unitWeekDay={7} />;
 };
 
 export default Index;

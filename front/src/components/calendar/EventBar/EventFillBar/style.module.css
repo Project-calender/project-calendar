@@ -5,7 +5,7 @@
 .event_container:hover .event_left { filter: brightness(0.9); } 
 .event_container:hover .event_right { filter: brightness(0.9); } 
 
-.event_bar { width: 100%; height: 100%; } 
+.event_bar { width: 100%; height: 100%;  min-width: 0; flex: 1;  } 
 .event_bar_calendar { position: absolute; flex-shrink: 0; z-index: 4; width: 4px !important; height: 100%; border-top-left-radius: 3px; border-bottom-left-radius: 3px; } 
 .event_bar_main { position: relative; width: 100%; height: 100%; display: flex; border-radius: 3px; align-items: center; cursor: pointer; z-index: 3; word-break: break-all; } 
 .event_bar_main > p { width: 90%; font-size: 0.75rem; padding-left: 8px; vertical-align: middle; text-align: left; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; } 
@@ -14,8 +14,8 @@
 .none_left_border { border-top-left-radius : 0px; border-bottom-left-radius : 0px; } 
 .none_right_border { border-top-right-radius : 0px; border-bottom-right-radius : 0px; } 
 
-.event_left { position: relative; border: 11px solid transparent; border-left: 0px; border-right: 9px solid red; left: 0px; z-index: 5; } 
-.event_right { position: absolute; right: -11px !important; top: 0px; border: 11px solid transparent; border-right: 0px; border-left: 9px solid red; right: -5px; z-index: 5; } 
+.event_left { position: relative; border: 0.74rem solid transparent; border-left: 0px; border-right: 9px solid red; left: 0px; z-index: 5; } 
+.event_right { position: absolute; right: -11px !important; top: 0px; border: 0.74rem solid transparent; border-right: 0px; border-left: 9px solid red; right: -5px; z-index: 5; } 
 .event_right_line { border-left-color: white !important; right: -10.5px !important; } 
 .event_right_extra { right: -11px !important; } 
 

@@ -16,8 +16,9 @@ import {
 } from '../../../../../../context/EventModalContext';
 import { calendarByEventIdsSelector } from '../../../../../../store/selectors/calendars';
 import { newEventEmptyBarByTimeSelector } from '../../../../../../store/selectors/newEvent';
+import Moment from '../../../../../../utils/moment';
 
-const Index = ({ date, maxHeight }) => {
+const Index = ({ date, maxHeight, month }) => {
   const { showModal: showEventListModal, hideModal: hideEventListModal } =
     useContext(EventListModalContext);
   const { showModal: showEventDetailModal, hideModal: hideEventDetailModal } =
@@ -72,6 +73,7 @@ const Index = ({ date, maxHeight }) => {
     hideEventDetailModal();
     e.preventDefault();
   }
+
   return (
     <div
       className={styles.event_list}
@@ -91,6 +93,16 @@ const Index = ({ date, maxHeight }) => {
               ? handleSimpleEventOptionModal
               : null
           }
+          left={
+            events[index] &&
+            new Moment(events[index].startTime).resetTime().time <
+              month[0][0].time
+          }
+          right={
+            events[index] &&
+            new Moment(events[index].endTime).resetTime().time >
+              month[month.length - 1][6].time
+          }
         />
       ))}
       {restEvent.length > 0 && (
@@ -103,6 +115,7 @@ const Index = ({ date, maxHeight }) => {
 Index.propTypes = {
   date: PropTypes.object,
   maxHeight: PropTypes.number,
+  month: PropTypes.array,
 };
 
 export default Index;
