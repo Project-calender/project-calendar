@@ -1,10 +1,16 @@
 const DataTypes = require("sequelize");
+
 const { Model } = DataTypes;
 
 module.exports = class ChildEvent extends Model {
   static init(sequelize) {
     return super.init(
       {
+        id: {
+          type: DataTypes.STRING(20),
+          allowNull: false,
+          primaryKey: true,
+        },
         name: {
           type: DataTypes.STRING(30),
           allowNull: false,

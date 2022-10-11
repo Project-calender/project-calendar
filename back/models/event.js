@@ -6,7 +6,7 @@ module.exports = class Event extends Model {
     return super.init(
       {
         name: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.STRING(20),
           allowNull: false,
         },
         color: {
