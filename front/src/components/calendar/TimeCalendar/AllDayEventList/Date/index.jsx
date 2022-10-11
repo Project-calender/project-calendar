@@ -11,7 +11,15 @@ import {
   newEventEmptyBarByTimeSelector,
 } from '../../../../../store/selectors/newEvent';
 
-const Index = ({ dateId, date, events, eventBars, readMore, setReadMore }) => {
+const Index = ({
+  dateId,
+  date,
+  dates,
+  events,
+  eventBars,
+  readMore,
+  setReadMore,
+}) => {
   const newEventBar = useSelector(state =>
     newEventBarByTimeSelector(state, date.time),
   );
@@ -33,6 +41,7 @@ const Index = ({ dateId, date, events, eventBars, readMore, setReadMore }) => {
       {newEventBar && <NewEvent eventBar={newEventBar} />}
       <EventList
         date={date}
+        dates={dates}
         events={events}
         eventBars={eventBars}
         newEventEmptyBar={newEventEmptyBar}
@@ -47,6 +56,8 @@ const Index = ({ dateId, date, events, eventBars, readMore, setReadMore }) => {
 Index.propTypes = {
   dateId: PropTypes.number,
   date: PropTypes.object,
+  dates: PropTypes.array,
+  unitWeekDay: PropTypes.number,
   events: PropTypes.object,
   eventBars: PropTypes.array,
   readMore: PropTypes.bool,

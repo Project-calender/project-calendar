@@ -4,3 +4,14 @@
     position: absolute;
     text-align: left;
 }
+
+.event_list [name="event-right"] {
+    position: relative !important;
+    right: -2px !important;
+}
+
+.event_list [name="event-right-line"] {
+    position: relative !important;
+    right: -1.5px !important;
+}
+

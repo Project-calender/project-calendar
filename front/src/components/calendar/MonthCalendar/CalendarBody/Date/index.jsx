@@ -11,7 +11,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { newEventBarByTimeSelector } from '../../../../../store/selectors/newEvent';
 
-const Index = ({ date }) => {
+const Index = ({ date, month }) => {
   const { moveDayCalendar } = useNavigateDayCalendar();
   const containerDiv = useRef();
   const [maxHeight, setMaxHight] = useState(0);
@@ -41,7 +41,7 @@ const Index = ({ date }) => {
         ref={containerDiv}
       >
         {newEventBar && <NewEvent eventBar={newEventBar} />}
-        <EventList date={date} maxHeight={maxHeight} />
+        <EventList date={date} maxHeight={maxHeight} month={month} />
         <div className={styles.event_list}></div>
       </div>
     </td>
@@ -66,6 +66,7 @@ function isSameDate(date, otherDate) {
 
 Index.propTypes = {
   date: PropTypes.object,
+  month: PropTypes.array,
 };
 
 export default Index;

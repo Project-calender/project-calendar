@@ -23,7 +23,13 @@ const Index = ({
       onClick={clickEventBar}
       onContextMenu={e => onContextMenu(e, event)}
     >
-      {left && <div className={styles.event_left} style={eventBarStyle.left} />}
+      {left && (
+        <div
+          className={styles.event_left}
+          style={eventBarStyle.left}
+          name="event-left"
+        />
+      )}
 
       <div className={styles.event_bar}>
         <div
@@ -47,17 +53,23 @@ const Index = ({
 
       {right && (
         <>
-          <div className={styles.event_right} style={eventBarStyle.right} />
+          <div
+            className={styles.event_right}
+            style={eventBarStyle.right}
+            name="event-right"
+          />
           {(event?.state === EVENT.state.default ||
             event?.state === EVENT.state.refuse) && (
             <>
               <div
                 className={`${styles.event_right} ${styles.event_right_extra}`}
                 style={eventBarStyle.right}
+                name="event-right"
               />
               <div
                 className={`${styles.event_right} ${styles.event_right_line}`}
                 style={eventBarStyle.right}
+                name="event-right-line"
               />
             </>
           )}

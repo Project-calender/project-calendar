@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { classifyEventsByDate } from '../../../../store/events';
 
-const Index = ({ dates, events }) => {
+const Index = ({ dates, events, unitWeekDay }) => {
   const dispatch = useDispatch();
   const {
     handleMouseDown,
@@ -86,7 +86,11 @@ const Index = ({ dates, events }) => {
     handleMouseDown(e);
   }
 
-  const eventBars = classifyEventsByDate(events);
+  const eventBars = classifyEventsByDate(
+    events,
+    unitWeekDay,
+    dates[dates.length - 1],
+  );
   const eventsById = events.reduce((obj, event) => {
     obj[event.id] = event;
     return obj;
@@ -127,6 +131,7 @@ const Index = ({ dates, events }) => {
               <Date
                 dateId={index}
                 date={date}
+                dates={dates}
                 events={eventsById}
                 eventBars={eventBars[date.time] || []}
                 readMore={readMore}
@@ -143,6 +148,7 @@ const Index = ({ dates, events }) => {
 Index.propTypes = {
   dates: PropTypes.array,
   events: PropTypes.array,
+  unitWeekDay: PropTypes.number,
 };
 
 export default Index;

@@ -8,8 +8,9 @@ import {
 } from '../../../../../../../context/EventModalContext';
 import { calendarByEventIdSelector } from '../../../../../../../store/selectors/calendars';
 import EventBar from '../../../../../EventBar';
+import Moment from '../../../../../../../utils/moment';
 
-const Index = ({ eventBar, event }) => {
+const Index = ({ dates, eventBar, event }) => {
   const { showModal: showEventDetailModal, hideModal: hideEventDetailModal } =
     useContext(EventDetailModalContext);
   const {
@@ -38,6 +39,14 @@ const Index = ({ eventBar, event }) => {
 
   return (
     <EventBar
+      left={
+        event && new Moment(event.startTime).resetTime().time < dates[0].time
+      }
+      right={
+        event &&
+        new Moment(event.endTime).resetTime().time >
+          dates[dates.length - 1].time
+      }
       event={event}
       calendar={calendar}
       eventBar={eventBar}
@@ -50,6 +59,7 @@ const Index = ({ eventBar, event }) => {
 };
 
 Index.propTypes = {
+  dates: PropTypes.array,
   eventBar: PropTypes.object,
   event: PropTypes.object,
 };
