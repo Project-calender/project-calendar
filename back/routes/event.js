@@ -152,20 +152,14 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
           include: [
             {
               model: Event,
-              attributes: { exclude: ["CalendarId"] },
+
               include: [
                 {
                   model: ChildEvent,
-                  attributes: {
-                    exclude: [
-                      "privateCalendarId",
-                      "originCalendarId",
-                      "ParentEventId",
-                    ],
-                  },
                   where: {
                     privateCalendarId: myCalendar.id,
                   },
+                  separate: true,
                 },
               ],
               where: {

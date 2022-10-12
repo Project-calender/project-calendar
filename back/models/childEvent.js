@@ -7,7 +7,7 @@ module.exports = class ChildEvent extends Model {
     return super.init(
       {
         id: {
-          type: DataTypes.STRING(20),
+          type: DataTypes.STRING(40),
           allowNull: false,
           primaryKey: true,
         },
