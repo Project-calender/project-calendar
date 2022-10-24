@@ -26,7 +26,6 @@ import EventMemberList from './EventMemberList';
 import EventAttendanceButtons from './EventAttendanceButtons';
 import { deleteEvent } from '../../../store/thunk/event';
 import { EVENT } from '../../../store/events';
-import { eventSelector } from '../../../store/selectors/events';
 import { useNavigate } from 'react-router-dom';
 import { EVENT_PATH } from '../../../constants/path';
 
@@ -38,18 +37,17 @@ const Index = ({ modalData, hideModal, onDeleteEvent = null }) => {
     };
   }
   const { style, event } = modalData || {};
-
   const $modal = useRef();
   const [position, setPosition] = useState();
   const calendar = useSelector(state =>
-    calendarByEventIdSelector(state, event),
+    calendarByEventIdSelector(
+      state,
+      event?.CalendarId || event?.privateCalendarId,
+    ),
   );
 
-  const groupEvent = useSelector(state =>
-    eventSelector(state, event?.groupEventId),
-  );
   const groupCalendar = useSelector(state =>
-    calendarByEventIdSelector(state, groupEvent),
+    calendarByEventIdSelector(state, event?.originCalendarId),
   );
 
   useEffect(() => {
@@ -71,11 +69,11 @@ const Index = ({ modalData, hideModal, onDeleteEvent = null }) => {
     navigate(EVENT_PATH.EDIT_EVENT, {
       state: {
         id: event.id,
-        PrivateCalendarId: event.PrivateCalendarId,
         CalendarId: event.CalendarId,
       },
     });
   }
+
   if (!event) return;
 
   return (

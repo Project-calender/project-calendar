@@ -155,7 +155,7 @@ const Index = ({ children: ModalList }) => {
             : newEvent.eventColor,
         startTime: new Date(newEvent.startTime).toISOString(),
         endTime: new Date(newEvent.endTime).toISOString(),
-        guests: inviteMembers.map(member => member.email),
+        guests: inviteMembers.map(member => member.id),
         alerts: newAlerts,
       }),
     );

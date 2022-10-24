@@ -12,7 +12,7 @@ import { calendarByEventIdSelector } from '../../../store/selectors/calendars';
 const Index = ({ hideModal, modalData }) => {
   const { event } = modalData;
   const calendar = useSelector(state =>
-    calendarByEventIdSelector(state, event),
+    calendarByEventIdSelector(state, event.CalendarId),
   );
 
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const Index = ({ hideModal, modalData }) => {
   function onClickColor(e, color) {
     dispatch(
       updateEventColor({
-        calendarId: event.PrivateCalendarId || event.CalendarId,
+        calendarId: event.CalendarId,
         eventId: event.id,
         color: calendar.color === color ? null : color,
       }),

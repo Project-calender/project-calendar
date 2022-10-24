@@ -45,8 +45,7 @@ const Index = () => {
 
   useEffect(() => {
     const calendarIndex = calendars.findIndex(
-      calendar =>
-        calendar.id === (eventInfo.PrivateCalendarId || eventInfo.CalendarId),
+      calendar => calendar.id === eventInfo.CalendarId,
     );
     if (calendarIndex > -1) {
       setEvent(event => ({ ...event, calendarIndex }));

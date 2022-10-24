@@ -34,7 +34,7 @@ const Index = () => {
   }
   const navigate = useNavigate();
   function clickCalendarSetup() {
-    navigate(CALENDAR_PATH.SETTING, { state: { calendar } });
+    navigate(CALENDAR_PATH.SETUP, { state: { calendar } });
   }
   return (
     <Modal

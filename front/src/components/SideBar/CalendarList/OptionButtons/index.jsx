@@ -40,14 +40,13 @@ const Index = ({ calendar }) => {
     e.stopPropagation();
   }
 
-  const isGroupCalendar = calendar.id > 0;
   return (
     <div
       className={`${styles.calendar_item_icon} ${
         calendar === calendarOptionData.calendar ? styles.show_icon : ''
       }`}
     >
-      {isGroupCalendar && (
+      {!calendar.private && (
         <Tooltip title={'구독 취소'}>
           <FontAwesomeIcon
             icon={faXmark}

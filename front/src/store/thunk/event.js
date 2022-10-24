@@ -10,8 +10,9 @@ export const getAllCalendarAndEvent = createAsyncThunk(
       startDate: new Moment(startTime).toSimpleDateString(),
       endDate: new Moment(endTime).toSimpleDateString(),
     });
-
-    return data?.reduce(
+    const { childEvents, events: calendars } = data;
+    const events = childEvents.map(convertToEventTime);
+    return calendars?.reduce(
       (data, { Events, ...calendar }) => {
         data.calendars.push(calendar);
         data.events.push(...Events.map(convertToEventTime));
@@ -19,7 +20,7 @@ export const getAllCalendarAndEvent = createAsyncThunk(
       },
       {
         calendars: [],
-        events: [],
+        events: events,
       },
     );
   },
@@ -108,7 +109,7 @@ export const updateEventColor = createAsyncThunk(
   async ({ calendarId, eventId, color }) => {
     await axios.post(EVENT_URL.UPDATE_EVENT_COLOR, {
       calendarId,
-      eventId: Math.abs(eventId),
+      eventId,
       color,
     });
 

@@ -1,5 +1,13 @@
 export const BASE_PATH = '/calendar';
 
+export const USER_PATH = {
+  LOGIN: '/login',
+  JOIN: '/join',
+  CHANGE_INFO: '/changeInfo',
+  LOGINSUCCESS: '/loginSuccess',
+  LOGINFINAL: '/loginFinal',
+};
+
 export const CALENDAR_PATH = {
   MAIN: '/',
   DAY: '/day',
@@ -10,15 +18,7 @@ export const CALENDAR_PATH = {
   CUSTOMDAY: '/customday',
   SEARCH: '/search',
   ALERT: '/alert/:page',
-  SETTING: '/setting',
-};
-
-export const USER_PATH = {
-  LOGIN: '/login',
-  JOIN: '/join',
-  CHANGE_INFO: '/changeInfo',
-  LOGINSUCCESS: '/loginSuccess',
-  LOGINFINAL: '/loginFinal',
+  SETUP: '/setup',
 };
 
 export const EVENT_PATH = {
