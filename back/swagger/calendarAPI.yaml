@@ -1,5 +1,5 @@
 /api/calendar/getMyCalendars:
-  post:
+  get:
     tags:
       - calendar
     summary: 내 캘린더들 모두 가져오기
