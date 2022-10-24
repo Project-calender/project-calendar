@@ -195,6 +195,18 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
     });
 
     const childEvent = await ChildEvent.findAll({
+      attributes: [
+        "id",
+        "name",
+        "color",
+        "busy",
+        "memo",
+        "startTime",
+        "endTime",
+        "allDay",
+        "state",
+        ["privateCalendarId", "CalendarId"],
+      ],
       where: {
         [Op.and]: {
           [Op.or]: {
@@ -233,13 +245,31 @@ router.post("/getAllEvent", authJWT, async (req, res, next) => {
 router.post("/getEvent", authJWT, async (req, res, next) => {
   try {
     if (typeof req.body.eventId != "number") {
-      const event = await ChildEvent.findOne({
+      const getChild = await ChildEvent.findOne({
         where: { id: req.body.eventId },
       });
 
-      await EventMember.findAll({
-        where: { EventId: event.ParentEventId },
+      const getParent = await Event.findOne({
+        where: { id: getChild.ParentEventId },
+        include: [
+          {
+            model: User,
+            as: "EventMembers",
+            attributes: ["id", "email", "nickname"],
+            include: [
+              {
+                model: ProfileImage,
+                attributes: ["src"],
+              },
+            ],
+          },
+        ],
       });
+
+      const event = JSON.parse(JSON.stringify(getChild));
+      event.eventHostEmail = getParent.eventHostEmail;
+      event.EventMembers = getParent.EventMembers;
+
       if (!event) {
         return res.status(400).send({ message: "존재하지 않는 이벤트 입니다" });
       }
