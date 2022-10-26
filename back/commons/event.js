@@ -31,6 +31,8 @@ const inviteGuests = async (originEvent, guests, childEvent, myId, t) => {
   var outMembers = members.filter((x) => !guests.includes(x));
   var originMembers = members.filter((x) => !outMembers.includes(x));
 
+  console.log(originMembers);
+  console.log(originEvent.name);
   if (childEvent) {
     await Promise.all(
       newMembers.map(async (newMemberId) => {
