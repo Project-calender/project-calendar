@@ -12,32 +12,44 @@ const { authJWT } = require("../middlewares/auth");
 
 router.get("/getMyCalendars", authJWT, async (req, res, next) => {
   try {
-    const me = await User.findOne({ where: { id: req.myId } });
-
-    const myCalendars = await me.getCalendars({
-      include: [
-        {
-          model: User,
-          as: "Owner",
-          attributes: {
-            exclude: ["password", "checkedCalendar"],
-          },
-          include: [{ model: ProfileImage, attributes: ["src"] }],
-        },
-        {
-          model: User,
-          as: "CalendarMembers",
-          attributes: {
-            exclude: ["password", "checkedCalendar"],
-          },
-          through: { as: "userAuthority", attributes: ["authority"] },
-          include: [{ model: ProfileImage, attributes: ["src"] }],
-        },
-      ],
-      joinTableAttributes: ["authority"],
+    const myCalendars = await CalendarMember.findAll({
+      where: { UserId: req.myId },
     });
+    var calendars = [];
+    await Promise.all(
+      myCalendars.map(async (myCalendar) => {
+        const calendar = await Calendar.findOne({
+          where: { id: myCalendar.CalendarId },
+          include: [
+            {
+              model: User,
+              as: "Owner",
+              attributes: {
+                include: ["password", "checkedCalendar"],
+              },
+              include: [{ model: ProfileImage, attributes: ["src"] }],
+            },
+            {
+              model: User,
+              as: "CalendarMembers",
+              where: { id: { [Op.ne]: myCalendar.OwnerId } },
+              attributes: {
+                exclude: ["password", "checkedCalendar", "snsId", "provider"],
+              },
+              through: { as: "userAuthority", attributes: ["authority"] },
+              include: [{ model: ProfileImage, attributes: ["src"] }],
+              required: false,
+            },
+          ],
+        });
+        const addAuthority = JSON.parse(JSON.stringify(calendar));
+        addAuthority.authority = myCalendar.authority;
 
-    return res.status(200).send(myCalendars);
+        calendars.push(addAuthority);
+      })
+    );
+
+    return res.status(200).send(calendars);
   } catch (error) {
     console.error(error);
     next(error);
