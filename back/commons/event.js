@@ -33,7 +33,6 @@ const inviteGuests = async (originEvent, guests, childEvent, myId, t) => {
   var originMembers = members.filter((x) => !outMembers.includes(x));
 
   if (childEvent) {
-    console.log(newMembers);
     await Promise.all(
       newMembers.map(async (newMemberId) => {
         console.log(newMemberId);
@@ -129,6 +128,7 @@ const inviteGuests = async (originEvent, guests, childEvent, myId, t) => {
                   ParentEventId: originEvent.id,
                 },
               },
+              transaction: t,
             }
           );
         }
@@ -166,7 +166,7 @@ const inviteGuests = async (originEvent, guests, childEvent, myId, t) => {
             {
               id: short.generate(),
               name: originEvent.name,
-              color: originEvent.color,
+              color: originEvent.color ? originEvent.color : null,
               busy: originEvent.busy,
               memo: originEvent.memo,
               allDay: originEvent.allDay,
