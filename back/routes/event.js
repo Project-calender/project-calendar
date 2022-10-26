@@ -493,7 +493,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
       await t.commit();
       return res.status(200).send(childEvent);
     } else {
-      const event = await Event.findOne({
+      var event = await Event.findOne({
         where: { id: req.body.eventId },
       });
 
@@ -513,7 +513,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
         return res.status(403).send({ message: "수정 권한이 없습니다!" });
       }
 
-      const origin = await event.update(
+      const originEvent = await event.update(
         {
           name: req.body.eventName,
           color: req.body.color ? req.body.color : null,
@@ -529,7 +529,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
       );
 
       if (req.body.guests.length > 0) {
-        await inviteGuests(origin, req.body.guests, false, req.myId, t);
+        await inviteGuests(originEvent, req.body.guests, false, req.myId, t);
       }
 
       await t.commit();

@@ -17,7 +17,6 @@ const { Op } = require("sequelize");
 const inviteGuests = async (originEvent, guests, childEvent, myId, t) => {
   var members = [];
 
-  console.log(originEvent);
   await EventMember.findAll({
     where: {
       EventId: originEvent.id,
@@ -32,6 +31,8 @@ const inviteGuests = async (originEvent, guests, childEvent, myId, t) => {
   var outMembers = members.filter((x) => !guests.includes(x));
   var originMembers = members.filter((x) => !outMembers.includes(x));
 
+  console.log(originMembers);
+  console.log(originEvent.name);
   if (childEvent) {
     await Promise.all(
       newMembers.map(async (newMemberId) => {
@@ -112,7 +113,7 @@ const inviteGuests = async (originEvent, guests, childEvent, myId, t) => {
           });
           await ChildEvent.update(
             {
-              name: originEvent.eventName,
+              name: originEvent.name,
               color: originEvent.color ? originEvent.color : null,
               busy: originEvent.busy,
               memo: originEvent.memo,
