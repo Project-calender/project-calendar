@@ -486,9 +486,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
         where: { id: childEvent.ParentEventId },
       });
 
-      if (req.body.guests.length > 0) {
-        await inviteGuests(originEvent, req.body.guests, true, req.myId, t);
-      }
+      await inviteGuests(originEvent, req.body.guests, true, req.myId, t);
 
       await t.commit();
       return res.status(200).send(childEvent);
@@ -528,9 +526,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
         { transaction: t }
       );
 
-      if (req.body.guests.length > 0) {
-        await inviteGuests(originEvent, req.body.guests, false, req.myId, t);
-      }
+      await inviteGuests(originEvent, req.body.guests, false, req.myId, t);
 
       await t.commit();
       return res.status(200).send(event);

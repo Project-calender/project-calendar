@@ -197,6 +197,7 @@ const inviteGuests = async (originEvent, guests, childEvent, myId, t) => {
       })
     );
 
+    console.log(outMembers);
     await Promise.all(
       outMembers.map(async (outMemberId) => {
         const outMember = await User.findOne({
