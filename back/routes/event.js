@@ -751,7 +751,8 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
 router.post("/deleteEvent", authJWT, async (req, res, next) => {
   try {
     var event;
-    if (typeof req.body.eventId != "number") {
+    console.log("1");
+    if (typeof req.body.eventId !== "number") {
       event = await ChildEvent.findOne({
         where: { id: req.body.eventId },
       });
@@ -764,19 +765,19 @@ router.post("/deleteEvent", authJWT, async (req, res, next) => {
     if (!event) {
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
-
+    console.log("2");
     const hasAuthority = await CalendarMember.findOne({
       where: {
         [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
       },
     });
-
+    console.log("3");
     if (hasAuthority.authority < 2) {
       return res.status(403).send({ message: "삭제 권한이 없습니다!" });
     }
-
+    console.log("4");
     await sequelize.transaction(async (t) => {
-      if (typeof req.body.eventId != "number") {
+      if (typeof req.body.eventId !== "number") {
         await ChildEvent.destroy({
           where: { id: req.body.eventId },
           force: true,
@@ -790,7 +791,7 @@ router.post("/deleteEvent", authJWT, async (req, res, next) => {
         });
       }
     });
-
+    console.log("5");
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
