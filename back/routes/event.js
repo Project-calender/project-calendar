@@ -257,6 +257,7 @@ router.post("/getEvent", authJWT, async (req, res, next) => {
           "endTime",
           "allDay",
           "state",
+          "originCalendarId",
           ["privateCalendarId", "CalendarId"],
           "ParentEventId",
         ],
@@ -432,6 +433,144 @@ router.post("/createEvent", authJWT, async (req, res, next) => {
         })
       );
     }
+
+    // if (req.body.alerts.length > 0) {
+    //   if (req.body.allDay === 1) {
+    //     await Promise.all(
+    //       req.body.alerts.map(async (alert) => {
+    //         if (alert.type === "day") {
+    //           const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`;
+    //           const date = new Date(newEvent.startTime);
+    //           date.setDate(date.getDate() - alert.time);
+    //           date.setHours(alert.hour);
+    //           date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
+
+    //           await addAlert(
+    //             req.myId,
+    //             newEvent.id,
+    //             req.body.calendarId,
+    //             req.body.allDay,
+    //             alert.type,
+    //             alert.time,
+    //             alert.hour,
+    //             alert.minute,
+    //             content,
+    //             date,
+    //             t
+    //             // req.app.get("io"),
+    //             // req.app.get("onlineUsers")
+    //           );
+    //         } else if (alert.type === "week") {
+    //           const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
+    //           const date = new Date(req.body.startTime);
+    //           date.setDate(date.getDate() - alert.time * 7);
+    //           date.setHours(alert.hour);
+    //           date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
+
+    //           await addAlert(
+    //             req.myId,
+    //             groupEvent.id,
+    //             req.body.calendarId,
+    //             req.body.allDay,
+    //             alert.type,
+    //             alert.time,
+    //             alert.hour,
+    //             alert.minute,
+    //             content,
+    //             date,
+    //             req.myId,
+    //             req.app.get("io"),
+    //             req.app.get("onlineUsers")
+    //           );
+    //         }
+    //       })
+    //     );
+    //   } else {
+    //     await Promise.all(
+    //       req.body.alerts.map(async (alert) => {
+    //         if (alert.type === "minute") {
+    //           const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
+    //           const date = new Date(req.body.startTime);
+    //           date.setMinutes(date.getMinutes() - parseInt(alert.time));
+    //           await addAlert(
+    //             req.myId,
+    //             groupEvent.id,
+    //             req.body.calendarId,
+    //             req.body.allDay,
+    //             alert.type,
+    //             alert.time,
+    //             null,
+    //             null,
+    //             content,
+    //             date,
+    //             req.myId,
+    //             req.app.get("io"),
+    //             req.app.get("onlineUsers")
+    //           );
+    //         } else if (alert.type === "hour") {
+    //           const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
+    //           const date = new Date(req.body.startTime);
+
+    //           date.setHours(date.getHours() - parseInt(alert.time));
+    //           await addAlert(
+    //             req.myId,
+    //             groupEvent.id,
+    //             req.body.calendarId,
+    //             req.body.allDay,
+    //             alert.type,
+    //             alert.time,
+    //             null,
+    //             null,
+    //             content,
+    //             date,
+    //             req.myId,
+    //             req.app.get("io"),
+    //             req.app.get("onlineUsers")
+    //           );
+    //         } else if (alert.type === "day") {
+    //           const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
+    //           const date = new Date(req.body.startTime);
+    //           date.setDate(date.getDate() - parseInt(alert.time));
+    //           await addAlert(
+    //             req.myId,
+    //             groupEvent.id,
+    //             req.body.calendarId,
+    //             req.body.allDay,
+    //             alert.type,
+    //             alert.time,
+    //             null,
+    //             null,
+    //             content,
+    //             date,
+    //             req.myId,
+    //             req.app.get("io"),
+    //             req.app.get("onlineUsers")
+    //           );
+    //         } else if (alert.type === "week") {
+    //           const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
+    //           const date = new Date(req.body.startTime);
+    //           date.setDate(date.getDate() - parseInt(alert.time) * 7);
+    //           await addAlert(
+    //             req.myId,
+    //             groupEvent.id,
+    //             req.body.calendarId,
+    //             req.body.allDay,
+    //             alert.type,
+    //             alert.time,
+    //             null,
+    //             null,
+    //             content,
+    //             date,
+    //             req.myId,
+    //             req.app.get("io"),
+    //             req.app.get("onlineUsers")
+    //           );
+    //         }
+    //       })
+    //     );
+    //   }
+    // }
+
     await t.commit();
     return res.status(200).send(newEvent);
   } catch (error) {
@@ -751,7 +890,6 @@ router.post("/changeEventInviteState", authJWT, async (req, res, next) => {
 router.post("/deleteEvent", authJWT, async (req, res, next) => {
   try {
     var event;
-    console.log("1");
     if (typeof req.body.eventId !== "number") {
       event = await ChildEvent.findOne({
         where: { id: req.body.eventId },
@@ -765,17 +903,17 @@ router.post("/deleteEvent", authJWT, async (req, res, next) => {
     if (!event) {
       return res.status(400).send({ message: "존재하지 않는 이벤트 입니다!" });
     }
-    console.log("2");
+
     const hasAuthority = await CalendarMember.findOne({
       where: {
         [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
       },
     });
-    console.log("3");
+
     if (hasAuthority.authority < 2) {
       return res.status(403).send({ message: "삭제 권한이 없습니다!" });
     }
-    console.log("4");
+
     await sequelize.transaction(async (t) => {
       if (typeof req.body.eventId !== "number") {
         await ChildEvent.destroy({
@@ -791,7 +929,6 @@ router.post("/deleteEvent", authJWT, async (req, res, next) => {
         });
       }
     });
-    console.log("5");
     return res.status(200).send({ success: true });
   } catch (error) {
     console.error(error);
@@ -854,6 +991,39 @@ router.post("/searchEvent", authJWT, async (req, res, next) => {
     //   return a - b;
     // });
     return res.status(200).send(Events);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+const cron = require("node-cron");
+
+async function test() {
+  cron.schedule("50 * * * * *", function () {
+    try {
+      console.log("node-cron 실행됨");
+      throw new Error("error on schedule!");
+    } catch (error) {
+      console.error(error);
+    }
+  });
+}
+
+router.get("/test", async (req, res, next) => {
+  try {
+    await test();
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.get("/test2", async (req, res, next) => {
+  try {
+    cron.schedule("0-59 * * * * *", function () {
+      console.log("node-cron 실행됨");
+    });
   } catch (error) {
     console.error(error);
     next(error);

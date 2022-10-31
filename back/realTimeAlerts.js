@@ -3,86 +3,58 @@ const { RealTimeAlert, sequelize } = require("./models");
 const { Op } = require("sequelize");
 
 let alertsObject = {};
-// const restartAll = async () => {
-//   await RealTimeAlert.findAll({
-//     where: {
-//       deletedAt: null,
-//     },
-//   }).then(async (realTimeAlerts) => {
-//     await Promise.all(
-//       realTimeAlerts.map(async (realTimeAlert) => {
-//         var now = new Date();
-//         if (now < realTimeAlert.date) {
-//           alertsObject[realTimeAlert.id] = new CronJob(
-//             realTimeAlert.date,
-//             async function () {
-//               await RealTimeAlert.destroy({
-//                 where: { id: realTimeAlert.id },
-//               });
-//             },
-//             null,
-//             true
-//           );
-//         }
-//       })
-//     );
-//   });
-// };
 
 const addAlert = async (
-  userId,
-  eventId,
-  calendarId,
-  allDay,
+  myId, // 내 아이디
+  eventId, // 이벤트 아이디
+  calendarId, // 캘린더 아이디
+  allDay, // 종일 이벤트인지 T/F
   type,
   time,
   hour,
   minute,
-  content,
-  date,
-  myId,
-  socket,
-  onlineUsers
+  content, // 알림 내용
+  date, // 알림 받을 정확한 시간
+  t // transaction
+  // socket,
+  // onlineUsers
 ) => {
-  await sequelize.transaction(async (t) => {
-    await RealTimeAlert.create(
-      {
-        UserId: userId,
-        EventId: eventId,
-        CalendarId: calendarId,
-        allDay: allDay,
-        type: type,
-        time: time,
-        hour: hour,
-        minute: minute,
-        content: content,
-        date: date,
-      },
-      { transaction: t }
-    ).then((newAlert) => {
-      const now = new Date();
+  await RealTimeAlert.create(
+    {
+      UserId: userId,
+      EventId: eventId,
+      CalendarId: calendarId,
+      allDay: allDay,
+      type: type,
+      time: time,
+      hour: hour,
+      minute: minute,
+      content: content,
+      date: date,
+    },
+    { transaction: t }
+  ).then((newAlert) => {
+    const now = new Date();
+    if (now < date) {
+      alertsObject[newAlert.id] = new CronJob(
+        date,
+        async function () {
+          var socketId = Object.keys(onlineUsers).find(
+            (key) => onlineUsers[key] === myId
+          );
 
-      if (now < date) {
-        alertsObject[newAlert.id] = new CronJob(
-          date,
-          async function () {
-            var socketId = Object.keys(onlineUsers).find(
-              (key) => onlineUsers[key] === myId
-            );
+          if (socketId) {
+            socket.to(socketId).emit("alertTest", { alert: content });
+          }
 
-            if (socketId) {
-              socket.to(socketId).emit("alertTest", { alert: content });
-            }
-
-            await RealTimeAlert.destroy({
-              where: { id: newAlert.id },
-            });
-          },
-          null,
-          true
-        );
-      }
-    });
+          await RealTimeAlert.destroy({
+            where: { id: newAlert.id },
+          });
+        },
+        null,
+        true
+      );
+    }
   });
 };
 
