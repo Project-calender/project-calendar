@@ -54,12 +54,13 @@ module.exports = class Event extends Model {
       as: "EventMembers",
     });
 
+    db.Event.belongsTo(db.User, { as: "Host" });
     db.Event.belongsTo(db.Calendar);
-
     db.Event.hasMany(db.ChildEvent, {
       onDelete: "CASCADE",
       foreignKey: "ParentEventId",
     });
+
     db.Event.hasMany(db.RealTimeAlert, { onDelete: "CASCADE" });
   }
 };

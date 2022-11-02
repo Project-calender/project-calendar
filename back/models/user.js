@@ -46,6 +46,7 @@ module.exports = class User extends Model {
       as: "GroupCalendars",
     });
     db.User.hasMany(db.Calendar, { foreignKey: "OwnerId" });
+    db.User.hasMany(db.Event, { foreignKey: "HostId" });
 
     //Event
     db.User.belongsToMany(db.Event, {

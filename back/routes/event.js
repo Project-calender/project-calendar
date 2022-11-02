@@ -310,6 +310,17 @@ router.post("/getEvent", authJWT, async (req, res, next) => {
             ],
           },
           {
+            model: User,
+            as: "Host",
+            attributes: ["id", "email", "nickname"],
+            include: [
+              {
+                model: ProfileImage,
+                attributes: ["src"],
+              },
+            ],
+          },
+          {
             model: RealTimeAlert,
           },
         ],
@@ -360,6 +371,7 @@ router.post("/createEvent", authJWT, async (req, res, next) => {
         allDay: req.body.allDay,
         eventHostEmail: me.email,
         CalendarId: req.body.calendarId,
+        HostId: req.myId,
       },
       { transaction: t }
     );
