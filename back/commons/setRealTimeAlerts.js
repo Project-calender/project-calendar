@@ -1,135 +1,140 @@
-if (req.body.alerts.length > 0) {
-  if (req.body.allDay === 1) {
-    await Promise.all(
-      req.body.alerts.map(async (alert) => {
-        if (alert.type === "day") {
-          const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`;
-          const date = new Date(req.body.startTime);
-          date.setDate(date.getDate() - alert.time);
-          date.setHours(alert.hour);
-          date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
-          await addAlert(
-            req.myId,
-            groupEvent.id,
-            req.body.calendarId,
-            req.body.allDay,
-            alert.type,
-            alert.time,
-            alert.hour,
-            alert.minute,
-            content,
-            date,
-            req.myId,
-            req.app.get("io"),
-            req.app.get("onlineUsers")
-          );
-        } else if (alert.type === "week") {
-          const content = `${req.body.eventName}시작 ${alert.time}주 전 입니다`;
-          const date = new Date(req.body.startTime);
-          date.setDate(date.getDate() - alert.time * 7);
-          date.setHours(alert.hour);
-          date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
+var CronJob = require("cron").CronJob;
+const { RealTimeAlert, sequelize } = require("../models");
+const { Op } = require("sequelize");
 
-          await addAlert(
-            req.myId,
-            groupEvent.id,
-            req.body.calendarId,
-            req.body.allDay,
-            alert.type,
-            alert.time,
-            alert.hour,
-            alert.minute,
-            content,
-            date,
-            req.myId,
-            req.app.get("io"),
-            req.app.get("onlineUsers")
-          );
-        }
-      })
-    );
-  } else {
-    await Promise.all(
-      req.body.alerts.map(async (alert) => {
-        if (alert.type === "minute") {
-          const content = `${req.body.eventName}시작 ${alert.time}분 전입니다!`;
-          const date = new Date(req.body.startTime);
-          date.setMinutes(date.getMinutes() - parseInt(alert.time));
-          await addAlert(
-            req.myId,
-            groupEvent.id,
-            req.body.calendarId,
-            req.body.allDay,
-            alert.type,
-            alert.time,
-            null,
-            null,
-            content,
-            date,
-            req.myId,
-            req.app.get("io"),
-            req.app.get("onlineUsers")
-          );
-        } else if (alert.type === "hour") {
-          const content = `${req.body.eventName}시작 ${alert.time}시간 전입니다!`;
-          const date = new Date(req.body.startTime);
+const addAlert = async (
+  myId, // 내 아이디
+  eventId, // 이벤트 아이디
+  calendarId, // 캘린더 아이디
+  allDay, // 종일 이벤트인지 T/F
+  type,
+  time,
+  hour,
+  minute,
+  content, // 알림 내용
+  date, // 알림 받을 정확한 시간
+  t, // transaction
+  socket,
+  onlineUsers
+) => {
+  await RealTimeAlert.create(
+    {
+      UserId: myId,
+      EventId: eventId,
+      CalendarId: calendarId,
+      allDay: allDay,
+      type: type,
+      time: time,
+      hour: hour,
+      minute: minute,
+      content: content,
+      date: date,
+    },
+    { transaction: t }
+  );
 
-          date.setHours(date.getHours() - parseInt(alert.time));
-          await addAlert(
-            req.myId,
-            groupEvent.id,
-            req.body.calendarId,
-            req.body.allDay,
-            alert.type,
-            alert.time,
-            null,
-            null,
-            content,
-            date,
-            req.myId,
-            req.app.get("io"),
-            req.app.get("onlineUsers")
+  if (new Date() < date) {
+    new CronJob(
+      date,
+      () => {
+        try {
+          var socketId = Object.keys(onlineUsers).find(
+            (key) => onlineUsers[key] === myId
           );
-        } else if (alert.type === "day") {
-          const content = `${req.body.eventName}시작 ${alert.time}일 전입니다!`;
-          const date = new Date(req.body.startTime);
-          date.setDate(date.getDate() - parseInt(alert.time));
-          await addAlert(
-            req.myId,
-            groupEvent.id,
-            req.body.calendarId,
-            req.body.allDay,
-            alert.type,
-            alert.time,
-            null,
-            null,
-            content,
-            date,
-            req.myId,
-            req.app.get("io"),
-            req.app.get("onlineUsers")
-          );
-        } else if (alert.type === "week") {
-          const content = `${req.body.eventName}시작 ${alert.time}주 전입니다!`;
-          const date = new Date(req.body.startTime);
-          date.setDate(date.getDate() - parseInt(alert.time) * 7);
-          await addAlert(
-            req.myId,
-            groupEvent.id,
-            req.body.calendarId,
-            req.body.allDay,
-            alert.type,
-            alert.time,
-            null,
-            null,
-            content,
-            date,
-            req.myId,
-            req.app.get("io"),
-            req.app.get("onlineUsers")
-          );
+          if (socketId) {
+            socket.to(socketId).emit("alertTest", { alert: content });
+          }
+        } catch (error) {
+          console.error(error);
         }
-      })
+      },
+      null,
+      true
     );
   }
-}
+};
+
+const addChildAlert = async (
+  myId, // 내 아이디
+  eventId, // 이벤트 아이디
+  calendarId, // 캘린더 아이디
+  allDay, // 종일 이벤트인지 T/F
+  type,
+  time,
+  hour,
+  minute,
+  content, // 알림 내용
+  date, // 알림 받을 정확한 시간
+  t, // transaction
+  socket,
+  onlineUsers
+) => {
+  await RealTimeAlert.create(
+    {
+      UserId: myId,
+      ChildEventId: eventId,
+      CalendarId: calendarId,
+      allDay: allDay,
+      type: type,
+      time: time,
+      hour: hour,
+      minute: minute,
+      content: content,
+      date: date,
+    },
+    { transaction: t }
+  );
+
+  if (new Date() < date) {
+    new CronJob(
+      date,
+      () => {
+        try {
+          var socketId = Object.keys(onlineUsers).find(
+            (key) => onlineUsers[key] === myId
+          );
+          if (socketId) {
+            socket.to(socketId).emit("alertTest", { alert: content });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      null,
+      true
+    );
+  }
+};
+
+const deleteAlerts = async (userId, eventId, t) => {
+  await RealTimeAlert.destroy({
+    where: {
+      [Op.and]: {
+        UserId: userId,
+        EventId: eventId,
+      },
+    },
+    force: true,
+    transaction: t,
+  });
+};
+
+const deleteChildAlerts = async (userId, eventId, t) => {
+  await RealTimeAlert.destroy({
+    where: {
+      [Op.and]: {
+        UserId: userId,
+        ChildEventId: eventId,
+      },
+    },
+    force: true,
+    transaction: t,
+  });
+};
+
+module.exports = {
+  addAlert,
+  addChildAlert,
+  deleteAlerts,
+  deleteChildAlerts,
+};
