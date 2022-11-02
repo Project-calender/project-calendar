@@ -41,5 +41,6 @@ module.exports = class RealTimeAlert extends Model {
   static associate(db) {
     db.RealTimeAlert.belongsTo(db.User);
     db.RealTimeAlert.belongsTo(db.Event);
+    db.RealTimeAlert.belongsTo(db.ChildEvent);
   }
 };
