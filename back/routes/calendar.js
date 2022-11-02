@@ -295,9 +295,9 @@ router.post("/resignCalendar", authJWT, async (req, res, next) => {
             privateCalendarId: myCalendar.id,
             originCalendarId: req.body.calendarId,
           },
-          transaction: t,
-          force: true,
         },
+        transaction: t,
+        force: true,
       });
     });
 
