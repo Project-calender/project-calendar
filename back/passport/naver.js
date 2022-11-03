@@ -6,7 +6,7 @@ const {
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { redisClient } = require("../redis");
-const { sequelize, User } = require("../models");
+const { sequelize, User, CalendarMember } = require("../models");
 dotenv.config();
 
 module.exports = () => {

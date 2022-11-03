@@ -3,7 +3,7 @@ const KakaoStrategy = require("passport-kakao").Strategy;
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { redisClient } = require("../redis");
-const { sequelize, User } = require("../models");
+const { sequelize, User, CalendarMember } = require("../models");
 const axios = require("axios");
 dotenv.config();
 
