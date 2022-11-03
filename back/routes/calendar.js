@@ -32,7 +32,11 @@ router.get("/getMyCalendars", authJWT, async (req, res, next) => {
             {
               model: User,
               as: "CalendarMembers",
-              where: { id: { [Op.ne]: myCalendar.OwnerId } },
+              where: {
+                id: {
+                  [Op.ne]: sequelize.literal("Calendar.OwnerId"),
+                },
+              },
               attributes: {
                 exclude: ["password", "checkedCalendar", "snsId", "provider"],
               },

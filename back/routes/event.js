@@ -283,12 +283,24 @@ router.post("/getEvent", authJWT, async (req, res, next) => {
               },
             ],
           },
+          {
+            model: User,
+            as: "Host",
+            attributes: ["id", "email", "nickname"],
+            include: [
+              {
+                model: ProfileImage,
+                attributes: ["src"],
+              },
+            ],
+          },
         ],
       });
 
       const event = JSON.parse(JSON.stringify(getChild));
       event.eventHostEmail = getParent.eventHostEmail;
       event.EventMembers = getParent.EventMembers;
+      event.Host = getParent.Host;
 
       if (!event) {
         return res.status(400).send({ message: "존재하지 않는 이벤트 입니다" });
