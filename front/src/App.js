@@ -38,9 +38,9 @@ function App() {
           />
           <Route path={CALENDAR_PATH.SEARCH} element={<SearchEventPage />} />
           <Route path={CALENDAR_PATH.ALERT} element={<AlertPage />} />
-          <Route path={CALENDAR_PATH.SETUP} element={<CalendarSetupPage />} />
-          <Route path={EVENT_PATH.EDIT_EVENT} element={<EditEventPage />} />
         </Route>
+        <Route path={CALENDAR_PATH.SETUP} element={<CalendarSetupPage />} />
+        <Route path={EVENT_PATH.EDIT_EVENT} element={<EditEventPage />} />
         <Route path={USER_PATH.LOGIN} element={<Login />} />
         <Route path={USER_PATH.LOGINSUCCESS} element={<LoginSuccess />} />
         <Route path={USER_PATH.JOIN} element={<Join />} />

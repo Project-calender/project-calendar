@@ -100,7 +100,7 @@ const Index = () => {
   }
 
   function isManager(calendar) {
-    return calendar.CalendarMember.authority === 3;
+    return calendar.authority === 3;
   }
 
   return (

@@ -16,7 +16,7 @@ export const CALENDAR_URL = {
   GET_ALL_CALENDAR: '/calendar/getMyCalendars',
   CREATE_CALENDAR: '/calendar/createGroupCalendar',
   UPDATE_CALENDAR: '/calendar/editCalendar',
-  DELETE_CALENDAR: '/calendar/deleteGroupCalendar',
+  DELETE_CALENDAR: '/calendar/deleteCalendar',
   INVITE_CALENDAR: '/calendar/inviteGroupCalendar',
   ACCEPT_CALENDAR_INVITE: '/calendar/acceptCalendarInvite',
   REJECT_CALENDAR_INVITE: '/calendar/rejectCalendarInvite',

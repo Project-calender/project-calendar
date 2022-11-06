@@ -61,7 +61,7 @@ export const updateEvent = createAsyncThunk(
   EVENT_URL.UPDATE_EVENT,
   async event => {
     const { data } = await axios.post(EVENT_URL.UPDATE_EVENT, {
-      eventId: event.eventId,
+      eventId: event.id,
       calendarId: event.calendarId,
       eventName: event.name,
       color: event.color,
@@ -86,7 +86,7 @@ export const deleteEvent = createAsyncThunk(
   EVENT_URL.DELETE_EVENT,
   async event => {
     await axios.post(EVENT_URL.DELETE_EVENT, {
-      eventId: event.Id,
+      eventId: event.id,
       calendarId: event.CalendarId,
     });
     return event.id;
@@ -97,7 +97,7 @@ export const updateEventInviteState = createAsyncThunk(
   EVENT_URL.UPDATE_EVENT_INVITE_STATE,
   async ({ event, state }) => {
     await axios.post(EVENT_URL.UPDATE_EVENT_INVITE_STATE, {
-      eventId: event.groupEventId,
+      eventId: event.id,
       state,
     });
     return { id: event.id, state };
@@ -121,13 +121,18 @@ export const getEventDetail = async event => {
   const { data } = await axios.post(EVENT_URL.GET_EVENT_DETAIL, {
     eventId: event.id,
   });
-  const { realTimeAlert, ...events } = data;
+
+  const { RealTimeAlerts, ...events } = data;
 
   const alerts =
-    realTimeAlert?.map(alert => {
+    RealTimeAlerts?.map(alert => {
       const types = { week: '주', day: '일', hour: '시간', minute: '분' };
       return { ...alert, type: types[alert.type] };
     }) || [];
+  events.EventMembers = events.EventMembers.map(member => ({
+    ...member,
+    state: member.EventMember.state,
+  }));
 
   return { ...events, alerts };
 };

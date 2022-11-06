@@ -40,10 +40,7 @@ const Index = ({ modalData, hideModal, onDeleteEvent = null }) => {
   const $modal = useRef();
   const [position, setPosition] = useState();
   const calendar = useSelector(state =>
-    calendarByEventIdSelector(
-      state,
-      event?.CalendarId || event?.privateCalendarId,
-    ),
+    calendarByEventIdSelector(state, event?.CalendarId),
   );
 
   const groupCalendar = useSelector(state =>
@@ -127,7 +124,6 @@ const Index = ({ modalData, hideModal, onDeleteEvent = null }) => {
               {event.repeat && <p>매년</p>}
             </div>
           </div>
-
           {event.location && (
             <div>
               <FontAwesomeIcon icon={faLocationDot} />
@@ -138,9 +134,12 @@ const Index = ({ modalData, hideModal, onDeleteEvent = null }) => {
             </div>
           )}
           {event.EventMembers && (
-            <EventMemberList eventMembers={event.EventMembers} />
+            <EventMemberList
+              isPrivateCalendar={!groupCalendar && calendar.private}
+              eventHost={event.Host}
+              eventMembers={event.EventMembers}
+            />
           )}
-
           {event.memo && (
             <div>
               <FontAwesomeIcon icon={faBarsStaggered} />
@@ -164,17 +163,17 @@ const Index = ({ modalData, hideModal, onDeleteEvent = null }) => {
               </div>
             </div>
           )}
-
           <div>
             <FontAwesomeIcon icon={faCalendarDay} />
             <div>
-              <h3>{groupCalendar?.name || calendar.name}</h3>
-              {event.eventHostEmail && (
-                <p>만든 사용자: {event.eventHostEmail}</p>
-              )}
+              <h3>
+                {calendar.private && Number.isInteger(event.state)
+                  ? event.eventHostEmail
+                  : groupCalendar?.name || calendar.name}
+              </h3>
+              {!calendar.private && <p>만든 사용자: {event.eventHostEmail}</p>}
             </div>
           </div>
-
           <div>
             <FontAwesomeIcon icon={faBriefcase} />
             <div>

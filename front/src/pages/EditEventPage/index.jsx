@@ -42,7 +42,6 @@ const Index = () => {
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
-
   useEffect(() => {
     const calendarIndex = calendars.findIndex(
       calendar => calendar.id === eventInfo.CalendarId,
