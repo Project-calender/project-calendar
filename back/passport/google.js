@@ -3,8 +3,11 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { redisClient } = require("../redis");
-const { sequelize, User } = require("../models");
+const { sequelize, User, CalendarMember, ProfileImage } = require("../models");
 dotenv.config();
+
+const BASIC_IMG_SRC =
+  "https://baeminback.s3.ap-northeast-2.amazonaws.com/basicProfile.png";
 
 module.exports = () => {
   passport.use(
@@ -18,7 +21,16 @@ module.exports = () => {
         try {
           const exUser = await User.findOne({
             where: { snsId: profile.id, provider: "google" },
+            include: [
+              {
+                model: ProfileImage,
+                attributes: {
+                  exclude: ["id", "UserId"],
+                },
+              },
+            ],
           });
+
           if (exUser) {
             const accessToken = jwt.sign({ id: exUser.id }, "jwt-secret-key", {
               algorithm: "HS256",
@@ -32,7 +44,7 @@ module.exports = () => {
               id: exUser.id,
               email: profile?.emails[0].value,
               nickname: profile.displayName,
-              ProfileImages: profile?.photos[0].value,
+              ProfileImages: exUser.ProfileImages.src,
               checkedCalendar: exUser.checkedCalendar,
               accessToken: accessToken,
               refreshToken: refreshToken,
@@ -49,6 +61,37 @@ module.exports = () => {
                 provider: "google",
                 checkedCalendar: "",
               });
+
+              // 개인 캘린더 지급
+              const myCalendar = await newUser.createCalendar(
+                {
+                  name: newUser.nickname,
+                  color: "#dddddd",
+                  private: true,
+                },
+                { transaction: t }
+              );
+
+              await CalendarMember.create(
+                {
+                  UserId: newUser.id,
+                  CalendarId: myCalendar.id,
+                  authority: 3,
+                },
+                { transaction: t }
+              );
+
+              // 기본 이미지 지급
+              const profileImage = await ProfileImage.create(
+                {
+                  src: BASIC_IMG_SRC,
+                },
+                {
+                  transaction: t,
+                }
+              );
+              await newUser.addProfileImage(profileImage, { transaction: t });
+
               const accessToken = jwt.sign(
                 { id: newUser.id },
                 "jwt-secret-key",

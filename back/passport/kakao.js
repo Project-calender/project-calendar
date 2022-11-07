@@ -3,9 +3,12 @@ const KakaoStrategy = require("passport-kakao").Strategy;
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { redisClient } = require("../redis");
-const { sequelize, User, CalendarMember } = require("../models");
+const { sequelize, User, CalendarMember, ProfileImage } = require("../models");
 const axios = require("axios");
 dotenv.config();
+
+const BASIC_IMG_SRC =
+  "https://baeminback.s3.ap-northeast-2.amazonaws.com/basicProfile.png";
 
 //req.flash를 통해 값을 전달해 줄 수 있다.
 module.exports = () => {
@@ -42,7 +45,16 @@ module.exports = () => {
 
           const exUser = await User.findOne({
             where: { snsId: profile.id, provider: "kakao" },
+            include: [
+              {
+                model: ProfileImage,
+                attributes: {
+                  exclude: ["id", "UserId"],
+                },
+              },
+            ],
           });
+
           // 이미 가입된 카카오 프로필이면 성공
           if (exUser) {
             //여기서 req 객체 추가?
@@ -59,7 +71,7 @@ module.exports = () => {
               id: exUser.id,
               email: profile._json.kakao_account.email,
               nickname: profile.username,
-              ProfileImages: profile._json.properties.profile_image,
+              ProfileImages: exUser.ProfileImages.src,
               checkedCalendar: exUser.checkedCalendar,
               accessToken: accessToken,
               refreshToken: refreshToken,
@@ -78,7 +90,7 @@ module.exports = () => {
                 provider: "kakao",
                 checkedCalendar: "",
               });
-
+              // 개인 캘린더 지급
               const myCalendar = await newUser.createCalendar(
                 {
                   name: newUser.nickname,
@@ -97,6 +109,18 @@ module.exports = () => {
                 { transaction: t }
               );
 
+              // 기본 이미지 지급
+              const profileImage = await ProfileImage.create(
+                {
+                  src: BASIC_IMG_SRC,
+                },
+                {
+                  transaction: t,
+                }
+              );
+              await newUser.addProfileImage(profileImage, { transaction: t });
+
+              // 토큰 지급
               const accessToken = jwt.sign(
                 { id: newUser.id },
                 "jwt-secret-key",
@@ -119,7 +143,7 @@ module.exports = () => {
                 id: newUser.id,
                 email: profile._json.kakao_account.email,
                 nickname: profile.username,
-                ProfileImages: profile._json.properties.profile_image,
+                ProfileImages: BASIC_IMG_SRC,
                 checkedCalendar: newUser.checkedCalendar,
                 accessToken: accessToken,
                 refreshToken: refreshToken,

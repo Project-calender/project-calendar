@@ -25,6 +25,38 @@ const {
   deleteChildAlerts,
 } = require("../commons/realTimeAlerts");
 
+router.post("/getCalendarMembers", authJWT, async (req, res, next) => {
+  try {
+    const members = await Calendar.findOne({
+      where: { id: req.body.calendarId },
+      include: [
+        {
+          model: User,
+          as: "CalendarMembers",
+          attributes: {
+            exclude: ["password", "checkedCalendar", "snsId", "provider"],
+          },
+          through: { attributes: [] },
+          include: [{ model: ProfileImage, attributes: ["src"] }],
+        },
+      ],
+    });
+
+    if (!members) {
+      return res.status(400).send({ message: "존재하지 않는 캘린더 입니다!" });
+    }
+
+    if (members.private && members.OwnerId == req.myId) {
+      return res.status(200).send([]);
+    }
+
+    return res.status(200).send(members.CalendarMembers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/getAllEventForYear", authJWT, async (req, res, next) => {
   try {
     var startDate = new Date(req.body.startDate);
