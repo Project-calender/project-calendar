@@ -25,11 +25,7 @@ const user = createSlice({
 });
 
 export function isCheckedCalander(event) {
-  return getCheckedCalendar().includes(
-    (event?.PrivateCalendarId &&
-      Math.min(event.PrivateCalendarId, -event.PrivateCalendarId)) ||
-      event?.CalendarId,
-  );
+  return getCheckedCalendar().includes(event?.CalendarId);
 }
 
 export const { resetUser } = user.actions;

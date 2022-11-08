@@ -22,7 +22,7 @@ const Index = ({
 
   function deleteCalendar() {
     axios
-      .post(`${CALENDAR_URL.DELETE_GROUP_CALENDAR}`, {
+      .post(`${CALENDAR_URL.DELETE_CALENDAR}`, {
         calendarId: targetItem.id,
       })
       .then(res => {

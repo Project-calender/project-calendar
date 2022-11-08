@@ -61,6 +61,7 @@ const Index = ({
     member => !member.canInvite,
   );
 
+  const totalEventMember = Object.keys(eventMembers).length;
   return (
     <div className={styles.members_container}>
       <Input
@@ -75,9 +76,7 @@ const Index = ({
         }}
       />
 
-      {Object.keys(eventMembers).length > 0 && (
-        <p>참석자 {Object.keys(eventMembers).length}명</p>
-      )}
+      {totalEventMember > 0 && <p>참석자 {totalEventMember}명</p>}
       <em>{memberStateTitle}</em>
 
       {Object.values(eventMembers).map(({ guest, state, canInvite }) => (
@@ -145,7 +144,7 @@ const Index = ({
 };
 
 Index.propTypes = {
-  eventId: PropTypes.number,
+  eventId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   calendarId: PropTypes.number,
   eventMembers: PropTypes.object,
   setEventMembers: PropTypes.func,
