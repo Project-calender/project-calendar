@@ -6,8 +6,11 @@ const {
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { redisClient } = require("../redis");
-const { sequelize, User, CalendarMember } = require("../models");
+const { sequelize, User, CalendarMember, ProfileImage } = require("../models");
 dotenv.config();
+
+const BASIC_IMG_SRC =
+  "https://baeminback.s3.ap-northeast-2.amazonaws.com/basicProfile.png";
 
 module.exports = () => {
   passport.use(
@@ -18,12 +21,19 @@ module.exports = () => {
         callbackURL: "http://158.247.214.79/api/auth/naver/callback", // 카카오 로그인 Redirect URI 경로
       },
       async (accessToken, refreshToken, profile, done) => {
-        console.log("naver profile", profile);
-
         try {
           const exUser = await User.findOne({
             where: { snsId: profile.id, provider: "naver" },
+            include: [
+              {
+                model: ProfileImage,
+                attributes: {
+                  exclude: ["id", "UserId"],
+                },
+              },
+            ],
           });
+
           if (exUser) {
             const accessToken = jwt.sign({ id: exUser.id }, "jwt-secret-key", {
               algorithm: "HS256",
@@ -37,7 +47,7 @@ module.exports = () => {
               id: exUser.id,
               email: profile.email,
               nickname: profile.name,
-              ProfileImages: profile.profileImage,
+              ProfileImages: exUser.ProfileImages.src,
               checkedCalendar: exUser.checkedCalendar,
               accessToken: accessToken,
               refreshToken: refreshToken,
@@ -72,6 +82,16 @@ module.exports = () => {
                 },
                 { transaction: t }
               );
+
+              const profileImage = await ProfileImage.create(
+                {
+                  src: BASIC_IMG_SRC,
+                },
+                {
+                  transaction: t,
+                }
+              );
+              await newUser.addProfileImage(profileImage, { transaction: t });
 
               const accessToken = jwt.sign(
                 { id: newUser.id },

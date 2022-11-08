@@ -70,7 +70,7 @@ app.use(function (error, req, res, next) {
 });
 
 app.get("/", (req, res) => {
-  res.send("jenkins why");
+  res.send("hi");
 });
 
 useSocket(httpServer, app);

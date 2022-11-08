@@ -10,6 +10,20 @@ const router = express.Router();
 const { Op } = require("sequelize");
 const { authJWT } = require("../middlewares/auth");
 
+// 개인 캘린더는 안보냄, 자신도 보내야함, 이메일 + 닉네임 + 사진
+router.post("/getCalendarMembers", authJWT, async (req, res, next) => {
+  try {
+    const members = await CalendarMember.findAll({
+      where: { CalendarId: req.body.calendarId },
+    });
+
+    return res.status(200).send(members);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.get("/getMyCalendars", authJWT, async (req, res, next) => {
   try {
     const myCalendars = await CalendarMember.findAll({
@@ -346,6 +360,15 @@ router.post("/sendOutUser", authJWT, async (req, res, next) => {
         .send({ message: "그룹 캘린더에 존재하지 않는 유저입니다!" });
     }
 
+    const memberPrivateCalendar = await Calendar.findOne({
+      where: {
+        [Op.and]: {
+          private: true,
+          OwnerId: member.id,
+        },
+      },
+    });
+
     await sequelize.transaction(async (t) => {
       await CalendarMember.destroy({
         where: {
@@ -358,7 +381,7 @@ router.post("/sendOutUser", authJWT, async (req, res, next) => {
       await ChildEvent.destroy({
         where: {
           [Op.and]: {
-            privateCalendarId: myCalendar.id,
+            privateCalendarId: memberPrivateCalendar.id,
             originCalendarId: req.body.calendarId,
           },
           transaction: t,
