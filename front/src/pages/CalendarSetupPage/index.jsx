@@ -41,16 +41,15 @@ const Index = () => {
     }
 
     let myCalendar = privateCalendar.findIndex(item => {
-      if (state.calendar.UserId) return item.UserId;
-      return Math.abs(state.calendar.id) === item.id;
+      return state.calendar.private || state.calendar.id === item.id;
     });
 
     let anotherCalendar = groupCalendars.findIndex(item => {
-      return Math.abs(state.calendar.id) === item.id;
+      return state.calendar.id === item.id;
     });
 
     if (myCalendar != -1) {
-      if (state.calendar.UserId) {
+      if (state.calendar.private) {
         setDefaultItem(false);
       } else {
         setDefaultItem(true);
@@ -81,28 +80,27 @@ const Index = () => {
     }
   }, []);
 
-  function calendarData() {
-    axios.get(`${CALENDAR_URL.GET_MY_CALENDARS}`).then(res => {
-      onPrivate(res);
-      onGroup(res);
-    });
+  async function calendarData() {
+    const { data } = await axios.get(`${CALENDAR_URL.GET_ALL_CALENDAR}`);
+    console.log(data);
+    onPrivate(data);
+    onGroup(data);
   }
 
   //권한 3 내 캘린더의 설정 목록
-  function onPrivate(res) {
-    let privateFilter = res.data.groupCalendars.filter(function (a) {
-      return a.CalendarMember.authority == 3;
-    });
-    let newPrivate = [res.data.privateCalendar, ...privateFilter];
-    setPrivateCalendar(newPrivate);
+  function onPrivate(calendars) {
+    const privateFilter = calendars.filter(isManager);
+    setPrivateCalendar(privateFilter);
   }
 
   //권한 1~2 다른 캘린더의 설정 목록
-  function onGroup(res) {
-    let groupFilter = res.data.groupCalendars.filter(function (a) {
-      return a.CalendarMember.authority < 3;
-    });
+  function onGroup(calendars) {
+    const groupFilter = calendars.filter(calendar => !isManager(calendar));
     setGroupCalendars(groupFilter);
+  }
+
+  function isManager(calendar) {
+    return calendar.authority === 3;
   }
 
   return (

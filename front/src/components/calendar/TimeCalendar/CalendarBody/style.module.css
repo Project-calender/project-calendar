@@ -1,7 +1,10 @@
-.calendar_body { display: flex; width: 100%;}
-.calendar_body > :first-child {width: 10px;}
-.calendar_body > :last-child > div { border-right: none;}
-.calendar_body > div { width: 100%; }
-.calendar_body > div > div { height: 50px; border-right: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; }
-.calendar_body > div > :last-child { border-bottom: none; }
-.calendar_axis_line { width: 10px;  border-right: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; }
+.calendar_body { display: flex; width: 100%; } 
+.calendar_body > :first-child { width: 10px; } 
+.calendar_body > :last-child > div { border-right: none; } 
+.calendar_body > div { width: 100%; } 
+.calendar_body > div > div { height: 50px; border-right: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; } 
+.calendar_body > div > :last-child { border-bottom: none; } 
+.calendar_axis_line { width: 10px; border-right: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; } 
+
+.calendar_event_container { position: relative; } 
+.calendar_event_container > :first-child { border:none !important; position: absolute; width: 88%; height: calc(24 * 50px) !important } 

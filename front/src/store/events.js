@@ -46,7 +46,7 @@ const events = createSlice({
       })
       .addCase(deleteCalendar.fulfilled, (state, { payload: calendarId }) => {
         const events = selectAll(state).filter(
-          event => event.PrivateCalendarId || event.CalendarId !== calendarId,
+          event => event.CalendarId !== calendarId,
         );
         eventsAdapter.setAll(state, events);
         state.byDate = classifyEventsByDate(events);
@@ -143,13 +143,8 @@ function findEventBarIndex(date) {
 }
 
 function EventBar(event, scale) {
-  const { id, PrivateCalendarId, CalendarId } = event;
-  return {
-    id,
-    PrivateCalendarId,
-    CalendarId,
-    scale: scale,
-  };
+  const { id, CalendarId } = event;
+  return { id, CalendarId, scale };
 }
 
 function createEmptyEventBar(event, date = [], index) {
