@@ -44,7 +44,7 @@ module.exports = () => {
               id: exUser.id,
               email: profile?.emails[0].value,
               nickname: profile.displayName,
-              ProfileImages: exUser.ProfileImages.src,
+              ProfileImages: exUser.ProfileImages[0].src,
               checkedCalendar: exUser.checkedCalendar,
               accessToken: accessToken,
               refreshToken: refreshToken,

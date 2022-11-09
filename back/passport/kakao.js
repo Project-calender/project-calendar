@@ -55,7 +55,6 @@ module.exports = () => {
             ],
           });
 
-          console.log(exUser);
           // 이미 가입된 카카오 프로필이면 성공
           if (exUser) {
             //여기서 req 객체 추가?
@@ -68,14 +67,11 @@ module.exports = () => {
               expiresIn: "14d",
             });
 
-            console.log("exUser.ProfileImages:", exUser.ProfileImages);
-            console.log("exUser.ProfileImages.src:", exUser.ProfileImages.src);
-
             var user = {
               id: exUser.id,
               email: profile._json.kakao_account.email,
               nickname: profile.username,
-              ProfileImages: exUser.ProfileImages.src,
+              ProfileImages: exUser.ProfileImages[0].src,
               checkedCalendar: exUser.checkedCalendar,
               accessToken: accessToken,
               refreshToken: refreshToken,
