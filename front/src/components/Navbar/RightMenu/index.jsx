@@ -169,7 +169,7 @@ const Index = ({
               </li>
               <li
                 onClick={() => {
-                  navigate(CALENDAR_PATH.SETTING);
+                  navigate(CALENDAR_PATH.SETUP);
                 }}
               >
                 <FontAwesomeIcon icon={faCog} className={styles.icon} />

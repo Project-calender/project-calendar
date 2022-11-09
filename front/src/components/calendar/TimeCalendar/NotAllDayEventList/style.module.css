@@ -1,0 +1,11 @@
+.events_container { display: flex; min-height: 25px; margin-right: 13px !important; } 
+.calendar_axis_text { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; flex-shrink: 0; font-size: 10px; font-weight: 300; color: #727272; width: 50px; text-align: right; } 
+.calendar_axis_text > em { position: relative; top: 3px; right: 8px; } 
+.calendar_axis_line { flex-shrink: 0; width: 10px !important;} 
+.calendar_dates > div {  min-width: 0; flex: 1; width: 100%; border-right: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; } 
+.calendar_dates > :first-child {  flex: none;  } 
+.calendar_dates > :last-child { border-right: 1px solid transparent;  } 
+.calendar_dates { display: flex; width: 100%; } 
+.angle_icon {background: transparent;}
+.angle_icon > svg{ width: 14px; height: 14px; padding: 10px; border-radius: 100%; background: white; cursor: pointer;}
+.angle_icon > svg:hover{ background: #f2f2f2;}

@@ -27,20 +27,12 @@ export const calendarSelector = createSelector(
 );
 
 export const calendarByEventIdSelector = createSelector(
-  [state => state, (_, event) => event?.PrivateCalendarId || event?.CalendarId],
+  [state => state, (_, calendarId) => calendarId],
   (state, calendarId) => selectCalendarById(state, calendarId),
 );
 
 export const calendarByEventIdsSelector = createSelector(
-  [
-    state => state,
-    (_, events) =>
-      events.map(
-        event =>
-          Math.min(event?.PrivateCalendarId, -event?.PrivateCalendarId) ||
-          event?.CalendarId,
-      ),
-  ],
+  [state => state, (_, events) => events.map(event => event?.CalendarId)],
   (state, calendarIds) =>
     calendarIds.map(calendarId => selectCalendarById(state, calendarId)),
 );

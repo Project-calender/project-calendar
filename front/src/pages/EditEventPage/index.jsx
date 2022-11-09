@@ -42,11 +42,9 @@ const Index = () => {
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const calendars = useSelector(calendarsByWriteAuthoritySelector);
-
   useEffect(() => {
     const calendarIndex = calendars.findIndex(
-      calendar =>
-        calendar.id === (eventInfo.PrivateCalendarId || eventInfo.CalendarId),
+      calendar => calendar.id === eventInfo.CalendarId,
     );
     if (calendarIndex > -1) {
       setEvent(event => ({ ...event, calendarIndex }));

@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './style.module.css';
 import PropTypes from 'prop-types';
 
 import {
@@ -10,8 +9,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { EVENT } from '../../../../store/events';
+import EventMember from '../EventMember';
 
-const Index = ({ eventMembers }) => {
+const Index = ({ isPrivateCalendar, eventHost, eventMembers }) => {
   const EVENT_STATE_KEY = Object.keys(EVENT.state);
   const EVENT_STATE = {
     accept: { message: '초대 수락', icon: faCheck },
@@ -20,20 +20,15 @@ const Index = ({ eventMembers }) => {
     default: { message: '회신 대기 중', icon: null },
   };
 
-  const membersByState = eventMembers.reduce(
-    (membersByState, member) => {
-      membersByState[EVENT_STATE_KEY[member.EventMember.state]].push(member);
-      return membersByState;
-    },
-    Object.keys(EVENT_STATE).reduce((membersByState, state) => {
-      membersByState[state] = [];
-      return membersByState;
-    }, {}),
-  );
+  const membersByState = eventMembers.reduce((membersByState, member) => {
+    const state = member.EventMember.state;
+    const stateKey = EVENT_STATE_KEY[state];
+    return membersByState.set(stateKey, membersByState.get(stateKey) + 1);
+  }, new Map(['accept', 'refuse', 'toBeDetermined', 'default'].map(state => [state, 0])));
 
-  const memberStateTitle = Object.entries(membersByState)
-    .map(([state, members]) =>
-      members.length ? `${EVENT_STATE[state].message} ${members.length}명` : '',
+  const memberStateTitle = [...membersByState.entries()]
+    .map(([state, number]) =>
+      number ? `${EVENT_STATE[state].message} ${number}명` : '',
     )
     .filter(text => text)
     .join(', ');
@@ -51,24 +46,16 @@ const Index = ({ eventMembers }) => {
       <div>
         <div />
         <div>
-          {eventMembers.map(member => (
-            <div key={member.id} className={styles.user_info}>
-              <div className={styles.user_profile}>
-                <img src={member.ProfileImages[0].src} alt="profile" />
-                {member.EventMember.state ? (
-                  <FontAwesomeIcon
-                    className={`${styles.user_state} ${
-                      styles[EVENT_STATE_KEY[member.EventMember.state]]
-                    }`}
-                    icon={
-                      EVENT_STATE[EVENT_STATE_KEY[member.EventMember.state]]
-                        .icon
-                    }
-                  />
-                ) : null}
-              </div>
-              <h3>{member.email}</h3>
-            </div>
+          {(isPrivateCalendar
+            ? [eventHost, ...eventMembers]
+            : eventMembers
+          ).map((member, index) => (
+            <EventMember
+              key={index}
+              member={member}
+              isHost={isPrivateCalendar && index === 0}
+              EVENT_STATE={EVENT_STATE}
+            />
           ))}
         </div>
       </div>
@@ -77,6 +64,8 @@ const Index = ({ eventMembers }) => {
 };
 
 Index.propTypes = {
+  isPrivateCalendar: PropTypes.bool,
+  eventHost: PropTypes.object,
   eventMembers: PropTypes.array,
 };
 
