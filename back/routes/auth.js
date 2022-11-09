@@ -382,6 +382,7 @@ router.post("/changePassword", authJWT, async (req, res, next) => {
 
 router.post("/changeProfileImage", authJWT, async (req, res, next) => {
   try {
+    console.log(req.body.profileImageSrc);
     await sequelize.transaction(async (t) => {
       await ProfileImage.update(
         {
