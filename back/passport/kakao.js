@@ -68,6 +68,9 @@ module.exports = () => {
               expiresIn: "14d",
             });
 
+            console.log("exUser.ProfileImages:", exUser.ProfileImages);
+            console.log("exUser.ProfileImages.src:", exUser.ProfileImages.src);
+
             var user = {
               id: exUser.id,
               email: profile._json.kakao_account.email,
