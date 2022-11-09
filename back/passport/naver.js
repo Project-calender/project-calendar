@@ -114,7 +114,7 @@ module.exports = () => {
                 id: newUser.id,
                 email: profile.email,
                 nickname: profile.name,
-                ProfileImages: profile.profileImage,
+                ProfileImages: BASIC_IMG_SRC,
                 checkedCalendar: newUser.checkedCalendar,
                 accessToken: accessToken,
                 refreshToken: refreshToken,

@@ -372,7 +372,7 @@ router.post("/sendOutUser", authJWT, async (req, res, next) => {
     await sequelize.transaction(async (t) => {
       await CalendarMember.destroy({
         where: {
-          [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+          [Op.and]: { UserId: member.myId, CalendarId: req.body.calendarId },
         },
         transaction: t,
         force: true,
