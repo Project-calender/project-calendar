@@ -384,9 +384,9 @@ router.post("/sendOutUser", authJWT, async (req, res, next) => {
             privateCalendarId: memberPrivateCalendar.id,
             originCalendarId: req.body.calendarId,
           },
-          transaction: t,
-          force: true,
         },
+        transaction: t,
+        force: true,
       });
     });
 
