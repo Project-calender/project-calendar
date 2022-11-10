@@ -60,7 +60,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
 
-app.use(express.static(path.join(__dirname, "calenar")));
+app.use(express.static(path.join(__dirname, "public")));
 //라우터
 app.use(
   "/api-docs",
@@ -77,13 +77,10 @@ app.use(function (error, req, res, next) {
   res.json({ message: error.message });
 });
 
-app.get("/", (req, res, next) => {
-  res.redirect("/calendar");
+app.get("*", (req, res, next) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.get("*", (req, res, next) => {
-  res.sendFile(path.join(__dirname, "calendar", "index.html"));
-});
 useSocket(httpServer, app);
 
 //포트 설정
