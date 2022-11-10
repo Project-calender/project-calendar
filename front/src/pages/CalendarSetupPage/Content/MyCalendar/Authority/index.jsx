@@ -163,14 +163,13 @@ const Index = ({
                       }}
                     >
                       <p className="ir_su">{index}</p>
-                      {item.userAuthority.authority == 3 ? (
+                      {item.userAuthority.authority <= 1 ? (
                         <em>모든 일정 세부정보 보기</em>
                       ) : null}
                       {item.userAuthority.authority == 2 ? (
                         <em>일정 변경</em>
                       ) : null}
-                      {item.userAuthority.authority == 1 ||
-                      item.userAuthority.authority == 0 ? (
+                      {item.userAuthority.authority == 3 ? (
                         <em>변경 및 공유 관리</em>
                       ) : null}
                       <FontAwesomeIcon icon={faCaretDown} />
@@ -178,7 +177,7 @@ const Index = ({
                     <ul className={styles.authority_list}>
                       <li
                         onClick={() => {
-                          onChangeAuthority(3);
+                          onChangeAuthority(1);
                         }}
                       >
                         <em>모든 일정 세부정보 보기</em>
@@ -192,7 +191,7 @@ const Index = ({
                       </li>
                       <li
                         onClick={() => {
-                          onChangeAuthority(1);
+                          onChangeAuthority(3);
                         }}
                       >
                         <em>변경 및 공유 관리</em>

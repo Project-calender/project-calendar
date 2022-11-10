@@ -17,7 +17,6 @@ const Index = ({ userImg, setUserImg }) => {
     Axios.post(`${BASE_URL}${USER_URL.USER_PROFILE_IMAGE}`, formData)
       .then(res => {
         setUserImg(res.data.src);
-
         userChangeImage(res.data.src);
       })
       .catch(error => {
@@ -26,14 +25,14 @@ const Index = ({ userImg, setUserImg }) => {
   };
 
   //프로필 이미지 변경 함수
-  function userChangeImage(data) {
+  function userChangeImage(profileImageSrc) {
     axios
       .post(USER_URL.USER_CHANGE_PROFILE_IMAGE, {
-        profileImageSrc: userImg,
+        profileImageSrc,
       })
       .then(() => {
         alert('프로필 이미지 변경이 완료 되었습니다');
-        localStorage.setItem('userImg', data);
+        localStorage.setItem('userImg', profileImageSrc);
       })
       .catch(error => {
         if (error.response.status == 500) {
