@@ -60,7 +60,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "calenar")));
 //라우터
 app.use(
   "/api-docs",
@@ -80,8 +80,9 @@ app.use(function (error, req, res, next) {
 app.get("/", (req, res, next) => {
   res.redirect("/calendar");
 });
+
 app.get("*", (req, res, next) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "calendar", "index.html"));
 });
 useSocket(httpServer, app);
 
