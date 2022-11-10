@@ -109,10 +109,8 @@ const Index = () => {
               <div className={styles.social_login}>
                 <button className={styles.social_login_btt}>
                   <a id="kakao" href={KAKAO_AUTH_URL}>
-                    <img
-                      src={`${process.env.PUBLIC_URL}/img/login/kakao_logo.png`}
-                      alt="kakao_icon"
-                    />
+                    {/* ${process.env.PUBLIC_URL}/ */}
+                    <img src={`img/login/kakao_logo.png`} alt="kakao_icon" />
                     <em>Login with Kakao</em>
                   </a>
                 </button>

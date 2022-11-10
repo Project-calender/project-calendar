@@ -61,7 +61,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/img", express.static(path.join(__dirname, "img")));
+
 //라우터
 app.use(
   "/api-docs",
