@@ -15,7 +15,7 @@ module.exports = () => {
       {
         clientID: `${process.env.GOOGLE_CLIENT_ID}`, // 카카오 로그인에서 발급받은 REST API 키
         clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-        callbackURL: "http://158.247.214.79/api/auth/google/callback", // 카카오 로그인 Redirect URI 경로
+        callbackURL: "http://www.groupcalendars.shop/api/auth/google/callback", // 카카오 로그인 Redirect URI 경로
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
@@ -112,7 +112,7 @@ module.exports = () => {
                 id: newUser.id,
                 email: profile?.emails[0].value,
                 nickname: profile.displayName,
-                ProfileImages: profile?.photos[0].value,
+                ProfileImages: BASIC_IMG_SRC,
                 checkedCalendar: newUser.checkedCalendar,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
