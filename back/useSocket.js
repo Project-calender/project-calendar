@@ -4,7 +4,7 @@ const onlineUsers = {};
 module.exports = (server, app) => {
   const io = socketIo(server, {
     cors: {
-      origin: ["http://localhost:3000"],
+      origin: ["http://158.247.214.79"],
     },
   });
 
