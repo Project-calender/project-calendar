@@ -55,6 +55,7 @@ module.exports = () => {
             ],
           });
 
+          console.log(exUser);
           // 이미 가입된 카카오 프로필이면 성공
           if (exUser) {
             //여기서 req 객체 추가?
@@ -66,6 +67,9 @@ module.exports = () => {
               algorithm: "HS256",
               expiresIn: "14d",
             });
+
+            console.log("exUser.ProfileImages:", exUser.ProfileImages);
+            console.log("exUser.ProfileImages.src:", exUser.ProfileImages.src);
 
             var user = {
               id: exUser.id,

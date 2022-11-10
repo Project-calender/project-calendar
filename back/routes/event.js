@@ -25,6 +25,28 @@ const {
   deleteChildAlerts,
 } = require("../commons/realTimeAlerts");
 
+router.post("/test", async (req, res, next) => {
+  try {
+    const exUser = await User.findOne({
+      where: { id: 1 },
+      include: [
+        {
+          model: ProfileImage,
+          attributes: {
+            exclude: ["id", "UserId"],
+          },
+        },
+      ],
+    });
+
+    console.log(exUser.ProfileImages[0].src);
+    return res.status(200).send(exUser);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/getCalendarMembers", authJWT, async (req, res, next) => {
   try {
     const members = await Calendar.findOne({
