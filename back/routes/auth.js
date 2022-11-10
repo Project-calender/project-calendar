@@ -229,13 +229,13 @@ router.get(
       checkedCalendar: userData.checkedCalendar,
       local: false,
     });
-    res.redirect("http://localhost:3000/calendar/loginSuccess?" + query);
+    res.redirect("http://158.247.214.79/calendar/loginSuccess?" + query);
   }
 );
 
 router.get("/kakaoFail", (req, res, next) => {
   res.send(
-    "<script>alert('이메일 사용에 동의하셔야 로그인이 가능합니다!');location.href='http://localhost:3000/calendar';</script>"
+    "<script>alert('이메일 사용에 동의하셔야 로그인이 가능합니다!');location.href='http://158.247.214.79/calendar';</script>"
   );
 });
 
@@ -264,12 +264,12 @@ router.get(
       checkedCalendar: userData.checkedCalendar,
       local: false,
     });
-    res.redirect("http://localhost:3000/calendar/loginSuccess?" + query);
+    res.redirect("http://158.247.214.79/calendar/loginSuccess?" + query);
   }
 );
 
 router.get("/naverFail", (req, res, next) => {
-  return res.redirect("http://localhost:3000/calendar");
+  return res.redirect("http://158.247.214.79/calendar");
 });
 
 //google
@@ -300,7 +300,7 @@ router.get(
       checkedCalendar: userData.checkedCalendar,
       local: false,
     });
-    res.redirect("http://localhost:3000/calendar/loginSuccess?" + query);
+    res.redirect("http://158.247.214.79/calendar/loginSuccess?" + query);
   }
 );
 

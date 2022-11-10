@@ -77,6 +77,9 @@ app.use(function (error, req, res, next) {
   res.json({ message: error.message });
 });
 
+app.get("/", (req, res, next) => {
+  res.redirect("/calendar");
+});
 app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
