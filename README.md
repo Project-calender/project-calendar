@@ -110,7 +110,7 @@
 
 
 * 4일 기준 이벤트 확인
-* 
+
 ![SE-c71d6e6d-a0e6-4c28-b457-5de42436b8c6](https://user-images.githubusercontent.com/77993709/201387832-869d3f2a-7196-4bcc-ae6a-b9eabf0d70ee.png)
 
 <br>
