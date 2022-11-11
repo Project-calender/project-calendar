@@ -37,7 +37,7 @@ module.exports = () => {
                 "jwt-secret-key",
                 {
                   algorithm: "HS256",
-                  expiresIn: "20s",
+                  expiresIn: "1d",
                 }
               );
               const refreshToken = jwt.sign(

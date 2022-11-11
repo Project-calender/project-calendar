@@ -37,7 +37,7 @@ module.exports = () => {
           if (exUser) {
             const accessToken = jwt.sign({ id: exUser.id }, "jwt-secret-key", {
               algorithm: "HS256",
-              expiresIn: "10s",
+              expiresIn: "1d",
             });
             const refreshToken = jwt.sign({ id: exUser.id }, "jwt-secret-key", {
               algorithm: "HS256",

@@ -61,7 +61,7 @@ module.exports = () => {
             //여기서 req 객체 추가?
             const accessToken = jwt.sign({ id: exUser.id }, "jwt-secret-key", {
               algorithm: "HS256",
-              expiresIn: "20s",
+              expiresIn: "1d",
             });
             const refreshToken = jwt.sign({ id: exUser.id }, "jwt-secret-key", {
               algorithm: "HS256",
