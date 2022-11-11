@@ -1,5 +1,4 @@
-# project-calendar
-📅 Google Calender Clone Project
+# 📅 Google Calender Clone Project
 
 ### 사이트 주소 
 #### - http://www.groupcalendars.shop/calendar
@@ -15,3 +14,4 @@
 ### front-back 요청 기록들
 #### - https://shared-spaghetti-774.notion.site/63c5a8c8228442929ea700de8f4e54c5
 
+![image](https://user-images.githubusercontent.com/77993709/201258651-a4cc0d17-8d08-4d72-beea-b85c799f5d5d.png)
