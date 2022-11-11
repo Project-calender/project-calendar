@@ -19,7 +19,7 @@ const Index = ({ dates, eventBar, event }) => {
   } = useContext(SimpleEventOptionModalContext);
 
   const calendar = useSelector(state =>
-    calendarByEventIdSelector(state, event),
+    calendarByEventIdSelector(state, event?.CalendarId),
   );
 
   function handleEventDetailMadal(e) {

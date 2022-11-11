@@ -10,34 +10,64 @@ const router = express.Router();
 const { Op } = require("sequelize");
 const { authJWT } = require("../middlewares/auth");
 
-router.get("/getMyCalendars", authJWT, async (req, res, next) => {
+// 개인 캘린더는 안보냄, 자신도 보내야함, 이메일 + 닉네임 + 사진
+router.post("/getCalendarMembers", authJWT, async (req, res, next) => {
   try {
-    const me = await User.findOne({ where: { id: req.myId } });
-
-    const myCalendars = await me.getCalendars({
-      include: [
-        {
-          model: User,
-          as: "Owner",
-          attributes: {
-            exclude: ["password", "checkedCalendar"],
-          },
-          include: [{ model: ProfileImage, attributes: ["src"] }],
-        },
-        {
-          model: User,
-          as: "CalendarMembers",
-          attributes: {
-            exclude: ["password", "checkedCalendar"],
-          },
-          through: { as: "userAuthority", attributes: ["authority"] },
-          include: [{ model: ProfileImage, attributes: ["src"] }],
-        },
-      ],
-      joinTableAttributes: ["authority"],
+    const members = await CalendarMember.findAll({
+      where: { CalendarId: req.body.calendarId },
     });
 
-    return res.status(200).send(myCalendars);
+    return res.status(200).send(members);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.get("/getMyCalendars", authJWT, async (req, res, next) => {
+  try {
+    const myCalendars = await CalendarMember.findAll({
+      where: { UserId: req.myId },
+    });
+    var calendars = [];
+    await Promise.all(
+      myCalendars.map(async (myCalendar) => {
+        const calendar = await Calendar.findOne({
+          where: { id: myCalendar.CalendarId },
+          include: [
+            {
+              model: User,
+              as: "Owner",
+              attributes: {
+                exclude: ["password", "checkedCalendar", "snsId", "provider"],
+              },
+              include: [{ model: ProfileImage, attributes: ["src"] }],
+            },
+            {
+              model: User,
+              as: "CalendarMembers",
+              where: {
+                id: {
+                  [Op.ne]: sequelize.literal("Calendar.OwnerId"),
+                },
+              },
+              attributes: {
+                exclude: ["password", "checkedCalendar", "snsId", "provider"],
+              },
+              through: { as: "userAuthority", attributes: ["authority"] },
+              include: [{ model: ProfileImage, attributes: ["src"] }],
+              required: false,
+            },
+          ],
+        });
+        const addAuthority = JSON.parse(JSON.stringify(calendar));
+        addAuthority.authority = myCalendar.authority;
+
+        calendars.push(addAuthority);
+      })
+    );
+
+    return res.status(200).send(calendars);
   } catch (error) {
     console.error(error);
     next(error);
@@ -283,9 +313,9 @@ router.post("/resignCalendar", authJWT, async (req, res, next) => {
             privateCalendarId: myCalendar.id,
             originCalendarId: req.body.calendarId,
           },
-          transaction: t,
-          force: true,
         },
+        transaction: t,
+        force: true,
       });
     });
 
@@ -330,10 +360,19 @@ router.post("/sendOutUser", authJWT, async (req, res, next) => {
         .send({ message: "그룹 캘린더에 존재하지 않는 유저입니다!" });
     }
 
+    const memberPrivateCalendar = await Calendar.findOne({
+      where: {
+        [Op.and]: {
+          private: true,
+          OwnerId: member.id,
+        },
+      },
+    });
+
     await sequelize.transaction(async (t) => {
       await CalendarMember.destroy({
         where: {
-          [Op.and]: { UserId: req.myId, CalendarId: req.body.calendarId },
+          [Op.and]: { UserId: member.id, CalendarId: req.body.calendarId },
         },
         transaction: t,
         force: true,
@@ -342,12 +381,12 @@ router.post("/sendOutUser", authJWT, async (req, res, next) => {
       await ChildEvent.destroy({
         where: {
           [Op.and]: {
-            privateCalendarId: myCalendar.id,
+            privateCalendarId: memberPrivateCalendar.id,
             originCalendarId: req.body.calendarId,
           },
-          transaction: t,
-          force: true,
         },
+        transaction: t,
+        force: true,
       });
     });
 

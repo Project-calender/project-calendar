@@ -58,5 +58,6 @@ module.exports = class ChildEvent extends Model {
     db.ChildEvent.belongsTo(db.Event, {
       as: "ParentEvent",
     });
+    db.ChildEvent.hasMany(db.RealTimeAlert, { onDelete: "CASCADE" });
   }
 };

@@ -5,9 +5,9 @@ import useEventModal from '../../hooks/useEventModal';
 import axios from '../../utils/token';
 import styles from './style.module.css';
 import EventDetailModal from '../../modal/component/EventDetailModal';
-import { getEventDetail } from '../../store/thunk/event';
+import { deleteEvent, getEventDetail } from '../../store/thunk/event';
 import { checkedCalendarSelector } from '../../store/selectors/user';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isCheckedCalander } from '../../store/user';
 import { EVENT_URL } from '../../constants/api';
 import EventItem from './EventItem';
@@ -33,7 +33,7 @@ const Index = () => {
 
   function onEvent() {
     axios
-      .post(EVENT_URL.ALL_EVENT, {
+      .post(EVENT_URL.GET_ALL_EVENT, {
         startTime: `${year}-${month}-${day}`,
       })
       .then(res => {
@@ -122,22 +122,13 @@ const Index = () => {
     });
   }
 
+  const dispatch = useDispatch();
   async function onDeleteEvent(event) {
-    const url =
-      event.id > 0
-        ? EVENT_URL.DELETE_GROUP_EVENT
-        : EVENT_URL.DELETE_PRIVATE_EVENT;
-
-    await axios.post(url, {
-      eventId: Math.abs(event.id),
-      calendarId: -event.PrivateCalendarId || event.CalendarId,
-    });
-    const calendarId = event.PrivateCalendarId || event.CalendarId;
+    dispatch(deleteEvent(event));
     setAllEvent(events =>
       events.filter(
-        e =>
-          (e.PrivateCalendarId || e.CalendarId) !== Math.abs(calendarId) ||
-          e.id !== Math.abs(event.id),
+        target =>
+          target.CalendarId !== event.CalendarId || target.id !== event.id,
       ),
     );
     return event.id;

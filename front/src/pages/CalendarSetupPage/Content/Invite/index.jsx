@@ -25,7 +25,7 @@ const Index = ({ targetItem, setInvitePopup }) => {
     // console.log('캘린더 id', targetItem.id);
     // console.log('권한', authority);
     axios
-      .post(`${CALENDAR_URL.INVITE_GROUP_CALENDAR}`, {
+      .post(`${CALENDAR_URL.INVITE_CALENDAR}`, {
         guestEmail: userEmail,
         calendarId: targetItem.id,
         authority: authority,
