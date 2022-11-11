@@ -1,11 +1,9 @@
 # project-calendar
 📅 Google Calender Clone Project
 
-### [사이트 주소](http://www.groupcalendars.shop/calendar)
+### 사이트 주소 http://www.groupcalendars.shop/calendar
 
-### [notion](https://www.notion.so/63c5a8c8228442929ea700de8f4e54c5)
-
-### [api](http://158.247.214.79/api-docs/#/)
+### api문서 http://158.247.214.79/api-docs/#/
 
 git 규칙
 https://shared-spaghetti-774.notion.site/Commit-Message-Convention-f0939e3a810b4f21a70f81b50d3c5e6c
