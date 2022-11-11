@@ -909,7 +909,7 @@ router.post("/editEvent", authJWT, async (req, res, next) => {
             req.body.alerts.map(async (alert) => {
               if (alert.type === "day") {
                 const content = `${req.body.eventName}시작 ${alert.time}일 전 입니다`;
-                const date = new Date(newEvent.startTime);
+                const date = new Date(req.body.startTime);
                 date.setDate(date.getDate() - alert.time);
                 date.setHours(alert.hour);
                 date.setMinutes(parseInt(alert.minute ? alert.minute : 0));
