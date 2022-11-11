@@ -26,10 +26,12 @@
 ## 기능소개
 
 #### - 로그인 구현
+
+* 로컬로그인 뿐만 아니라, 카카오,네이버,구글을 통한 소셜 로그인 가능
 ![image](https://user-images.githubusercontent.com/77993709/201359576-f360a970-b875-4633-9aeb-10cd3a1fd8cf.png)
 
 
-<img width="70%" src="https://user-images.githubusercontent.com/77993709/201381094-13dd9318-d8f0-45aa-a14e-f814c03f8b3e.png" alt="화면 캡처 2022-11-12 000612" style="zoom:67%;" />
+<img src="https://user-images.githubusercontent.com/77993709/201381094-13dd9318-d8f0-45aa-a14e-f814c03f8b3e.png" alt="화면 캡처 2022-11-12 000612" style="zoom:67%;" />
 
 
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/77993709/201381187-01de0c6a-95d7-44fe-966e-125bff3c0841.gif)
