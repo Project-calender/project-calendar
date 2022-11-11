@@ -19,7 +19,7 @@ const Index = () => {
     const { left, top } = e.currentTarget.getBoundingClientRect();
 
     showAddEventButtonModal({
-      data: ['이벤트', '할 일'],
+      data: ['이벤트'],
       style: { top: top + 60, left: left + 12 },
     });
     e.stopPropagation();

@@ -58,9 +58,9 @@ const Index = () => {
     localStorage.setItem('local', JSON.stringify(res.data.local));
   }
 
-  const KAKAO_AUTH_URL = `http://158.247.214.79/api/auth/kakao`;
-  const NAVER_AUTH_URL = `http://158.247.214.79/api/auth/naver`;
-  const GOOGLE_AUTH_URL = `http://158.247.214.79/api/auth/google`;
+  const KAKAO_AUTH_URL = `http://groupcalendars.shop/api/auth/kakao`;
+  const NAVER_AUTH_URL = `http://groupcalendars.shop/api/auth/naver`;
+  const GOOGLE_AUTH_URL = `http://groupcalendars.shop/api/auth/google`;
 
   return (
     <div>
@@ -110,7 +110,10 @@ const Index = () => {
                 <button className={styles.social_login_btt}>
                   <a id="kakao" href={KAKAO_AUTH_URL}>
                     {/* ${process.env.PUBLIC_URL}/ */}
-                    <img src={`img/login/kakao_logo.png`} alt="kakao_icon" />
+                    <img
+                      src={`${process.env.PUBLIC_URL}/img/login/kakao_logo.png`}
+                      alt="kakao_icon"
+                    />
                     <em>Login with Kakao</em>
                   </a>
                 </button>

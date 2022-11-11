@@ -5,7 +5,7 @@ info:
   description: GoogleCalendar API문서
   servers:
     - description: GoogleCalendar-Clone API
-      url: http://158.247.214.79/
+      url: http://groupcalendars.shop/
     - description: GoogleCalendar-Clone dev
       url: http://localhost:80/
 tags:

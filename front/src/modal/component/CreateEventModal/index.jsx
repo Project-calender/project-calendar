@@ -220,7 +220,7 @@ const Index = ({ children: ModalList }) => {
           <div />
           <div className={styles.modal_context_category}>
             <button className={styles.category_active}>이벤트</button>
-            <button>할 일</button>
+            {/* <button>할 일</button> */}
           </div>
         </div>
         <DateTitleContainer
@@ -304,7 +304,7 @@ const Index = ({ children: ModalList }) => {
       {isAddCalendar && <Line />}
 
       <div className={styles.modal_footer}>
-        <button>옵션 더보기</button>
+        {/* <button>옵션 더보기</button> */}
         <button onClick={saveEvent}>저장</button>
       </div>
     </Modal>
