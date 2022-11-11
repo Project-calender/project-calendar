@@ -43,20 +43,20 @@
 * 로컬로그인 뿐만 아니라, 카카오,네이버,구글을 통한 소셜 로그인 가능 (passport.js 도입)
   ![image](https://user-images.githubusercontent.com/77993709/201359576-f360a970-b875-4633-9aeb-10cd3a1fd8cf.png)
 
-
+<br>
 
 * 개인만의 캘린더, 또는 여러 사람들과 함께하는 그룹 캘린더를 통한 일정 기록 및 공유
 
 <img src="https://user-images.githubusercontent.com/77993709/201381094-13dd9318-d8f0-45aa-a14e-f814c03f8b3e.png" alt="화면 캡처 2022-11-12 000612" style="zoom:67%;" />
 
-
+<br>
 
 
 
 - 캘린더 생성
   ![화면 캡처 2022-11-12 000636](https://user-images.githubusercontent.com/77993709/201381112-d0cba07d-d0e6-4095-b4c5-f0d385a20cc8.png)
 
-
+<br>
 
 
 
@@ -64,11 +64,15 @@
 
 ![화면 캡처 2022-11-12 001213](https://user-images.githubusercontent.com/77993709/201381261-08cbd1a8-b401-444e-ae33-f9ef6b8841b3.png)
 
+<br>
+
 
 
 * 초대를 받을 시, guest에게 알림 전송
 
 ![화면 캡처 2022-11-12 003443](https://user-images.githubusercontent.com/77993709/201381405-7afb6655-4656-4a15-8375-6cf80204cd95.png)
+
+<br>
 
 
 
@@ -76,15 +80,23 @@
 
 ![화면 캡처 2022-11-12 001256](https://user-images.githubusercontent.com/77993709/201381315-89030b40-0c4b-42cf-bf03-bd6d28fc9999.png)
 
+<br>
+
 
 
 * 이름을 통한 이벤트 검색 기능
 
 ![화면 캡처 2022-11-12 003215](https://user-images.githubusercontent.com/77993709/201381546-0321092d-7fbb-4cad-85a6-77fe8bcd90f1.png)
 
+<br>
+
+
+
 * 특정 날짜 기준 이벤트 확인
 
 ![화면 캡처 2022-11-12 003622](https://user-images.githubusercontent.com/77993709/201381660-ea1ea48b-2106-46ef-ba58-226ed0cc983f.png)
+
+<br>
 
 
 
@@ -92,9 +104,15 @@
 
 ![화면 캡처 2022-11-12 003708](https://user-images.githubusercontent.com/77993709/201381596-30ba0405-d60b-4e4a-beda-a3ea2738af48.png)
 
+<br>
+
+
+
 * 일주일 기준 이벤트 확인
 
 ![화면 캡처 2022-11-12 003636](https://user-images.githubusercontent.com/77993709/201381583-b5e3a621-5e98-4656-bb78-79bed7bc4f10.png)
+
+<br>
 
 
 
