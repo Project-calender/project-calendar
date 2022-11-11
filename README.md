@@ -31,7 +31,7 @@ Google calendar clone project
 
 ### api문서
 
-#### - http://158.247.214.79/api-docs/#/
+* http://158.247.214.79/api-docs/#/
 
 ### 기능 명세서
 
