@@ -1,26 +1,31 @@
 # 📅 Google Calender Clone Project
 
-## 사이트 주소 
+## 🖥 페이지 정보
+
+### 사이트 주소 
 
 #### - http://www.groupcalendars.shop/calendar
 
-## 원본 사이트 주소
+### 원본 사이트 주소
 
 #### - https://calendar.google.com/calendar/u/0/r
 
-## api문서
+
+## 📝 프로젝트 
+
+### api문서
 
 #### - http://158.247.214.79/api-docs/#/
 
-## 기능 명세서
+### 기능 명세서
 
 #### - https://docs.google.com/spreadsheets/d/1AFXAvhII1ugEXLDN_P1gHsp2OkYb9ul8MHO_Ujjr61s/edit#gid=0
 
-## erd 설계도
+### erd 설계도
 
 #### - https://www.erdcloud.com/d/BwHZnBFnx537CJ2Kg
 
-## git 전략
+### git 전략
 
 #### - [git전략1](https://shared-spaghetti-774.notion.site/Commit-Message-Convention-f0939e3a810b4f21a70f81b50d3c5e6c)
 
@@ -28,7 +33,7 @@
 
 #### - [git전략3](https://www.notion.so/Workflow-47705ebe076949bd95b5b3182e4b7792)
 
-## front-back 요청 기록들
+### front-back 요청 기록들
 
 #### - https://shared-spaghetti-774.notion.site/63c5a8c8228442929ea700de8f4e54c5
 
@@ -52,13 +57,11 @@
 <br>
 
 
-
 - 캘린더 생성
 
 ![SE-5d3c3a3d-63bf-493e-a6bd-480d01d0a4ba](https://user-images.githubusercontent.com/77993709/201387593-c8133e2d-9538-4515-9f5b-02e9a7eee7ef.png)
 
 <br>
-
 
 
 * 캘린더에 다른 사용자 초대
@@ -69,7 +72,6 @@
 <br>
 
 
-
 * 초대를 받을 시, guest에게 알림 전송
 
 ![SE-5c6abb57-ce6d-465c-ac06-cb4ecb1f7fec](https://user-images.githubusercontent.com/77993709/201387635-86373a49-aae0-441a-b214-4da80fc5a3f0.png)
@@ -78,9 +80,7 @@
 <br>
 
 
-
 * 같은 달력에 있는 다른 사용자와 이벤트 공유 ( 참여 / 불참여 / 미정 으로 의사 표시 가능 )
-
 
 ![SE-ecde65df-81a5-4927-8ce1-69f89c63293d](https://user-images.githubusercontent.com/77993709/201387677-4ca7a8cf-f7d5-4c38-8ad6-090b06cc8120.png)
 
@@ -88,6 +88,7 @@
 
 * socket을 통한 실시간 알림 구현
 ![SE-b5e5adfd-7ac2-4785-bb37-76dced55a6f5](https://user-images.githubusercontent.com/77993709/201387744-d7fd9e4b-d8ee-4d92-ad30-31997e976861.png)
+
 <br>
 
 
@@ -103,14 +104,12 @@
 
 ![SE-8d5573ee-988b-4687-8f8a-ca52b54d74be](https://user-images.githubusercontent.com/77993709/201387810-81b1a3e3-9ee7-4ed2-8a6c-b0b461893472.png)
 
-
 <br>
 
 
 
 * 4일 기준 이벤트 확인
 ![SE-c71d6e6d-a0e6-4c28-b457-5de42436b8c6](https://user-images.githubusercontent.com/77993709/201387832-869d3f2a-7196-4bcc-ae6a-b9eabf0d70ee.png)
-
 
 <br>
 
@@ -119,7 +118,6 @@
 * 일주일 기준 이벤트 확인
 
 ![SE-cd82864f-95e3-49e2-afbe-88ba4cb86ef5](https://user-images.githubusercontent.com/77993709/201387844-5075a051-7ee5-44c1-8a5f-31e0cd2d82aa.png)
-
 
 <br>
 
