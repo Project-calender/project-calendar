@@ -15,7 +15,7 @@
 #### - [git전략3](https://www.notion.so/Workflow-47705ebe076949bd95b5b3182e4b7792)
 
 ### 기능 명세서
-### https://docs.google.com/spreadsheets/d/1AFXAvhII1ugEXLDN_P1gHsp2OkYb9ul8MHO_Ujjr61s/edit#gid=0
+#### - https://docs.google.com/spreadsheets/d/1AFXAvhII1ugEXLDN_P1gHsp2OkYb9ul8MHO_Ujjr61s/edit#gid=0
 
 ### front-back 요청 기록들
 #### - https://shared-spaghetti-774.notion.site/63c5a8c8228442929ea700de8f4e54c5
