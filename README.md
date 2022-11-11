@@ -28,7 +28,7 @@
 
 #### - [git전략3](https://www.notion.so/Workflow-47705ebe076949bd95b5b3182e4b7792)
 
-### front-back 요청 기록들
+## front-back 요청 기록들
 
 #### - https://shared-spaghetti-774.notion.site/63c5a8c8228442929ea700de8f4e54c5
 
