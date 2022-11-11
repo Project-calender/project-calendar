@@ -54,7 +54,8 @@
 
 
 - 캘린더 생성
-  ![화면 캡처 2022-11-12 000636](https://user-images.githubusercontent.com/77993709/201381112-d0cba07d-d0e6-4095-b4c5-f0d385a20cc8.png)
+
+![SE-5d3c3a3d-63bf-493e-a6bd-480d01d0a4ba](https://user-images.githubusercontent.com/77993709/201387593-c8133e2d-9538-4515-9f5b-02e9a7eee7ef.png)
 
 <br>
 
@@ -62,7 +63,8 @@
 
 * 캘린더에 다른 사용자 초대
 
-![화면 캡처 2022-11-12 001213](https://user-images.githubusercontent.com/77993709/201381261-08cbd1a8-b401-444e-ae33-f9ef6b8841b3.png)
+
+![SE-34026654-60c3-4ed2-87d9-f4e2e3dc54c3](https://user-images.githubusercontent.com/77993709/201387617-806f4984-c8c9-4b6d-ad1f-19307ca82aea.png)
 
 <br>
 
@@ -70,7 +72,8 @@
 
 * 초대를 받을 시, guest에게 알림 전송
 
-![화면 캡처 2022-11-12 003443](https://user-images.githubusercontent.com/77993709/201381405-7afb6655-4656-4a15-8375-6cf80204cd95.png)
+![SE-5c6abb57-ce6d-465c-ac06-cb4ecb1f7fec](https://user-images.githubusercontent.com/77993709/201387635-86373a49-aae0-441a-b214-4da80fc5a3f0.png)
+
 
 <br>
 
@@ -78,15 +81,19 @@
 
 * 같은 달력에 있는 다른 사용자와 이벤트 공유 ( 참여 / 불참여 / 미정 으로 의사 표시 가능 )
 
-![화면 캡처 2022-11-12 001256](https://user-images.githubusercontent.com/77993709/201381315-89030b40-0c4b-42cf-bf03-bd6d28fc9999.png)
+
+![SE-ecde65df-81a5-4927-8ce1-69f89c63293d](https://user-images.githubusercontent.com/77993709/201387677-4ca7a8cf-f7d5-4c38-8ad6-090b06cc8120.png)
 
 <br>
 
+* socket을 통한 실시간 알림 구현
+![SE-b5e5adfd-7ac2-4785-bb37-76dced55a6f5](https://user-images.githubusercontent.com/77993709/201387744-d7fd9e4b-d8ee-4d92-ad30-31997e976861.png)
+<br>
 
 
 * 이름을 통한 이벤트 검색 기능
 
-![화면 캡처 2022-11-12 003215](https://user-images.githubusercontent.com/77993709/201381546-0321092d-7fbb-4cad-85a6-77fe8bcd90f1.png)
+![SE-b0165374-6e12-4ab2-a7f3-3838b3b7a7d2](https://user-images.githubusercontent.com/77993709/201387797-bdcee5a8-2048-414b-98ab-d0b2b8a9feb5.png)
 
 <br>
 
@@ -94,15 +101,16 @@
 
 * 특정 날짜 기준 이벤트 확인
 
-![화면 캡처 2022-11-12 003622](https://user-images.githubusercontent.com/77993709/201381660-ea1ea48b-2106-46ef-ba58-226ed0cc983f.png)
+![SE-8d5573ee-988b-4687-8f8a-ca52b54d74be](https://user-images.githubusercontent.com/77993709/201387810-81b1a3e3-9ee7-4ed2-8a6c-b0b461893472.png)
+
 
 <br>
 
 
 
 * 4일 기준 이벤트 확인
+![SE-c71d6e6d-a0e6-4c28-b457-5de42436b8c6](https://user-images.githubusercontent.com/77993709/201387832-869d3f2a-7196-4bcc-ae6a-b9eabf0d70ee.png)
 
-![화면 캡처 2022-11-12 003708](https://user-images.githubusercontent.com/77993709/201381596-30ba0405-d60b-4e4a-beda-a3ea2738af48.png)
 
 <br>
 
@@ -110,12 +118,13 @@
 
 * 일주일 기준 이벤트 확인
 
-![화면 캡처 2022-11-12 003636](https://user-images.githubusercontent.com/77993709/201381583-b5e3a621-5e98-4656-bb78-79bed7bc4f10.png)
+![SE-cd82864f-95e3-49e2-afbe-88ba4cb86ef5](https://user-images.githubusercontent.com/77993709/201387844-5075a051-7ee5-44c1-8a5f-31e0cd2d82aa.png)
+
 
 <br>
 
 
 
 * 연도 별로 한눈에 일정 확인 
+![SE-bef82dbd-c683-4512-81e2-79cd2cfab034](https://user-images.githubusercontent.com/77993709/201387863-eab3d3d6-d59b-40c0-81f5-118236779023.png)
 
-![화면 캡처 2022-11-12 003244](https://user-images.githubusercontent.com/77993709/201381624-92062c5c-3f03-4f71-abfe-85209dfdb459.png)
