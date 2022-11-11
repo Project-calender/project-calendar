@@ -21,7 +21,6 @@ Google calendar clone project
 
 ### 기술 스택
 #### FRONT-END
-* HTML/JS/CSS
 * react.js
 
 #### BACK-END
