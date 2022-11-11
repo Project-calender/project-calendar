@@ -44,6 +44,13 @@ app.use(
     credentials: true,
   })
 );
+
+app.all("/*", function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
+
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(hpp());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -52,6 +59,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
+
+app.use("/img", express.static(path.join(__dirname, "img")));
+app.use(express.static(path.join(__dirname, "public")));
 
 //라우터
 app.use(
@@ -69,8 +79,12 @@ app.use(function (error, req, res, next) {
   res.json({ message: error.message });
 });
 
-app.get("/", (req, res) => {
-  res.send("jenkins why");
+app.get("/", (req, res, next) => {
+  res.redirect("/calendar");
+});
+
+app.get("*", (req, res, next) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 useSocket(httpServer, app);
