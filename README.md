@@ -25,7 +25,6 @@ Google calendar clone project
 
 #### BACK-END
 * express.js
-* sequelize.js
 
 #### DB
 * mysql
