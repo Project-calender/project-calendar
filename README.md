@@ -1,26 +1,26 @@
 # 📅 Google Calender Clone Project
 
-### 사이트 주소 
+## 사이트 주소 
 
 #### - http://www.groupcalendars.shop/calendar
 
-### 원본 사이트 주소
+## 원본 사이트 주소
 
 #### - https://calendar.google.com/calendar/u/0/r
 
-### api문서
+## api문서
 
 #### - http://158.247.214.79/api-docs/#/
 
-### 기능 명세서
+## 기능 명세서
 
 #### - https://docs.google.com/spreadsheets/d/1AFXAvhII1ugEXLDN_P1gHsp2OkYb9ul8MHO_Ujjr61s/edit#gid=0
 
-### erd 설계도
+## erd 설계도
 
 #### - https://www.erdcloud.com/d/BwHZnBFnx537CJ2Kg
 
-### git 전략
+## git 전략
 
 #### - [git전략1](https://shared-spaghetti-774.notion.site/Commit-Message-Convention-f0939e3a810b4f21a70f81b50d3c5e6c)
 
