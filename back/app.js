@@ -60,6 +60,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
 
+app.use("/img", express.static(path.join(__dirname, "img")));
 app.use(express.static(path.join(__dirname, "public")));
 
 //라우터
