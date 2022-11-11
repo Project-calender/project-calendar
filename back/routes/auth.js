@@ -229,7 +229,9 @@ router.get(
       checkedCalendar: userData.checkedCalendar,
       local: false,
     });
-    res.redirect("http://158.247.214.79/calendar/loginSuccess?" + query);
+    res.redirect(
+      "http://www.groupcalendars.shop/calendar/loginSuccess?" + query
+    );
   }
 );
 
@@ -264,12 +266,14 @@ router.get(
       checkedCalendar: userData.checkedCalendar,
       local: false,
     });
-    res.redirect("http://158.247.214.79/calendar/loginSuccess?" + query);
+    res.redirect(
+      "http://www.groupcalendars.shop/calendar/loginSuccess?" + query
+    );
   }
 );
 
 router.get("/naverFail", (req, res, next) => {
-  return res.redirect("http://158.247.214.79/calendar");
+  return res.redirect("http://www.groupcalendars.shop/calendar");
 });
 
 //google
@@ -300,7 +304,9 @@ router.get(
       checkedCalendar: userData.checkedCalendar,
       local: false,
     });
-    res.redirect("http://158.247.214.79/calendar/loginSuccess?" + query);
+    res.redirect(
+      "http://www.groupcalendars.shop/calendar/loginSuccess?" + query
+    );
   }
 );
 
