@@ -20,7 +20,7 @@ Google calendar clone project
 * 2022.07.01 ~ 2022.11.12
 
 ### 기술 스택
-#### - FRONT-END
+* FRONT-END
 <img src="https://img.shields.io/badge/React-41BADB?style=flat-square&logo=react&logoColor=white" />
 
 #### BACK-END
