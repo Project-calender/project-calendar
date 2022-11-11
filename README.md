@@ -18,8 +18,19 @@
 
 ### 기술 스택
 #### FRONT-END
-* HTML/JS/CSS react.js
-* express.js 
+* HTML/JS/CSS
+* react.js
+
+#### BACK-END
+* express.js
+* sequelize.js
+
+#### DB
+* mysql
+* redis
+
+#### CLOUD
+* vultr
 
 ## 📝 프로젝트 기록
 
