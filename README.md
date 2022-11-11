@@ -21,7 +21,7 @@ Google calendar clone project
 
 ### 기술 스택
 #### FRONT-END
-* react.js
+<img src="https://img.shields.io/badge/React-41BADB?style=flat-square&logo=react&logoColor=white" />
 
 #### BACK-END
 * express.js
@@ -32,6 +32,7 @@ Google calendar clone project
 
 #### CLOUD
 * vultr
+* aws s3
 
 <br>
 
