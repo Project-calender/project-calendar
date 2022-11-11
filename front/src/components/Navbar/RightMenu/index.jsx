@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; //폰트어썸
 import {
   faSearch,
   faCog,
-  faQuestionCircle,
+  // faQuestionCircle,
   faCaretDown,
   faList,
   faCheck,
@@ -160,13 +160,13 @@ const Index = ({
                 <FontAwesomeIcon icon={faSearch} className={styles.icon} />
                 <em>검색</em>
               </li>
-              <li>
+              {/* <li>
                 <FontAwesomeIcon
                   icon={faQuestionCircle}
                   className={styles.icon}
                 />
                 <em>지원</em>
-              </li>
+              </li> */}
               <li
                 onClick={() => {
                   navigate(CALENDAR_PATH.SETUP);

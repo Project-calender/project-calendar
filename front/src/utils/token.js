@@ -33,7 +33,7 @@ axios.interceptors.response.use(
         let accessToken = sessionStorage.getItem('accessToken'); // 세션스토리지에 있는 accessToken 토큰을 가지고 오기
         let refreshToken = localStorage.getItem('refreshToken'); // 로컬스토리지에 있는 refreshToken 토큰을 가지고 오기
         const data = await Axios({
-          url: `http://158.247.214.79/api/auth/refresh`, //refreshToken 토큰 요청하는 API주소
+          url: `http://www.groupcalendars.shop/api/auth/refresh`, //refreshToken 토큰 요청하는 API주소
           method: 'GET',
           headers: {
             authorization: accessToken,

@@ -304,7 +304,7 @@ const Index = ({ children: ModalList }) => {
       {isAddCalendar && <Line />}
 
       <div className={styles.modal_footer}>
-        <button>옵션 더보기</button>
+        <button style={{ display: 'none' }}>옵션 더보기</button>
         <button onClick={saveEvent}>저장</button>
       </div>
     </Modal>

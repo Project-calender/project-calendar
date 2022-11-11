@@ -237,7 +237,7 @@ router.get(
 
 router.get("/kakaoFail", (req, res, next) => {
   res.send(
-    "<script>alert('이메일 사용에 동의하셔야 로그인이 가능합니다!');location.href='http://158.247.214.79/calendar';</script>"
+    "<script>alert('이메일 사용에 동의하셔야 로그인이 가능합니다!');location.href='http://www.groupcalendars.shop/calendar';</script>"
   );
 });
 
