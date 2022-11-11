@@ -36,16 +36,11 @@ const Index = ({
 
   function onChangeName() {
     axios
-      .post(
-        targetItem.UserId
-          ? CALENDAR_URL.UPDATE_PRIVATE_CALENDAR
-          : CALENDAR_URL.UPDATE_GROUP_CALENDAR,
-        {
-          calendarId: targetItem.id,
-          calendarName: changeName,
-          calendarColor: targetItem.color,
-        },
-      )
+      .post(CALENDAR_URL.UPDATE_CALENDAR, {
+        calendarId: targetItem.id,
+        calendarName: changeName,
+        calendarColor: targetItem.color,
+      })
       .then(res => {
         calendarData();
         setChangeName(res.data.name);
