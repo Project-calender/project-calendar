@@ -87,6 +87,7 @@
 <br>
 
 * socket을 통한 실시간 알림 구현
+
 ![SE-b5e5adfd-7ac2-4785-bb37-76dced55a6f5](https://user-images.githubusercontent.com/77993709/201387744-d7fd9e4b-d8ee-4d92-ad30-31997e976861.png)
 
 <br>
@@ -109,6 +110,7 @@
 
 
 * 4일 기준 이벤트 확인
+* 
 ![SE-c71d6e6d-a0e6-4c28-b457-5de42436b8c6](https://user-images.githubusercontent.com/77993709/201387832-869d3f2a-7196-4bcc-ae6a-b9eabf0d70ee.png)
 
 <br>
