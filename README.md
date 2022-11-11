@@ -47,9 +47,7 @@
 
 * 개인만의 캘린더, 또는 여러 사람들과 함께하는 그룹 캘린더를 통한 일정 기록 및 공유
 
-
-
-![SE-d1d00b41-a65b-4927-a4b1-907d4dc7be30](C:\Users\USER\Downloads\SE-d1d00b41-a65b-4927-a4b1-907d4dc7be30.png)
+![SE-d1d00b41-a65b-4927-a4b1-907d4dc7be30](https://user-images.githubusercontent.com/77993709/201386922-a2e39354-7401-48c0-b2aa-30a04cc3910b.png)
 
 <br>
 
