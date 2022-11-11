@@ -23,7 +23,9 @@
 ### front-back 요청 기록들
 #### - https://shared-spaghetti-774.notion.site/63c5a8c8228442929ea700de8f4e54c5
 
-로그인 구현
+## 기능소개
+
+#### - 로그인 구현
 ![image](https://user-images.githubusercontent.com/77993709/201359576-f360a970-b875-4633-9aeb-10cd3a1fd8cf.png)
 
 
@@ -35,7 +37,7 @@
 
 
 
-캘린더 생성
+- 캘린더 생성
 ![화면 캡처 2022-11-12 000636](https://user-images.githubusercontent.com/77993709/201381112-d0cba07d-d0e6-4095-b4c5-f0d385a20cc8.png)
 
 캘린더에 다른 사용자 초대
