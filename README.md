@@ -30,10 +30,10 @@ Google calendar clone project
 #### DB
 * <img align="center" src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white" /> 
 * <img align="center" src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" />
+* <img align="center" src="https://img.shields.io/badge/Amazon S3-569A31?style=flat-square&logo=s3&logoColor=white" />
 
 #### CLOUD
 * <img align="center" src="https://img.shields.io/badge/Vultr-007BFC?style=flat-square&logo=vultr&logoColor=white" />
-* <img align="center" src="https://img.shields.io/badge/Amazon S3-569A31?style=flat-square&logo=s3&logoColor=white" />
 
 <br>
 
