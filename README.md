@@ -150,3 +150,8 @@ Google calendar clone project
 
 ![SE-bef82dbd-c683-4512-81e2-79cd2cfab034](https://user-images.githubusercontent.com/77993709/201387863-eab3d3d6-d59b-40c0-81f5-118236779023.png)
 
+## ❌구현하지 못한 기능
+
+* 네이버 로그인 - 검수실패(원인 파악중)
+* 할 일 기능
+* 구글 meet 화상회의
